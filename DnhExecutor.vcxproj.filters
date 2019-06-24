@@ -349,6 +349,7 @@
     <ClInclude Include="source\TouhouDanmakufu\DnhExecutor\TitleScene.hpp">
       <Filter>source</Filter>
     </ClInclude>
+    <ClInclude Include="source\TouhouDanmakufu\DnhExecutor\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="source\TouhouDanmakufu\DnhExecutor\DnhExecuter.rc">
@@ -357,6 +358,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="source\TouhouDanmakufu\DnhExecutor\th_dnh.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="source\TouhouDanmakufu\DnhExecutor\icon1.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
