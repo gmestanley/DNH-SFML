@@ -58,12 +58,12 @@ void StgPlayerObject::Work()
 	StgStageScriptManager* scriptManager = stageController_->GetScriptManagerP();
 	StgEnemyManager* enemyManager = stageController_->GetEnemyManager();
 
-	//“–‚½‚è”»’èƒNƒŠƒA
+	//å½“ãŸã‚Šåˆ¤å®šã‚¯ãƒªã‚¢
 	ClearIntersected();
 
 	if(state_ == STATE_NORMAL)
 	{
-		//’Êí
+		//é€šå¸¸æ™‚
 		if(hitObjectID_ != DxScript::ID_INVALID)
 		{
 			state_ = STATE_HIT;
@@ -119,17 +119,17 @@ void StgPlayerObject::Work()
 	}
 	if(state_ == STATE_HIT)
 	{
-		//‚­‚ç‚¢ƒ{ƒ€‘Ò‹@
+		//ãã‚‰ã„ãƒœãƒ å¾…æ©Ÿ
 		if(input->GetVirtualKeyState(EDirectInput::KEY_BOMB) == KEY_PUSH)
 			CallSpell();	
 
 		if(state_ == STATE_HIT)
 		{
-			//‚­‚ç‚¢ƒ{ƒ€—LŒøƒtƒŒ[ƒ€Œ¸­
+			//ãã‚‰ã„ãƒœãƒ æœ‰åŠ¹ãƒ•ãƒ¬ãƒ¼ãƒ æ¸›å°‘
 			frameState_--;
 			if(frameState_ < 0)
 			{
-				//©‹@ƒ_ƒEƒ“
+				//è‡ªæ©Ÿãƒ€ã‚¦ãƒ³
 				bool bEnemyLastSpell = false;
 				ref_count_ptr<StgEnemyBossSceneObject>::unsync objBossScene = enemyManager->GetBossSceneObject();
 				if(objBossScene != NULL)
@@ -157,7 +157,7 @@ void StgPlayerObject::Work()
 	}
 	if(state_ == STATE_DOWN)
 	{
-		//ƒ_ƒEƒ“
+		//ãƒ€ã‚¦ãƒ³
 		frameState_--;
 		if(frameState_ <= 0)
 		{
@@ -180,7 +180,7 @@ void StgPlayerObject::Move()
 {
 	if(state_ == STATE_NORMAL)
 	{
-		//’Êí
+		//é€šå¸¸æ™‚
 		if(hitObjectID_ == DxScript::ID_INVALID)
 		{
 			_Move();
@@ -220,7 +220,7 @@ void StgPlayerObject::_Move()
 	double px = posX_ + sx;
 	double py = posY_ + sy;
 
-	//‚Í‚İo‚½‚Æ‚«‚Ìˆ—
+	//ã¯ã¿å‡ºãŸã¨ãã®å‡¦ç†
 	px = max(px, rcClip_.left);
 	px = min(px, rcClip_.right);
 	py = max(py, rcClip_.top);
@@ -255,7 +255,7 @@ void StgPlayerObject::CallSpell()
 
 	gstd::value vUse = script_->RequestEvent(StgStagePlayerScript::EV_REQUEST_SPELL);
 	if(!script_->IsBooleanValue(vUse))
-		throw gstd::wexception(L"@Event(EV_REQUEST_SPELL)“à‚ÅbooleanŒ^‚Ì’l‚ª•Ô‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+		throw gstd::wexception(L"@Event(EV_REQUEST_SPELL)å†…ã§booleanå‹ã®å€¤ãŒè¿”ã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 	bool bUse = vUse.as_boolean();
 	if(!bUse)
 	{
@@ -289,7 +289,7 @@ void StgPlayerObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync own
 	{
 		case StgIntersectionTarget::TYPE_ENEMY_SHOT:
 		{
-			//“G’e
+			//æ•µå¼¾
 			if(own->IsGraze())
 			{
 				StgShotObject* objShot = (StgShotObject*)otherTarget->GetObject().GetPointer();
@@ -311,7 +311,7 @@ void StgPlayerObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync own
 
 		case StgIntersectionTarget::TYPE_ENEMY:
 		{
-			//“G
+			//æ•µ
 			if(!own->IsGraze())
 			{
 				ref_count_weak_ptr<StgEnemyObject>::unsync objEnemy = 
@@ -331,15 +331,15 @@ ref_count_ptr<StgPlayerObject>::unsync StgPlayerObject::GetOwnObject()
 }
 bool StgPlayerObject::IsPermitShot()
 {
-	//ˆÈ‰º‚Ì‚Æ‚«•s‰Â
-	//E‰ï˜b’†
+	//ä»¥ä¸‹ã®ã¨ãä¸å¯
+	//ãƒ»ä¼šè©±ä¸­
 	return !bForbidShot_;
 }
 bool StgPlayerObject::IsPermitSpell()
 {
-	//ˆÈ‰º‚Ì‚Æ‚«•s‰Â
-	//E‰ï˜b’†
-	//Eƒ‰ƒXƒgƒXƒyƒ‹’†
+	//ä»¥ä¸‹ã®ã¨ãä¸å¯
+	//ãƒ»ä¼šè©±ä¸­
+	//ãƒ»ãƒ©ã‚¹ãƒˆã‚¹ãƒšãƒ«ä¸­
 	StgEnemyManager* enemyManager = stageController_->GetEnemyManager();
 	bool bEnemyLastSpell = false;
 	ref_count_ptr<StgEnemyBossSceneObject>::unsync objBossScene = enemyManager->GetBossSceneObject();

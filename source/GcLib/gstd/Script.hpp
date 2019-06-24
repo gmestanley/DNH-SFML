@@ -1,38 +1,38 @@
 /* ---------------------------------- */
-/* 2004..2005 YTAmkm(–{‘Ì’S“–‚Å‚·‚æ)*/
-/* ‚±‚Ìƒ\[ƒXƒR[ƒh‚ÍÏ‚é‚È‚èÄ‚­‚È‚èD‚«‚É‚µ‚ëƒ‰ƒCƒZƒ“ƒX‚ÌŒ³‚Å”z•z‚µ‚Ü‚·B*/
-/* A-3AA-4‚É]‚¢A‚±‚Ìƒ\[ƒX‚ğ‘g‚İ‚ñ‚¾.exe‚É‚Íƒ‰ƒCƒZƒ“ƒX‚Í“K—p‚³‚ê‚Ü‚¹‚ñB*/
+/* 2004..2005 YTã€mkm(æœ¬ä½“æ‹…å½“ã§ã™ã‚ˆ)*/
+/* ã“ã®ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã¯ç…®ã‚‹ãªã‚Šç„¼ããªã‚Šå¥½ãã«ã—ã‚ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ã®å…ƒã§é…å¸ƒã—ã¾ã™ã€‚*/
+/* A-3ã€A-4ã«å¾“ã„ã€ã“ã®ã‚½ãƒ¼ã‚¹ã‚’çµ„ã¿è¾¼ã‚“ã .exeã«ã¯ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ã¯é©ç”¨ã•ã‚Œã¾ã›ã‚“ã€‚*/
 /* ---------------------------------- */
 /* NYSL Version 0.9982 */
-/* A. –{ƒ\ƒtƒgƒEƒFƒA‚Í Everyone'sWare ‚Å‚·B‚±‚Ìƒ\ƒtƒg‚ğè‚É‚µ‚½ˆêlˆêl‚ªA*/
-/*    ‚²©•ª‚Ìì‚Á‚½‚à‚Ì‚ğˆµ‚¤‚Ì‚Æ“¯‚¶‚æ‚¤‚ÉA©—R‚É—˜—p‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B*/
-/* A-1. ƒtƒŠ[ƒEƒFƒA‚Å‚·BìÒ‚©‚ç‚Íg—p—¿“™‚ğ—v‹‚µ‚Ü‚¹‚ñB*/
-/* A-2. —L—¿–³—¿‚â”}‘Ì‚Ì”@‰½‚ğ–â‚í‚¸A©—R‚É“]ÚEÄ”z•z‚Å‚«‚Ü‚·B*/
-/* A-3. ‚¢‚©‚È‚éí—Ş‚Ì ‰ü•ÏE‘¼ƒvƒƒOƒ‰ƒ€‚Å‚Ì—˜—p ‚ğs‚Á‚Ä‚à\‚¢‚Ü‚¹‚ñB*/
-/* A-4. •ÏX‚µ‚½‚à‚Ì‚â•”•ª“I‚Ég—p‚µ‚½‚à‚Ì‚ÍA‚ ‚È‚½‚Ì‚à‚Ì‚É‚È‚è‚Ü‚·B*/
-/*      ŒöŠJ‚·‚éê‡‚ÍA‚ ‚È‚½‚Ì–¼‘O‚Ì‰º‚Ås‚Á‚Ä‰º‚³‚¢B*/
-/* B. ‚±‚Ìƒ\ƒtƒg‚ğ—˜—p‚·‚é‚±‚Æ‚É‚æ‚Á‚Ä¶‚¶‚½‘¹ŠQ“™‚É‚Â‚¢‚ÄAìÒ‚Í */
-/*    Ó”C‚ğ•‰‚í‚È‚¢‚à‚Ì‚Æ‚µ‚Ü‚·BŠe©‚ÌÓ”C‚É‚¨‚¢‚Ä‚²—˜—p‰º‚³‚¢B*/
-/* C. ’˜ìÒlŠiŒ ‚Í ›››› ‚É‹A‘®‚µ‚Ü‚·B’˜ìŒ ‚Í•úŠü‚µ‚Ü‚·B*/
-/* D. ˆÈã‚Ì‚R€‚ÍAƒ\[ƒXEÀsƒoƒCƒiƒŠ‚Ì‘o•û‚É“K—p‚³‚ê‚Ü‚·B */
+/* A. æœ¬ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã¯ Everyone'sWare ã§ã™ã€‚ã“ã®ã‚½ãƒ•ãƒˆã‚’æ‰‹ã«ã—ãŸä¸€äººä¸€äººãŒã€*/
+/*    ã”è‡ªåˆ†ã®ä½œã£ãŸã‚‚ã®ã‚’æ‰±ã†ã®ã¨åŒã˜ã‚ˆã†ã«ã€è‡ªç”±ã«åˆ©ç”¨ã™ã‚‹ã“ã¨ãŒå‡ºæ¥ã¾ã™ã€‚*/
+/* A-1. ãƒ•ãƒªãƒ¼ã‚¦ã‚§ã‚¢ã§ã™ã€‚ä½œè€…ã‹ã‚‰ã¯ä½¿ç”¨æ–™ç­‰ã‚’è¦æ±‚ã—ã¾ã›ã‚“ã€‚*/
+/* A-2. æœ‰æ–™ç„¡æ–™ã‚„åª’ä½“ã®å¦‚ä½•ã‚’å•ã‚ãšã€è‡ªç”±ã«è»¢è¼‰ãƒ»å†é…å¸ƒã§ãã¾ã™ã€‚*/
+/* A-3. ã„ã‹ãªã‚‹ç¨®é¡ã® æ”¹å¤‰ãƒ»ä»–ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã§ã®åˆ©ç”¨ ã‚’è¡Œã£ã¦ã‚‚æ§‹ã„ã¾ã›ã‚“ã€‚*/
+/* A-4. å¤‰æ›´ã—ãŸã‚‚ã®ã‚„éƒ¨åˆ†çš„ã«ä½¿ç”¨ã—ãŸã‚‚ã®ã¯ã€ã‚ãªãŸã®ã‚‚ã®ã«ãªã‚Šã¾ã™ã€‚*/
+/*      å…¬é–‹ã™ã‚‹å ´åˆã¯ã€ã‚ãªãŸã®åå‰ã®ä¸‹ã§è¡Œã£ã¦ä¸‹ã•ã„ã€‚*/
+/* B. ã“ã®ã‚½ãƒ•ãƒˆã‚’åˆ©ç”¨ã™ã‚‹ã“ã¨ã«ã‚ˆã£ã¦ç”Ÿã˜ãŸæå®³ç­‰ã«ã¤ã„ã¦ã€ä½œè€…ã¯ */
+/*    è²¬ä»»ã‚’è² ã‚ãªã„ã‚‚ã®ã¨ã—ã¾ã™ã€‚å„è‡ªã®è²¬ä»»ã«ãŠã„ã¦ã”åˆ©ç”¨ä¸‹ã•ã„ã€‚*/
+/* C. è‘—ä½œè€…äººæ ¼æ¨©ã¯ â—‹â—‹â—‹â—‹ ã«å¸°å±ã—ã¾ã™ã€‚è‘—ä½œæ¨©ã¯æ”¾æ£„ã—ã¾ã™ã€‚*/
+/* D. ä»¥ä¸Šã®ï¼“é …ã¯ã€ã‚½ãƒ¼ã‚¹ãƒ»å®Ÿè¡Œãƒã‚¤ãƒŠãƒªã®åŒæ–¹ã«é©ç”¨ã•ã‚Œã¾ã™ã€‚ */
 /* ---------------------------------- */
 
 #if !defined(__SCRIPT_H__)
 #define __SCRIPT_H__
 
-#pragma warning (disable:4786)	//STL Warning—}~
-#pragma warning (disable:4018)	//signed ‚Æ unsigned ‚Ì”’l‚ğ”äŠr
-#pragma warning (disable:4244)	//double' ‚©‚ç 'float' ‚É•ÏŠ·
+#pragma warning (disable:4786)	//STL WarningæŠ‘æ­¢
+#pragma warning (disable:4018)	//signed ã¨ unsigned ã®æ•°å€¤ã‚’æ¯”è¼ƒ
+#pragma warning (disable:4244)	//double' ã‹ã‚‰ 'float' ã«å¤‰æ›
 #include<list>
 #include<vector>
 #include<string>
 #include<map>
 
 
-//d•¡éŒ¾ƒ`ƒFƒbƒN‚ğ‚µ‚È‚¢
+//é‡è¤‡å®£è¨€ãƒã‚§ãƒƒã‚¯ã‚’ã—ãªã„
 //#define __SCRIPT_H__NO_CHECK_DUPLICATED
 
-//-------- ”Ä—p
+//-------- æ±ç”¨
 namespace gstd
 {
 	std::string to_mbcs(std::wstring const & s);
@@ -207,7 +207,7 @@ namespace gstd
 		++length;
 	}
 
-	//-------- ‚±‚±‚©‚ç
+	//-------- ã“ã“ã‹ã‚‰
 
 	class type_data
 	{
@@ -225,7 +225,7 @@ namespace gstd
 		{
 		}
 
-		//ƒfƒXƒgƒ‰ƒNƒ^‚ÍƒfƒtƒHƒ‹ƒg‚É”C‚¹‚é
+		//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã¯ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã«ä»»ã›ã‚‹
 
 		type_kind get_kind()
 		{
@@ -347,7 +347,7 @@ namespace gstd
 			}
 		}
 
-		void overwrite(value const & source);	//ŠëŒ¯IŠO‚©‚çŒÄ‚Ô‚È
+		void overwrite(value const & source);	//å±é™ºï¼å¤–ã‹ã‚‰å‘¼ã¶ãª
 
 	private:
 		inline void release() 
@@ -420,7 +420,7 @@ namespace gstd
 		script_type_manager(script_type_manager const &);
 		script_type_manager & operator = (script_type_manager const & source);
 
-		std::list < type_data > types;	//’†g‚Ìƒ|ƒCƒ“ƒ^‚ğg‚¤‚Ì‚ÅƒAƒhƒŒƒX‚ª•Ï‚í‚ç‚È‚¢‚æ‚¤‚Élist
+		std::list < type_data > types;	//ä¸­èº«ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ä½¿ã†ã®ã§ã‚¢ãƒ‰ãƒ¬ã‚¹ãŒå¤‰ã‚ã‚‰ãªã„ã‚ˆã†ã«list
 		type_data * real_type;
 		type_data * char_type;
 		type_data * boolean_type;
@@ -434,7 +434,7 @@ namespace gstd
 		script_engine(script_type_manager * a_type_manager, std::vector<char> const & source, int funcc, function const * funcv);
 		virtual ~script_engine();
 
-		void * data;	//ƒNƒ‰ƒCƒAƒ“ƒg—p‹óŠÔ
+		void * data;	//ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆç”¨ç©ºé–“
 
 		bool get_error()
 		{
@@ -486,19 +486,19 @@ namespace gstd
 	private:
 	#endif
 
-		//ƒRƒs[A‘ã“ü‰‰Zq‚Ì©“®¶¬‚ğ–³Œø‚É
+		//ã‚³ãƒ”ãƒ¼ã€ä»£å…¥æ¼”ç®—å­ã®è‡ªå‹•ç”Ÿæˆã‚’ç„¡åŠ¹ã«
 		script_engine(script_engine const & source);
 		script_engine & operator = (script_engine const & source);
 
-		//ƒGƒ‰[
+		//ã‚¨ãƒ©ãƒ¼
 		bool error;
 		std::wstring error_message;
 		int error_line;
 
-		//Œ^
+		//å‹
 		script_type_manager * type_manager;
 
-		//’†ŠÔƒR[ƒh
+		//ä¸­é–“ã‚³ãƒ¼ãƒ‰
 		enum command_kind
 		{
 			pc_assign, pc_assign_writable, pc_break_loop, pc_break_routine, pc_call, pc_call_and_push_result, pc_case_begin,
@@ -512,24 +512,24 @@ namespace gstd
 		struct code
 		{
 			command_kind command;
-			int line;	//ƒ\[ƒXƒR[ƒhã‚Ìs
-			value data;	//pc_push_value‚Åpush‚·‚éƒf[ƒ^
+			int line;	//ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ä¸Šã®è¡Œ
+			value data;	//pc_push_valueã§pushã™ã‚‹ãƒ‡ãƒ¼ã‚¿
 
 			union
 			{
 				struct
 				{
-					int level;	//assign/push_variable‚Ì•Ï”‚ÌŠÂ‹«ˆÊ’u
-					unsigned variable;	//assign/push_variable‚Ì•Ï”‚ÌƒCƒ“ƒfƒbƒNƒX
+					int level;	//assign/push_variableã®å¤‰æ•°ã®ç’°å¢ƒä½ç½®
+					unsigned variable;	//assign/push_variableã®å¤‰æ•°ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 				};
 				struct
 				{
-					block * sub;	//call/call_and_push_result‚Ì”ò‚Ñæ
-					unsigned arguments;	//call/call_and_push_result‚Ìˆø”‚Ì”
+					block * sub;	//call/call_and_push_resultã®é£›ã³å…ˆ
+					unsigned arguments;	//call/call_and_push_resultã®å¼•æ•°ã®æ•°
 				};
 				struct
 				{
-					int ip;	//loop_back‚Ì–ß‚èæ
+					int ip;	//loop_backã®æˆ»ã‚Šå…ˆ
 				};
 			};
 
@@ -582,7 +582,7 @@ namespace gstd
 			}
 		};
 
-		std::list < block > blocks;	//’†g‚Ìƒ|ƒCƒ“ƒ^‚ğg‚¤‚Ì‚ÅƒAƒhƒŒƒX‚ª•Ï‚í‚ç‚È‚¢‚æ‚¤‚Élist
+		std::list < block > blocks;	//ä¸­èº«ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ä½¿ã†ã®ã§ã‚¢ãƒ‰ãƒ¬ã‚¹ãŒå¤‰ã‚ã‚‰ãªã„ã‚ˆã†ã«list
 		block * main_block;
 		std::map < std::string, block * > events;
 
@@ -602,7 +602,7 @@ namespace gstd
 		script_machine(script_engine * the_engine);
 		virtual ~script_machine();
 
-		void * data;	//ƒNƒ‰ƒCƒAƒ“ƒg—p‹óŠÔ
+		void * data;	//ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆç”¨ç©ºé–“
 
 		void run();
 		void call(std::string event_name);
@@ -680,7 +680,7 @@ namespace gstd
 
 		struct environment
 		{
-			environment * pred, * succ;	//‘o•ûŒüƒŠƒ“ƒNƒŠƒXƒg
+			environment * pred, * succ;	//åŒæ–¹å‘ãƒªãƒ³ã‚¯ãƒªã‚¹ãƒˆ
 			environment * parent;
 			int ref_count;
 			script_engine::block * sub;

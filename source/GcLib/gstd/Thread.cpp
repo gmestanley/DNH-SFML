@@ -33,7 +33,7 @@ unsigned int __stdcall Thread::_StaticRun(LPVOID data)
 	}
 	catch(...)
 	{
-		//ƒGƒ‰[‚Í–³‹
+		//ã‚¨ãƒ©ãƒ¼ã¯ç„¡è¦–
 	}
 	return 0;
 }
@@ -67,7 +67,7 @@ DWORD Thread::Join(int mills)
 	if(hThread_ != NULL)
 	{
 		if(res != WAIT_TIMEOUT)
-			::CloseHandle(hThread_);//ƒ^ƒCƒ€ƒAƒEƒg‚Ìê‡ƒNƒ[ƒY‚Å‚«‚È‚¢
+			::CloseHandle(hThread_);//ã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆã®å ´åˆã‚¯ãƒ­ãƒ¼ã‚ºã§ããªã„
 		hThread_=NULL;
 		idThread_=0;
 		status_=STOP;
@@ -90,7 +90,7 @@ CriticalSection::~CriticalSection()
 void CriticalSection::Enter()
 {
 	if(::GetCurrentThreadId() == idThread_)
-	{//ƒJƒŒƒ“ƒgƒXƒŒƒbƒh
+	{//ã‚«ãƒ¬ãƒ³ãƒˆã‚¹ãƒ¬ãƒƒãƒ‰
 		countLock_++;
 		return;
 	}
@@ -106,11 +106,11 @@ void CriticalSection::Leave()
 		countLock_--;
 		if(countLock_ != 0)return;
 		if(countLock_<0)
-			throw std::exception("CriticalSectionFLock‚µ‚Ä‚¢‚Ü‚¹‚ñ");
+			throw std::exception("CriticalSectionï¼šLockã—ã¦ã„ã¾ã›ã‚“");
 	}
 	else
 	{
-		throw std::exception("CriticalSectionFLock‚µ‚Ä‚¢‚È‚¢‚Ì‚ÉUnlock‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½");
+		throw std::exception("CriticalSectionï¼šLockã—ã¦ã„ãªã„ã®ã«Unlockã—ã‚ˆã†ã¨ã—ã¾ã—ãŸ");
 	}
 	idThread_ = NULL;
 	::LeaveCriticalSection(&cs_);

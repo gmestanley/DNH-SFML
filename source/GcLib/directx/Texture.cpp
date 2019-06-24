@@ -52,7 +52,7 @@ void Texture::Release()
 			if(manager != NULL && manager->IsDataExists(data_->name_))
 			{
 				int countRef = data_.GetReferenceCount();
-				//©g‚ÆTextureManager“à‚Ì”‚¾‚¯‚É‚È‚Á‚½‚çíœ
+				//è‡ªèº«ã¨TextureManagerå†…ã®æ•°ã ã‘ã«ãªã£ãŸã‚‰å‰Šé™¤
 				if(countRef == 2)
 				{
 					manager->_ReleaseTextureData(data_->name_);
@@ -163,10 +163,10 @@ IDirect3DTexture9* Texture::GetD3DTexture()
 
 				if(bWait && abs((int)(timeGetTime() - time)) > 10000)
 				{
-					//ˆê’èŠÔ‚½‚Á‚Ä‚à‚¾‚ß‚¾‚Á‚½‚çƒƒbƒNH
+					//ä¸€å®šæ™‚é–“ãŸã£ã¦ã‚‚ã ã‚ã ã£ãŸã‚‰ãƒ­ãƒƒã‚¯ï¼Ÿ
 					std::wstring path = data_->GetName();
 					Logger::WriteTop(
-						StringUtility::Format(L"ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ‚ğs‚¦‚Ä‚¢‚Ü‚¹‚ñBƒƒbƒNH F%s", path.c_str()));
+						StringUtility::Format(L"ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿ã‚’è¡Œãˆã¦ã„ã¾ã›ã‚“ã€‚ãƒ­ãƒƒã‚¯ï¼Ÿ ï¼š%s", path.c_str()));
 					data_->bLoad_ = true;
 					break;
 				}
@@ -269,9 +269,9 @@ void TextureManager::_ReleaseTextureData(std::wstring name)
 		Lock lock(lock_);
 		if(IsDataExists(name))
 		{
-			mapTextureData_[name]->bLoad_ = true;//“Ç‚İ‚İŠ®—¹ˆµ‚¢
+			mapTextureData_[name]->bLoad_ = true;//èª­ã¿è¾¼ã¿å®Œäº†æ‰±ã„
 			mapTextureData_.erase(name);
-			Logger::WriteTop(StringUtility::Format(L"TextureManagerFƒeƒNƒXƒ`ƒƒ‚ğ‰ğ•ú‚µ‚Ü‚µ‚½[%s]", name.c_str()));
+			Logger::WriteTop(StringUtility::Format(L"TextureManagerï¼šãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è§£æ”¾ã—ã¾ã—ãŸ[%s]", name.c_str()));
 		}
 	}
 }
@@ -309,9 +309,9 @@ void TextureManager::RestoreDxResource()
 				int height = data->infoImage_.Height;
 
 				HRESULT hr;
-				// Zƒoƒbƒtƒ@¶¬
+				// Zãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 				hr = graphics->GetDevice()->CreateDepthStencilSurface(width, height, D3DFMT_D16, D3DMULTISAMPLE_NONE, 0, FALSE, &data->lpRenderZ_, NULL);
-				//ƒeƒNƒXƒ`ƒƒì¬
+				//ãƒ†ã‚¯ã‚¹ãƒãƒ£ä½œæˆ
 				D3DFORMAT fmt;
 				if(graphics->GetScreenMode() == DirectGraphics::SCREENMODE_FULLSCREEN)
 					fmt = graphics->GetFullScreenPresentParameter().BackBufferFormat;
@@ -331,12 +331,12 @@ bool TextureManager::_CreateFromFile(std::wstring path)
 		return true;
 	}
 
-	//‚Ü‚¾ì¬‚³‚ê‚Ä‚¢‚È‚¢‚È‚çAì¬
+	//ã¾ã ä½œæˆã•ã‚Œã¦ã„ãªã„ãªã‚‰ã€ä½œæˆ
 	try
 	{
 		ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
-		if(reader == NULL)throw gstd::wexception(L"ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
-		if(!reader->Open())throw gstd::wexception(L"ƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚Ü‚¹‚ñ");
+		if(reader == NULL)throw gstd::wexception(L"ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
+		if(!reader->Open())throw gstd::wexception(L"ãƒ•ã‚¡ã‚¤ãƒ«ãŒé–‹ã‘ã¾ã›ã‚“");
 
 		int size = reader->GetFileSize();
 		ByteBuffer buf;
@@ -347,7 +347,7 @@ bool TextureManager::_CreateFromFile(std::wstring path)
 //		D3DXGetImageInfoFromFileInMemory(buf.GetPointer(), size, &info);
 
 		D3DCOLOR colorKey = D3DCOLOR_ARGB(255,0,0,0);
-		if(path.find(L".bmp") == std::wstring::npos)//bmp‚Ì‚İƒJƒ‰[ƒL[“K‰
+		if(path.find(L".bmp") == std::wstring::npos)//bmpã®ã¿ã‚«ãƒ©ãƒ¼ã‚­ãƒ¼é©å¿œ
 			colorKey = 0;
 		D3DFORMAT pixelFormat=D3DFMT_A8R8G8B8;
 
@@ -369,7 +369,7 @@ bool TextureManager::_CreateFromFile(std::wstring path)
 										&data->pTexture_);
 		if(FAILED(hr))
 		{
-			throw gstd::wexception(L"D3DXCreateTextureFromFileInMemoryEx¸”s");
+			throw gstd::wexception(L"D3DXCreateTextureFromFileInMemoryExå¤±æ•—");
 		}
 
 		mapTextureData_[path] = data;
@@ -377,11 +377,11 @@ bool TextureManager::_CreateFromFile(std::wstring path)
 		data->name_ = path;
 		D3DXGetImageInfoFromFileInMemory(buf.GetPointer(), size, &data->infoImage_);
 
-		Logger::WriteTop(StringUtility::Format(L"TextureManagerFƒeƒNƒXƒ`ƒƒ‚ğ“Ç‚İ‚İ‚Ü‚µ‚½[%s]", path.c_str()));
+		Logger::WriteTop(StringUtility::Format(L"TextureManagerï¼šãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’èª­ã¿è¾¼ã¿ã¾ã—ãŸ[%s]", path.c_str()));
 	}
 	catch(gstd::wexception& e)
 	{
-		std::wstring str = StringUtility::Format(L"TextureManagerFƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ¸”s[%s]\n\t%s", path.c_str(), e.what());
+		std::wstring str = StringUtility::Format(L"TextureManagerï¼šãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿å¤±æ•—[%s]\n\t%s", path.c_str(), e.what());
 		Logger::WriteTop(str);
 		return false;
 	}
@@ -420,7 +420,7 @@ bool TextureManager::_CreateRenderTarget(std::wstring name)
 		hr = graphics->GetDevice()->CreateTexture(width, height, 1, D3DUSAGE_RENDERTARGET, fmt, D3DPOOL_DEFAULT, &data->pTexture_, NULL);
 		if(FAILED(hr))
 		{
-			//ƒeƒNƒXƒ`ƒƒ‚ğ³•ûŒ`‚É‚·‚é
+			//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æ­£æ–¹å½¢ã«ã™ã‚‹
 			if(width > height)height = width;
 			else if(height>width)width=height;
 			hr = graphics->GetDevice()->CreateDepthStencilSurface(width, height, D3DFMT_D16, D3DMULTISAMPLE_NONE, 0, FALSE, &data->lpRenderZ_, NULL);
@@ -438,12 +438,12 @@ bool TextureManager::_CreateRenderTarget(std::wstring name)
 		data->infoImage_.Width = width;
 		data->infoImage_.Height = height;
 
-		Logger::WriteTop(StringUtility::Format(L"TextureManagerFƒŒƒ“ƒ_ƒŠƒ“ƒOƒ^[ƒQƒbƒgì¬[%s]", name.c_str()));
+		Logger::WriteTop(StringUtility::Format(L"TextureManagerï¼šãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã‚¿ãƒ¼ã‚²ãƒƒãƒˆä½œæˆ[%s]", name.c_str()));
 
 	}
 	catch(...)
 	{
-		Logger::WriteTop(StringUtility::Format(L"TextureManagerFƒŒƒ“ƒ_ƒŠƒ“ƒOƒ^[ƒQƒbƒgì¬¸”s[%s]", name.c_str()));
+		Logger::WriteTop(StringUtility::Format(L"TextureManagerï¼šãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã‚¿ãƒ¼ã‚²ãƒƒãƒˆä½œæˆå¤±æ•—[%s]", name.c_str()));
 		res = false;
 	}
 
@@ -519,14 +519,14 @@ gstd::ref_count_ptr<Texture> TextureManager::CreateFromFileInLoadThread(std::wst
 				data->name_ = path;
 				data->bLoad_ = false;
 
-				//‰æ‘œî•ñ‚¾‚¯–‘O‚É“Ç‚İ‚İ
+				//ç”»åƒæƒ…å ±ã ã‘äº‹å‰ã«èª­ã¿è¾¼ã¿
 				if(bLoadImageInfo)
 				{
 					try
 					{
 						ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
-						if(reader == NULL)throw gstd::wexception(L"ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
-						if(!reader->Open())throw gstd::wexception(L"ƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚Ü‚¹‚ñ");
+						if(reader == NULL)throw gstd::wexception(L"ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
+						if(!reader->Open())throw gstd::wexception(L"ãƒ•ã‚¡ã‚¤ãƒ«ãŒé–‹ã‘ã¾ã›ã‚“");
 
 						int size = reader->GetFileSize();
 						ByteBuffer buf;
@@ -537,16 +537,16 @@ gstd::ref_count_ptr<Texture> TextureManager::CreateFromFileInLoadThread(std::wst
 						HRESULT hr = D3DXGetImageInfoFromFileInMemory(buf.GetPointer(), size, &info);
 						if(FAILED(hr))
 						{
-							throw gstd::wexception(L"D3DXGetImageInfoFromFileInMemory¸”s");
+							throw gstd::wexception(L"D3DXGetImageInfoFromFileInMemoryå¤±æ•—");
 						}
 
 						data->infoImage_ = info;
 					}
 					catch(gstd::wexception& e)
 					{
-						std::wstring str = StringUtility::Format(L"TextureManagerFƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ¸”s[%s]\n\t%s", path.c_str(), e.what());
+						std::wstring str = StringUtility::Format(L"TextureManagerï¼šãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿å¤±æ•—[%s]\n\t%s", path.c_str(), e.what());
 						Logger::WriteTop(str);
-						data->bLoad_ = true;//“Ç‚İ‚İŠ®—¹ˆµ‚¢
+						data->bLoad_ = true;//èª­ã¿è¾¼ã¿å®Œäº†æ‰±ã„
 						bLoadTarget = false;
 					}
 				}
@@ -577,18 +577,18 @@ void TextureManager::CallFromLoadThread(ref_count_ptr<FileManager::LoadThreadEve
 		if(data == NULL || data->bLoad_)return;
 
 		int countRef = data.GetReferenceCount();
-		//©g‚ÆTextureManager“à‚Ì”‚¾‚¯‚É‚È‚Á‚½‚ç“Ç‚İ‚Ü‚È‚¢B
+		//è‡ªèº«ã¨TextureManagerå†…ã®æ•°ã ã‘ã«ãªã£ãŸã‚‰èª­ã¿è¾¼ã¾ãªã„ã€‚
 		if(countRef <= 2)
 		{
-			data->bLoad_ = true;//”O‚Ì‚½‚ß“Ç‚İ‚İŠ®—¹ˆµ‚¢
+			data->bLoad_ = true;//å¿µã®ãŸã‚èª­ã¿è¾¼ã¿å®Œäº†æ‰±ã„
 			return;
 		}
 
 		try
 		{
 			ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
-			if(reader == NULL)throw gstd::wexception(L"ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
-			if(!reader->Open())throw gstd::wexception(L"ƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚Ü‚¹‚ñ");
+			if(reader == NULL)throw gstd::wexception(L"ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
+			if(!reader->Open())throw gstd::wexception(L"ãƒ•ã‚¡ã‚¤ãƒ«ãŒé–‹ã‘ã¾ã›ã‚“");
 
 			int size = reader->GetFileSize();
 			ByteBuffer buf;
@@ -596,7 +596,7 @@ void TextureManager::CallFromLoadThread(ref_count_ptr<FileManager::LoadThreadEve
 			reader->Read(buf.GetPointer(), size);
 
 			D3DCOLOR colorKey = D3DCOLOR_ARGB(255,0,0,0);
-			if(path.find(L".bmp") == std::wstring::npos)//bmp‚Ì‚İƒJƒ‰[ƒL[“K‰
+			if(path.find(L".bmp") == std::wstring::npos)//bmpã®ã¿ã‚«ãƒ©ãƒ¼ã‚­ãƒ¼é©å¿œ
 				colorKey = 0;
 
 			D3DFORMAT pixelFormat=D3DFMT_A8R8G8B8;
@@ -616,16 +616,16 @@ void TextureManager::CallFromLoadThread(ref_count_ptr<FileManager::LoadThreadEve
 											&data->pTexture_);
 			if(FAILED(hr))
 			{
-				throw gstd::wexception(L"D3DXCreateTextureFromFileInMemoryEx¸”s");
+				throw gstd::wexception(L"D3DXCreateTextureFromFileInMemoryExå¤±æ•—");
 			}
 
 			D3DXGetImageInfoFromFileInMemory(buf.GetPointer(), size, &data->infoImage_);
 
-			Logger::WriteTop(StringUtility::Format(L"TextureManagerFƒeƒNƒXƒ`ƒƒ‚ğ“Ç‚İ‚İ‚Ü‚µ‚½(LT)[%s]", path.c_str()));
+			Logger::WriteTop(StringUtility::Format(L"TextureManagerï¼šãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’èª­ã¿è¾¼ã¿ã¾ã—ãŸ(LT)[%s]", path.c_str()));
 		}
 		catch(gstd::wexception& e)
 		{
-			std::wstring str = StringUtility::Format(L"TextureManagerFƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ¸”s(LT)[%s]\n\t%s", path.c_str(), e.what());
+			std::wstring str = StringUtility::Format(L"TextureManagerï¼šãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿å¤±æ•—(LT)[%s]\n\t%s", path.c_str(), e.what());
 			Logger::WriteTop(str);
 		}
 		data->bLoad_ = true;

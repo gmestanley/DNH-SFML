@@ -98,7 +98,7 @@ void StaticFpsController::Wait()
 	tFps = min(tFps, GetControlObjectFps());
 	if(bFastMode_)tFps = FPS_FAST_MODE;
 
-	int sTime = time - timePrevious_;//‘OƒtƒŒ[ƒ€‚Æ‚ÌŠÔ·
+	int sTime = time - timePrevious_;//å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã¨ã®æ™‚é–“å·®
 
 	int frameAs1Sec = sTime * tFps;
 	int time1Sec = 1000 + timeError_;
@@ -106,25 +106,25 @@ void StaticFpsController::Wait()
 	timeError_ = 0;
 	if(frameAs1Sec < time1Sec)
 	{
-		sleepTime = (time1Sec - frameAs1Sec) / tFps; //‘Ò‹@ŠÔ
+		sleepTime = (time1Sec - frameAs1Sec) / tFps; //å¾…æ©Ÿæ™‚é–“
 		if(sleepTime < 0)sleepTime = 0;
 		if(bUseTimer_ || rateSkip_ != 0)
 		{
-			_Sleep(sleepTime);//ˆê’èŠÔ‚½‚Â‚Ü‚ÅAsleep
+			_Sleep(sleepTime);//ä¸€å®šæ™‚é–“ãŸã¤ã¾ã§ã€sleep
 			timeError_ = (time1Sec - frameAs1Sec) % (int)tFps;
 		}
 
 		if(timeError_< 0 )timeError_ = 0;
 	}
 
-	//1frame‚É‚©‚©‚Á‚½ŠÔ‚ğ•Û‘¶
+	//1frameã«ã‹ã‹ã£ãŸæ™‚é–“ã‚’ä¿å­˜
 	double timeCorrect = (double)sleepTime;
 	if(time - timePrevious_ > 0)
 		listFps_.push_back(time - timePrevious_ + ceil(timeCorrect));
 	timePrevious_ = _GetTime();
 
 	if(time - timeCurrentFpsUpdate_ >= 1000)
-	{//ˆê•b‚²‚Æ‚É•\¦ƒtƒŒ[ƒ€”‚ğXV
+	{//ä¸€ç§’ã”ã¨ã«è¡¨ç¤ºãƒ•ãƒ¬ãƒ¼ãƒ æ•°ã‚’æ›´æ–°
 		if(listFps_.size() != 0 )
 		{
 			double tFpsCurrent = 0;
@@ -205,17 +205,17 @@ void AutoSkipFpsController::Wait()
 	tFps = min(tFps, GetControlObjectFps());
 	if(bFastMode_)tFps = FPS_FAST_MODE;
 
-	int sTime = time - timePrevious_;//‘OƒtƒŒ[ƒ€‚Æ‚ÌŠÔ·
+	int sTime = time - timePrevious_;//å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã¨ã®æ™‚é–“å·®
 	int frameAs1Sec = sTime * tFps;
 	int time1Sec = 1000 + timeError_;
 	int sleepTime = 0;
 	timeError_ = 0;
 	if(frameAs1Sec < time1Sec || bCriticalFrame_)
 	{
-		sleepTime = (time1Sec - frameAs1Sec) / tFps; //‘Ò‹@ŠÔ
+		sleepTime = (time1Sec - frameAs1Sec) / tFps; //å¾…æ©Ÿæ™‚é–“
 		if(sleepTime < 0 || countSkip_ - 1 >= 0 )sleepTime = 0;
 		if(bUseTimer_)
-			_Sleep(sleepTime);//ˆê’èŠÔ‚½‚Â‚Ü‚ÅAsleep
+			_Sleep(sleepTime);//ä¸€å®šæ™‚é–“ãŸã¤ã¾ã§ã€sleep
 
 		timeError_ = (time1Sec - frameAs1Sec) % (int)tFps;
 		//if(timeError_< 0 )timeError_ = 0;
@@ -231,7 +231,7 @@ void AutoSkipFpsController::Wait()
 	bCriticalFrame_ = false;
 
 	{
-		//1Work‚É‚©‚©‚Á‚½ŠÔ‚ğ•Û‘¶
+		//1Workã«ã‹ã‹ã£ãŸæ™‚é–“ã‚’ä¿å­˜
 		double timeCorrect = (double)sleepTime;
 		if(time - timePrevious_ > 0)
 			listFpsWork_.push_back(time - timePrevious_ + ceil(timeCorrect));
@@ -239,7 +239,7 @@ void AutoSkipFpsController::Wait()
 	}
 	if(countSkip_ <= 0)
 	{
-		//1•`‰æ‚É‚©‚©‚Á‚½ŠÔ‚ğ•Û‘¶
+		//1æç”»ã«ã‹ã‹ã£ãŸæ™‚é–“ã‚’ä¿å­˜
 		time = _GetTime();
 		if(time - timePreviousRender_ > 0)
 			listFpsRender_.push_back(time-timePreviousRender_);
@@ -248,7 +248,7 @@ void AutoSkipFpsController::Wait()
 
 	timePrevious_ = _GetTime();
 	if(time - timeCurrentFpsUpdate_ >= 1000)
-	{//ˆê•b‚²‚Æ‚É•\¦ƒtƒŒ[ƒ€”‚ğXV
+	{//ä¸€ç§’ã”ã¨ã«è¡¨ç¤ºãƒ•ãƒ¬ãƒ¼ãƒ æ•°ã‚’æ›´æ–°
 		if(listFpsWork_.size() != 0)
 		{
 			float tFpsCurrent = 0;

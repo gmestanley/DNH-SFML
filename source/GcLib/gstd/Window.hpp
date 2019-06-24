@@ -20,20 +20,20 @@ namespace gstd
 
 		protected:
 			HWND hWnd_;
-			WNDPROC oldWndProc_;//ƒEƒBƒ“ƒhƒEƒvƒƒV[ƒWƒƒƒAƒhƒŒƒX
+			WNDPROC oldWndProc_;//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã‚¢ãƒ‰ãƒ¬ã‚¹
 			int idWindow_;
 
-			static LRESULT CALLBACK _StaticWindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);//Ã“IƒvƒƒV[ƒWƒƒ
+			static LRESULT CALLBACK _StaticWindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);//é™çš„ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 			LRESULT _CallPreviousWindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
-			virtual LRESULT _WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);//ƒI[ƒo[ƒ‰ƒCƒh—pƒvƒƒV[ƒWƒƒ
+			virtual LRESULT _WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);//ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ç”¨ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 		public:
 			WindowBase();
 			virtual ~WindowBase();
 			HWND GetWindowHandle(){return hWnd_;}
 			bool IsDialog(){return ::GetWindowLong(hWnd_, DWL_DLGPROC)!=0;}
 
-			bool Attach(HWND hWnd);//ƒZƒbƒg
-			bool Detach();//‰ðœ
+			bool Attach(HWND hWnd);//ã‚»ãƒƒãƒˆ
+			bool Detach();//è§£é™¤
 			int GetWindowId(){return idWindow_;}
 
 			virtual void SetBounds(int x, int y, int width, int height){::MoveWindow(hWnd_, x, y, width, height, TRUE);}
@@ -51,7 +51,7 @@ namespace gstd
 			DWORD RemoveWindowStyle(DWORD style){DWORD prev = GetCurrentWindowStyle(); DWORD next = prev& ~style;::SetWindowLong( hWnd_, GWL_STYLE, next );return next;}
 			DWORD GetCurrentWindowStyle(){return GetWindowLong( hWnd_, GWL_STYLE );}
 
-			virtual void LocateParts(){}//‰æ–Ê•”•i”z’u
+			virtual void LocateParts(){}//ç”»é¢éƒ¨å“é…ç½®
 			void MoveWindowCenter();
 
 			static HWND GetTopParentWindow(HWND hWnd);
@@ -95,7 +95,7 @@ namespace gstd
 	class WPanel : public WindowBase
 	{
 		protected:
-			virtual LRESULT _WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);//ƒI[ƒo[ƒ‰ƒCƒh—pƒvƒƒV[ƒWƒƒ
+			virtual LRESULT _WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);//ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ç”¨ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 		public:
 			void Create(HWND hWndParent);
 	};

@@ -149,10 +149,10 @@ void StgStageScriptObjectManager::RenderObject(int priMin, int priMax)
 	focusPos.x -= stgWidth / 2;
 	focusPos.y -= stgHeight / 2;
 
-	//ƒtƒHƒOİ’è
+	//ãƒ•ã‚©ã‚°è¨­å®š
 	graphics->SetVertexFog(bFogEnable_, fogColor_, fogStart_, fogEnd_);
 
-	//•`‰æŠJn‘OƒŠƒZƒbƒg
+	//æç”»é–‹å§‹å‰ãƒªã‚»ãƒƒãƒˆ
 	camera2D->SetEnable(false);
 	camera2D->Reset();
 	graphics->ResetViewPort();	
@@ -166,7 +166,7 @@ void StgStageScriptObjectManager::RenderObject(int priMin, int priMax)
 
 		if(iPri >= priMinStgFrame && !bRunMinStgFrame)
 		{
-			//STGƒtƒŒ[ƒ€ŠJn
+			//STGãƒ•ãƒ¬ãƒ¼ãƒ é–‹å§‹
 			graphics->ClearRenderTarget(rcStgFrame);
 			camera2D->SetEnable(true);
 			camera2D->SetRatio(focusRatio);
@@ -182,12 +182,12 @@ void StgStageScriptObjectManager::RenderObject(int priMin, int priMax)
 		}
 		if(iPri == priShot)
 		{
-			//’e•`‰æ
+			//å¼¾æç”»
 			stageController_->GetShotManager()->Render();
 		}
 		if(iPri == priItem)
 		{
-			//ƒAƒCƒeƒ€•`‰æ
+			//ã‚¢ã‚¤ãƒ†ãƒ æç”»
 			stageController_->GetItemManager()->Render();
 		}
 
@@ -218,7 +218,7 @@ void StgStageScriptObjectManager::RenderObject(int priMin, int priMax)
 		}
 		if(iPri >= priMaxStgFrame && !bRunMaxStgFrame)
 		{
-			//STGƒtƒŒ[ƒ€I—¹
+			//STGãƒ•ãƒ¬ãƒ¼ãƒ çµ‚äº†
 			camera2D->SetEnable(false);
 			camera2D->Reset();
 			graphics->ResetViewPort();
@@ -233,7 +233,7 @@ void StgStageScriptObjectManager::RenderObject(int priMin, int priMax)
 }
 int StgStageScriptObjectManager::CreatePlayerObject()
 {
-	//©‹@ƒIƒuƒWƒFƒNƒg¶¬
+	//è‡ªæ©Ÿã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
 	ref_count_ptr<StgPlayerObject>::unsync objPlayer = new StgPlayerObject(stageController_);
 	idObjPleyer_ = AddObject(objPlayer);
 	return idObjPleyer_;
@@ -245,11 +245,11 @@ int StgStageScriptObjectManager::CreatePlayerObject()
 **********************************************************/
 function const stgFunction[] =  
 {
-	//STG‹¤’ÊŠÖ”F‹¤’Êƒf[ƒ^
+	//STGå…±é€šé–¢æ•°ï¼šå…±é€šãƒ‡ãƒ¼ã‚¿
 	{"SaveCommonDataAreaToReplayFile", StgStageScript::Func_SaveCommonDataAreaToReplayFile, 1},
 	{"LoadCommonDataAreaFromReplayFile", StgStageScript::Func_LoadCommonDataAreaFromReplayFile, 1},
 
-	//STG‹¤’ÊŠÖ”FƒVƒXƒeƒ€ŠÖ˜A
+	//STGå…±é€šé–¢æ•°ï¼šã‚·ã‚¹ãƒ†ãƒ é–¢é€£
 	{"GetMainStgScriptPath", StgStageScript::Func_GetMainStgScriptPath, 0},
 	{"GetMainStgScriptDirectory", StgStageScript::Func_GetMainStgScriptDirectory, 0},
 	{"SetStgFrame", StgStageScript::Func_SetStgFrame, 6},
@@ -264,7 +264,7 @@ function const stgFunction[] =
 	{"CloseStgScene", StgStageScript::Func_CloseStgScene, 0},
 	{"GetReplayFps", StgStageScript::Func_GetReplayFps, 0},
 
-	//STG‹¤’ÊŠÖ”F©‹@
+	//STGå…±é€šé–¢æ•°ï¼šè‡ªæ©Ÿ
 	{"GetPlayerObjectID", StgStageScript::Func_GetPlayerObjectID, 0},
 	{"SetPlayerSpeed", StgStageScript::Func_SetPlayerSpeed, 2},
 	{"SetPlayerClip", StgStageScript::Func_SetPlayerClip, 4},
@@ -296,7 +296,7 @@ function const stgFunction[] =
 	{"IsPlayerSpellActive", StgStageScript::Func_IsPlayerSpellActive, 0},
 	{"GetPlayerScriptID", StgStageScript::Func_GetPlayerScriptID, 0},
 
-	//STG‹¤’ÊŠÖ”F“G
+	//STGå…±é€šé–¢æ•°ï¼šæ•µ
 	{"GetEnemyBossSceneObjectID", StgStageScript::Func_GetEnemyBossSceneObjectID, 0},
 	{"GetEnemyBossObjectID", StgStageScript::Func_GetEnemyBossObjectID, 0},
 	{"GetAllEnemyID", StgStageScript::Func_GetAllEnemyID, 0},
@@ -308,7 +308,7 @@ function const stgFunction[] =
 	{"LoadEnemyShotData", StgStageScript::Func_LoadEnemyShotData, 1},
 	{"ReloadEnemyShotData", StgStageScript::Func_ReloadEnemyShotData, 1},
 
-	//STG‹¤’ÊŠÖ”F’e
+	//STGå…±é€šé–¢æ•°ï¼šå¼¾
 	{"DeleteShotAll", StgStageScript::Func_DeleteShotAll, 2},
 	{"DeleteShotInCircle", StgStageScript::Func_DeleteShotInCircle, 5},
 	{"CreateShotA1", StgStageScript::Func_CreateShotA1, 6},
@@ -330,7 +330,7 @@ function const stgFunction[] =
 	{"GetShotDataInfoA1", StgStageScript::Func_GetShotDataInfoA1, 3},
 	{"StartShotScript", StgStageScript::Func_StartShotScript, 1},
 
-	//STG‹¤’ÊŠÖ”FƒAƒCƒeƒ€
+	//STGå…±é€šé–¢æ•°ï¼šã‚¢ã‚¤ãƒ†ãƒ 
 	{"CreateItemA1", StgStageScript::Func_CreateItemA1, 4},
 	{"CreateItemA2", StgStageScript::Func_CreateItemA2, 6},
 	{"CreateItemU1", StgStageScript::Func_CreateItemU1, 4},
@@ -345,13 +345,13 @@ function const stgFunction[] =
 	{"LoadItemData", StgStageScript::Func_LoadItemData, 1},
 	{"ReloadItemData", StgStageScript::Func_ReloadItemData, 1},
 
-	//STG‹¤’ÊŠÖ”F‚»‚Ì‘¼
+	//STGå…±é€šé–¢æ•°ï¼šãã®ä»–
 	{"StartSlow", StgStageScript::Func_StartSlow, 2},
 	{"StopSlow", StgStageScript::Func_StopSlow, 1},
 	{"IsIntersected_Line_Circle", StgStageScript::Func_IsIntersected_Line_Circle, 8},
 	{"IsIntersected_Obj_Obj", StgStageScript::Func_IsIntersected_Obj_Obj, 2},
 
-	//STG‹¤’ÊŠÖ”FˆÚ“®ƒIƒuƒWƒFƒNƒg‘€ì
+	//STGå…±é€šé–¢æ•°ï¼šç§»å‹•ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 	{"ObjMove_SetX", StgStageScript::Func_ObjMove_SetX, 2},
 	{"ObjMove_SetY", StgStageScript::Func_ObjMove_SetY, 2},
 	{"ObjMove_SetPosition", StgStageScript::Func_ObjMove_SetPosition, 3},
@@ -375,7 +375,7 @@ function const stgFunction[] =
 	{"ObjMove_GetSpeed", StgStageScript::Func_ObjMove_GetSpeed, 1},
 	{"ObjMove_GetAngle", StgStageScript::Func_ObjMove_GetAngle, 1},
 
-	//STG‹¤’ÊŠÖ”F“GƒIƒuƒWƒFƒNƒg‘€ì
+	//STGå…±é€šé–¢æ•°ï¼šæ•µã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 	{"ObjEnemy_Create", StgStageScript::Func_ObjEnemy_Create, 1},
 	{"ObjEnemy_Regist", StgStageScript::Func_ObjEnemy_Regist, 1},
 	{"ObjEnemy_GetInfo", StgStageScript::Func_ObjEnemy_GetInfo, 2},
@@ -386,7 +386,7 @@ function const stgFunction[] =
 	{"ObjEnemy_SetIntersectionCircleToShot", StgStageScript::Func_ObjEnemy_SetIntersectionCircleToShot, 4},
 	{"ObjEnemy_SetIntersectionCircleToPlayer", StgStageScript::Func_ObjEnemy_SetIntersectionCircleToPlayer, 4},
 
-	//STG‹¤’ÊŠÖ”F“Gƒ{ƒXƒV[ƒ“ƒIƒuƒWƒFƒNƒg‘€ì
+	//STGå…±é€šé–¢æ•°ï¼šæ•µãƒœã‚¹ã‚·ãƒ¼ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 	{"ObjEnemyBossScene_Create", StgStageScript::Func_ObjEnemyBossScene_Create, 0},
 	{"ObjEnemyBossScene_Regist", StgStageScript::Func_ObjEnemyBossScene_Regist, 1},
 	{"ObjEnemyBossScene_Add", StgStageScript::Func_ObjEnemyBossScene_Add, 3},
@@ -395,7 +395,7 @@ function const stgFunction[] =
 	{"ObjEnemyBossScene_SetSpellTimer", StgStageScript::Func_ObjEnemyBossScene_SetSpellTimer, 2},
 	{"ObjEnemyBossScene_StartSpell", StgStageScript::Func_ObjEnemyBossScene_StartSpell, 1},
 
-	//STG‹¤’ÊŠÖ”F’eƒIƒuƒWƒFƒNƒg‘€ì
+	//STGå…±é€šé–¢æ•°ï¼šå¼¾ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 	{"ObjShot_Create", StgStageScript::Func_ObjShot_Create, 1},
 	{"ObjShot_Regist", StgStageScript::Func_ObjShot_Regist, 1},
 	{"ObjShot_SetAutoDelete", StgStageScript::Func_ObjShot_SetAutoDelete, 2},
@@ -437,7 +437,7 @@ function const stgFunction[] =
 	{"ObjStLaser_SetSource", StgStageScript::Func_ObjStLaser_SetSource, 2},
 	{"ObjCrLaser_SetTipDecrement", StgStageScript::Func_ObjCrLaser_SetTipDecrement, 2},
 
-	//STG‹¤’ÊŠÖ”FƒAƒCƒeƒ€ƒIƒuƒWƒFƒNƒg‘€ì
+	//STGå…±é€šé–¢æ•°ï¼šã‚¢ã‚¤ãƒ†ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 	{"ObjItem_Create", StgStageScript::Func_ObjItem_Create, 1},
 	{"ObjItem_Regist", StgStageScript::Func_ObjItem_Regist, 1},
 	{"ObjItem_SetItemID", StgStageScript::Func_ObjItem_SetItemID, 2},
@@ -446,17 +446,17 @@ function const stgFunction[] =
 	{"ObjItem_SetDefinedMovePatternA1", StgStageScript::Func_ObjItem_SetDefinedMovePatternA1, 2},
 	{"ObjItem_GetInfo", StgStageScript::Func_ObjItem_GetInfo, 2},
 
-	//STG‹¤’ÊŠÖ”F©‹@ƒIƒuƒWƒFƒNƒg‘€ì
+	//STGå…±é€šé–¢æ•°ï¼šè‡ªæ©Ÿã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 	{"ObjPlayer_AddIntersectionCircleA1", StgStageScript::Func_ObjPlayer_AddIntersectionCircleA1, 5},
 	{"ObjPlayer_AddIntersectionCircleA2", StgStageScript::Func_ObjPlayer_AddIntersectionCircleA2, 4},
 	{"ObjPlayer_ClearIntersection", StgStageScript::Func_ObjPlayer_ClearIntersection, 1},
 
-	//STG‹¤’ÊŠÖ”F“–‚½‚è”»’èƒIƒuƒWƒFƒNƒg‘€ì
+	//STGå…±é€šé–¢æ•°ï¼šå½“ãŸã‚Šåˆ¤å®šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 	{"ObjCol_IsIntersected", StgStageScript::Func_ObjCol_IsIntersected, 1},
 	{"ObjCol_GetListOfIntersectedEnemyID", StgStageScript::Func_ObjCol_GetListOfIntersectedEnemyID, 1},
 	{"ObjCol_GetIntersectedCount", StgStageScript::Func_ObjCol_GetIntersectedCount, 1},
 
-	//’è”
+	//å®šæ•°
 	{"SCREEN_WIDTH", constant<640>::func, 0},
 	{"SCREEN_HEIGHT", constant<480>::func, 0},
 	{"TYPE_ALL", constant<StgStageScript::TYPE_ALL>::func, 0},
@@ -578,7 +578,7 @@ ref_count_ptr<StgStageScriptObjectManager> StgStageScript::GetStgObjectManager()
 }
 
 
-//STG§Œä‹¤’ÊŠÖ”F‹¤’Êƒf[ƒ^
+//STGåˆ¶å¾¡å…±é€šé–¢æ•°ï¼šå…±é€šãƒ‡ãƒ¼ã‚¿
 gstd::value StgStageScript::Func_SaveCommonDataAreaToReplayFile(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -624,7 +624,7 @@ gstd::value StgStageScript::Func_LoadCommonDataAreaFromReplayFile(gstd::script_m
 	return value(machine->get_engine()->get_boolean_type(), true);
 }
 
-//STG‹¤’ÊŠÖ”FƒVƒXƒeƒ€ŠÖ˜A
+//STGå…±é€šé–¢æ•°ï¼šã‚·ã‚¹ãƒ†ãƒ é–¢é€£
 gstd::value StgStageScript::Func_GetMainStgScriptPath(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -772,7 +772,7 @@ gstd::value StgStageScript::Func_GetReplayFps(gstd::script_machine* machine, int
 	return value(machine->get_engine()->get_real_type(), (long double)fps);
 }
 
-//STG‹¤’ÊŠÖ”F©‹@
+//STGå…±é€šé–¢æ•°ï¼šè‡ªæ©Ÿ
 gstd::value StgStageScript::Func_GetPlayerObjectID(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -1102,7 +1102,7 @@ gstd::value StgStageScript::Func_IsPlayerSpellActive(gstd::script_machine* machi
 }
 
 
-//STG‹¤’ÊŠÖ”F“G
+//STGå…±é€šé–¢æ•°ï¼šæ•µ
 gstd::value StgStageScript::Func_GetEnemyBossSceneObjectID(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -1288,9 +1288,9 @@ gstd::value StgStageScript::Func_GetEnemyIntersectionPosition(gstd::script_machi
 }
 gstd::value StgStageScript::Func_GetEnemyIntersectionPositionByIdA1(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
-	//ˆø”1i“GƒIƒuƒWƒFƒNƒgIDj©‹@‚©‚ç‚àƒAƒNƒZƒX‰Â”\
-	//w’è‚µ‚½“GƒIƒuƒWƒFƒNƒgID‚ª‚Â©‹@ƒVƒ‡ƒbƒg‚Ö‚Ì“–‚½‚è”»’èˆÊ’u‚ğ‘S‚Äæ“¾
-	//“ñŸŒ³”z—ñ‚ª•Ô‚éB([<ƒCƒ“ƒfƒbƒNƒX>][<0:xÀ•W, 1:yÀ•W>])@”z—ñ‚Ì0”Ô–Ú‚ªÅ‚à“G–{‘Ì‚ÌÀ•W‚É‹ß‚¢
+	//å¼•æ•°1ï¼ˆæ•µã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆIDï¼‰è‡ªæ©Ÿã‹ã‚‰ã‚‚ã‚¢ã‚¯ã‚»ã‚¹å¯èƒ½
+	//æŒ‡å®šã—ãŸæ•µã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆIDãŒæŒã¤è‡ªæ©Ÿã‚·ãƒ§ãƒƒãƒˆã¸ã®å½“ãŸã‚Šåˆ¤å®šä½ç½®ã‚’å…¨ã¦å–å¾—
+	//äºŒæ¬¡å…ƒé…åˆ—ãŒè¿”ã‚‹ã€‚([<ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹>][<0:xåº§æ¨™, 1:yåº§æ¨™>])ã€€é…åˆ—ã®0ç•ªç›®ãŒæœ€ã‚‚æ•µæœ¬ä½“ã®åº§æ¨™ã«è¿‘ã„
 	StgStageScript* script = (StgStageScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	StgEnemyObject* obj = dynamic_cast<StgEnemyObject*>(script->GetObjectPointer(id));
@@ -1330,9 +1330,9 @@ gstd::value StgStageScript::Func_GetEnemyIntersectionPositionByIdA1(gstd::script
 }
 gstd::value StgStageScript::Func_GetEnemyIntersectionPositionByIdA2(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
-	//ˆø”3i“GƒIƒuƒWƒFƒNƒgIDExÀ•WEyÀ•Wj©‹@‚©‚ç‚àƒAƒNƒZƒX‰Â”\
-	//w’è‚µ‚½“GƒIƒuƒWƒFƒNƒgID‚ª‚ÂA©‹@ƒVƒ‡ƒbƒg‚Ö‚Ì“–‚½‚è”»’è‚Ì‚¤‚¿Aw’èÀ•W‚ÉÅ‚à‹ß‚¢1‚Â‚ğæ“¾
-	//”z—ñ‚ª•Ô‚éB([<0:xÀ•W, 1:yÀ•W>])
+	//å¼•æ•°3ï¼ˆæ•µã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆIDãƒ»xåº§æ¨™ãƒ»yåº§æ¨™ï¼‰è‡ªæ©Ÿã‹ã‚‰ã‚‚ã‚¢ã‚¯ã‚»ã‚¹å¯èƒ½
+	//æŒ‡å®šã—ãŸæ•µã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆIDãŒæŒã¤ã€è‡ªæ©Ÿã‚·ãƒ§ãƒƒãƒˆã¸ã®å½“ãŸã‚Šåˆ¤å®šã®ã†ã¡ã€æŒ‡å®šåº§æ¨™ã«æœ€ã‚‚è¿‘ã„1ã¤ã‚’å–å¾—
+	//é…åˆ—ãŒè¿”ã‚‹ã€‚([<0:xåº§æ¨™, 1:yåº§æ¨™>])
 
 	StgStageScript* script = (StgStageScript*)machine->data;
 	int id = (int)argv[0].as_real();
@@ -1399,7 +1399,7 @@ gstd::value StgStageScript::Func_ReloadEnemyShotData(gstd::script_machine* machi
 	return value(machine->get_engine()->get_boolean_type(), res);
 }
 
-//STG‹¤’ÊŠÖ”F’e
+//STGå…±é€šé–¢æ•°ï¼šå¼¾
 gstd::value StgStageScript::Func_DeleteShotAll(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -1798,7 +1798,7 @@ gstd::value StgStageScript::Func_SetShotIntersectionCircle(gstd::script_machine*
 	int radius = (int)argv[2].as_real();
 	DxCircle circle(px, py, radius);
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_ptr<StgIntersectionTarget_Circle>::unsync target = 
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_CIRCLE));
 	target->SetTargetType(typeTarget);
@@ -1824,7 +1824,7 @@ gstd::value StgStageScript::Func_SetShotIntersectionLine(gstd::script_machine* m
 	int width = (int)argv[4].as_real();
 	DxWidthLine line(px1, py1, px2, py2, width);
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_ptr<StgIntersectionTarget_Line>::unsync target = 
 		ref_count_ptr<StgIntersectionTarget_Line>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_LINE));
 	target->SetTargetType(typeTarget);
@@ -2024,7 +2024,7 @@ gstd::value StgStageScript::Func_StartShotScript(gstd::script_machine* machine, 
 	return value();
 }
 
-//STG‹¤’ÊŠÖ”FƒAƒCƒeƒ€
+//STGå…±é€šé–¢æ•°ï¼šã‚¢ã‚¤ãƒ†ãƒ 
 gstd::value StgStageScript::Func_CreateItemA1(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -2242,7 +2242,7 @@ gstd::value StgStageScript::Func_ReloadItemData(gstd::script_machine* machine, i
 	return value(machine->get_engine()->get_boolean_type(), res);
 }
 
-//STG‹¤’ÊŠÖ”F‚»‚Ì‘¼
+//STGå…±é€šé–¢æ•°ï¼šãã®ä»–
 gstd::value StgStageScript::Func_StartSlow(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -2326,7 +2326,7 @@ gstd::value StgStageScript::Func_IsIntersected_Obj_Obj(gstd::script_machine* mac
 }
 
 
-//STD‹¤’ÊŠÖ”FˆÚ“®ƒIƒuƒWƒFƒNƒg‘€ì
+//STDå…±é€šé–¢æ•°ï¼šç§»å‹•ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 gstd::value StgStageScript::Func_ObjMove_SetX(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -2715,7 +2715,7 @@ gstd::value StgStageScript::Func_ObjMove_GetAngle(gstd::script_machine* machine,
 	return value(machine->get_engine()->get_real_type(),(long double)angle);
 }
 
-//STG‹¤’ÊŠÖ”F“GƒIƒuƒWƒFƒNƒg‘€ì
+//STGå…±é€šé–¢æ•°ï¼šæ•µã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 gstd::value StgStageScript::Func_ObjEnemy_Create(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -2733,7 +2733,7 @@ gstd::value StgStageScript::Func_ObjEnemy_Create(gstd::script_machine* machine, 
 		ref_count_ptr<StgEnemyBossSceneObject>::unsync objScene = enemyManager->GetBossSceneObject();
 		if(objScene == NULL)
 		{
-			throw gstd::wexception(L"EnemyBossScene‚ªì¬‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+			throw gstd::wexception(L"EnemyBossSceneãŒä½œæˆã•ã‚Œã¦ã„ã¾ã›ã‚“");
 		}
 		
 		ref_count_ptr<StgEnemyBossSceneData>::unsync data = objScene->GetActiveData();
@@ -2857,7 +2857,7 @@ gstd::value StgStageScript::Func_ObjEnemy_AddIntersectionCircleA(gstd::script_ma
 
 	DxCircle circle(px, py, radius);
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_weak_ptr<StgEnemyObject>::unsync wObj = obj;
 	ref_count_ptr<StgIntersectionTarget_Circle>::unsync target = 
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_CIRCLE));
@@ -2885,7 +2885,7 @@ gstd::value StgStageScript::Func_ObjEnemy_SetIntersectionCircleToShot(gstd::scri
 
 	DxCircle circle(px, py, radius);
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_weak_ptr<StgEnemyObject>::unsync wObj = obj;
 	ref_count_ptr<StgIntersectionTarget_Circle>::unsync target = 
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_CIRCLE));
@@ -2913,7 +2913,7 @@ gstd::value StgStageScript::Func_ObjEnemy_SetIntersectionCircleToPlayer(gstd::sc
 
 	DxCircle circle(px, py, radius);
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_weak_ptr<StgEnemyObject>::unsync wObj = obj;
 	ref_count_ptr<StgIntersectionTarget_Circle>::unsync target = 
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_CIRCLE));
@@ -2925,7 +2925,7 @@ gstd::value StgStageScript::Func_ObjEnemy_SetIntersectionCircleToPlayer(gstd::sc
 	return value();
 }
 
-//STG‹¤’ÊŠÖ”F“Gƒ{ƒXƒV[ƒ“ƒIƒuƒWƒFƒNƒg‘€ì
+//STGå…±é€šé–¢æ•°ï¼šæ•µãƒœã‚¹ã‚·ãƒ¼ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 gstd::value StgStageScript::Func_ObjEnemyBossScene_Create(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -3178,7 +3178,7 @@ gstd::value StgStageScript::Func_ObjEnemyBossScene_StartSpell(gstd::script_machi
 	return value();
 }
 
-//STG‹¤’ÊŠÖ”F’eƒIƒuƒWƒFƒNƒg‘€ì
+//STGå…±é€šé–¢æ•°ï¼šå¼¾ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 gstd::value StgStageScript::Func_ObjShot_Create(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -3442,7 +3442,7 @@ gstd::value StgStageScript::Func_ObjShot_SetIntersectionCircleA1(gstd::script_ma
 	DxCircle circle(px, py, radius);
 	ref_count_weak_ptr<StgShotObject>::unsync wObj = obj;
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_ptr<StgIntersectionTarget_Circle>::unsync target = 
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_CIRCLE));
 	target->SetTargetType(typeTarget);
@@ -3473,7 +3473,7 @@ gstd::value StgStageScript::Func_ObjShot_SetIntersectionCircleA2(gstd::script_ma
 	DxCircle circle(px, py, radius);
 	ref_count_weak_ptr<StgShotObject>::unsync wObj = obj;
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_ptr<StgIntersectionTarget_Circle>::unsync target = 
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_CIRCLE));
 	target->SetTargetType(typeTarget);
@@ -3506,7 +3506,7 @@ gstd::value StgStageScript::Func_ObjShot_SetIntersectionLine(gstd::script_machin
 	int width = (int)argv[5].as_real();
 	DxWidthLine line(px1, py1, px2, py2, width);
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_weak_ptr<StgShotObject>::unsync wObjShot = obj;
 	ref_count_ptr<StgIntersectionTarget_Line>::unsync target = 
 		ref_count_ptr<StgIntersectionTarget_Line>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_LINE));
@@ -3755,7 +3755,7 @@ gstd::value StgStageScript::Func_ObjCrLaser_SetTipDecrement(gstd::script_machine
 	return value();
 }
 
-//STG‹¤’ÊŠÖ”FƒAƒCƒeƒ€ƒIƒuƒWƒFƒNƒg‘€ì
+//STGå…±é€šé–¢æ•°ï¼šã‚¢ã‚¤ãƒ†ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 gstd::value StgStageScript::Func_ObjItem_Create(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -3873,7 +3873,7 @@ gstd::value StgStageScript::Func_ObjItem_GetInfo(gstd::script_machine* machine, 
 	return value();
 }
 
-//STG‹¤’ÊŠÖ”F©‹@ƒIƒuƒWƒFƒNƒg‘€ì
+//STGå…±é€šé–¢æ•°ï¼šè‡ªæ©Ÿã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 gstd::value StgStageScript::Func_ObjPlayer_AddIntersectionCircleA1(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -3889,14 +3889,14 @@ gstd::value StgStageScript::Func_ObjPlayer_AddIntersectionCircleA1(gstd::script_
 
 	DxCircle circle(px, py, rHit);
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_weak_ptr<StgPlayerObject>::unsync wObj = obj;
 	ref_count_ptr<StgIntersectionTarget_Player>::unsync targetHit = new StgIntersectionTarget_Player(false);
 	targetHit->SetObject(wObj);
 	targetHit->SetCircle(circle);
 	obj->AddIntersectionRelativeTarget(targetHit);
 
-	//Graze”»’è
+	//Grazeåˆ¤å®š
 	circle.SetR(rHit + rGraze);
 	ref_count_ptr<StgIntersectionTarget_Player>::unsync targetGraze = new StgIntersectionTarget_Player(true);
 	targetGraze->SetObject(wObj);
@@ -3919,7 +3919,7 @@ gstd::value StgStageScript::Func_ObjPlayer_AddIntersectionCircleA2(gstd::script_
 
 	DxCircle circle(px, py, 0);
 
-	//Graze”»’è
+	//Grazeåˆ¤å®š
 	ref_count_weak_ptr<StgPlayerObject>::unsync wObj = obj;
 	circle.SetR(rGraze);
 	ref_count_ptr<StgIntersectionTarget_Player>::unsync targetGraze = new StgIntersectionTarget_Player(true);
@@ -3941,7 +3941,7 @@ gstd::value StgStageScript::Func_ObjPlayer_ClearIntersection(gstd::script_machin
 	return value();
 }
 
-//STG‹¤’ÊŠÖ”F“–‚½‚è”»’èƒIƒuƒWƒFƒNƒg‘€ì
+//STGå…±é€šé–¢æ•°ï¼šå½“ãŸã‚Šåˆ¤å®šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 gstd::value StgStageScript::Func_ObjCol_IsIntersected(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -4000,10 +4000,10 @@ gstd::value StgStageScript::Func_ObjCol_GetIntersectedCount(gstd::script_machine
 **********************************************************/
 function const stgSystemFunction[] =  
 {
-	//ŠÖ”F
+	//é–¢æ•°ï¼š
 
 
-	//’è”
+	//å®šæ•°
 	{"__stgSystemFunction__",constant<0>::func, 0},
 };
 StgStageSystemScript::StgStageSystemScript(StgStageController* stageController) : StgStageScript(stageController)
@@ -4020,7 +4020,7 @@ StgStageSystemScript::~StgStageSystemScript()
 **********************************************************/
 function const stgItemFunction[] =  
 {
-	//’è”
+	//å®šæ•°
 	{"EV_GET_ITEM", constant<StgStageItemScript::EV_GET_ITEM>::func, 0},
 	{"EV_DELETE_SHOT_TO_ITEM", constant<StgStageItemScript::EV_DELETE_SHOT_TO_ITEM>::func, 0},
 
@@ -4040,7 +4040,7 @@ StgStageItemScript::~StgStageItemScript()
 **********************************************************/
 function const stgShotFunction[] =  
 {
-	//’è”
+	//å®šæ•°
 	{"EV_DELETE_SHOT_IMMEDIATE", constant<StgStageScript::EV_DELETE_SHOT_IMMEDIATE>::func, 0},
 	{"EV_DELETE_SHOT_TO_ITEM", constant<StgStageScript::EV_DELETE_SHOT_TO_ITEM>::func, 0},
 	{"EV_DELETE_SHOT_FADE", constant<StgStageScript::EV_DELETE_SHOT_FADE>::func, 0},
@@ -4074,14 +4074,14 @@ gstd::value StgStageShotScript::Func_SetShotDeleteEventEnable(gstd::script_machi
 **********************************************************/
 function const stgPlayerFunction[] =  
 {
-	//ŠÖ”F
+	//é–¢æ•°ï¼š
 	{"CreatePlayerShotA1", StgStagePlayerScript::Func_CreatePlayerShotA1, 7},
 	{"CallSpell", StgStagePlayerScript::Func_CallSpell, 0},
 	{"LoadPlayerShotData", StgStagePlayerScript::Func_LoadPlayerShotData, 1},
 	{"ReloadPlayerShotData", StgStagePlayerScript::Func_ReloadPlayerShotData, 1},
 	{"GetSpellManageObject", StgStagePlayerScript::Func_GetSpellManageObject, 0},
 
-	//©‹@ê—pŠÖ”FƒXƒyƒ‹ƒIƒuƒWƒFƒNƒg‘€ì
+	//è‡ªæ©Ÿå°‚ç”¨é–¢æ•°ï¼šã‚¹ãƒšãƒ«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 	{"ObjSpell_Create", StgStagePlayerScript::Func_ObjSpell_Create, 0},
 	{"ObjSpell_Regist", StgStagePlayerScript::Func_ObjSpell_Regist, 1},
 	{"ObjSpell_SetDamage", StgStagePlayerScript::Func_ObjSpell_SetDamage, 2},
@@ -4090,7 +4090,7 @@ function const stgPlayerFunction[] =
 	{"ObjSpell_SetIntersectionCircle", StgStagePlayerScript::Func_ObjSpell_SetIntersectionCircle, 4},
 	{"ObjSpell_SetIntersectionLine", StgStagePlayerScript::Func_ObjSpell_SetIntersectionLine, 6},
 
-	//’è”
+	//å®šæ•°
 	{"EV_REQUEST_SPELL", constant<StgStagePlayerScript::EV_REQUEST_SPELL>::func, 0},
 	{"EV_GRAZE", constant<StgStagePlayerScript::EV_GRAZE>::func, 0},
 	{"EV_HIT", constant<StgStagePlayerScript::EV_HIT>::func, 0},
@@ -4106,7 +4106,7 @@ StgStagePlayerScript::~StgStagePlayerScript()
 {
 }
 
-//©‹@ê—pŠÖ”
+//è‡ªæ©Ÿå°‚ç”¨é–¢æ•°
 gstd::value StgStagePlayerScript::Func_CreatePlayerShotA1(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStagePlayerScript* script = (StgStagePlayerScript*)machine->data;
@@ -4195,7 +4195,7 @@ gstd::value StgStagePlayerScript::Func_GetSpellManageObject(gstd::script_machine
 	return value(machine->get_engine()->get_real_type(), (long double)id);
 }
 
-//©‹@ê—pŠÖ”FƒXƒyƒ‹ƒIƒuƒWƒFƒNƒg‘€ì
+//è‡ªæ©Ÿå°‚ç”¨é–¢æ•°ï¼šã‚¹ãƒšãƒ«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ
 gstd::value StgStagePlayerScript::Func_ObjSpell_Create(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	StgStagePlayerScript* script = (StgStagePlayerScript*)machine->data;
@@ -4286,7 +4286,7 @@ gstd::value StgStagePlayerScript::Func_ObjSpell_SetIntersectionCircle(gstd::scri
 	int radius = (int)argv[3].as_real();
 	DxCircle circle(px, py, radius);
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_weak_ptr<StgPlayerSpellObject>::unsync wObjSpell = objSpell;
 	ref_count_ptr<StgIntersectionTarget_Circle>::unsync target = 
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_CIRCLE));
@@ -4317,7 +4317,7 @@ gstd::value StgStagePlayerScript::Func_ObjSpell_SetIntersectionLine(gstd::script
 	int width = (int)argv[5].as_real();
 	DxWidthLine line(px1, py1, px2, py2, width);
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	ref_count_weak_ptr<StgPlayerSpellObject>::unsync wObjSpell = objSpell;
 	ref_count_ptr<StgIntersectionTarget_Line>::unsync target = 
 		ref_count_ptr<StgIntersectionTarget_Line>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_LINE));

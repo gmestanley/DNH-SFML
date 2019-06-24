@@ -40,11 +40,11 @@ namespace directx
 		friend MetasequoiaMeshData;
 		friend MetasequoiaMeshData::RenderObject;
 		protected:
-			std::wstring name_;//Ş¿–¼
+			std::wstring name_;//æè³ªå
 			D3DMATERIAL9 mat_;
-			gstd::ref_count_ptr<Texture> texture_;//–Í—lƒ}ƒbƒsƒ“ƒO ‘Š‘ÎƒpƒX
-			std::string pathTextureAlpha_;//“§–¾ƒ}ƒbƒsƒ“ƒO‚Ì–¼‘O ‘Š‘ÎƒpƒX(–¢g—p)
-			std::string pathTextureBump_;//‰š“Êƒ}ƒbƒsƒ“ƒO‚Ì–¼‘O ‘Š‘ÎƒpƒX(–¢g—p)
+			gstd::ref_count_ptr<Texture> texture_;//æ¨¡æ§˜ãƒãƒƒãƒ”ãƒ³ã‚° ç›¸å¯¾ãƒ‘ã‚¹
+			std::string pathTextureAlpha_;//é€æ˜ãƒãƒƒãƒ”ãƒ³ã‚°ã®åå‰ ç›¸å¯¾ãƒ‘ã‚¹(æœªä½¿ç”¨)
+			std::string pathTextureBump_;//å‡¹å‡¸ãƒãƒƒãƒ”ãƒ³ã‚°ã®åå‰ ç›¸å¯¾ãƒ‘ã‚¹(æœªä½¿ç”¨)
 
 		public:
 			Material(){ZeroMemory(&mat_, sizeof(D3DMATERIAL9));};
@@ -57,20 +57,20 @@ namespace directx
 		protected:	
 			struct Face
 			{
-				//–Ê‚Ì’¸“_
+				//é¢ã®é ‚ç‚¹
 				struct Vertex
 				{
-					long indexVertex_;//’¸“_‚ÌƒCƒ“ƒfƒbƒNƒX
-					D3DXVECTOR2 tcoord_;//ƒeƒNƒXƒ`ƒƒ‚ÌÀ•W
+					long indexVertex_;//é ‚ç‚¹ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+					D3DXVECTOR2 tcoord_;//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åº§æ¨™
 				};
-				long indexMaterial_;//ƒ}ƒeƒŠƒAƒ‹‚ÌƒCƒ“ƒfƒbƒNƒX
-				std::vector<Vertex> vertices_;//–Ê‚Ì’¸“_
+				long indexMaterial_;//ãƒãƒ†ãƒªã‚¢ãƒ«ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+				std::vector<Vertex> vertices_;//é¢ã®é ‚ç‚¹
 				Face(){indexMaterial_ = -1;}
 			};
 			bool bVisible_;
-			std::wstring name_;//ƒIƒuƒWƒFƒNƒg–¼
-			std::vector<D3DXVECTOR3> vertices_;//’¸“_‚½‚¿
-			std::vector<Face> faces_;//–Ê‚½‚¿
+			std::wstring name_;//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå
+			std::vector<D3DXVECTOR3> vertices_;//é ‚ç‚¹ãŸã¡
+			std::vector<Face> faces_;//é¢ãŸã¡
 		public:
 			Object(){};
 			virtual ~Object(){};

@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// ì˙ñ{åÍ resources
+// Êó•Êú¨Ë™û resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 #ifdef _WIN32
@@ -70,7 +70,7 @@ IDD_DIALOG_MAIN DIALOG DISCARDABLE  0, 0, 269, 209
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dnh Config ph3"
 MENU IDR_MENU_MAIN
-FONT 9, "ÇlÇr ÇoÉSÉVÉbÉN"
+FONT 9, "Ôº≠Ôº≥ Ôº∞„Ç¥„Ç∑„ÉÉ„ÇØ"
 BEGIN
     PUSHBUTTON      "OK",IDOK,156,190,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,212,190,50,14
@@ -80,7 +80,7 @@ END
 
 IDD_PANEL_DEVICE DIALOG DISCARDABLE  0, 0, 195, 96
 STYLE WS_CHILD
-FONT 9, "ÇlÇr ÇoÉSÉVÉbÉN"
+FONT 9, "Ôº≠Ôº≥ Ôº∞„Ç¥„Ç∑„ÉÉ„ÇØ"
 BEGIN
     GROUPBOX        "Window Style",IDC_STATIC,6,3,117,24
     CONTROL         "Full Screen",IDC_RADIO_FULLSCREEN,"Button",
@@ -90,20 +90,20 @@ BEGIN
     GROUPBOX        "Window Size",IDC_STATIC,6,32,117,29
     COMBOBOX        IDC_COMBO_WINDOWSIZE,13,43,71,30,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Screen Refresh Rate (ï`âÊä‘äu)",IDC_STATIC,6,65,171,24
-    CONTROL         "1/1(ñàâÒ)",IDC_RADIO_FPS_1,"Button",BS_AUTORADIOBUTTON | 
+    GROUPBOX        "Screen Refresh Rate (ÊèèÁîªÈñìÈöî)",IDC_STATIC,6,65,171,24
+    CONTROL         "1/1(ÊØéÂõû)",IDC_RADIO_FPS_1,"Button",BS_AUTORADIOBUTTON | 
                     WS_GROUP,11,75,42,10
     CONTROL         "1/2",IDC_RADIO_FPS_2,"Button",BS_AUTORADIOBUTTON,58,75,
                     26,10
     CONTROL         "1/3",IDC_RADIO_FPS_3,"Button",BS_AUTORADIOBUTTON,87,75,
                     26,10
-    CONTROL         "Flexible(â¬ïœ)",IDC_RADIO_FPS_AUTO,"Button",
+    CONTROL         "Flexible(ÂèØÂ§â)",IDC_RADIO_FPS_AUTO,"Button",
                     BS_AUTORADIOBUTTON,117,75,55,10
 END
 
 IDD_PANEL_KEY DIALOG DISCARDABLE  0, 0, 248, 171
 STYLE WS_CHILD
-FONT 9, "ÇlÇr ÇoÉSÉVÉbÉN"
+FONT 9, "Ôº≠Ôº≥ Ôº∞„Ç¥„Ç∑„ÉÉ„ÇØ"
 BEGIN
     CONTROL         "List1",IDC_LIST_KEY,"SysListView32",LVS_REPORT | 
                     LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOSORTHEADER | 
@@ -115,7 +115,7 @@ END
 
 IDD_PANEL_OPTION DIALOG DISCARDABLE  0, 0, 249, 167
 STYLE WS_CHILD
-FONT 9, "ÇlÇr ÇoÉSÉVÉbÉN"
+FONT 9, "Ôº≠Ôº≥ Ôº∞„Ç¥„Ç∑„ÉÉ„ÇØ"
 BEGIN
     CONTROL         "List1",IDC_LIST_OPTION,"SysListView32",LVS_REPORT | 
                     LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOSORTHEADER | 
@@ -161,7 +161,7 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // ì˙ñ{åÍ resources
+#endif    // Êó•Êú¨Ë™û resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -175,4 +175,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

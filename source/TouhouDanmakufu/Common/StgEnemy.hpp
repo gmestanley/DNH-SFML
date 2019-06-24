@@ -98,8 +98,8 @@ class StgEnemyBossSceneObject : public DxScriptObjectBase
 		StgEnemyBossSceneObject(StgStageController* stageController);
 		virtual void Work();
 		virtual void Activate();
-		virtual void Render(){}//‰½‚à‚µ‚È‚¢
-		virtual void SetRenderState(){}//‰½‚à‚µ‚È‚¢
+		virtual void Render(){}//ä½•ã‚‚ã—ãªã„
+		virtual void SetRenderState(){}//ä½•ã‚‚ã—ãªã„
 
 		void AddData(int step, ref_count_ptr<StgEnemyBossSceneData>::unsync data);
 		ref_count_ptr<StgEnemyBossSceneData>::unsync GetActiveData(){return activeData_;}
@@ -125,17 +125,17 @@ class StgEnemyBossSceneData
 		_int64 isScript_;
 		std::vector<double> listLife_;
 		std::vector<ref_count_ptr<StgEnemyBossObject>::unsync > listEnemyObject_;
-		int countCreate_;//ƒ{ƒX¶¬”BlistEnemyObject_‚ğ’´‚¦‚Ä¶¬‚µ‚æ‚¤‚Æ‚µ‚½‚çƒGƒ‰[B
+		int countCreate_;//ãƒœã‚¹ç”Ÿæˆæ•°ã€‚listEnemyObject_ã‚’è¶…ãˆã¦ç”Ÿæˆã—ã‚ˆã†ã¨ã—ãŸã‚‰ã‚¨ãƒ©ãƒ¼ã€‚
 		bool bReadyNext_;
 
-		bool bSpell_;//ƒXƒyƒ‹ƒJ[ƒh
-		bool bLastSpell_;//ƒ‰ƒXƒgƒXƒyƒ‹
-		bool bDurable_;//‘Ï‹vƒXƒyƒ‹
+		bool bSpell_;//ã‚¹ãƒšãƒ«ã‚«ãƒ¼ãƒ‰
+		bool bLastSpell_;//ãƒ©ã‚¹ãƒˆã‚¹ãƒšãƒ«
+		bool bDurable_;//è€ä¹…ã‚¹ãƒšãƒ«
 		_int64 scoreSpell_;
-		int timerSpellOrg_;//‰Šúƒ^ƒCƒ}[ ƒtƒŒ[ƒ€’PˆÊ -1‚Å–³Œø
-		int timerSpell_;//ƒ^ƒCƒ}[ ƒtƒŒ[ƒ€’PˆÊ -1‚Å–³Œø
-		int countPlayerShootDown_;//©‹@Œ‚”j”
-		int countPlayerSpell_;//©‹@ƒXƒyƒ‹g—p”
+		int timerSpellOrg_;//åˆæœŸã‚¿ã‚¤ãƒãƒ¼ ãƒ•ãƒ¬ãƒ¼ãƒ å˜ä½ -1ã§ç„¡åŠ¹
+		int timerSpell_;//ã‚¿ã‚¤ãƒãƒ¼ ãƒ•ãƒ¬ãƒ¼ãƒ å˜ä½ -1ã§ç„¡åŠ¹
+		int countPlayerShootDown_;//è‡ªæ©Ÿæ’ƒç ´æ•°
+		int countPlayerSpell_;//è‡ªæ©Ÿã‚¹ãƒšãƒ«ä½¿ç”¨æ•°
 
 	public:
 		StgEnemyBossSceneData();

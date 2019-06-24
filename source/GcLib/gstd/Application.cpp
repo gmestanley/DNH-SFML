@@ -35,25 +35,25 @@ bool Application::Run()
 	{
 		bool res = _Initialize();
 		if(res == false)
-			throw gstd::wexception(L"‰Šú‰»’†‚É—áŠO‚ª”­¶‚µ‚Ü‚µ‚½B");
+			throw gstd::wexception(L"åˆæœŸåŒ–ä¸­ã«ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚");
 	}
 	catch(std::exception& e)
 	{
 		std::wstring log = StringUtility::ConvertMultiToWide(e.what());
 		Logger::WriteTop(log);
-		Logger::WriteTop(L"‰Šú‰»’†‚É—áŠO‚ª”­¶‚µ‚Ü‚µ‚½B‹­§I—¹‚µ‚Ü‚·B");
+		Logger::WriteTop(L"åˆæœŸåŒ–ä¸­ã«ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚å¼·åˆ¶çµ‚äº†ã—ã¾ã™ã€‚");
 		bAppRun_ = false;
 	}
 	catch(gstd::wexception& e)
 	{
 		std::wstring log = e.what();
 		Logger::WriteTop(log);
-		Logger::WriteTop(L"‰Šú‰»’†‚É—áŠO‚ª”­¶‚µ‚Ü‚µ‚½B‹­§I—¹‚µ‚Ü‚·B");
+		Logger::WriteTop(L"åˆæœŸåŒ–ä¸­ã«ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚å¼·åˆ¶çµ‚äº†ã—ã¾ã™ã€‚");
 		bAppRun_ = false;
 	}
 	catch(...)
 	{
-		Logger::WriteTop(L"‰Šú‰»’†‚É—áŠO‚ª”­¶‚µ‚Ü‚µ‚½B‹­§I—¹‚µ‚Ü‚·B");
+		Logger::WriteTop(L"åˆæœŸåŒ–ä¸­ã«ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚å¼·åˆ¶çµ‚äº†ã—ã¾ã™ã€‚");
 		bAppRun_ = false;
 	}
 
@@ -82,19 +82,19 @@ bool Application::Run()
 			{
 				std::wstring log = StringUtility::ConvertMultiToWide(e.what());
 				Logger::WriteTop(log);
-				Logger::WriteTop(L"Às’†‚É—áŠO‚ª”­¶‚µ‚Ü‚µ‚½BI—¹‚µ‚Ü‚·B");
+				Logger::WriteTop(L"å®Ÿè¡Œä¸­ã«ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚çµ‚äº†ã—ã¾ã™ã€‚");
 				break;
 			}
 			catch(gstd::wexception& e)
 			{
 				std::wstring log = e.what();
 				Logger::WriteTop(log);
-				Logger::WriteTop(L"Às’†‚É—áŠO‚ª”­¶‚µ‚Ü‚µ‚½BI—¹‚µ‚Ü‚·B");
+				Logger::WriteTop(L"å®Ÿè¡Œä¸­ã«ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚çµ‚äº†ã—ã¾ã™ã€‚");
 				break;
 			}
 //			catch(...)
 //			{
-//				Logger::WriteTop(L"Às’†‚É—áŠO‚ª”­¶‚µ‚Ü‚µ‚½BI—¹‚µ‚Ü‚·B");
+//				Logger::WriteTop(L"å®Ÿè¡Œä¸­ã«ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚çµ‚äº†ã—ã¾ã™ã€‚");
 //				break;
 //			}
 		}
@@ -106,24 +106,24 @@ bool Application::Run()
 	{
 		bool res = _Finalize();
 		if(res == false)
-			throw gstd::wexception(L"I—¹’†‚É—áŠO‚ª”­¶‚µ‚Ü‚µ‚½B");
+			throw gstd::wexception(L"çµ‚äº†ä¸­ã«ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚");
 	}
 	catch(std::exception& e)
 	{
 		std::wstring log = StringUtility::ConvertMultiToWide(e.what());
 		Logger::WriteTop(log);
-		Logger::WriteTop(L"³í‚ÉI—¹‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B");
+		Logger::WriteTop(L"æ­£å¸¸ã«çµ‚äº†ã§ãã¾ã›ã‚“ã§ã—ãŸã€‚");
 	}
 	catch(gstd::wexception& e)
 	{
 		std::wstring log = e.what();
 		Logger::WriteTop(log);
-		Logger::WriteTop(L"³í‚ÉI—¹‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B");
+		Logger::WriteTop(L"æ­£å¸¸ã«çµ‚äº†ã§ãã¾ã›ã‚“ã§ã—ãŸã€‚");
 		bAppRun_ = false;
 	}
 	catch(...)
 	{
-		Logger::WriteTop(L"³í‚ÉI—¹‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B");
+		Logger::WriteTop(L"æ­£å¸¸ã«çµ‚äº†ã§ãã¾ã›ã‚“ã§ã—ãŸã€‚");
 	}
 	return true;
 }

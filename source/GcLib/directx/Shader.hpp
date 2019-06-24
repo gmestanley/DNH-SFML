@@ -70,8 +70,8 @@ namespace directx
 
 			virtual bool IsDataExists(std::wstring name);
 			gstd::ref_count_ptr<ShaderData> GetShaderData(std::wstring name);
-			gstd::ref_count_ptr<Shader> CreateFromFile(std::wstring path);//“Ç‚İ‚İ‚Ü‚·BShaderData‚Í•Û‚µ‚Ü‚·‚ªAShader‚Í•Û‚µ‚Ü‚¹‚ñB
-			gstd::ref_count_ptr<Shader> CreateFromText(std::string source);//“Ç‚İ‚İ‚Ü‚·BShaderData‚Í•Û‚µ‚Ü‚·‚ªAShader‚Í•Û‚µ‚Ü‚¹‚ñB
+			gstd::ref_count_ptr<Shader> CreateFromFile(std::wstring path);//èª­ã¿è¾¼ã¿ã¾ã™ã€‚ShaderDataã¯ä¿æŒã—ã¾ã™ãŒã€Shaderã¯ä¿æŒã—ã¾ã›ã‚“ã€‚
+			gstd::ref_count_ptr<Shader> CreateFromText(std::string source);//èª­ã¿è¾¼ã¿ã¾ã™ã€‚ShaderDataã¯ä¿æŒã—ã¾ã™ãŒã€Shaderã¯ä¿æŒã—ã¾ã›ã‚“ã€‚
 			gstd::ref_count_ptr<Shader> CreateFromFileInLoadThread(std::wstring path);
 			virtual void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event);
 

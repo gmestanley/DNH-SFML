@@ -13,10 +13,10 @@
 #endif
 
 
-//•W€ŠÖ”‘Î‰•\
+//æ¨™æº–é–¢æ•°å¯¾å¿œè¡¨
 //http://www1.kokusaika.jp/advisory/org/ja/win32_unicode.html
 
-//Win2000ˆÈ~
+//Win2000ä»¥é™
 #define _WIN32_WINNT 0x0500
 
 //lib
@@ -28,14 +28,14 @@
 #pragma comment(lib,"psapi.lib")
 
 //pragma
-#pragma warning (disable:4786)//STL Warning—}~
-#pragma warning (disable:4018)//signed ‚Æ unsigned ‚Ì”’l‚ğ”äŠr
-#pragma warning (disable:4244)//double' ‚©‚ç 'float' ‚É•ÏŠ·
+#pragma warning (disable:4786)//STL WarningæŠ‘æ­¢
+#pragma warning (disable:4018)//signed ã¨ unsigned ã®æ•°å€¤ã‚’æ¯”è¼ƒ
+#pragma warning (disable:4244)//double' ã‹ã‚‰ 'float' ã«å¤‰æ›
 #pragma warning (disable:4503)//
 
-#pragma warning (disable:4302)// Ø‚è‹l‚ß‚Ü‚·B
-#pragma warning (disable:4305)// 'double' ‚©‚ç 'FLOAT' ‚ÖØ‚è‹l‚ß‚Ü‚·B
-#pragma warning (disable:4819)//ƒtƒ@ƒCƒ‹‚ÍAŒ»İ‚ÌƒR[ƒh ƒy[ƒW (932) ‚Å•\¦‚Å‚«‚È‚¢•¶š‚ğŠÜ‚ñ‚Å‚¢‚Ü‚·Bƒf[ƒ^‚Ì‘¹¸‚ğ–h‚®‚½‚ß‚ÉAƒtƒ@ƒCƒ‹‚ğ Unicode Œ`®‚Å•Û‘¶‚µ‚Ä‚­‚¾‚³‚¢B
+#pragma warning (disable:4302)// åˆ‡ã‚Šè©°ã‚ã¾ã™ã€‚
+#pragma warning (disable:4305)// 'double' ã‹ã‚‰ 'FLOAT' ã¸åˆ‡ã‚Šè©°ã‚ã¾ã™ã€‚
+#pragma warning (disable:4819)//ãƒ•ã‚¡ã‚¤ãƒ«ã¯ã€ç¾åœ¨ã®ã‚³ãƒ¼ãƒ‰ ãƒšãƒ¼ã‚¸ (932) ã§è¡¨ç¤ºã§ããªã„æ–‡å­—ã‚’å«ã‚“ã§ã„ã¾ã™ã€‚ãƒ‡ãƒ¼ã‚¿ã®æå¤±ã‚’é˜²ããŸã‚ã«ã€ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ Unicode å½¢å¼ã§ä¿å­˜ã—ã¦ãã ã•ã„ã€‚
 #pragma warning (disable:4996)//This function or variable may be unsafe. 
 
 

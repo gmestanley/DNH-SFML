@@ -73,18 +73,18 @@ namespace directx
 			};
 			enum
 			{
-				MODE_BLEND_NONE,//‚È‚µ
-				MODE_BLEND_ALPHA,//ƒ¿‚Å”¼“§–¾‡¬
-				MODE_BLEND_ADD_RGB,//RGB‚Å‰ÁZ‡¬
-				MODE_BLEND_ADD_ARGB,//ƒ¿‚Å‰ÁZ‡¬
-				MODE_BLEND_MULTIPLY,//æZ‡¬
-				MODE_BLEND_SUBTRACT,//Œ¸Z‡¬
-				MODE_BLEND_SHADOW,//‰e•`‰æ—p
-				MODE_BLEND_INV_DESTRGB,//•`‰ææF”½“]‡¬
+				MODE_BLEND_NONE,//ãªã—
+				MODE_BLEND_ALPHA,//Î±ã§åŠé€æ˜åˆæˆ
+				MODE_BLEND_ADD_RGB,//RGBã§åŠ ç®—åˆæˆ
+				MODE_BLEND_ADD_ARGB,//Î±ã§åŠ ç®—åˆæˆ
+				MODE_BLEND_MULTIPLY,//ä¹—ç®—åˆæˆ
+				MODE_BLEND_SUBTRACT,//æ¸›ç®—åˆæˆ
+				MODE_BLEND_SHADOW,//å½±æç”»ç”¨
+				MODE_BLEND_INV_DESTRGB,//æç”»å…ˆè‰²åè»¢åˆæˆ
 
-				MODE_TEXTURE_FILTER_NONE,//ƒtƒBƒ‹ƒ^‚È‚µ
-				MODE_TEXTURE_FILTER_POINT,//•âŠÔ‚È‚µ
-				MODE_TEXTURE_FILTER_LINEAR,//üŒ`•âŠÔ
+				MODE_TEXTURE_FILTER_NONE,//ãƒ•ã‚£ãƒ«ã‚¿ãªã—
+				MODE_TEXTURE_FILTER_POINT,//è£œé–“ãªã—
+				MODE_TEXTURE_FILTER_LINEAR,//ç·šå½¢è£œé–“
 			};
 		protected:
 			IDirect3D9* pDirect3D_;
@@ -126,20 +126,20 @@ namespace directx
 			IDirect3DDevice9* GetDevice(){return pDevice_;}
 			DirectGraphicsConfig& GetConfigData(){return config_;}
 
-			void BeginScene(bool bClear = true);//•`‰æŠJn
-			void EndScene();//•`‰æI—¹
+			void BeginScene(bool bClear = true);//æç”»é–‹å§‹
+			void EndScene();//æç”»çµ‚äº†
 			void ClearRenderTarget();
 			void ClearRenderTarget(RECT rect);
 			void SetRenderTarget(gstd::ref_count_ptr<Texture> texture);
 			gstd::ref_count_ptr<Texture> GetRenderTarget(){return textureTarget_;}
 
-			//ƒŒƒ“ƒ_ƒŠƒ“ƒOƒXƒe[ƒgƒ‰ƒbƒp
-			void SetLightingEnable(bool bEnable);//ƒ‰ƒCƒeƒBƒ“ƒO
-			void SetSpecularEnable(bool bEnable);//ƒXƒyƒLƒ…ƒ‰
-			void SetCullingMode(DWORD mode);//ƒJƒŠƒ“ƒO
-			void SetShadingMode(DWORD mode);//ƒVƒF[ƒfƒBƒ“ƒO
-			void SetZBufferEnable(bool bEnable);//Zƒoƒbƒtƒ@QÆ
-			void SetZWriteEnalbe(bool bEnable);//Zƒoƒbƒtƒ@‘‚«‚İ
+			//ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã‚¹ãƒ†ãƒ¼ãƒˆãƒ©ãƒƒãƒ‘
+			void SetLightingEnable(bool bEnable);//ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°
+			void SetSpecularEnable(bool bEnable);//ã‚¹ãƒšã‚­ãƒ¥ãƒ©
+			void SetCullingMode(DWORD mode);//ã‚«ãƒªãƒ³ã‚°
+			void SetShadingMode(DWORD mode);//ã‚·ã‚§ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°
+			void SetZBufferEnable(bool bEnable);//Zãƒãƒƒãƒ•ã‚¡å‚ç…§
+			void SetZWriteEnalbe(bool bEnable);//Zãƒãƒƒãƒ•ã‚¡æ›¸ãè¾¼ã¿
 			void SetAlphaTest(bool bEnable, DWORD ref = 0, D3DCMPFUNC func = D3DCMP_GREATER);
 			void SetBlendMode(DWORD mode, int stage = 0);
 			void SetFillMode(DWORD mode);
@@ -175,7 +175,7 @@ namespace directx
 	{
 		protected:
 			gstd::WindowBase wndGraphics_;
-			virtual LRESULT _WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);//ƒI[ƒo[ƒ‰ƒCƒh—pƒvƒƒV[ƒWƒƒ
+			virtual LRESULT _WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);//ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ç”¨ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 			void _PauseDrawing();
 			void _RestartDrawing();
 		public:
@@ -191,7 +191,7 @@ namespace directx
 	**********************************************************/
 	class DxCamera
 	{
-			D3DXVECTOR3 pos_;//Å“_
+			D3DXVECTOR3 pos_;//ç„¦ç‚¹
 			float radius_;
 			float angleAzimuth_;
 			float angleElevation_;
@@ -248,11 +248,11 @@ namespace directx
 
 		private:
 			bool bEnable_;
-			D3DXVECTOR2 pos_;//Å“_
-			double ratioX_;//Šg‘å—¦
+			D3DXVECTOR2 pos_;//ç„¦ç‚¹
+			double ratioX_;//æ‹¡å¤§ç‡
 			double ratioY_;
 			double angleZ_;
-			RECT rcClip_;//‹–ì
+			RECT rcClip_;//è¦–é‡
 
 			gstd::ref_count_ptr<D3DXVECTOR2> posReset_;
 		public:

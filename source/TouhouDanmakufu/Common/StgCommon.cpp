@@ -36,7 +36,7 @@ void StgMoveObject::_Move()
 }
 void StgMoveObject::_AttachReservedPattern(ref_count_ptr<StgMovePattern>::unsync pattern)
 {
-	//ë¨ìxåpë±Ç»Ç«
+	//ÈÄüÂ∫¶Á∂ôÁ∂ö„Å™„Å©
 	if(pattern_ == NULL)
 		pattern_ = new StgMovePattern_Angle(this);
 
@@ -55,8 +55,11 @@ void StgMoveObject::_AttachReservedPattern(ref_count_ptr<StgMovePattern>::unsync
 
 		double speed = pattern_->GetSpeed();
 		double angle = pattern_->GetDirectionAngle();
-		double speedX = speed * cos(Math::DegreeToRadian(angle));
-		double speedY = speed * sin(Math::DegreeToRadian(angle));
+		double ang = Math::DegreeToRadian(angle);
+		double s = sin(ang);
+		double c = cos(ang);
+		double speedX = speed * c;
+		double speedY = speed * s;
 
 		if(xyPattern->GetSpeedX() == StgMovePattern::NO_CHANGE)
 			xyPattern->SetSpeedX(speedX);
@@ -64,7 +67,7 @@ void StgMoveObject::_AttachReservedPattern(ref_count_ptr<StgMovePattern>::unsync
 			xyPattern->SetSpeedY(speedY);
 	}
 
-	//íuÇ´ä∑Ç¶
+	//ÁΩÆ„ÅçÊèõ„Åà
 	pattern_ = pattern;
 }
 double StgMoveObject::GetSpeed()
@@ -106,6 +109,18 @@ void StgMoveObject::AddPattern(int frameDelay, ref_count_ptr<StgMovePattern>::un
 		int frame = frameDelay + framePattern_;
 		mapPattern_[frame] = pattern;
 	}
+}
+double StgMoveObject::cssn(double s, double ang) {
+	const double PAI = 3.14159265358979323846;
+	const double TWOPAI = PAI * 2;
+	double c = sqrt(1 - s * s);
+	double angMod = fmod(ang, TWOPAI);
+	double fullRad = (angMod * TWOPAI < 0) ? (angMod + TWOPAI) : angMod;
+	double normRad = (fullRad > PAI) ? (fullRad - TWOPAI) : fullRad;
+	if (abs(normRad) > (PAI / 2)) {
+		c *= -1;
+	}
+	return c;
 }
 
 /**********************************************************
@@ -158,8 +173,11 @@ void StgMovePattern_Angle::Move()
 		angDirection_ += angularVelocity_;
 	}
 
-	double sx = speed_ * cos(Math::DegreeToRadian(angDirection_));
-	double sy = speed_ * sin(Math::DegreeToRadian(angDirection_));
+	double ang = Math::DegreeToRadian(angDirection_);
+	double s = sin(ang);
+	double c = cos(ang);
+	double sx = speed_ * c;
+	double sy = speed_ * s;
 	double px = target_->GetPositionX() + sx;
 	double py = target_->GetPositionY() + sy;
 
@@ -168,6 +186,20 @@ void StgMovePattern_Angle::Move()
 
 	frameWork_++;
 }
+
+double StgMovePattern::cssn(double s, double ang) {
+	const double PAI = 3.14159265358979323846;
+	const double TWOPAI = PAI * 2;
+	double c = sqrt(1 - s * s);
+	double angMod = fmod(ang,TWOPAI);
+	double fullRad = (angMod * TWOPAI < 0) ? (angMod + TWOPAI) : angMod;
+	double normRad = (fullRad > PAI) ? (fullRad - TWOPAI) : fullRad;
+	if (abs(normRad) > (PAI / 2)) {
+		c *= -1;
+	}
+	return c;
+}
+
 void StgMovePattern_Angle::_Activate()
 {
 	if(idRalativeID_ != DxScript::ID_INVALID)
@@ -252,8 +284,11 @@ void StgMovePattern_Line::Move()
 {
 	if(typeLine_ == TYPE_SPEED || typeLine_ == TYPE_FRAME)
 	{
-		double sx = speed_ * cos(Math::DegreeToRadian(angDirection_));
-		double sy = speed_ * sin(Math::DegreeToRadian(angDirection_));
+		double ang = Math::DegreeToRadian(angDirection_);
+		double s = sin(ang);
+		double c = cos(ang);
+		double sx = speed_ * c;
+		double sy = speed_ * s;
 		double px = target_->GetPositionX() + sx;
 		double py = target_->GetPositionY() + sy;
 
@@ -281,8 +316,13 @@ void StgMovePattern_Line::Move()
 			speed_ = dist / weight_;
 			if(speed_ > maxSpeed_)
 				speed_ = maxSpeed_;
-			double px = target_->GetPositionX() + speed_*cos(Math::DegreeToRadian(angDirection_));
-			double py = target_->GetPositionY() + speed_*sin(Math::DegreeToRadian(angDirection_));
+			double ang = Math::DegreeToRadian(angDirection_);
+			double s = sin(ang);
+			double c = cos(ang);
+			double sx = speed_ * c;
+			double sy = speed_ * s;
+			double px = target_->GetPositionX() + sx;
+			double py = target_->GetPositionY() + sy;
 			target_->SetPositionX(px);
 			target_->SetPositionY(py);
 		}

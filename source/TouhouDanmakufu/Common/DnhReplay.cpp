@@ -56,7 +56,7 @@ bool ReplayInformation::SaveToFile(std::wstring scriptPath, int index)
 	std::wstring scriptName = PathProperty::GetFileNameWithoutExtension(scriptPath);
 	std::wstring path = dir + scriptName + StringUtility::Format(L"_replay%02d.dat", index);
 
-	//フォルダ作成
+	//繝輔か繝ｫ繝菴懈��
 	File fDir(dir);
 	fDir.CreateDirectory();
 
@@ -211,7 +211,7 @@ void ReplayInformation::StageData::ReadRecord(gstd::RecordBuffer& record)
 	listFramePerSecond_.resize(countFramePerSecond);
 	record.GetRecord("listFramePerSecond",&listFramePerSecond_[0], sizeof(float) * listFramePerSecond_.size());
 
-	//共通データ
+	//蜈ｱ騾壹ョ繝ｼ繧ｿ
 	gstd::RecordBuffer recComMap;
 	record.GetRecordAsRecordBuffer("mapCommonData", recComMap);
 	std::vector<std::string> listKeyCommonData = recComMap.GetKeyList();
@@ -223,7 +223,7 @@ void ReplayInformation::StageData::ReadRecord(gstd::RecordBuffer& record)
 		mapCommonData_[key] = recComData;
 	}
 
-	//自機情報
+	//閾ｪ讖滓ュ蝣ｱ
 	playerScriptID_ = record.GetRecordAsStringW("playerScriptID");
 	playerScriptFileName_ = record.GetRecordAsStringW("playerScriptFileName");
 	playerScriptReplayName_ = record.GetRecordAsStringW("playerScriptReplayName");
@@ -249,7 +249,7 @@ void ReplayInformation::StageData::WriteRecord(gstd::RecordBuffer& record)
 	record.SetRecordAsInteger("countFramePerSecond", countFramePerSecond);
 	record.SetRecord("listFramePerSecond",&listFramePerSecond_[0], sizeof(float) * listFramePerSecond_.size());
 
-	//共通データ
+	//蜈ｱ騾壹ョ繝ｼ繧ｿ
 	gstd::RecordBuffer recComMap;
 	std::map<std::string, ref_count_ptr<RecordBuffer> >::iterator itrCommonData;
 	for(itrCommonData = mapCommonData_.begin() ; itrCommonData != mapCommonData_.end() ; itrCommonData++)
@@ -260,7 +260,7 @@ void ReplayInformation::StageData::WriteRecord(gstd::RecordBuffer& record)
 	}
 	record.SetRecordAsRecordBuffer("mapCommonData", recComMap);
 
-	//自機情報
+	//閾ｪ讖滓ュ蝣ｱ
 	record.SetRecordAsStringW("playerScriptID", playerScriptID_);
 	record.SetRecordAsStringW("playerScriptFileName", playerScriptFileName_);
 	record.SetRecordAsStringW("playerScriptReplayName", playerScriptReplayName_);

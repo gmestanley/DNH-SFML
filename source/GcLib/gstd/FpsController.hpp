@@ -18,8 +18,8 @@ namespace gstd
 				FPS_FAST_MODE = 1200,
 			};
 		protected:
-			int fps_;//İ’è‚³‚ê‚Ä‚¢‚éFPS
-			bool bUseTimer_;//ƒ^ƒCƒ}[§Œä
+			int fps_;//è¨­å®šã•ã‚Œã¦ã„ã‚‹FPS
+			bool bUseTimer_;//ã‚¿ã‚¤ãƒãƒ¼åˆ¶å¾¡
 			bool bCriticalFrame_;
 			bool bFastMode_;
 
@@ -58,13 +58,13 @@ namespace gstd
 			FAST_MODE_SKIP_RATE = 10,
 		};
 		protected:
-			float fpsCurrent_;//Œ»İ‚ÌFPS
-			int timePrevious_;//‘O‰ñWait‚µ‚½‚Æ‚«‚ÌŠÔ
-			int timeError_;//‚¿‰z‚µŠÔ(Œë·)
-			int timeCurrentFpsUpdate_;//1•b‚ğ‘ª’è‚·‚é‚½‚ß‚ÌŠÔ•Û
-			int rateSkip_;//•`‰æƒXƒLƒbƒv”
-			int countSkip_;//•`‰æƒXƒLƒbƒvƒJƒEƒ“ƒg
-			std::list<int> listFps_;//1•b‚²‚Æ‚ÉŒ»İfps‚ğŒvZ‚·‚é‚½‚ß‚Éfps‚ğ•Û
+			float fpsCurrent_;//ç¾åœ¨ã®FPS
+			int timePrevious_;//å‰å›Waitã—ãŸã¨ãã®æ™‚é–“
+			int timeError_;//æŒã¡è¶Šã—æ™‚é–“(èª¤å·®)
+			int timeCurrentFpsUpdate_;//1ç§’ã‚’æ¸¬å®šã™ã‚‹ãŸã‚ã®æ™‚é–“ä¿æŒ
+			int rateSkip_;//æç”»ã‚¹ã‚­ãƒƒãƒ—æ•°
+			int countSkip_;//æç”»ã‚¹ã‚­ãƒƒãƒ—ã‚«ã‚¦ãƒ³ãƒˆ
+			std::list<int> listFps_;//1ç§’ã”ã¨ã«ç¾åœ¨fpsã‚’è¨ˆç®—ã™ã‚‹ãŸã‚ã«fpsã‚’ä¿æŒ
 
 		public:
 			StaticFpsController();
@@ -86,17 +86,17 @@ namespace gstd
 	class AutoSkipFpsController : public FpsController
 	{
 		protected:
-			float fpsCurrentWork_;	//ÀÛ‚Ìfps
-			float fpsCurrentRender_;	//ÀÛ‚Ìfps
-			int timePrevious_;//‘O‰ñWait‚µ‚½‚Æ‚«‚ÌŠÔ
+			float fpsCurrentWork_;	//å®Ÿéš›ã®fps
+			float fpsCurrentRender_;	//å®Ÿéš›ã®fps
+			int timePrevious_;//å‰å›Waitã—ãŸã¨ãã®æ™‚é–“
 			int timePreviousWork_;
 			int timePreviousRender_;
-			int timeError_;//‚¿‰z‚µŠÔ(Œë·)
-			int timeCurrentFpsUpdate_;//1•b‚ğ‘ª’è‚·‚é‚½‚ß‚ÌŠÔ•Û
+			int timeError_;//æŒã¡è¶Šã—æ™‚é–“(èª¤å·®)
+			int timeCurrentFpsUpdate_;//1ç§’ã‚’æ¸¬å®šã™ã‚‹ãŸã‚ã®æ™‚é–“ä¿æŒ
 			std::list<int> listFpsWork_;
 			std::list<int> listFpsRender_;
-			double countSkip_;//˜A‘±•`‰æƒXƒLƒbƒv”
-			int countSkipMax_;//Å‘å˜A‘±•`‰æƒXƒLƒbƒv”
+			double countSkip_;//é€£ç¶šæç”»ã‚¹ã‚­ãƒƒãƒ—æ•°
+			int countSkipMax_;//æœ€å¤§é€£ç¶šæç”»ã‚¹ã‚­ãƒƒãƒ—æ•°
 
 		public:
 			AutoSkipFpsController();

@@ -36,13 +36,13 @@ void ByteBuffer::_Resize(int size)
 	data_ = new char[size];
 	ZeroMemory(data_, size);
 
-	//Œ³‚Ìƒf[ƒ^‚ğƒRƒs[
+	//å…ƒã®ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 	int sizeCopy = min(size, oldSize);
 	memcpy(data_, oldData, sizeCopy);
 	reserve_ = size;
 	size_ = size;
 
-	//ŒÃ‚¢ƒf[ƒ^‚ğíœ
+	//å¤ã„ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤
 	delete[] oldData;
 }
 void ByteBuffer::Copy(ByteBuffer& src)
@@ -86,7 +86,7 @@ DWORD ByteBuffer::Write(LPVOID buf,DWORD size)
 	{
 		int sizeNew = (offset_+size) * 2;
 		_Resize(sizeNew);
-		size_ = 0;//‚ ‚Æ‚ÅÄŒvZ
+		size_ = 0;//ã‚ã¨ã§å†è¨ˆç®—
 	}
 
 	memcpy(&data_[offset_], buf, size);
@@ -104,7 +104,7 @@ char* ByteBuffer::GetPointer(int offset)
 {
 	if(offset > size_)
 	{
-		throw gstd::wexception(L"ByteBuffer:ƒCƒ“ƒfƒbƒNƒXƒGƒ‰[");
+		throw gstd::wexception(L"ByteBuffer:ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚¨ãƒ©ãƒ¼");
 	}
 	return &data_[offset];
 }
@@ -260,7 +260,7 @@ std::vector<std::wstring> File::GetFilePathList(std::wstring dir)
 		if((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && 
 			(name != L".." && name != L"."))
 		{
-			//ƒfƒBƒŒƒNƒgƒŠ
+			//ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
 			std::wstring tDir = dir + name;
 			tDir += L"\\";
 
@@ -269,7 +269,7 @@ std::vector<std::wstring> File::GetFilePathList(std::wstring dir)
 		if(wcscmp(data.cFileName, L"..")==0 || wcscmp(data.cFileName, L".")==0)
 			continue;
 
-		//ƒtƒ@ƒCƒ‹
+		//ãƒ•ã‚¡ã‚¤ãƒ«
 		std::wstring path = dir + name;
 
 		res.push_back(path);
@@ -293,7 +293,7 @@ std::vector<std::wstring> File::GetDirectoryPathList(std::wstring dir)
 		if((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && 
 			(name != L".." && name != L"."))
 		{
-			//ƒfƒBƒŒƒNƒgƒŠ
+			//ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
 			std::wstring tDir = dir + name;
 			tDir += L"\\";
 			res.push_back(tDir);
@@ -302,7 +302,7 @@ std::vector<std::wstring> File::GetDirectoryPathList(std::wstring dir)
 		if(wcscmp(data.cFileName, L"..")==0 || wcscmp(data.cFileName, L".")==0)
 			continue;
 
-		//ƒtƒ@ƒCƒ‹
+		//ãƒ•ã‚¡ã‚¤ãƒ«
 
 	}while(FindNextFile(hFind, &data));
 	FindClose(hFind);
@@ -377,7 +377,7 @@ bool FileArchiver::CreateArchiveFile(std::wstring path)
 	bool res = true;
 	File fileArchive(path);
 	if(!fileArchive.Create())
-		throw gstd::wexception(StringUtility::Format(L"ƒtƒ@ƒCƒ‹ì¬¸”s[%s]", path.c_str()).c_str());
+		throw gstd::wexception(StringUtility::Format(L"ãƒ•ã‚¡ã‚¤ãƒ«ä½œæˆå¤±æ•—[%s]", path.c_str()).c_str());
 
 	fileArchive.Write((char*)&HEADER_ARCHIVEFILE[0], HEADER_ARCHIVEFILE.size());
 	fileArchive.WriteInteger(listEntry_.size());
@@ -412,7 +412,7 @@ bool FileArchiver::CreateArchiveFile(std::wstring path)
 		std::wstring path = entry->GetName();
 		File file(path);
 		if(!file.Open())
-			throw gstd::wexception(StringUtility::Format(L"ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“¸”s[%s]", path.c_str()).c_str());
+			throw gstd::wexception(StringUtility::Format(L"ãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ¼ãƒ—ãƒ³å¤±æ•—[%s]", path.c_str()).c_str());
 
 		entry->_SetDataSize(file.GetSize());
 		entry->_SetOffset(fileArchive.GetFilePointer());
@@ -436,7 +436,7 @@ bool FileArchiver::CreateArchiveFile(std::wstring path)
 		}
 	}
 
-	//‚Æ‚è‚ ‚¦‚¸”ñˆ³k‚Å‘‚«‚Ş
+	//ã¨ã‚Šã‚ãˆãšéåœ§ç¸®ã§æ›¸ãè¾¼ã‚€
 	fileArchive.Seek(posArchiveEntryHeaderStart);
 	fileArchive.WriteBoolean(false);
 	fileArchive.WriteInteger(0);
@@ -456,7 +456,7 @@ bool FileArchiver::CreateArchiveFile(std::wstring path)
 		entry->SetName(name);
 	}
 
-	//ˆ³k‰Â”\‚©’²‚×‚é
+	//åœ§ç¸®å¯èƒ½ã‹èª¿ã¹ã‚‹
 	fileArchive.Seek(posEntryStart);
 	int sizeEntry = posEntryEnd - posEntryStart;
 	ByteBuffer bufEntryIn;
@@ -468,7 +468,7 @@ bool FileArchiver::CreateArchiveFile(std::wstring path)
 	compEntry.Compress(bufEntryIn, bufEntryOut);
 	if(bufEntryOut.GetSize() < sizeEntry)
 	{
-		//ƒGƒ“ƒgƒŠˆ³k
+		//ã‚¨ãƒ³ãƒˆãƒªåœ§ç¸®
 		fileArchive.Seek(posArchiveEntryHeaderStart);
 		fileArchive.WriteBoolean(true);
 		fileArchive.WriteInteger(bufEntryOut.GetSize());
@@ -856,7 +856,7 @@ void FileManager::LoadThread::_Run()
 
 		while(this->GetStatus() == RUN)
 		{
-			//Logger::WriteTop(StringUtility::Format("ƒ[ƒhƒCƒxƒ“ƒgæ‚èo‚µŠJn"));
+			//Logger::WriteTop(StringUtility::Format("ãƒ­ãƒ¼ãƒ‰ã‚¤ãƒ™ãƒ³ãƒˆå–ã‚Šå‡ºã—é–‹å§‹"));
 			ref_count_ptr<FileManager::LoadThreadEvent> event = NULL;
 			{
 				Lock lock(lockEvent_);
@@ -865,9 +865,9 @@ void FileManager::LoadThread::_Run()
 				//listPath_.erase(event->GetPath());
 				listEvent_.pop_front();
 			}
-			//Logger::WriteTop(StringUtility::Format("ƒ[ƒhƒCƒxƒ“ƒgæ‚èo‚µŠ®—¹F%s", event->GetPath().c_str()));
+			//Logger::WriteTop(StringUtility::Format("ãƒ­ãƒ¼ãƒ‰ã‚¤ãƒ™ãƒ³ãƒˆå–ã‚Šå‡ºã—å®Œäº†ï¼š%s", event->GetPath().c_str()));
 
-			//Logger::WriteTop(StringUtility::Format("ƒ[ƒhŠJnF%s", event->GetPath().c_str()));
+			//Logger::WriteTop(StringUtility::Format("ãƒ­ãƒ¼ãƒ‰é–‹å§‹ï¼š%s", event->GetPath().c_str()));
 			{
 				Lock lock(lockListener_);
 				std::list<FileManager::LoadThreadListener*>::iterator itr;
@@ -878,10 +878,10 @@ void FileManager::LoadThread::_Run()
 						listener->CallFromLoadThread(event);
 				}	
 			}
-			//Logger::WriteTop(StringUtility::Format("ƒ[ƒhŠ®—¹F%s", event->GetPath().c_str()));
+			//Logger::WriteTop(StringUtility::Format("ãƒ­ãƒ¼ãƒ‰å®Œäº†ï¼š%s", event->GetPath().c_str()));
 
 		}
-		Sleep(1);//TODO ‚È‚º‚©‘Ò‹@“ü‚ê‚é‚Æ—‚¿‚Ã‚ç‚¢H
+		Sleep(1);//TODO ãªãœã‹å¾…æ©Ÿå…¥ã‚Œã‚‹ã¨è½ã¡ã¥ã‚‰ã„ï¼Ÿ
 	}
 
 	{
@@ -1530,8 +1530,8 @@ Compressor::~Compressor()
 }
 bool Compressor::Compress(ByteBuffer& bufIn, ByteBuffer& bufOut)
 {
-	//TODO —v“Æ©‚Ìˆ³k‚ğÀ‘•
-	//ŒöŠJƒ\[ƒX‚Å‚ÍAó‚¯“n‚³‚ê‚½ƒf[ƒ^‚ğ‚»‚Ì‚Ü‚Ü•Ô‚·
+	//TODO è¦ç‹¬è‡ªã®åœ§ç¸®ã‚’å®Ÿè£…
+	//å…¬é–‹ã‚½ãƒ¼ã‚¹ã§ã¯ã€å—ã‘æ¸¡ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚’ãã®ã¾ã¾è¿”ã™
 	bool res = true;
 
 	int inputSize = bufIn.GetSize();
@@ -1555,8 +1555,8 @@ DeCompressor::~DeCompressor()
 
 bool DeCompressor::DeCompress(ByteBuffer& bufIn, ByteBuffer& bufOut)
 {
-	//TODO —v“Æ©‚Ìˆ³k‚ğÀ‘•
-	//ŒöŠJƒ\[ƒX‚Å‚ÍAó‚¯“n‚³‚ê‚½ƒf[ƒ^‚ğ‚»‚Ì‚Ü‚Ü•Ô‚·
+	//TODO è¦ç‹¬è‡ªã®åœ§ç¸®ã‚’å®Ÿè£…
+	//å…¬é–‹ã‚½ãƒ¼ã‚¹ã§ã¯ã€å—ã‘æ¸¡ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚’ãã®ã¾ã¾è¿”ã™
 	bool res = true;
 
 	int inputSize = bufIn.GetSize();

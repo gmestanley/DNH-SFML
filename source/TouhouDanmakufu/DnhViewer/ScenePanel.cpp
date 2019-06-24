@@ -47,7 +47,7 @@ bool ScenePanel::Initialize(HWND hParent)
 	bFixedArea_ = false;
 
 	buttonStart_.Create(hWnd_);
-	buttonStart_.SetText(L"ŠJn");
+	buttonStart_.SetText(L"é–‹å§‹");
 
 	panelPathEnemy_ = new ScriptPathPanel();
 	panelPathEnemy_->Initialize(ScriptPathPanel::TYPE_ENEMY, hWnd_);
@@ -57,7 +57,7 @@ bool ScenePanel::Initialize(HWND hParent)
 	WButton::Style styleCheck;
 	styleCheck.SetStyle(WS_CHILD | WS_VISIBLE | BS_PUSHLIKE | BS_AUTOCHECKBOX );
 	buttonPause_.Create(hWnd_, styleCheck);
-	buttonPause_.SetText(L"’â~");
+	buttonPause_.SetText(L"åœæ­¢");
 	buttonPause_.SetWindowEnable(false);
 
 	GraphicsWindow* wndGraphics = MainWindow::GetInstance()->GetGraphicsWindow();
@@ -87,14 +87,14 @@ void ScenePanel::LocateParts()
 	{
 /*
 		if(gWidth > gHeight*4/3)
-		{//‰¡•‚ªL‚¢
+		{//æ¨ªå¹…ãŒåºƒã„
 			gWidth = gHeight*4/3;
 			gHeight = gWidth*3/4;
 			gHeight = gHeight > wHeight ? wHeight : gHeight;
 			gWidth = gHeight*4/3;
 		}
 		else 
-		{//c•‚ªL‚¢
+		{//ç¸¦å¹…ãŒåºƒã„
 			gHeight = gWidth*3/4;
 			gHeight = gHeight > wHeight ? wHeight : gHeight;
 			gWidth = gHeight*4/3;
@@ -134,7 +134,7 @@ bool ScenePanel::StartStg()
 	try
 	{
 		ref_count_ptr<ScriptInformation> infoEnemy = panelPathEnemy_->GetSelectedScriptInformation();
-		if(infoEnemy == NULL)throw gstd::wexception(L"“GƒXƒNƒŠƒvƒg‚ª•s³‚Å‚·");
+		if(infoEnemy == NULL)throw gstd::wexception(L"æ•µã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒä¸æ­£ã§ã™");
 
 		ref_count_ptr<StgControllerForViewer> controller = StgControllerForViewer::Create();
 		if(infoEnemy->GetType() == ScriptInformation::TYPE_PACKAGE)
@@ -147,13 +147,13 @@ bool ScenePanel::StartStg()
 		else
 		{
 			ref_count_ptr<ScriptInformation> infoPlayer = panelPathPlayer_->GetSelectedScriptInformation();
-			if(infoPlayer == NULL)throw gstd::wexception(L"©‹@ƒXƒNƒŠƒvƒg‚ª•s³‚Å‚·");
+			if(infoPlayer == NULL)throw gstd::wexception(L"è‡ªæ©Ÿã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒä¸æ­£ã§ã™");
 
 			ref_count_ptr<StgSystemInformation> infoStgSystem = new StgSystemInformation();
 			infoStgSystem->SetMainScriptInformation(infoEnemy);
 			controller->Initialize(infoStgSystem);
 
-			//ƒXƒe[ƒW
+			//ã‚¹ãƒ†ãƒ¼ã‚¸
 			controller->Start(infoPlayer, NULL);
 		}
 
@@ -166,8 +166,8 @@ bool ScenePanel::StartStg()
 	}
 	catch(...)
 	{
-		MessageBox(hWnd_, L"ŠJn¸”s", L"error", MB_OK);
-		Logger::WriteTop(L"ŠJn¸”s");
+		MessageBox(hWnd_, L"é–‹å§‹å¤±æ•—", L"error", MB_OK);
+		Logger::WriteTop(L"é–‹å§‹å¤±æ•—");
 	}
 
 	return true;
@@ -182,7 +182,7 @@ void ScenePanel::SetStgState(bool bStart)
 {
 	if(bStart)
 	{
-		buttonStart_.SetText(L"I—¹");
+		buttonStart_.SetText(L"çµ‚äº†");
 		buttonPause_.SetWindowEnable(true);
 
 		panelPathEnemy_->SetWindowEnable(false);
@@ -190,7 +190,7 @@ void ScenePanel::SetStgState(bool bStart)
 	}
 	else
 	{
-		buttonStart_.SetText(L"ŠJn");
+		buttonStart_.SetText(L"é–‹å§‹");
 		buttonPause_.SetWindowEnable(false);
 		panelPathEnemy_->SetWindowEnable(true);
 		panelPathPlayer_->SetWindowEnable(true);
@@ -233,15 +233,15 @@ bool ScenePanel::ScriptPathPanel::Initialize(int type, HWND hParent)
 	{
 		labelPath_.Create(hWnd_);
 		if(type == TYPE_ENEMY)
-			labelPath_.SetText(L"“GƒXƒNƒŠƒvƒg");
+			labelPath_.SetText(L"æ•µã‚¹ã‚¯ãƒªãƒ—ãƒˆ");
 		else
-			labelPath_.SetText(L"©‹@ƒXƒNƒŠƒvƒg");
+			labelPath_.SetText(L"è‡ªæ©Ÿã‚¹ã‚¯ãƒªãƒ—ãƒˆ");
 
 		editPath_.Create(hWnd_, styleEdit);
 
 
 		buttonPath_.Create(hWnd_, stylePath);
-		buttonPath_.SetText(L"‘I‘ğ");
+		buttonPath_.SetText(L"é¸æŠ");
 	}
 
 	labelPath_.SetBounds(8, 12, 72, 20);
@@ -285,8 +285,8 @@ LRESULT ScenePanel::ScriptPathPanel::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM
 				ofn.Flags = OFN_EXPLORER | OFN_HIDEREADONLY;
 				ofn.nFilterIndex = 1;
 				ofn.lpstrDefExt = ".txt";
-				ofn.lpstrFilter = "‘S‚Ä‚Ìƒtƒ@ƒCƒ‹ (*.*)\0*.*\0";
-				ofn.lpstrTitle = "ƒXƒNƒŠƒvƒg‚ğŠJ‚­";
+				ofn.lpstrFilter = "å…¨ã¦ã®ãƒ•ã‚¡ã‚¤ãƒ« (*.*)\0*.*\0";
+				ofn.lpstrTitle = "ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’é–‹ã";
 				if(GetOpenFileName(&ofn))
 				{
 					editPath_.SetText(path);

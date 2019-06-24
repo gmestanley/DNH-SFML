@@ -39,12 +39,12 @@ bool MainWindow::Initialize()
 	::UpdateWindow(hWnd_);
 	this->Attach(hWnd_);
 
-	//ƒ^ƒu
+	//ã‚¿ãƒ–
 	wndTab_ = new WTabControll();
 	wndTab_->Create(hWnd_);
 	HWND hTab = wndTab_->GetWindowHandle();
 
-	//ƒXƒe[ƒ^ƒXƒo[
+	//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒ¼
 	wndStatus_ = new WStatusBar();
 	wndStatus_->Create(hWnd_);
 	std::vector<int> sizeStatus;
@@ -61,7 +61,7 @@ bool MainWindow::Initialize()
 	panelScene_->Initialize(hTab);
 	wndTab_->AddTab(L"Scene", panelScene_);
 
-	//‰Šú‰»Š®—¹
+	//åˆæœŸåŒ–å®Œäº†
 	MoveWindowCenter();
 
 	wndTab_->ShowPage();
@@ -71,7 +71,7 @@ bool MainWindow::Initialize()
 	std::wstring pathLastData = PathProperty::GetModuleDirectory() + PathProperty::GetModuleName() + L".dat";
 	MainWindow::GetInstance()->Load(pathLastData);
 
-	//ƒfƒoƒbƒOƒEƒBƒ“ƒhƒE
+	//ãƒ‡ãƒãƒƒã‚°ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦
 	wndDebug_ = new DebugWindow();
 	wndDebug_->Initialize();
 	wndDebug_->ShowModeless();
@@ -132,7 +132,7 @@ LRESULT MainWindow::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lP
 
 				case ID_MENUITEM_MAIN_FIXEDAREA:
 				{
-					//•\¦ˆæŒÅ’è
+					//è¡¨ç¤ºåŸŸå›ºå®š
 					panelScene_->SetFixedArea(!panelScene_->IsFixedArea());
 					panelScene_->LocateParts();
 					break;
@@ -163,8 +163,8 @@ LRESULT MainWindow::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lP
 		}
 		case WM_INITMENUPOPUP:
 		{
-			//HMENU hMenu = (HMENU) wParam;         // ƒTƒuƒƒjƒ…[‚Ìƒnƒ“ƒhƒ‹
-			//int pos =  LOWORD(lParam);        // ƒTƒuƒƒjƒ…[€–Ú‚ÌˆÊ’u
+			//HMENU hMenu = (HMENU) wParam;         // ã‚µãƒ–ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ãƒãƒ³ãƒ‰ãƒ«
+			//int pos =  LOWORD(lParam);        // ã‚µãƒ–ãƒ¡ãƒ‹ãƒ¥ãƒ¼é …ç›®ã®ä½ç½®
 			HMENU hMenuMain = GetMenu(hWnd_);
 
 			DWORD valueLog = ELogger::GetInstance()->IsWindowVisible() ? MFS_CHECKED : MFS_UNCHECKED;
@@ -200,13 +200,13 @@ void MainWindow::SetStgController(ref_count_ptr<StgControllerForViewer> controll
 
 		task->RemoveTask(controller_.GetPointer());
 		controller_ = NULL;
-		Logger::WriteTop(L"STGƒV[ƒ“I—¹");
+		Logger::WriteTop(L"STGã‚·ãƒ¼ãƒ³çµ‚äº†");
 	}
 
 	controller_ = controller;
 	if(controller_ != NULL)
 	{
-		Logger::WriteTop(L"STGƒV[ƒ“ŠJn");
+		Logger::WriteTop(L"STGã‚·ãƒ¼ãƒ³é–‹å§‹");
 		try
 		{
 			DirectGraphics* graphics = DirectGraphics::GetBase();
@@ -235,7 +235,7 @@ bool MainWindow::Load(std::wstring path)
 	bool res = record.ReadFromFile(path);
 	if(!res)
 	{
-		//::MessageBox(hWnd_, "“Ç‚İ‚İ¸”s", "İ’è‚ğŠJ‚­", MB_OK);
+		//::MessageBox(hWnd_, "èª­ã¿è¾¼ã¿å¤±æ•—", "è¨­å®šã‚’é–‹ã", MB_OK);
 		return false;
 	}
 
@@ -293,7 +293,7 @@ bool GraphicsWindow::Initialize()
 	::UpdateWindow(hWnd_);
 	this->Attach(hWnd_);
 
-//Window‚ğ‰æ–Ê‚Ì’†‰›‚ÉˆÚ“®
+//Windowã‚’ç”»é¢ã®ä¸­å¤®ã«ç§»å‹•
 	MoveWindowCenter();
 
 	::ShowWindow(hWnd_, SW_HIDE);

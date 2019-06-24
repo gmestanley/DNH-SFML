@@ -14,10 +14,10 @@ namespace directx
 
 	enum
 	{
-		KEY_FREE= 0,	 // ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô
-		KEY_PUSH= 1,	 // ƒL[‚ğ‰Ÿ‚µ‚½uŠÔ
-		KEY_PULL= 2,	 // ƒL[‚ª—£‚³‚ê‚½uŠÔ
-		KEY_HOLD= 3,	 // ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚éó‘Ô
+		KEY_FREE= 0,	 // ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ãªã„çŠ¶æ…‹
+		KEY_PUSH= 1,	 // ã‚­ãƒ¼ã‚’æŠ¼ã—ãŸç¬é–“
+		KEY_PULL= 2,	 // ã‚­ãƒ¼ãŒé›¢ã•ã‚ŒãŸç¬é–“
+		KEY_HOLD= 3,	 // ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹çŠ¶æ…‹
 	};
 
 	/**********************************************************
@@ -40,15 +40,15 @@ namespace directx
 			LPDIRECTINPUT8 pInput_;
 			LPDIRECTINPUTDEVICE8 pKeyboard_;
 			LPDIRECTINPUTDEVICE8 pMouse_;
-			std::vector<LPDIRECTINPUTDEVICE8> pJoypad_;	// ƒpƒbƒhƒfƒoƒCƒXƒIƒuƒWƒFƒNƒg
+			std::vector<LPDIRECTINPUTDEVICE8> pJoypad_;	// ãƒ‘ãƒƒãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 			BYTE stateKey_[MAX_KEY];
 			DIMOUSESTATE stateMouse_;
 			std::vector<DIJOYSTATE> statePad_;
-			std::vector<int> padRes_;//ƒpƒbƒh‚Ì—V‚Ñ
+			std::vector<int> padRes_;//ãƒ‘ãƒƒãƒ‰ã®éŠã³
 
-			int bufKey_[MAX_KEY];//Œ»ƒtƒŒ[ƒ€‚ÌƒL[‚Ìó‘Ô
-			int bufMouse_[MAX_MOUSE_BUTTON];//Œ»ƒtƒŒ[ƒ€‚Ìƒ}ƒEƒX‚Ìó‘Ô
-			std::vector<std::vector<int> > bufPad_;//Œ»ƒtƒŒ[ƒ€‚Ìƒpƒbƒh‚Ìó‘Ô			
+			int bufKey_[MAX_KEY];//ç¾ãƒ•ãƒ¬ãƒ¼ãƒ ã®ã‚­ãƒ¼ã®çŠ¶æ…‹
+			int bufMouse_[MAX_MOUSE_BUTTON];//ç¾ãƒ•ãƒ¬ãƒ¼ãƒ ã®ãƒã‚¦ã‚¹ã®çŠ¶æ…‹
+			std::vector<std::vector<int> > bufPad_;//ç¾ãƒ•ãƒ¬ãƒ¼ãƒ ã®ãƒ‘ãƒƒãƒ‰ã®çŠ¶æ…‹			
 
 			bool _InitializeKeyBoard();
 			bool _InitializeMouse();
@@ -60,10 +60,10 @@ namespace directx
 			bool _IdleJoypad();
 			bool _IdleMouse();
 
-			int _GetKey(UINT code,int state);//ƒL[ó‘Ô‚Ìæ“¾
-			int _GetMouseButton(int button,int state);//ƒ}ƒEƒX‚Ìƒ{ƒ^ƒ“‚Ìó‘Ô‚ğæ“¾
-			int _GetPadDirection(int index,UINT code, int state);//ƒWƒ‡ƒCƒXƒeƒBƒbƒN•ûŒüƒL[‚Ìó‘Ôæ“¾
-			int _GetPadButton(int index,int buttonNo, int state);//ƒWƒ‡ƒCƒXƒeƒBƒbƒN‚Ìƒ{ƒ^ƒ“‚Ìó‘Ô‚ğæ“¾
+			int _GetKey(UINT code,int state);//ã‚­ãƒ¼çŠ¶æ…‹ã®å–å¾—
+			int _GetMouseButton(int button,int state);//ãƒã‚¦ã‚¹ã®ãƒœã‚¿ãƒ³ã®çŠ¶æ…‹ã‚’å–å¾—
+			int _GetPadDirection(int index,UINT code, int state);//ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯æ–¹å‘ã‚­ãƒ¼ã®çŠ¶æ…‹å–å¾—
+			int _GetPadButton(int index,int buttonNo, int state);//ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ãƒœã‚¿ãƒ³ã®çŠ¶æ…‹ã‚’å–å¾—
 			int _GetStateSub(bool flag, int state);
 
 		public:
@@ -73,14 +73,14 @@ namespace directx
 
 			virtual bool Initialize(HWND hWnd);
 
-			virtual void Update();//ƒL[‚ğƒZƒbƒg‚·‚é
+			virtual void Update();//ã‚­ãƒ¼ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 			int GetKeyState(int key);
 			int GetMouseState(int button);
 			int GetPadState(int padNo, int button);
 
-			int GetMouseMoveX(){return stateMouse_.lX;}//ƒ}ƒEƒX‚ÌˆÚ“®—Ê‚ğæ“¾X
-			int GetMouseMoveY(){return stateMouse_.lY;}//ƒ}ƒEƒX‚ÌˆÚ“®—Ê‚ğæ“¾Y
-			int GetMouseMoveZ(){return stateMouse_.lZ;}//ƒ}ƒEƒX‚ÌˆÚ“®—Ê‚ğæ“¾Z
+			int GetMouseMoveX(){return stateMouse_.lX;}//ãƒã‚¦ã‚¹ã®ç§»å‹•é‡ã‚’å–å¾—X
+			int GetMouseMoveY(){return stateMouse_.lY;}//ãƒã‚¦ã‚¹ã®ç§»å‹•é‡ã‚’å–å¾—Y
+			int GetMouseMoveZ(){return stateMouse_.lZ;}//ãƒã‚¦ã‚¹ã®ç§»å‹•é‡ã‚’å–å¾—Z
 			POINT GetMousePosition();
 
 			void ResetInputState();
@@ -100,10 +100,10 @@ namespace directx
 	{
 		friend VirtualKeyManager;
 		private:
-			int keyboard_;//ƒL[ƒ{[ƒh‚ÌƒL[
-			int padIndex_;//ƒWƒ‡ƒCƒpƒbƒh‚Ì”Ô†
-			int padButton_;//ƒWƒ‡ƒCƒpƒbƒh‚Ìƒ{ƒ^ƒ“
-			int state_;//Œ»İ‚Ìó‘Ô
+			int keyboard_;//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ã‚­ãƒ¼
+			int padIndex_;//ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®ç•ªå·
+			int padButton_;//ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®ãƒœã‚¿ãƒ³
+			int state_;//ç¾åœ¨ã®çŠ¶æ…‹
 
 		public:
 			VirtualKey(int keyboard, int padIndex, int padButton);
@@ -130,7 +130,7 @@ namespace directx
 		public:
 			VirtualKeyManager();
 			~VirtualKeyManager();
-			virtual void Update();//ƒL[‚ğƒZƒbƒg‚·‚é
+			virtual void Update();//ã‚­ãƒ¼ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 			void ClearKeyState();
 
 			void AddKeyMap(int id, gstd::ref_count_ptr<VirtualKey> key){mapKey_[id] = key;}
@@ -179,7 +179,7 @@ namespace directx
 	};
 }
 
-/* DirectInput ƒL[¯•ÊƒR[ƒh•\
+/* DirectInput ã‚­ãƒ¼è­˜åˆ¥ã‚³ãƒ¼ãƒ‰è¡¨
 DIK_ESCAPE 0x01 Esc   
 DIK_1 0x02 1   
 DIK_2 0x03 2   
@@ -268,16 +268,16 @@ DIK_F12 0x58 F12
 DIK_F13 0x64 F13 NEC PC-98 
 DIK_F14 0x65 F14 NEC PC-98 
 DIK_F15 0x66 F15 NEC PC-98 
-DIK_KANA 0x70 ƒJƒi “ú–{ŒêƒL[ƒ{[ƒh 
-DIK_CONVERT 0x79 •ÏŠ· “ú–{ŒêƒL[ƒ{[ƒh 
-DIK_NOCONVERT 0x7B –³•ÏŠ· “ú–{ŒêƒL[ƒ{[ƒh 
-DIK_YEN 0x7D \ “ú–{ŒêƒL[ƒ{[ƒh 
+DIK_KANA 0x70 ã‚«ãƒŠ æ—¥æœ¬èªã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ 
+DIK_CONVERT 0x79 å¤‰æ› æ—¥æœ¬èªã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ 
+DIK_NOCONVERT 0x7B ç„¡å¤‰æ› æ—¥æœ¬èªã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ 
+DIK_YEN 0x7D \ æ—¥æœ¬èªã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ 
 DIK_NUMPADEQUALS 0x8D = (Numpad) NEC PC-98 
-DIK_CIRCUMFLEX 0x90 •s–¾ “ú–{ŒêƒL[ƒ{[ƒh 
+DIK_CIRCUMFLEX 0x90 ä¸æ˜ æ—¥æœ¬èªã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ 
 DIK_AT 0x91 @ NEC PC-98 
 DIK_COLON 0x92 : NEC PC-98 
 DIK_UNDERLINE 0x93 _ NEC PC-98 
-DIK_KANJI 0x94 Š¿š “ú–{ŒêƒL[ƒ{[ƒh 
+DIK_KANJI 0x94 æ¼¢å­— æ—¥æœ¬èªã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ 
 DIK_STOP 0x95 Stop NEC PC-98 
 DIK_AX 0x96 (Japan AX)   
 DIK_UNLABELED 0x97 (J3100)   
@@ -289,12 +289,12 @@ DIK_SYSRQ 0xB7 Sys Rq
 DIK_RMENU 0xB8 Alt (Right)   
 DIK_PAUSE 0xC5 Pause   
 DIK_HOME 0xC7 Home   
-DIK_UP 0xC8 ª   
+DIK_UP 0xC8 â†‘   
 DIK_PRIOR 0xC9 Page Up   
-DIK_LEFT 0xCB ©   
-DIK_RIGHT 0xCD ¨   
+DIK_LEFT 0xCB â†   
+DIK_RIGHT 0xCD â†’   
 DIK_END 0xCF End   
-DIK_DOWN 0xD0 «   
+DIK_DOWN 0xD0 â†“   
 DIK_NEXT 0xD1 Page Down   
 DIK_INSERT 0xD2 Insert   
 DIK_DELETE 0xD3 Delete   

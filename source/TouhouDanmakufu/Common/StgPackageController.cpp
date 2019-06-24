@@ -21,9 +21,9 @@ void StgPackageController::Initialize()
 	ref_count_ptr<ScriptInformation> infoScript = infoSystem->GetMainScriptInformation();
 	infoPackage_->SetMainScriptInformation(infoScript);
 
-	//ƒƒCƒ“ƒXƒNƒŠƒvƒg
+	//ãƒ¡ã‚¤ãƒ³ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 	std::wstring pathMainScript = infoScript->GetScriptPath();
-	ELogger::WriteTop(StringUtility::Format(L"ƒpƒbƒP[ƒWƒXƒNƒŠƒvƒg[%s]", pathMainScript.c_str()));
+	ELogger::WriteTop(StringUtility::Format(L"ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã‚¹ã‚¯ãƒªãƒ—ãƒˆ[%s]", pathMainScript.c_str()));
 	_int64 idScript = scriptManager_->LoadScript(pathMainScript, StgPackageScript::TYPE_PACKAGE_MAIN);
 	scriptManager_->StartScript(idScript);
 
@@ -32,7 +32,7 @@ void StgPackageController::Initialize()
 void StgPackageController::Work()
 {
 	scriptManager_->Work();
-	//ƒXƒNƒŠƒvƒg‚ª•Â‚¶‚ç‚ê‚½ê‡‚ÍÄ“xŽÀs(•`‰æ‚ÌŒp‚¬–Ú‚ð–Ú—§‚½‚È‚­‚·‚é)
+	//ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒé–‰ã˜ã‚‰ã‚ŒãŸå ´åˆã¯å†åº¦å®Ÿè¡Œ(æç”»ã®ç¶™ãŽç›®ã‚’ç›®ç«‹ãŸãªãã™ã‚‹)
 	if(scriptManager_->IsHasCloseScliptWork()) 
 		scriptManager_->Work();
 }

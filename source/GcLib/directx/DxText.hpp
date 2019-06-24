@@ -28,12 +28,12 @@ namespace directx
 				BORDER_SHADOW,
 			};
 		protected:
-			LOGFONT info_;//ƒtƒHƒ“ƒgí•Ê
+			LOGFONT info_;//ãƒ•ã‚©ãƒ³ãƒˆç¨®åˆ¥
 			D3DCOLOR colorTop_;
 			D3DCOLOR colorBottom_;
-			int typeBorder_;//‰æ‚è
+			int typeBorder_;//ç¸å–ã‚Š
 			int widthBorder_;
-			D3DCOLOR colorBorder_;//‰æ‚èF
+			D3DCOLOR colorBorder_;//ç¸å–ã‚Šè‰²
 		public:
 			DxFont();
 			virtual ~DxFont();
@@ -53,7 +53,7 @@ namespace directx
 
 	/**********************************************************
 	//DxChar
-	//•¶š1•¶š‚ÌƒeƒNƒXƒ`ƒƒ
+	//æ–‡å­—1æ–‡å­—ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	**********************************************************/
 	class DxChar
 	{
@@ -76,7 +76,7 @@ namespace directx
 
 	/**********************************************************
 	//DxCharCache
-	//•¶šƒLƒƒƒbƒVƒ…
+	//æ–‡å­—ã‚­ãƒ£ãƒƒã‚·ãƒ¥
 	**********************************************************/
 	class DxCharCacheKey
 	{
@@ -186,14 +186,14 @@ namespace directx
 		protected:
 			int line_;
 			std::vector<wchar_t> buffer_;
-			std::vector<wchar_t>::iterator pointer_;//¡‚ÌˆÊ’u
-			DxTextToken token_;//Œ»İ‚Ìƒg[ƒNƒ“
+			std::vector<wchar_t>::iterator pointer_;//ä»Šã®ä½ç½®
+			DxTextToken token_;//ç¾åœ¨ã®ãƒˆãƒ¼ã‚¯ãƒ³
 			boolean bTagScan_;
 
-			wchar_t _NextChar();//ƒ|ƒCƒ“ƒ^‚ği‚ß‚ÄŸ‚Ì•¶š‚ğ’²‚×‚é
-			virtual void _SkipComment();//ƒRƒƒ“ƒg‚ğ‚Æ‚Î‚·
-			virtual void _SkipSpace();//‹ó”’‚ğ‚Æ‚Î‚·
-			virtual void _RaiseError(std::wstring str);//—áŠO‚ğ“Š‚°‚Ü‚·
+			wchar_t _NextChar();//ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã¦æ¬¡ã®æ–‡å­—ã‚’èª¿ã¹ã‚‹
+			virtual void _SkipComment();//ã‚³ãƒ¡ãƒ³ãƒˆã‚’ã¨ã°ã™
+			virtual void _SkipSpace();//ç©ºç™½ã‚’ã¨ã°ã™
+			virtual void _RaiseError(std::wstring str);//ä¾‹å¤–ã‚’æŠ•ã’ã¾ã™
 			bool _IsTextStartSign();
 			bool _IsTextScan();
 		public:
@@ -202,7 +202,7 @@ namespace directx
 			DxTextScanner(std::vector<wchar_t>& buf);
 			virtual ~DxTextScanner();
 
-			DxTextToken& GetToken();//Œ»İ‚Ìƒg[ƒNƒ“‚ğæ“¾
+			DxTextToken& GetToken();//ç¾åœ¨ã®ãƒˆãƒ¼ã‚¯ãƒ³ã‚’å–å¾—
 			DxTextToken& Next();
 			bool HasNext();
 			void CheckType(DxTextToken& tok, int type);
@@ -219,7 +219,7 @@ namespace directx
 
 	/**********************************************************
 	//DxTextRenderer
-	//ƒeƒLƒXƒg•`‰æƒGƒ“ƒWƒ“
+	//ãƒ†ã‚­ã‚¹ãƒˆæç”»ã‚¨ãƒ³ã‚¸ãƒ³
 	**********************************************************/
 	class DxTextLine;
 	class DxTextInfo;
@@ -328,12 +328,12 @@ namespace directx
 			gstd::ref_count_ptr<Sprite2D> sprite;
 		};
 		protected:
-			POINT position_;//ˆÚ“®æÀ•W
-			D3DXVECTOR3 angle_;//‰ñ“]Šp“x
-			D3DXVECTOR3 scale_;//Šg‘å—¦
+			POINT position_;//ç§»å‹•å…ˆåº§æ¨™
+			D3DXVECTOR3 angle_;//å›è»¢è§’åº¦
+			D3DXVECTOR3 scale_;//æ‹¡å¤§ç‡
 			D3DCOLOR color_;
 			std::list<ObjectData> listData_;
-			D3DXVECTOR2 center_;//À•W•ÏŠ·‚Ì’†S
+			D3DXVECTOR2 center_;//åº§æ¨™å¤‰æ›ã®ä¸­å¿ƒ
 			bool bAutoCenter_;
 			bool bPermitCamera_;
 			gstd::ref_count_ptr<Shader> shader_;
@@ -408,7 +408,7 @@ namespace directx
 
 	/**********************************************************
 	//DxText
-	//ƒeƒLƒXƒg•`‰æ
+	//ãƒ†ã‚­ã‚¹ãƒˆæç”»
 	**********************************************************/
 	class DxText
 	{

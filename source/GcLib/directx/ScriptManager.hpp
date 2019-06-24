@@ -115,11 +115,11 @@ namespace directx
 			gstd::value RequestEvent(int type, std::vector<gstd::value>& listValue = std::vector<gstd::value>());
 
 
-			//§Œä‹¤’ÊŠÖ”F‹¤’Êƒf[ƒ^
+			//åˆ¶å¾¡å…±é€šé–¢æ•°ï¼šå…±é€šãƒ‡ãƒ¼ã‚¿
 			static gstd::value Func_SaveCommonDataAreaA1(gstd::script_machine* machine, int argc, gstd::value const * argv);
 			static gstd::value Func_LoadCommonDataAreaA1(gstd::script_machine* machine, int argc, gstd::value const * argv);
 
-			//§Œä‹¤’ÊŠÖ”FƒXƒNƒŠƒvƒg‘€ì
+			//åˆ¶å¾¡å…±é€šé–¢æ•°ï¼šã‚¹ã‚¯ãƒªãƒ—ãƒˆæ“ä½œ
 			static gstd::value Func_LoadScript(gstd::script_machine* machine, int argc, gstd::value const * argv);
 			static gstd::value Func_LoadScriptInThread(gstd::script_machine* machine, int argc, gstd::value const * argv);
 			static gstd::value Func_StartScript(gstd::script_machine* machine, int argc, gstd::value const * argv);

@@ -72,7 +72,7 @@ class ReplayInformation
 class ReplayInformation::StageData
 {
 	private:
-		//ƒXƒe[ƒWî•ñ
+		//ã‚¹ãƒ†ãƒ¼ã‚¸æƒ…å ±
 		std::wstring mainScriptID_;
 		std::wstring mainScriptName_;
 		std::wstring mainScriptRelativePath_;
@@ -87,7 +87,7 @@ class ReplayInformation::StageData
 		ref_count_ptr<gstd::RecordBuffer> recordKey_;
 		std::map<std::string, ref_count_ptr<gstd::RecordBuffer> > mapCommonData_;
 
-		//Ž©‹@î•ñ
+		//è‡ªæ©Ÿæƒ…å ±
 		std::wstring playerScriptID_;
 		std::wstring playerScriptFileName_;
 		std::wstring playerScriptReplayName_;
@@ -95,7 +95,7 @@ class ReplayInformation::StageData
 		double playerLife_;
 		double playerBombCount_;
 		double playerPower_;
-		int playerRebirthFrame_;//‚­‚ç‚¢ƒ{ƒ€—LŒøƒtƒŒ[ƒ€
+		int playerRebirthFrame_;//ãã‚‰ã„ãƒœãƒ æœ‰åŠ¹ãƒ•ãƒ¬ãƒ¼ãƒ 
 
 	public:
 		StageData(){recordKey_ = new gstd::RecordBuffer();scoreStart_=0;scoreLast_=0;}

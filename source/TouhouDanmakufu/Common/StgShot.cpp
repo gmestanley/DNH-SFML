@@ -52,9 +52,9 @@ void StgShotManager::Render(int targetPriority)
 	graphics->SetCullingMode(D3DCULL_NONE);
 	graphics->SetLightingEnable(false);
 	//graphics->SetTextureFilter(DirectGraphics::MODE_TEXTURE_FILTER_POINT);
-	//			MODE_TEXTURE_FILTER_POINT,//•âŠÔ‚È‚µ
-	//			MODE_TEXTURE_FILTER_LINEAR,//üŒ`•âŠÔ
-	//ƒtƒHƒO‚ğ‰ğœ‚·‚é
+	//			MODE_TEXTURE_FILTER_POINT,//è£œé–“ãªã—
+	//			MODE_TEXTURE_FILTER_LINEAR,//ç·šå½¢è£œé–“
+	//ãƒ•ã‚©ã‚°ã‚’è§£é™¤ã™ã‚‹
 	DWORD bEnableFog = FALSE;
 	graphics->GetDevice()->GetRenderState(D3DRS_FOGENABLE, &bEnableFog);
 	if(bEnableFog)
@@ -73,7 +73,7 @@ void StgShotManager::Render(int targetPriority)
 		obj->RenderOnShotManager(matCamera);
 	}
 
-	//•`‰æ
+	//æç”»
 	int countBlendType = StgShotDataList::RENDER_TYPE_COUNT;
 	int blendMode[] = 
 	{
@@ -306,7 +306,7 @@ bool StgShotDataList::AddShotDataList(std::wstring path, bool bReload)
 		while(scanner.HasNext())
 		{
 			Token& tok = scanner.Next();
-			if(tok.GetType() == Token::TK_EOF)//Eof‚Ì¯•Êq‚ª—ˆ‚½‚çƒtƒ@ƒCƒ‹‚Ì’²¸I—¹
+			if(tok.GetType() == Token::TK_EOF)//Eofã®è­˜åˆ¥å­ãŒæ¥ãŸã‚‰ãƒ•ã‚¡ã‚¤ãƒ«ã®èª¿æŸ»çµ‚äº†
 			{
 				break;
 			}
@@ -346,14 +346,14 @@ bool StgShotDataList::AddShotDataList(std::wstring path, bool bReload)
 			}
 		}
 
-		//ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
-		if(pathImage.size() == 0)throw gstd::wexception(L"‰æ‘œƒtƒ@ƒCƒ‹‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+		//ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
+		if(pathImage.size() == 0)throw gstd::wexception(L"ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
 		std::wstring dir = PathProperty::GetFileDirectory(path);
 		pathImage = StringUtility::Replace(pathImage, L"./", dir);
 
 		ref_count_ptr<Texture> texture = new Texture();
 		bool bTexture = texture->CreateFromFile(pathImage);
-		if(!bTexture)throw gstd::wexception(L"‰æ‘œƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B");
+		if(!bTexture)throw gstd::wexception(L"ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸã€‚");
 
 		int textureIndex = -1;
 		for(int iTexture = 0 ;iTexture < listTexture_.size() ; iTexture++)
@@ -390,18 +390,18 @@ bool StgShotDataList::AddShotDataList(std::wstring path, bool bReload)
 		}
 
 		listReadPath_.insert(path);
-		Logger::WriteTop(StringUtility::Format(L"’eƒf[ƒ^‚ğ“Ç‚İ‚İ‚Ü‚µ‚½:%s", path.c_str()));
+		Logger::WriteTop(StringUtility::Format(L"å¼¾ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã¿ã¾ã—ãŸ:%s", path.c_str()));
 		res = true;
 	}
 	catch(gstd::wexception& e)
 	{
-		std::wstring log = StringUtility::Format(L"’eƒf[ƒ^“Ç‚İ‚İ¸”s:%ds–Ú(%s)", scanner.GetCurrentLine(), e.what());
+		std::wstring log = StringUtility::Format(L"å¼¾ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿å¤±æ•—:%dè¡Œç›®(%s)", scanner.GetCurrentLine(), e.what());
 		Logger::WriteTop(log);
 		res = NULL;
 	}
 	catch(...)
 	{
-		std::wstring log = StringUtility::Format(L"’eƒf[ƒ^“Ç‚İ‚İ¸”s:%ds–Ú", scanner.GetCurrentLine());
+		std::wstring log = StringUtility::Format(L"å¼¾ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿å¤±æ•—:%dè¡Œç›®", scanner.GetCurrentLine());
 		Logger::WriteTop(log);
 		res = NULL;
 	}
@@ -734,7 +734,7 @@ void StgShotRenderer::Render()
 
 	device->DrawPrimitiveUP(typePrimitive_, _GetPrimitiveCount(), vertex_.GetPointer(), strideVertexStreamZero_);
 
-	//•`‰æ‘ÎÛ‚ğƒNƒŠƒA‚·‚é
+	//æç”»å¯¾è±¡ã‚’ã‚¯ãƒªã‚¢ã™ã‚‹
 	countRenderVertex_ = 0;
 }
 void StgShotRenderer::AddVertex(VERTEX_TLX& vertex)
@@ -804,7 +804,7 @@ void StgShotObject::_Move()
 	SetX(posX_);
 	SetY(posY_);
 
-	//’e‰æ‘œ’u‚«Š·‚¦ˆ—
+	//å¼¾ç”»åƒç½®ãæ›ãˆå‡¦ç†
 	if(pattern_ != NULL)
 	{
 		int idShot = pattern_->GetShotDataID();
@@ -1132,7 +1132,7 @@ void StgNormalShotObject::_AddIntersectionRelativeTarget()
 	if(frameFadeDelete_ >= 0)return;
 	ClearIntersected();
 	if(IsDeleted())return;
-	if(bUserIntersectionMode_)return;//ƒ†[ƒU’è‹`‚ ‚½‚è”»’èƒ‚[ƒh
+	if(bUserIntersectionMode_)return;//ãƒ¦ãƒ¼ã‚¶å®šç¾©ã‚ãŸã‚Šåˆ¤å®šãƒ¢ãƒ¼ãƒ‰
 	if(!bIntersectionEnable_)return;
 
 	StgShotData* shotData = _GetShotData();
@@ -1193,12 +1193,12 @@ void StgNormalShotObject::_AddIntersectionRelativeTarget()
 
 	if(typeOwner_ == OWNER_PLAYER)
 	{
-		//©’e‚Ìê‡‚Í“o˜^
+		//è‡ªå¼¾ã®å ´åˆã¯ç™»éŒ²
 		bInvalid = false;
 	}
 	else
 	{
-		//©‹@‚ÌˆÚ“®”ÍˆÍ‚ª•‰‚Ì’l‚ª‰Â”\‚Å‚ ‚ê‚Î“G’e‚Å‚à“o˜^
+		//è‡ªæ©Ÿã®ç§»å‹•ç¯„å›²ãŒè² ã®å€¤ãŒå¯èƒ½ã§ã‚ã‚Œã°æ•µå¼¾ã§ã‚‚ç™»éŒ²
 		ref_count_ptr<StgPlayerObject>::unsync player = stageController_->GetPlayerObject();
 		if(player != NULL)
 		{
@@ -1218,7 +1218,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > StgNormalShotObject::
 	if(delay_ > 0)return res;
 	if(frameFadeDelete_ >= 0)return res;
 	if(IsDeleted())return res;
-	if(bUserIntersectionMode_)return res;//ƒ†[ƒU’è‹`‚ ‚½‚è”»’èƒ‚[ƒh
+	if(bUserIntersectionMode_)return res;//ãƒ¦ãƒ¼ã‚¶å®šç¾©ã‚ãŸã‚Šåˆ¤å®šãƒ¢ãƒ¼ãƒ‰
 	if(!bIntersectionEnable_)return res;
 
 	StgShotData* shotData = _GetShotData();
@@ -1259,9 +1259,10 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > StgNormalShotObject::
 	return res;
 }
 
-void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX mat)
+void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX& matO)
 {
 	if(!IsVisible())return;
+	D3DXMATRIX mat = matO;
 
 	StgShotData* shotData = _GetShotData();
 	if(shotData == NULL)return;
@@ -1271,7 +1272,7 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX mat)
 	int shotBlendType = DirectGraphics::MODE_BLEND_ALPHA;
 	if(delay_ > 0)
 	{
-		//’x‰„ŠÔ
+		//é…å»¶æ™‚é–“
 		int objDelayBlendType = GetSourceBlendType();
 		if(objDelayBlendType == DirectGraphics::MODE_BLEND_NONE)
 		{
@@ -1306,7 +1307,7 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX mat)
 	D3DCOLOR color;
 	if(delay_ > 0)
 	{
-		//’x‰„ŠÔ
+		//é…å»¶æ™‚é–“
 		double expa = 0.5f + (double)delay_ / 30.0f * 2;
 		if(expa > 2)expa = 2;
 
@@ -1342,13 +1343,13 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX mat)
 		bool bValidAlpha = StgShotData::IsAlphaBlendValidType(shotBlendType);
 		if(bValidAlpha)
 		{
-			//ƒ¿—LŒø
+			//Î±æœ‰åŠ¹
 			int colorA = ColorAccess::GetColorA(color);
 			color = ColorAccess::SetColorA(color, alpha * colorA);
 		}
 		else
 		{
-			//ƒ¿–³Œø
+			//Î±ç„¡åŠ¹
 			color = ColorAccess::ApplyAlpha(color, alpha);
 		}
 	}
@@ -1359,7 +1360,7 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX mat)
 	if(width % 2 == 1)rcDest.right += 1;
 	if(height % 2 == 1)rcDest.bottom += 1;
 
-	//if(bIntersected_)color = D3DCOLOR_ARGB(255, 255, 0, 0);//ÚGƒeƒXƒg
+	//if(bIntersected_)color = D3DCOLOR_ARGB(255, 255, 0, 0);//æ¥è§¦ãƒ†ã‚¹ãƒˆ
 
 	VERTEX_TLX verts[4];
 	int srcX[] = {rcSrc.left, rcSrc.right, rcSrc.left, rcSrc.right};
@@ -1394,13 +1395,13 @@ void StgNormalShotObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 	{
 		case StgIntersectionTarget::TYPE_PLAYER:
 		{
-			//©‹@
+			//è‡ªæ©Ÿ
 			frameGrazeInvalid_ = INT_MAX;
 			break;
 		}
 		case StgIntersectionTarget::TYPE_PLAYER_SHOT:
 		{
-			//©‹@’e
+			//è‡ªæ©Ÿå¼¾
 			StgShotObject* shot = (StgShotObject*)otherTarget->GetObject().GetPointer();
 			if(shot != NULL)
 			{
@@ -1412,7 +1413,7 @@ void StgNormalShotObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 		}
 		case StgIntersectionTarget::TYPE_PLAYER_SPELL:
 		{
-			//©‹@ƒXƒyƒ‹
+			//è‡ªæ©Ÿã‚¹ãƒšãƒ«
 			StgPlayerSpellObject* spell = (StgPlayerSpellObject*)otherTarget->GetObject().GetPointer();
 			if(spell != NULL)
 			{
@@ -1460,7 +1461,7 @@ void StgNormalShotObject::_ConvertToItemAndSendEvent()
 		int id = objectManager->AddObject(obj);
 		if(id != DxScript::ID_INVALID)
 		{
-			//’e‚ÌÀ•W‚ÉƒAƒCƒeƒ€‚ğì¬‚·‚é
+			//å¼¾ã®åº§æ¨™ã«ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½œæˆã™ã‚‹
 			StgItemManager* itemManager = stageController_->GetItemManager();
 			itemManager->AddItem(obj);
 			obj->SetPositionX(posX);
@@ -1481,7 +1482,7 @@ void StgNormalShotObject::SetShotDataID(int id)
 	StgShotData* oldData = _GetShotData();
 	StgShotObject::SetShotDataID(id);
 
-	//Šp‘¬“xXV
+	//è§’é€Ÿåº¦æ›´æ–°
 	StgShotData* shotData = _GetShotData();
 	if(shotData != NULL && oldData != shotData)
 	{
@@ -1505,7 +1506,7 @@ void StgNormalShotObject::SetShotDataID(int id)
 }
 
 /**********************************************************
-//StgLaserObject(ƒŒ[ƒU[Šî–{•”)
+//StgLaserObject(ãƒ¬ãƒ¼ã‚¶ãƒ¼åŸºæœ¬éƒ¨)
 **********************************************************/
 StgLaserObject::StgLaserObject(StgStageController* stageController) : StgShotObject(stageController)
 {
@@ -1552,7 +1553,7 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 	{
 		case StgIntersectionTarget::TYPE_PLAYER:
 		{
-			//©‹@
+			//è‡ªæ©Ÿ
 			if(frameGrazeInvalid_ <= 0)
 			{
 				frameGrazeInvalid_ = frameGrazeInvalidStart_ > 0 ? frameGrazeInvalidStart_ : INT_MAX;
@@ -1561,7 +1562,7 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 		}
 		case StgIntersectionTarget::TYPE_PLAYER_SHOT:
 		{
-			//©‹@’e’e
+			//è‡ªæ©Ÿå¼¾å¼¾
 			StgShotObject* shot = (StgShotObject*)otherTarget->GetObject().GetPointer();
 			if(shot != NULL)
 			{
@@ -1576,7 +1577,7 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 		}
 		case StgIntersectionTarget::TYPE_PLAYER_SPELL:
 		{
-			//©‹@ƒXƒyƒ‹
+			//è‡ªæ©Ÿã‚¹ãƒšãƒ«
 			StgPlayerSpellObject* spell = (StgPlayerSpellObject*)otherTarget->GetObject().GetPointer();
 			if(spell != NULL)
 			{
@@ -1596,7 +1597,7 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 
 
 /**********************************************************
-//StgLooseLaserObject(ËoŒ^ƒŒ[ƒU[)
+//StgLooseLaserObject(å°„å‡ºå‹ãƒ¬ãƒ¼ã‚¶ãƒ¼)
 **********************************************************/
 StgLooseLaserObject::StgLooseLaserObject(StgStageController* stageController) : StgLaserObject(stageController)
 {
@@ -1604,7 +1605,7 @@ StgLooseLaserObject::StgLooseLaserObject(StgStageController* stageController) : 
 }
 void StgLooseLaserObject::Work()
 {
-	//1ƒtƒŒ[ƒ€–Ú‚ÍˆÚ“®‚µ‚È‚¢
+	//1ãƒ•ãƒ¬ãƒ¼ãƒ ç›®ã¯ç§»å‹•ã—ãªã„
 	if(frameWork_ == 0)
 	{
 		posXE_ = posX_;
@@ -1670,7 +1671,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > StgLooseLaserObject::
 	if(delay_ > 0)return res;
 	if(frameFadeDelete_ >= 0)return res;
 	if(IsDeleted())return res;
-	if(bUserIntersectionMode_)return res;//ƒ†[ƒU’è‹`‚ ‚½‚è”»’èƒ‚[ƒh
+	if(bUserIntersectionMode_)return res;//ãƒ¦ãƒ¼ã‚¶å®šç¾©ã‚ãŸã‚Šåˆ¤å®šãƒ¢ãƒ¼ãƒ‰
 	if(!bIntersectionEnable_)return res;
 
 	StgShotData* shotData = _GetShotData();
@@ -1679,7 +1680,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > StgLooseLaserObject::
 	ref_count_ptr<StgShotObject>::unsync obj = GetOwnObject();
 	if(obj == NULL)return res;
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	double ang = GetDirectionAngle();
 	int length = pow(pow(posXE_ - posX_, 2) + pow(posYE_ - posY_, 2) , 0.5);
 	int invalidLengthS = min(length , invalidLengthStart_);
@@ -1706,9 +1707,10 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > StgLooseLaserObject::
 	return res;
 }
 
-void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX mat)
+void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX& matO)
 {
 	if(!IsVisible())return;
+	D3DXMATRIX mat = matO;
 
 	StgShotData* shotData = _GetShotData();
 	if(shotData == NULL)return;
@@ -1717,7 +1719,7 @@ void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 	StgShotRenderer* renderer = NULL;
 	if(delay_ > 0)
 	{
-		//’x‰„ŠÔ
+		//é…å»¶æ™‚é–“
 		int objDelayBlendType = GetSourceBlendType();
 		if(objDelayBlendType == DirectGraphics::MODE_BLEND_NONE)
 		{
@@ -1754,7 +1756,7 @@ void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 	D3DCOLOR color;
 	if(delay_ > 0)
 	{
-		//’x‰„ŠÔ
+		//é…å»¶æ™‚é–“
 		double expa = 0.5f + (double)delay_ / 30.0f * 2;
 		if(expa > 3.5)expa = 3.5;
 
@@ -1789,13 +1791,13 @@ void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		bool bValidAlpha = StgShotData::IsAlphaBlendValidType(shotBlendType);
 		if(bValidAlpha)
 		{
-			//ƒ¿—LŒø
+			//Î±æœ‰åŠ¹
 			int colorA = ColorAccess::GetColorA(color);
 			color = ColorAccess::SetColorA(color, alpha * colorA);
 		}
 		else
 		{
-			//ƒ¿–³Œø
+			//Î±ç„¡åŠ¹
 			color = ColorAccess::ApplyAlpha(color, alpha);
 		}
 
@@ -1857,7 +1859,7 @@ void StgLooseLaserObject::_ConvertToItemAndSendEvent()
 			int id = stageController_->GetMainObjectManager()->AddObject(obj);
 			if(id != DxScript::ID_INVALID)
 			{
-				//’e‚ÌÀ•W‚ÉƒAƒCƒeƒ€‚ğì¬‚·‚é
+				//å¼¾ã®åº§æ¨™ã«ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½œæˆã™ã‚‹
 				itemManager->AddItem(obj);
 				obj->SetPositionX(posX);
 				obj->SetPositionY(posY);
@@ -1875,7 +1877,7 @@ void StgLooseLaserObject::RegistIntersectionTarget()
 }
 
 /**********************************************************
-//StgStraightLaserObject(İ’uŒ^ƒŒ[ƒU[)
+//StgStraightLaserObject(è¨­ç½®å‹ãƒ¬ãƒ¼ã‚¶ãƒ¼)
 **********************************************************/
 StgStraightLaserObject::StgStraightLaserObject(StgStageController* stageController) : StgLaserObject(stageController)
 {
@@ -1944,14 +1946,14 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > StgStraightLaserObjec
 	if(delay_ > 0)return res;
 	if(frameFadeDelete_ >= 0)return res;
 	if(IsDeleted())return res;
-	if(bUserIntersectionMode_)return res;//ƒ†[ƒU’è‹`‚ ‚½‚è”»’èƒ‚[ƒh
+	if(bUserIntersectionMode_)return res;//ãƒ¦ãƒ¼ã‚¶å®šç¾©ã‚ãŸã‚Šåˆ¤å®šãƒ¢ãƒ¼ãƒ‰
 	if(!bIntersectionEnable_)return res;
 
 	StgShotData* shotData = _GetShotData();
 	if(shotData == NULL)return res;
 	if(scaleX_ < 1.0 && typeOwner_ != OWNER_PLAYER)return res;
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	int posXS = posX_ + invalidLengthStart_ * cos(Math::DegreeToRadian(angLaser_));
 	int posYS = posY_ + invalidLengthStart_ * sin(Math::DegreeToRadian(angLaser_));
 	int length = max((length_ - invalidLengthEnd_), 0);
@@ -2003,10 +2005,10 @@ void StgStraightLaserObject::_AddReservedShot(ref_count_ptr<StgShotObject>::unsy
 	obj->Activate();
 	objectManager->ActivateObject(obj->GetObjectID(), true);
 }
-void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
+void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX& matO)
 {
 	if(!IsVisible())return;
-
+	D3DXMATRIX mat = matO;
 	StgShotData* shotData = _GetShotData();
 	if(shotData == NULL)return;
 
@@ -2025,7 +2027,7 @@ void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		}
 		if(renderer == NULL)return;
 
-		//ƒŒ[ƒU[
+		//ãƒ¬ãƒ¼ã‚¶ãƒ¼
 		D3DXMATRIX matScale;
 		D3DXMATRIX matRot;
 		D3DXMATRIX matTrans;
@@ -2046,13 +2048,13 @@ void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		bool bValidAlpha = StgShotData::IsAlphaBlendValidType(shotBlendType);
 		if(bValidAlpha)
 		{
-			//ƒ¿—LŒø
+			//Î±æœ‰åŠ¹
 			int colorA = ColorAccess::GetColorA(color);
 			color = ColorAccess::SetColorA(color, alpha * colorA);
 		}
 		else
 		{
-			//ƒ¿–³Œø
+			//Î±ç„¡åŠ¹
 			color = ColorAccess::ApplyAlpha(color, alpha);
 		}		
 
@@ -2089,7 +2091,7 @@ void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		int sourceBlendType = shotBlendType;
 		if(objSourceBlendType == DirectGraphics::MODE_BLEND_NONE)
 		{
-			//–¢İ’è‚Ìê‡‚ÍAƒŒ[ƒU[•`‰æí•Ê‚ğˆø‚«Œp‚®
+			//æœªè¨­å®šã®å ´åˆã¯ã€ãƒ¬ãƒ¼ã‚¶ãƒ¼æç”»ç¨®åˆ¥ã‚’å¼•ãç¶™ã
 			renderer = shotData->GetRendererFromGraphicsBlendType(sourceBlendType);
 		}
 		else
@@ -2099,7 +2101,7 @@ void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		}
 		if(renderer == NULL)return;
 
-		//ŒõŒ¹
+		//å…‰æº
 		D3DXMATRIX matScale;
 		D3DXMATRIX matRot;
 		D3DXMATRIX matTrans;
@@ -2172,7 +2174,7 @@ void StgStraightLaserObject::_ConvertToItemAndSendEvent()
 			int id = stageController_->GetMainObjectManager()->AddObject(obj);
 			if(id != DxScript::ID_INVALID)
 			{
-				//’e‚ÌÀ•W‚ÉƒAƒCƒeƒ€‚ğì¬‚·‚é
+				//å¼¾ã®åº§æ¨™ã«ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½œæˆã™ã‚‹
 				itemManager->AddItem(obj);
 				obj->SetPositionX(posX);
 				obj->SetPositionY(posY);
@@ -2188,7 +2190,7 @@ void StgStraightLaserObject::RegistIntersectionTarget()
 	}
 }
 /**********************************************************
-//StgCurveLaserObject(‹È‚ª‚éŒ^ƒŒ[ƒU[)
+//StgCurveLaserObject(æ›²ãŒã‚‹å‹ãƒ¬ãƒ¼ã‚¶ãƒ¼)
 **********************************************************/
 StgCurveLaserObject::StgCurveLaserObject(StgStageController* stageController) : StgLaserObject(stageController)
 {
@@ -2268,7 +2270,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > StgCurveLaserObject::
 	if(delay_ > 0)return res;
 	if(frameFadeDelete_ >= 0)return res;
 	if(IsDeleted())return res;
-	if(bUserIntersectionMode_)return res;//ƒ†[ƒU’è‹`‚ ‚½‚è”»’èƒ‚[ƒh
+	if(bUserIntersectionMode_)return res;//ãƒ¦ãƒ¼ã‚¶å®šç¾©ã‚ãŸã‚Šåˆ¤å®šãƒ¢ãƒ¼ãƒ‰
 	if(!bIntersectionEnable_)return res;
 
 	StgShotData* shotData = _GetShotData();
@@ -2278,7 +2280,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > StgCurveLaserObject::
 	if(obj == NULL)return res;
 	ref_count_weak_ptr<StgShotObject>::unsync wObj = obj;
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	std::vector<Position> listPos;
 	std::list<Position>::iterator itr = listPosition_.begin();
 	for(; itr != listPosition_.end() ; itr++)
@@ -2325,205 +2327,204 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > StgCurveLaserObject::
 	return res;
 }
 
-void StgCurveLaserObject::RenderOnShotManager(D3DXMATRIX mat)
-{
-	if(!IsVisible())return;
+double StgShotObject::cssn(double s, double ang) {
+	const double PAI = 3.14159265358979323846;
+	const double TWOPAI = PAI * 2;
+	double c = sqrt(1 - s * s);
+	double angMod = fmod(ang, TWOPAI);
+	double fullRad = (angMod * TWOPAI < 0) ? (angMod + TWOPAI) : angMod;
+	double normRad = (fullRad > PAI) ? (fullRad - TWOPAI) : fullRad;
+	if (abs(normRad) > (PAI / 2)) {
+		c *= -1;
+	}
+	return c;
+}
+
+//Extremely special thanks to Natashi for making this not awful
+void StgCurveLaserObject::RenderOnShotManager(D3DXMATRIX& mat) {    //original: (D3DXMATRIX mat)
+	if (!IsVisible())return;
 
 	StgShotData* shotData = _GetShotData();
-	if(shotData == NULL)return;
+	if (shotData == nullptr)return;
 
 	int shotBlendType = StgShotDataList::RENDER_ADD_ARGB;
-	StgShotRenderer* renderer = NULL;
-	if(delay_ > 0)
-	{
-		//’x‰„ŠÔ
+	StgShotRenderer * renderer = nullptr;
+	if (delay_ > 0) {
 		int objDelayBlendType = GetSourceBlendType();
-		if(objDelayBlendType == DirectGraphics::MODE_BLEND_NONE)
-		{
+		if (objDelayBlendType == DirectGraphics::MODE_BLEND_NONE) {
 			renderer = shotData->GetRenderer(StgShotDataList::RENDER_ADD_ARGB);
 			shotBlendType = DirectGraphics::MODE_BLEND_ADD_ARGB;
 		}
-		else
-		{
+		else {
 			renderer = shotData->GetRendererFromGraphicsBlendType(objDelayBlendType);
 		}
 	}
-	else
-	{
+	else {
 		int objBlendType = GetBlendType();
 		int shotBlendType = objBlendType;
-		if(objBlendType == DirectGraphics::MODE_BLEND_NONE)
-		{
+		if (objBlendType == DirectGraphics::MODE_BLEND_NONE) {
 			renderer = shotData->GetRenderer(StgShotDataList::RENDER_ADD_ARGB);
 			shotBlendType = DirectGraphics::MODE_BLEND_ADD_ARGB;
 		}
-		else
-		{
+		else {
 			renderer = shotData->GetRendererFromGraphicsBlendType(objBlendType);
 		}
 	}
-	if(renderer == NULL)return;
+	if (renderer == nullptr)return;
 
-	D3DXMATRIX matScale;
-	D3DXMATRIX matRot;
-	D3DXMATRIX matTrans;
 	D3DCOLOR color;
 
-	std::vector<RECT_D> listRcSrc;
-	std::vector<RECT_D> listRcDest;
-	std::vector<D3DXMATRIX> listMatrix;
-	if(delay_ > 0)
-	{
+	if (delay_ > 0) {
 		RECT rcSrc = shotData->GetDelayRect();
 		RECT rcDest;
 
-		//’x‰„ŠÔ
 		double expa = 0.5f + (double)delay_ / 30.0f * 2;
-		if(expa > 3.5)expa = 3.5;
+		if (expa > 3.5)expa = 3.5;
 
-		D3DXMatrixScaling(&matScale, expa, expa, 1.0f);
-		D3DXMatrixRotationYawPitchRoll(&matRot, 0, 0, D3DXToRadian(GetDirectionAngle() + 90));
-		D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
-		D3DXMATRIX tMat = matScale * matRot * matTrans * mat;
+		double ang = GetDirectionAngle() + D3DXToRadian(270);   //original: GetDirectionAngle() + 270
+		double c = cos(ang);
+		double s = sin(ang);
+
 		color = shotData->GetDelayColor();
 
 		int width = rcSrc.right - rcSrc.left;
 		int height = rcSrc.bottom - rcSrc.top;
 		SetRect(&rcDest, -width / 2, -height / 2, width / 2, height / 2);
-		if(width % 2 == 1)rcDest.right += 1;
-		if(height % 2 == 1)rcDest.bottom += 1;
+		if (width % 2 == 1)rcDest.right += 1;
+		if (height % 2 == 1)rcDest.bottom += 1;
 
-		RECT_D rcSrcD = GetRectD(rcSrc);
-		RECT_D rcDestD = GetRectD(rcDest);
-		listRcSrc.push_back(rcSrcD);
-		listRcDest.push_back(rcDestD);
-		listMatrix.push_back(tMat);
-	}
-	else
-	{
-		std::vector<Position> listPos;
-		std::list<Position>::iterator itr = listPosition_.begin();
-		for(; itr != listPosition_.end() ; itr++)
-		{
-			listPos.push_back(*itr);
+		VERTEX_TLX verts[4];
+		int srcX[] = { rcSrc.left, rcSrc.right, rcSrc.left, rcSrc.right };
+		int srcY[] = { rcSrc.top, rcSrc.top, rcSrc.bottom, rcSrc.bottom };
+		int destX[] = { rcDest.left, rcDest.right, rcDest.left, rcDest.right };
+		int destY[] = { rcDest.top, rcDest.top, rcDest.bottom, rcDest.bottom };
+		for (int iVert = 0; iVert < 4; iVert++) {
+			VERTEX_TLX vt;
+
+			_SetVertexUV(vt, srcX[iVert], srcY[iVert]);
+			_SetVertexPosition(vt, destX[iVert], destY[iVert]);
+			_SetVertexColorARGB(vt, color);
+
+			double px = vt.position.x * expa;
+			double py = vt.position.y * expa;
+			vt.position.x = (px * c - py * s) + position_.x;
+			vt.position.y = (px * s + py * c) + position_.y;
+			vt.position.z = position_.z;
+
+			vt.position = DxMath::VectMatMulti(vt.position, mat);
+			verts[iVert] = vt;
 		}
 
-		int countPos = listPos.size();
+		renderer->AddSquareVertex(verts);
+	}
+	else {
+		int countPos = listPosition_.size();
 		RECT rcSrcOrg = shotData->GetRect(frameWork_);
-		double rate = (double)(rcSrcOrg.bottom-rcSrcOrg.top) / (double)max(countPos, 1);
+		double rate = (double)(rcSrcOrg.bottom - rcSrcOrg.top) / (double)max(countPos, 1);
 
 		color = color_;
 		double alpha = shotData->GetAlpha() / 255.0;
-		if(frameFadeDelete_ >= 0) 
+		if (frameFadeDelete_ >= 0)
 			alpha = (double)frameFadeDelete_ / (double)FRAME_FADEDELETE;
 
 		bool bValidAlpha = StgShotData::IsAlphaBlendValidType(shotBlendType);
-		if(bValidAlpha)
-		{
-			//ƒ¿—LŒø
+		if (bValidAlpha) {
+			//Î±æœ‰åŠ¹
 			int colorA = ColorAccess::GetColorA(color);
 			color = ColorAccess::SetColorA(color, alpha * colorA);
 		}
-		else
-		{
-			//ƒ¿–³Œø
+		else {
+			//Î±ç„¡åŠ¹
 			color = ColorAccess::ApplyAlpha(color, alpha);
-		}	
+		}
 
 		RECT_D rcSrcD = GetRectD(rcSrcOrg);
 		rcSrcD.bottom = rcSrcD.top;
 		double posSrc = 0;
-		for(int iPos = 0 ; iPos  < countPos - 1; iPos++)
-		{
-			double posXS = listPos[iPos].x;
-			double posYS = listPos[iPos].y;
-			double posXE = listPos[iPos + 1].x;
-			double posYE = listPos[iPos + 1].y;
-			double ang = atan2(posYE - posYS, posXE - posXS);
+
+		int countRect = countPos - 1;
+
+		double tAlpha = ColorAccess::GetColorA(color);
+		double dAlpha = tAlpha / (double)countRect * 2.0 * tipDecrement_;
+
+		VERTEX_TLX oldVerts[4];
+
+		std::list<Position>::iterator itr = listPosition_.begin();
+		size_t iPos = 0;
+		size_t incr = 1;
+
+		for (; iPos < listPosition_.size(); itr++, iPos++) {
+			std::list<Position>::iterator nxt = next(itr,1);
+			if ((iPos + 1) >= listPosition_.size()) break;
+
+			double posXS = (*itr).x;
+			double posYS = (*itr).y;
+			double posXE = (*(nxt)).x;
+			double posYE = (*(nxt)).y;
+
+			double dx = posXE - posXS;
+			double dy = posYE - posYS;
+			double radius = sqrt(dx * dx + dy * dy);
+
+			double c = dx / radius;
+			double s = dy / radius;
 
 			RECT_D rcDestD;
-			D3DXMatrixScaling(&matScale, 1.0f, 1.0f, 1.0f);
-			D3DXMatrixRotationYawPitchRoll(&matRot, 0, 0, ang + D3DXToRadian(90));
-			D3DXMatrixTranslation(&matTrans, posXS, posYS, position_.z);
-			D3DXMATRIX tMat = matScale * matRot * matTrans * mat;
-
 			rcSrcD.top = rcSrcOrg.top + posSrc;
 			double bottom = rcSrcD.top + rate;
-			if(rcSrcD.top == bottom)bottom = bottom + 1;
+			if (rcSrcD.top == bottom) bottom++;
 			rcSrcD.bottom = bottom;
 			posSrc += rate;
 
-			double radius = pow(pow(posXE - posXS,2) + pow(posYE - posYS,2), 0.5);
-			SetRectD(&rcDestD, -widthRender_/2, radius, widthRender_/2, 0);
+			SetRectD(&rcDestD, -widthRender_ / 2, 0, widthRender_ / 2, radius);
 
-			listRcSrc.push_back(rcSrcD);
-			listRcDest.push_back(rcDestD);
-			listMatrix.push_back(tMat);
+			if (iPos > countRect / 2)
+				tAlpha -= dAlpha;
+			else if (iPos < countRect / 2)
+				tAlpha = iPos * 256 / (countRect / 2) + (255 - tipDecrement_ * 255.);
+			tAlpha = max(0, tAlpha);
+
+			D3DCOLOR tColor = color;
+			bool bValidAlpha = StgShotData::IsAlphaBlendValidType(shotBlendType);
+			if (bValidAlpha) {
+				int colorA = ColorAccess::GetColorA(tColor);
+				tColor = ColorAccess::SetColorA(tColor, tAlpha * colorA);
+			}
+			else {
+				tColor = ColorAccess::ApplyAlpha(tColor, tAlpha / 255.0);
+			}
+
+			VERTEX_TLX verts[4];
+			double srcX[] = { rcSrcD.left, rcSrcD.right, rcSrcD.left, rcSrcD.right };
+			double srcY[] = { rcSrcD.top, rcSrcD.top, rcSrcD.bottom, rcSrcD.bottom };
+			double destY[] = { rcDestD.left, rcDestD.right, rcDestD.left, rcDestD.right };
+			double destX[] = { rcDestD.top, rcDestD.top, rcDestD.bottom, rcDestD.bottom };
+			for (int iVert = (iPos > 0 ? 2 : 0); iVert < 4; iVert++) {
+				VERTEX_TLX vt;
+				_SetVertexUV(vt, srcX[iVert], srcY[iVert]);
+				_SetVertexPosition(vt, destX[iVert], destY[iVert]);
+				_SetVertexColorARGB(vt, tColor);
+
+				double px = vt.position.x;
+				double py = vt.position.y;
+				vt.position.x = (px * c - py * s) + posXS;
+				vt.position.y = (px * s + py * c) + posYS;
+				vt.position.z = position_.z;
+				vt.position = DxMath::VectMatMulti(vt.position, mat);
+				verts[iVert] = vt;
+			}
+
+			if (iPos > 0) {
+				verts[0] = oldVerts[2];
+				verts[1] = oldVerts[3];
+			}
+			memcpy(&oldVerts, verts, sizeof(VERTEX_TLX) * 4);
+
+			renderer->AddSquareVertex(verts);
 		}
-
 	}
-
-
-	int countRect = listRcSrc.size();
-	double tAlpha = ColorAccess::GetColorA(color);
-	double dAlpha = tAlpha / (double)listRcSrc.size() * 2. * tipDecrement_;
-	VERTEX_TLX oldVerts[4];
-	for(int iRect = 0 ; iRect < countRect ; iRect++)
-	{
-		if(iRect > countRect / 2)
-			tAlpha -= dAlpha;
-		if(iRect < listRcSrc.size() / 2)
-			tAlpha = iRect * 256 / (listRcSrc.size() / 2) + (255 - tipDecrement_ * 255.);
-		tAlpha = max(0, tAlpha);
-
-		D3DCOLOR tColor = color;
-		bool bValidAlpha = StgShotData::IsAlphaBlendValidType(shotBlendType);
-		if(bValidAlpha)
-		{
-			//ƒ¿—LŒø
-			int colorA = ColorAccess::GetColorA(tColor);
-			tColor = ColorAccess::SetColorA(tColor, tAlpha * colorA);
-		}
-		else
-		{
-			//ƒ¿–³Œø
-			tColor = ColorAccess::ApplyAlpha(tColor, tAlpha / 255.0);
-		}	
-
-
-		RECT_D& rcSrc = listRcSrc[iRect];
-		RECT_D& rcDest = listRcDest[iRect];
-		D3DXMATRIX& tMat = listMatrix[iRect];
-
-		VERTEX_TLX verts[4];
-		double srcX[] = {rcSrc.left, rcSrc.right, rcSrc.left, rcSrc.right};
-		double srcY[] = {rcSrc.top, rcSrc.top, rcSrc.bottom, rcSrc.bottom};
-		double destX[] = {rcDest.left, rcDest.right, rcDest.left, rcDest.right};
-		double destY[] = {rcDest.top, rcDest.top, rcDest.bottom, rcDest.bottom};
-		for(int iVert = 0 ;iVert < 4 ; iVert++)
-		{
-			_SetVertexUV(verts[iVert], srcX[iVert], srcY[iVert]);
-			_SetVertexPosition(verts[iVert], destX[iVert], destY[iVert]);
-			_SetVertexColorARGB(verts[iVert], tColor);
-			verts[iVert].position = DxMath::VectMatMulti(verts[iVert].position, tMat);
-		}
-
-		if(iRect > 0)
-		{
-			verts[0] = oldVerts[2];
-			verts[1] = oldVerts[3];
-		}
-		memcpy(&oldVerts, verts, sizeof(VERTEX_TLX) * 4);
-
-		renderer->AddVertex(verts[0]);
-		renderer->AddVertex(verts[2]);
-		renderer->AddVertex(verts[1]);
-		renderer->AddVertex(verts[1]);
-		renderer->AddVertex(verts[2]);
-		renderer->AddVertex(verts[3]);
-	}
-
 }
+
 void StgCurveLaserObject::_ConvertToItemAndSendEvent()
 {
 	StgItemManager* itemManager = stageController_->GetItemManager();
@@ -2555,7 +2556,7 @@ void StgCurveLaserObject::_ConvertToItemAndSendEvent()
 			int id = stageController_->GetMainObjectManager()->AddObject(obj);
 			if(id != DxScript::ID_INVALID)
 			{
-				//’e‚ÌÀ•W‚ÉƒAƒCƒeƒ€‚ğì¬‚·‚é
+				//å¼¾ã®åº§æ¨™ã«ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½œæˆã™ã‚‹
 				itemManager->AddItem(obj);
 				obj->SetPositionX(posX);
 				obj->SetPositionY(posY);

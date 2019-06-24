@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// “ú–{Œê resources
+// æ—¥æœ¬èªž resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 #ifdef _WIN32
@@ -57,7 +57,7 @@ STYLE WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CAPTION | WS_SYSMENU |
     WS_THICKFRAME
 CAPTION "FileArchiver"
 MENU IDR_MENU_MAIN
-FONT 9, "‚l‚r ‚oƒSƒVƒbƒN"
+FONT 9, "ï¼­ï¼³ ï¼°ã‚´ã‚·ãƒƒã‚¯"
 BEGIN
     CONTROL         "List1",IDC_LIST_FILE,"SysListView32",LVS_REPORT | 
                     WS_BORDER | WS_TABSTOP,1,5,195,138,WS_EX_CLIENTEDGE
@@ -105,7 +105,7 @@ BEGIN
     END
 END
 
-#endif    // “ú–{Œê resources
+#endif    // æ—¥æœ¬èªž resources
 /////////////////////////////////////////////////////////////////////////////
 
 

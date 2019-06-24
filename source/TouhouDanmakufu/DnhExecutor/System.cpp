@@ -12,7 +12,7 @@ SystemController::SystemController()
 	transitionManager_ = new TransitionManager();
 	infoSystem_ = new SystemInformation();
 
-	//í’“ƒ^ƒXƒN“o˜^
+	//å¸¸é§ã‚¿ã‚¹ã‚¯ç™»éŒ²
 	ETaskManager* taskManager = ETaskManager::GetInstance();
 	ref_count_ptr<SystemResidentTask> task = new SystemResidentTask();
 	taskManager->AddTask(task);
@@ -160,22 +160,22 @@ void SceneManager::TransStgScene(ref_count_ptr<ScriptInformation> infoMain, ref_
 
 	try
 	{
-		//STGƒV[ƒ“‰Šú‰»
+		//STGã‚·ãƒ¼ãƒ³åˆæœŸåŒ–
 		ref_count_ptr<StgSystemInformation> infoStgSystem = new StgSystemInformation();
 		infoStgSystem->SetMainScriptInformation(infoMain);
 		ref_count_ptr<StgSystemController> task = new EStgSystemController();
 
-		//STGƒ^ƒXƒN‰Šú‰»
+		//STGã‚¿ã‚¹ã‚¯åˆæœŸåŒ–
 		ETaskManager* taskManager = ETaskManager::GetInstance();
 		task->Initialize(infoStgSystem);
 		task->Start(infoPlayer, infoReplay);
 
-		//ƒ^ƒXƒNƒNƒŠƒA
+		//ã‚¿ã‚¹ã‚¯ã‚¯ãƒªã‚¢
 		TransitionManager* transitionManager = SystemController::GetInstance()->GetTransitionManager();
 		transitionManager->DoFadeOut();
 		SystemController::GetInstance()->ClearTaskWithoutSystem();
 
-		//STGƒ^ƒXƒN“o˜^
+		//STGã‚¿ã‚¹ã‚¯ç™»éŒ²
 		taskManager->AddTask(task);
 		taskManager->AddWorkFunction(TTaskFunction<StgSystemController>::Create(
 			task, &StgSystemController::Work), StgSystemController::TASK_PRI_WORK);
@@ -199,7 +199,7 @@ void SceneManager::TransStgScene(ref_count_ptr<ScriptInformation> infoMain, ref_
 		std::wstring replayPlayerID = infoReplay->GetPlayerScriptID();
 		std::wstring replayPlayerScriptFileName = infoReplay->GetPlayerScriptFileName();
 
-		//©‹@‚ğŒŸõ
+		//è‡ªæ©Ÿã‚’æ¤œç´¢
 		ref_count_ptr<ScriptInformation> infoPlayer;
 		std::vector<ref_count_ptr<ScriptInformation> > listPlayer;
 		std::vector<std::wstring> listPlayerPath = infoMain->GetPlayerList();
@@ -226,7 +226,7 @@ void SceneManager::TransStgScene(ref_count_ptr<ScriptInformation> infoMain, ref_
 
 		if(infoPlayer == NULL)
 		{
-			std::wstring log = StringUtility::Format(L"©‹@ƒXƒNƒŠƒvƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ:[%s]", replayPlayerScriptFileName.c_str());
+			std::wstring log = StringUtility::Format(L"è‡ªæ©Ÿã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“:[%s]", replayPlayerScriptFileName.c_str());
 			throw gstd::wexception(log.c_str());
 		}
 
@@ -249,7 +249,7 @@ void SceneManager::TransPackageScene(ref_count_ptr<ScriptInformation> infoMain, 
 
 	try
 	{
-		//STGƒV[ƒ“‰Šú‰»
+		//STGã‚·ãƒ¼ãƒ³åˆæœŸåŒ–
 		ref_count_ptr<StgSystemInformation> infoStgSystem = new StgSystemInformation();
 		infoStgSystem->SetMainScriptInformation(infoMain);
 		ref_count_ptr<StgSystemController> task = NULL;
@@ -258,17 +258,17 @@ void SceneManager::TransPackageScene(ref_count_ptr<ScriptInformation> infoMain, 
 		else 
 			task = new PStgSystemController();
 
-		//STGƒ^ƒXƒN‰Šú‰»
+		//STGã‚¿ã‚¹ã‚¯åˆæœŸåŒ–
 		ETaskManager* taskManager = ETaskManager::GetInstance();
 		task->Initialize(infoStgSystem);
 		task->Start(NULL, NULL);
 
-		//ƒ^ƒXƒNƒNƒŠƒA
+		//ã‚¿ã‚¹ã‚¯ã‚¯ãƒªã‚¢
 		TransitionManager* transitionManager = SystemController::GetInstance()->GetTransitionManager();
 		transitionManager->DoFadeOut();
 		SystemController::GetInstance()->ClearTaskWithoutSystem();
 
-		//STGƒ^ƒXƒN“o˜^
+		//STGã‚¿ã‚¹ã‚¯ç™»éŒ²
 		taskManager->AddTask(task);
 		taskManager->AddWorkFunction(TTaskFunction<StgSystemController>::Create(
 			task, &StgSystemController::Work), StgSystemController::TASK_PRI_WORK);
@@ -380,7 +380,7 @@ void SystemInformation::_SearchFreePlayerScript(std::wstring dir)
 	{
 		ref_count_ptr<ScriptInformation> info = listFreePlayer_[iPlayer];
 		std::wstring path = info->GetScriptPath();
-		std::wstring log = StringUtility::Format(L"©‹@ƒXƒNƒŠƒvƒgF%s", path.c_str());
+		std::wstring log = StringUtility::Format(L"è‡ªæ©Ÿã‚¹ã‚¯ãƒªãƒ—ãƒˆï¼š%s", path.c_str());
 		ELogger::WriteTop(log);
 	}
 }
@@ -390,7 +390,7 @@ void SystemInformation::UpdateFreePlayerScriptInformationList()
 	std::wstring dir = EPathProperty::GetPlayerScriptRootDirectory();
 	_SearchFreePlayerScript(dir);
 
-	//ƒ\[ƒg
+	//ã‚½ãƒ¼ãƒˆ
 	std::sort(listFreePlayer_.begin(), listFreePlayer_.end(), ScriptInformation::PlayerListSort());
 }
 

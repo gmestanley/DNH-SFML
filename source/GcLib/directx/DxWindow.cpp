@@ -42,7 +42,7 @@ void DxWindowManager::AddWindow(gstd::ref_count_ptr<DxWindow> window)
 	for(; itr!= listWindow_.end(); itr++)
 	{
 		if( (*itr) == NULL)continue;
-		if( (*itr) == window)return;//‘½d“o˜^‚Í‚³‚¹‚È‚¢		
+		if( (*itr) == window)return;//å¤šé‡ç™»éŒ²ã¯ã•ã›ãªã„		
 	}
 	window->manager_ = this;
 	listWindow_.push_back(window);
@@ -166,7 +166,7 @@ void DxWindowManager::_DispatchMouseEvent()
 	gstd::ref_count_ptr<DxWindowEvent> event = new DxWindowEvent();
 	gstd::ref_count_ptr<DxWindow> wndIntersect = GetIntersectedWindow();
 
-	//¶ƒNƒŠƒbƒN
+	//å·¦ã‚¯ãƒªãƒƒã‚¯
 	int mLeftState = input->GetMouseState(DI_MOUSE_LEFT);
 	int mRightState = input->GetMouseState(DI_MOUSE_RIGHT);
 	if(wndCapture_ == NULL)
@@ -284,7 +284,7 @@ void DxWindowManager::SetWindowEnableWithoutArgumentWindow(bool bEnable, DxWindo
 
 		if(bError)
 		{
-			throw gstd::wexception(StringUtility::Format(L"DxWindowƒƒbƒN‚ª•s³‚Å‚·:id[%d] idLock[%d]", 
+			throw gstd::wexception(StringUtility::Format(L"DxWindowãƒ­ãƒƒã‚¯ãŒä¸æ­£ã§ã™:id[%d] idLock[%d]", 
 							id, idLock).c_str());
 		}
 	}
@@ -322,7 +322,7 @@ DxWindow::DxWindow()
 	SetRect(&rectWindow_, 0, 0, 0, 0);
 	color_ = D3DCOLOR_ARGB(255, 255, 255, 255);
 
-	//‹ó‚¢‚Ä‚¢‚éWindowIDæ“¾
+	//ç©ºã„ã¦ã„ã‚‹WindowIDå–å¾—
 	listWndId_.sort();
 	int idFree = 0;
 	std::list<int>::iterator itr;
@@ -338,7 +338,7 @@ DxWindow::DxWindow()
 }
 DxWindow::~DxWindow()
 {
-	//WindowID‰ğ•ú
+	//WindowIDè§£æ”¾
 	std::list<int>::iterator itr;
 	for(itr=listWndId_.begin(); itr!= listWndId_.end(); itr++)
 	{
@@ -373,7 +373,7 @@ void DxWindow::AddChild(gstd::ref_count_ptr<DxWindow> window)
 	for(itr = listWindowChild_.begin(); itr!= listWindowChild_.end(); itr++)
 	{
 		if( (*itr) == NULL)continue;
-		if( (*itr) == window)return;//‘½d“o˜^‚Í‚³‚¹‚È‚¢		
+		if( (*itr) == window)return;//å¤šé‡ç™»éŒ²ã¯ã•ã›ãªã„		
 	}
 	window->manager_ = manager_;
 	window->windowParent_ = this;

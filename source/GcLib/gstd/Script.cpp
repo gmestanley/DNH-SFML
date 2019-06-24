@@ -394,13 +394,13 @@ wchar_t scanner::next_char()
 
 void scanner::skip()
 {
-	//‹ó”’‚ğ”ò‚Î‚·
+	//ç©ºç™½ã‚’é£›ã°ã™
 	wchar_t ch1 = current_char();
 	wchar_t ch2 = index_from_current_char(1);
 	while(ch1 == '\r' || ch1 == '\n' || ch1 == L'\t' || ch1 == L' '
 	   || ch1 == L'#' || (ch1 == L'/' && (ch2 == L'/' || ch2 == L'*')))
 	   {
-		   //ƒRƒƒ“ƒg‚ğ”ò‚Î‚·
+		   //ã‚³ãƒ¡ãƒ³ãƒˆã‚’é£›ã°ã™
 		   if(ch1 == L'#' || 
 			   (ch1 == L'/' && (ch2 == L'/' || ch2 == L'*')))
 		   {
@@ -640,7 +640,7 @@ void scanner::advance()
 			{
 				std::wstring error;
 				error += L"It's script does not allow to alone period\r\n";
-				error += L"(’P“Æ‚ÌƒsƒŠƒIƒh‚Í‚±‚ÌƒXƒNƒŠƒvƒg‚Å‚Íg‚¢‚Ü‚¹‚ñ)";
+				error += L"(å˜ç‹¬ã®ãƒ”ãƒªã‚ªãƒ‰ã¯ã“ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã§ã¯ä½¿ã„ã¾ã›ã‚“)";
 				throw parser_error(error);
 			}
 			break;
@@ -708,7 +708,7 @@ void scanner::advance()
 					if(string_value.size() == 1)
 						char_value = string_value[0];
 					else
-						throw parser_error(L"•¶šŒ^‚Ì’l‚Ì’·‚³‚Í1‚¾‚¯‚Å‚·");
+						throw parser_error(L"æ–‡å­—å‹ã®å€¤ã®é•·ã•ã¯1ã ã‘ã§ã™");
 				}
 			}
 			break;
@@ -745,7 +745,7 @@ void scanner::advance()
 						{
 							std::wstring error;
 							error += L"There is a strange character.\r\n";
-							error += L"“Áê•¶š‚ª•Ï‚Å‚·(u\"...\"v‚ğ–Y‚ê‚Ä‚¢‚Ü‚¹‚ñ‚©)";
+							error += L"ç‰¹æ®Šæ–‡å­—ãŒå¤‰ã§ã™(ã€Œ\"...\"ã€ã‚’å¿˜ã‚Œã¦ã„ã¾ã›ã‚“ã‹)";
 							throw parser_error(error);
 						}
 				}
@@ -862,7 +862,7 @@ value add(script_machine * machine, int argc, value const * argv)
 		{
 			std::wstring error;
 			error += L"variable type mismatch\r\n";
-			error += L"(Œ^‚ªˆê’v‚µ‚Ü‚¹‚ñ)";
+			error += L"(å‹ãŒä¸€è‡´ã—ã¾ã›ã‚“)";
 			machine->raise_error(error);
 			return value();
 		}
@@ -870,7 +870,7 @@ value add(script_machine * machine, int argc, value const * argv)
 		{
 			std::wstring error;
 			error += L"array length mismatch\r\n";
-			error += L"(’·‚³‚ªˆê’v‚µ‚Ü‚¹‚ñ)";
+			error += L"(é•·ã•ãŒä¸€è‡´ã—ã¾ã›ã‚“)";
 			machine->raise_error(error);
 			return value();
 		}
@@ -897,7 +897,7 @@ value subtract(script_machine * machine, int argc, value const * argv)
 		{
 			std::wstring error;
 			error += L"variable type mismatch\r\n";
-			error += L"(Œ^‚ªˆê’v‚µ‚Ü‚¹‚ñ)";
+			error += L"(å‹ãŒä¸€è‡´ã—ã¾ã›ã‚“)";
 			machine->raise_error(error);
 			return value();
 		}
@@ -905,7 +905,7 @@ value subtract(script_machine * machine, int argc, value const * argv)
 		{
 			std::wstring error;
 			error += L"array length mismatch\r\n";
-			error += L"(’·‚³‚ªˆê’v‚µ‚Ü‚¹‚ñ)";
+			error += L"(é•·ã•ãŒä¸€è‡´ã—ã¾ã›ã‚“)";
 			machine->raise_error(error);
 			return value();
 		}
@@ -1043,7 +1043,7 @@ value compare(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"Variables of different types are being compared\r\n";
-		error += L"(Œ^‚ªˆá‚¤’l“¯m‚ğ”äŠr‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½)";
+		error += L"(å‹ãŒé•ã†å€¤åŒå£«ã‚’æ¯”è¼ƒã—ã‚ˆã†ã¨ã—ã¾ã—ãŸ)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1070,7 +1070,7 @@ value predecessor(script_machine * machine, int argc, value const * argv)
 			{
 				std::wstring error;
 				error += L"This variables does not allow predecessor\r\n";
-				error += L"(‚±‚ÌŒ^‚Ì’l‚Épredecessor‚Íg‚¦‚Ü‚¹‚ñ)";
+				error += L"(ã“ã®å‹ã®å€¤ã«predecessorã¯ä½¿ãˆã¾ã›ã‚“)";
 				machine->raise_error(error);
 				return value();
 			}
@@ -1098,7 +1098,7 @@ value successor(script_machine * machine, int argc, value const * argv)
 			{
 				std::wstring error;
 				error += L"This variables does not allow successor\r\n";
-				error += L"(‚±‚ÌŒ^‚Ì’l‚Épredecessor‚Íg‚¦‚Ü‚¹‚ñ)";
+				error += L"(ã“ã®å‹ã®å€¤ã«predecessorã¯ä½¿ãˆã¾ã›ã‚“)";
 				machine->raise_error(error);
 				return value();
 			}
@@ -1143,7 +1143,7 @@ value index(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"This variables does not allow to array index operation.\r\n";
-		error += L"(”z—ñˆÈŠO‚Éindex‚ğg‚¢‚Ü‚µ‚½)";
+		error += L"(é…åˆ—ä»¥å¤–ã«indexã‚’ä½¿ã„ã¾ã—ãŸ)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1154,7 +1154,7 @@ value index(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"Array index access does not allow to period.\r\n";
-		error += L"(¬”“_ˆÈ‰º‚ª‚ ‚è‚Ü‚·)";
+		error += L"(å°æ•°ç‚¹ä»¥ä¸‹ãŒã‚ã‚Šã¾ã™)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1163,7 +1163,7 @@ value index(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"Array index out of bounds.\r\n";
-		error += L"(”z—ñ‚ÌƒTƒCƒY‚ğ’´‚¦‚Ä‚¢‚Ü‚·)";
+		error += L"(é…åˆ—ã®ã‚µã‚¤ã‚ºã‚’è¶…ãˆã¦ã„ã¾ã™)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1180,7 +1180,7 @@ value index_writable(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"This variables does not allow to array index operation.\r\n";
-		error += L"(”z—ñˆÈŠO‚Éindex!‚ğg‚¢‚Ü‚µ‚½)";
+		error += L"(é…åˆ—ä»¥å¤–ã«index!ã‚’ä½¿ã„ã¾ã—ãŸ)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1191,7 +1191,7 @@ value index_writable(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"Array index access does not allow to period.\r\n";
-		error += L"(¬”“_ˆÈ‰º‚ª‚ ‚è‚Ü‚·)";
+		error += L"(å°æ•°ç‚¹ä»¥ä¸‹ãŒã‚ã‚Šã¾ã™)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1200,7 +1200,7 @@ value index_writable(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"Array index out of bounds.\r\n";
-		error += L"(”z—ñ‚ÌƒTƒCƒY‚ğ’´‚¦‚Ä‚¢‚Ü‚·)";
+		error += L"(é…åˆ—ã®ã‚µã‚¤ã‚ºã‚’è¶…ãˆã¦ã„ã¾ã™)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1218,7 +1218,7 @@ value slice(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"This variables does not allow to array slice operation.\r\n";
-		error += L"(”z—ñˆÈŠO‚Éindex‚ğg‚¢‚Ü‚µ‚½)";
+		error += L"(é…åˆ—ä»¥å¤–ã«indexã‚’ä½¿ã„ã¾ã—ãŸ)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1229,7 +1229,7 @@ value slice(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"Array slicing does not allow to period.\r\n";
-		error += L"(ŠJnˆÊ’u‚É¬”“_ˆÈ‰º‚ª‚ ‚è‚Ü‚·)";
+		error += L"(é–‹å§‹ä½ç½®ã«å°æ•°ç‚¹ä»¥ä¸‹ãŒã‚ã‚Šã¾ã™)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1240,7 +1240,7 @@ value slice(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"Array slicing does not allow to period.\r\n";
-		error += L"(I’[ˆÊ’u‚É¬”“_ˆÈ‰º‚ª‚ ‚è‚Ü‚·)";
+		error += L"(çµ‚ç«¯ä½ç½®ã«å°æ•°ç‚¹ä»¥ä¸‹ãŒã‚ã‚Šã¾ã™)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1249,7 +1249,7 @@ value slice(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"Array index out of bounds.\r\n";
-		error += L"(”z—ñ‚ÌƒTƒCƒY‚ğ’´‚¦‚Ä‚¢‚Ü‚·)";
+		error += L"(é…åˆ—ã®ã‚µã‚¤ã‚ºã‚’è¶…ãˆã¦ã„ã¾ã™)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1272,7 +1272,7 @@ value erase(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"This variables does not allow to array erase operation.\r\n";
-		error += L"(”z—ñˆÈŠO‚Éerase‚ğg‚¢‚Ü‚µ‚½)";
+		error += L"(é…åˆ—ä»¥å¤–ã«eraseã‚’ä½¿ã„ã¾ã—ãŸ)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1284,7 +1284,7 @@ value erase(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"Array erasing does not allow to period.\r\n";
-		error += L"(íœˆÊ’u‚É¬”“_ˆÈ‰º‚ª‚ ‚è‚Ü‚·)";
+		error += L"(å‰Šé™¤ä½ç½®ã«å°æ•°ç‚¹ä»¥ä¸‹ãŒã‚ã‚Šã¾ã™)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1293,7 +1293,7 @@ value erase(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"Array index out of bounds.\r\n";
-		error += L"(”z—ñ‚ÌƒTƒCƒY‚ğ’´‚¦‚Ä‚¢‚Ü‚·)";
+		error += L"(é…åˆ—ã®ã‚µã‚¤ã‚ºã‚’è¶…ãˆã¦ã„ã¾ã™)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1322,7 +1322,7 @@ value append(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"This variables does not allow to array append operation.\r\n";
-		error += L"(”z—ñˆÈŠO‚Éappend‚ğg‚¢‚Ü‚µ‚½)";
+		error += L"(é…åˆ—ä»¥å¤–ã«appendã‚’ä½¿ã„ã¾ã—ãŸ)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1331,7 +1331,7 @@ value append(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"variable type mismatch\r\n";
-		error += L"(Œ^‚ªˆê’v‚µ‚Ü‚¹‚ñ)";
+		error += L"(å‹ãŒä¸€è‡´ã—ã¾ã›ã‚“)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1352,7 +1352,7 @@ value concatenate(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"This variables does not allow to array concatenate operation.\r\n";
-		error += L"(”z—ñˆÈŠO‚Éconcatenate‚ğg‚¢‚Ü‚µ‚½)";
+		error += L"(é…åˆ—ä»¥å¤–ã«concatenateã‚’ä½¿ã„ã¾ã—ãŸ)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1361,7 +1361,7 @@ value concatenate(script_machine * machine, int argc, value const * argv)
 	{
 		std::wstring error;
 		error += L"variable type mismatch\r\n";
-		error += L"(Œ^‚ªˆê’v‚µ‚Ü‚¹‚ñ)";
+		error += L"(å‹ãŒä¸€è‡´ã—ã¾ã›ã‚“)";
 		machine->raise_error(error);
 		return value();
 	}
@@ -1543,7 +1543,7 @@ parser::parser(script_engine * e, scanner * s, int funcc, function const * funcv
 		{
 			std::wstring error;
 			error += L"Unable to be interpreted (Don't forget \";\"s).\r\n";
-			error += L"(‰ğß‚Å‚«‚È‚¢‚à‚Ì‚ª‚ ‚è‚Ü‚·(u;v‚ğ–Y‚ê‚Ä‚¢‚Ü‚¹‚ñ‚©))";
+			error += L"(è§£é‡ˆã§ããªã„ã‚‚ã®ãŒã‚ã‚Šã¾ã™(ã€Œ;ã€ã‚’å¿˜ã‚Œã¦ã„ã¾ã›ã‚“ã‹))";
 			throw parser_error(error);
 		}
 	}
@@ -1591,7 +1591,7 @@ parser::symbol * parser::search_result()
 
 void parser::scan_current_scope(int level, std::vector < std::string > const * args, bool adding_result)
 {
-	//æ“Ç‚İ‚µ‚Ä¯•Êq‚ğ“o˜^‚·‚é
+	//å…ˆèª­ã¿ã—ã¦è­˜åˆ¥å­ã‚’ç™»éŒ²ã™ã‚‹
 	scanner lex2(* lex);
 	try
 	{
@@ -1647,7 +1647,7 @@ void parser::scan_current_scope(int level, std::vector < std::string > const * a
 							{
 								std::wstring error;
 								error += L"Functions and variables of the same name are declared in the same scope.\r\n";
-								error += L"(“¯‚¶ƒXƒR[ƒv‚Å“¯–¼‚Ìƒ‹[ƒ`ƒ“‚ª•¡”éŒ¾‚³‚ê‚Ä‚¢‚Ü‚·)";
+								error += L"(åŒã˜ã‚¹ã‚³ãƒ¼ãƒ—ã§åŒåã®ãƒ«ãƒ¼ãƒãƒ³ãŒè¤‡æ•°å®£è¨€ã•ã‚Œã¦ã„ã¾ã™)";
 								throw parser_error(error);
 							}
 							script_engine::block_kind kind = (type == tk_SUB || type == tk_at) ? script_engine::bk_sub :
@@ -1689,7 +1689,7 @@ void parser::scan_current_scope(int level, std::vector < std::string > const * a
 						{
 							std::wstring error;
 							error += L"Variables of the same name are declared in the same scope.\r\n";
-							error += L"(“¯‚¶ƒXƒR[ƒv‚Å“¯–¼‚Ì•Ï”‚ª•¡”éŒ¾‚³‚ê‚Ä‚¢‚Ü‚·)";
+							error += L"(åŒã˜ã‚¹ã‚³ãƒ¼ãƒ—ã§åŒåã®å¤‰æ•°ãŒè¤‡æ•°å®£è¨€ã•ã‚Œã¦ã„ã¾ã™)";
 							throw parser_error(error);
 					  	}
 #ifdef __SCRIPT_H__NO_CHECK_DUPLICATED
@@ -1726,7 +1726,7 @@ void parser::write_operation(script_engine::block * block, char const * name, in
 	{
 		std::wstring error;
 		error += L"Overwriting function does not allow to different argument count.\r\n";
-		error += L"(‰‰Zq‚É‘Î‰‚·‚éŠÖ”‚ªã‘‚«’è‹`‚³‚ê‚Ü‚µ‚½‚ªˆø”‚Ì”‚ªˆá‚¢‚Ü‚·)";
+		error += L"(æ¼”ç®—å­ã«å¯¾å¿œã™ã‚‹é–¢æ•°ãŒä¸Šæ›¸ãå®šç¾©ã•ã‚Œã¾ã—ãŸãŒå¼•æ•°ã®æ•°ãŒé•ã„ã¾ã™)";
 		throw parser_error(error);
 	}
 
@@ -1739,7 +1739,7 @@ void parser::parse_parentheses(script_engine::block * block)
 	{
 		std::wstring error;
 		error += L"\"(\" is nessasary.\r\n";
-		error += L"(\"(\"‚ª•K—v‚Å‚·)";
+		error += L"(\"(\"ãŒå¿…è¦ã§ã™)";
 		throw parser_error(error);
 	}
 	lex->advance();
@@ -1750,7 +1750,7 @@ void parser::parse_parentheses(script_engine::block * block)
 	{
 		std::wstring error;
 		error += L"\")\" is nessasary.\r\n";
-		error += L"(\")\"‚ª•K—v‚Å‚·)";
+		error += L"(\")\"ãŒå¿…è¦ã§ã™)";
 		throw parser_error(error);
 	}
 	lex->advance();
@@ -1787,7 +1787,7 @@ void parser::parse_clause(script_engine::block * block)
 		{
 			std::wstring error;
 			error += StringUtility::FormatToWide("%s is not defined.\r\n", lex->word.c_str());
-			error += StringUtility::FormatToWide("(%s‚Í–¢’è‹`‚Ì¯•Êq‚Å‚·)", lex->word.c_str());
+			error += StringUtility::FormatToWide("(%sã¯æœªå®šç¾©ã®è­˜åˆ¥å­ã§ã™)", lex->word.c_str());
 			throw parser_error(error);
 		}
 
@@ -1799,7 +1799,7 @@ void parser::parse_clause(script_engine::block * block)
 			{
 				std::wstring error;
 				error += L"sub and task cannot call in the statement.\r\n";
-				error += L"(sub‚âtask‚Í®’†‚ÅŒÄ‚×‚Ü‚¹‚ñ)";
+				error += L"(subã‚„taskã¯å¼ä¸­ã§å‘¼ã¹ã¾ã›ã‚“)";
 				throw parser_error(error);
 			}
 
@@ -1811,7 +1811,7 @@ void parser::parse_clause(script_engine::block * block)
 				error += StringUtility::FormatToWide(
 					"%s incorrect number of parameters. Check to make sure you have the correct number of parameters.\r\n", 
 					s->sub->name.c_str());
-				error += StringUtility::FormatToWide("(%s‚Ìˆø”‚Ì”‚ªˆá‚¢‚Ü‚·)", s->sub->name.c_str());
+				error += StringUtility::FormatToWide("(%sã®å¼•æ•°ã®æ•°ãŒé•ã„ã¾ã™)", s->sub->name.c_str());
 				throw parser_error(error);
 			}
 
@@ -1819,7 +1819,7 @@ void parser::parse_clause(script_engine::block * block)
 		}
 		else
 		{
-			//•Ï”
+			//å¤‰æ•°
 			block->codes.push_back(code(lex->line, script_engine::pc_push_variable, s->level, s->variable));
 		}
 	}
@@ -1838,7 +1838,7 @@ void parser::parse_clause(script_engine::block * block)
 		{
 			std::wstring error;
 			error += L"\"]\" is nessasary.\r\n";
-			error += L"(\"]\"‚ª•K—v‚Å‚·)";
+			error += L"(\"]\"ãŒå¿…è¦ã§ã™)";
 			throw parser_error(error);
 		}
 		lex->advance();
@@ -1852,7 +1852,7 @@ void parser::parse_clause(script_engine::block * block)
 		{
 			std::wstring error;
 			error += L"\"|\" is nessasary.\r\n";
-			error += L"(\"|)\"‚ª•K—v‚Å‚·)";
+			error += L"(\"|)\"ãŒå¿…è¦ã§ã™)";
 			throw parser_error(error);
 		}
 		lex->advance();
@@ -1865,7 +1865,7 @@ void parser::parse_clause(script_engine::block * block)
 	{
 		std::wstring error;
 		error += L"Invalid expression.\r\n";
-		error += L"(€‚Æ‚µ‚Ä–³Œø‚È®‚ª‚ ‚è‚Ü‚·)";
+		error += L"(é …ã¨ã—ã¦ç„¡åŠ¹ãªå¼ãŒã‚ã‚Šã¾ã™)";
 		throw parser_error(error);
 	}
 }
@@ -1876,7 +1876,7 @@ void parser::parse_suffix(script_engine::block * block)
 	if(lex->next == tk_caret)
 	{
 		lex->advance();
-		parse_suffix(block); //Ä‹A
+		parse_suffix(block); //å†å¸°
 		write_operation(block, "power", 2);
 	}
 	else
@@ -1901,7 +1901,7 @@ void parser::parse_suffix(script_engine::block * block)
 			{
 				std::wstring error;
 				error += L"\"]\" is nessasary.\r\n";
-				error += L"(\"]\"‚ª•K—v‚Å‚·)";
+				error += L"(\"]\"ãŒå¿…è¦ã§ã™)";
 				throw parser_error(error);
 			}
 			lex->advance();
@@ -1914,18 +1914,18 @@ void parser::parse_prefix(script_engine::block * block)
 	if(lex->next == tk_plus)
 	{
 		lex->advance();
-		parse_prefix(block);	//Ä‹A
+		parse_prefix(block);	//å†å¸°
 	}
 	else if(lex->next == tk_minus)
 	{
 		lex->advance();
-		parse_prefix(block);	//Ä‹A
+		parse_prefix(block);	//å†å¸°
 		write_operation(block, "negative", 1);
 	}
 	else if(lex->next == tk_exclamation)
 	{
 		lex->advance();
-		parse_prefix(block);	//Ä‹A
+		parse_prefix(block);	//å†å¸°
 		write_operation(block, "not", 1);
 	}
 	else
@@ -1967,7 +1967,7 @@ void parser::parse_comparison(script_engine::block * block)
 		{
 			std::wstring error;
 			error += L"Do you not mistake it for \"==\"?\r\n";
-			error += L"(\"==\"‚ÆŠÔˆá‚¦‚Ä‚Ü‚¹‚ñ‚©H)";
+			error += L"(\"==\"ã¨é–“é•ãˆã¦ã¾ã›ã‚“ã‹ï¼Ÿ)";
 			throw parser_error(error);
 		}
 
@@ -2047,7 +2047,7 @@ int parser::parse_arguments(script_engine::block * block)
 		{
 			std::wstring error;
 			error += L"\")\" is nessasary.\r\n";
-			error += L"(\")\"‚ª•K—v‚Å‚·)";
+			error += L"(\")\"ãŒå¿…è¦ã§ã™)";
 			throw parser_error(error);
 		}
 		lex->advance();
@@ -2068,7 +2068,7 @@ void parser::parse_statements(script_engine::block * block)
 			{
 				std::wstring error;
 				error += StringUtility::FormatToWide("%s is not defined.\r\n", lex->word.c_str());
-				error += StringUtility::FormatToWide("(%s‚Í–¢’è‹`‚Ì¯•Êq‚Å‚·)", lex->word.c_str());
+				error += StringUtility::FormatToWide("(%sã¯æœªå®šç¾©ã®è­˜åˆ¥å­ã§ã™)", lex->word.c_str());
 				throw parser_error(error);
 			}
 			lex->advance();
@@ -2088,7 +2088,7 @@ void parser::parse_statements(script_engine::block * block)
 					{
 						std::wstring error;
 						error += L"\"]\" is nessasary.\r\n";
-						error += L"(\"]\"‚ª•K—v‚Å‚·)";
+						error += L"(\"]\"ãŒå¿…è¦ã§ã™)";
 						throw parser_error(error);
 					}
 					lex->advance();
@@ -2097,7 +2097,7 @@ void parser::parse_statements(script_engine::block * block)
 					{
 						std::wstring error;
 						error += L"\"=\" is nessasary.\r\n";
-						error += L"(\"=\"‚ª•K—v‚Å‚·)";
+						error += L"(\"=\"ãŒå¿…è¦ã§ã™)";
 						throw parser_error(error);
 					}
 					lex->advance();
@@ -2157,12 +2157,12 @@ void parser::parse_statements(script_engine::block * block)
 					}
 					break;
 				default:
-					//ŠÖ”, subŒÄo‚µ
+					//é–¢æ•°, subå‘¼å‡ºã—
 					if(s->sub == NULL)
 					{
 						std::wstring error;
 						error += L"You cannot call a variable as if it were a function or a subroutine.\r\n";
-						error += L"(•Ï”‚ÍŠÖ”‚âsub‚Ì‚æ‚¤‚É‚ÍŒÄ‚×‚Ü‚¹‚ñ)";
+						error += L"(å¤‰æ•°ã¯é–¢æ•°ã‚„subã®ã‚ˆã†ã«ã¯å‘¼ã¹ã¾ã›ã‚“)";
 						throw parser_error(error);
 					}
 
@@ -2174,7 +2174,7 @@ void parser::parse_statements(script_engine::block * block)
 						error += StringUtility::FormatToWide(
 							"%s incorrect number of parameters. Check to make sure you have the correct number of parameters.\r\n", 
 							s->sub->name.c_str());
-						error += StringUtility::FormatToWide("(%s‚Ìˆø”‚Ì”‚ªˆá‚¢‚Ü‚·)", s->sub->name.c_str());
+						error += StringUtility::FormatToWide("(%sã®å¼•æ•°ã®æ•°ãŒé•ã„ã¾ã™)", s->sub->name.c_str());
 						throw parser_error(error);
 					}
 
@@ -2189,7 +2189,7 @@ void parser::parse_statements(script_engine::block * block)
 			{
 				std::wstring error;
 				error += L"Symbol name is nessasary.\r\n";
-				error += L"(¯•Êq‚ª•K—v‚Å‚·)";
+				error += L"(è­˜åˆ¥å­ãŒå¿…è¦ã§ã™)";
 				throw parser_error(error);
 			}
 
@@ -2267,7 +2267,7 @@ void parser::parse_statements(script_engine::block * block)
 			{
 				std::wstring error;
 				error += L"\"(\" is nessasary.\r\n";
-				error += L"(\"(\"‚ª•K—v‚Å‚·)";
+				error += L"(\"(\"ãŒå¿…è¦ã§ã™)";
 				throw parser_error(error);
 			}
 			lex->advance();
@@ -2281,7 +2281,7 @@ void parser::parse_statements(script_engine::block * block)
 			{
 				std::wstring error;
 				error += L"The symbol name is nessasary.\r\n";
-				error += L"(¯•Êq‚ª•K—v‚Å‚·)";
+				error += L"(è­˜åˆ¥å­ãŒå¿…è¦ã§ã™)";
 				throw parser_error(error);
 			}
 
@@ -2293,7 +2293,7 @@ void parser::parse_statements(script_engine::block * block)
 			{
 				std::wstring error;
 				error += L"\"in\" is nessasary.\r\n";
-				error += L"(in‚ª•K—v‚Å‚·)";
+				error += L"(inãŒå¿…è¦ã§ã™)";
 				throw parser_error(error);
 			}
 			lex->advance();
@@ -2304,7 +2304,7 @@ void parser::parse_statements(script_engine::block * block)
 			{
 				std::wstring error;
 				error += L"\"..\" is nessasary.\r\n";
-				error += L"(\"..\"‚ª•K—v‚Å‚·)";
+				error += L"(\"..\"ãŒå¿…è¦ã§ã™)";
 				throw parser_error(error);
 			}
 			lex->advance();
@@ -2315,7 +2315,7 @@ void parser::parse_statements(script_engine::block * block)
 			{
 				std::wstring error;
 				error += L"\")\" is nessasary.\r\n";
-				error += L"(\")\"‚ª•K—v‚Å‚·)";
+				error += L"(\")\"ãŒå¿…è¦ã§ã™)";
 				throw parser_error(error);
 			}
 			lex->advance();
@@ -2402,7 +2402,7 @@ void parser::parse_statements(script_engine::block * block)
 				{
 					std::wstring error;
 					error += L"\"(\" is nessasary.\r\n";
-					error += L"(\"(\"‚ª•K—v‚Å‚·)";
+					error += L"(\"(\"ãŒå¿…è¦ã§ã™)";
 					throw parser_error(error);
 				}
 				block->codes.push_back(code(lex->line, script_engine::pc_case_begin));
@@ -2426,7 +2426,7 @@ void parser::parse_statements(script_engine::block * block)
 				{
 					std::wstring error;
 					error += L"\")\" is nessasary.\r\n";
-					error += L"(\")\"‚ª•K—v‚Å‚·)";
+					error += L"(\")\"ãŒå¿…è¦ã§ã™)";
 					throw parser_error(error);
 				}
 				lex->advance();
@@ -2471,7 +2471,7 @@ void parser::parse_statements(script_engine::block * block)
 					{
 						std::wstring error;
 						error += L"\"return\" can call in function only.\r\n";
-						error += L"(‚±‚±‚Ífunction‚Ì’†‚Å‚Í‚ ‚è‚Ü‚¹‚ñ)";
+						error += L"(ã“ã“ã¯functionã®ä¸­ã§ã¯ã‚ã‚Šã¾ã›ã‚“)";
 						throw parser_error(error);
 					}
 
@@ -2493,7 +2493,7 @@ void parser::parse_statements(script_engine::block * block)
 			{
 				std::wstring error;
 				error += L"Symbol name is nessasary.\r\n";
-				error += L"(¯•Êq‚ª•K—v‚Å‚·)";
+				error += L"(è­˜åˆ¥å­ãŒå¿…è¦ã§ã™)";
 				throw parser_error(error);
 			}
 
@@ -2505,7 +2505,7 @@ void parser::parse_statements(script_engine::block * block)
 				{
 					std::wstring error;
 					error += L"\"@\" cannot use in inner function and task.\r\n";
-					error += L"(ƒCƒxƒ“ƒg‚ğ[‚¢ŠK‘w‚É‹Lq‚·‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñ)";
+					error += L"(ã‚¤ãƒ™ãƒ³ãƒˆã‚’æ·±ã„éšå±¤ã«è¨˜è¿°ã™ã‚‹ã“ã¨ã¯ã§ãã¾ã›ã‚“)";
 					throw parser_error(error);
 				}
 				events[s->sub->name] = s->sub;
@@ -2528,7 +2528,7 @@ void parser::parse_statements(script_engine::block * block)
 							{
 								std::wstring error;
 								error += L"Function parameter is nessasary.\r\n";
-								error += L"(‰¼ˆø”‚ª•K—v‚Å‚·)";
+								error += L"(ä»®å¼•æ•°ãŒå¿…è¦ã§ã™)";
 								throw parser_error(error);
 							}
 						}
@@ -2542,7 +2542,7 @@ void parser::parse_statements(script_engine::block * block)
 					{
 						std::wstring error;
 						error += L"\")\" is nessasary.\r\n";
-						error += L"(\")\"‚ª•K—v‚Å‚·)";
+						error += L"(\")\"ãŒå¿…è¦ã§ã™)";
 						throw parser_error(error);
 					}
 					lex->advance();
@@ -2550,7 +2550,7 @@ void parser::parse_statements(script_engine::block * block)
 			}
 			else
 			{
-				//ŒİŠ·«‚Ì‚½‚ß‹ó‚ÌŠ‡ŒÊ‚¾‚¯‹–‚·
+				//äº’æ›æ€§ã®ãŸã‚ç©ºã®æ‹¬å¼§ã ã‘è¨±ã™
 				if(lex->next == tk_open_par)
 				{
 					lex->advance();
@@ -2558,7 +2558,7 @@ void parser::parse_statements(script_engine::block * block)
 					{
 						std::wstring error;
 						error += L"\")\" is nessasary.\r\n";
-						error += L"(\")\"‚ª•K—vc‚Æ‚¢‚¤‚©\"(\"—v‚ç‚ñ‚Å‚·)";
+						error += L"(\")\"ãŒå¿…è¦â€¦ã¨ã„ã†ã‹\"(\"è¦ã‚‰ã‚“ã§ã™)";
 						throw parser_error(error);
 					}
 					lex->advance();
@@ -2568,7 +2568,7 @@ void parser::parse_statements(script_engine::block * block)
 			need_semicolon = false;
 		}
 
-		//ƒZƒ~ƒRƒƒ“‚ª–³‚¢‚ÆŒp‘±‚µ‚È‚¢
+		//ã‚»ãƒŸã‚³ãƒ­ãƒ³ãŒç„¡ã„ã¨ç¶™ç¶šã—ãªã„
 		if(need_semicolon && lex->next != tk_semicolon)
 			break;
 
@@ -2590,7 +2590,7 @@ void parser::parse_block(script_engine::block * block, std::vector < std::string
 	{
 		std::wstring error;
 		error += L"\"{\" is nessasary.\r\n";
-		error += L"(\"{\"‚ª•K—v‚Å‚·)";
+		error += L"(\"{\"ãŒå¿…è¦ã§ã™)";
 		throw parser_error(error);
 	}
 	lex->advance();
@@ -2615,7 +2615,7 @@ void parser::parse_block(script_engine::block * block, std::vector < std::string
 	{
 		std::wstring error;
 		error += L"\"}\" is nessasary.\r\n";
-		error += L"(\"}\"‚ª•K—v‚Å‚·)";
+		error += L"(\"}\"ãŒå¿…è¦ã§ã™)";
 		throw parser_error(error);
 	}
 	lex->advance();
@@ -2728,7 +2728,7 @@ script_machine::environment * script_machine::new_environment(environment * pare
 
 	if(first_garbage_environment != NULL)
 	{
-		//‚²‚İ‰ñû
+		//ã”ã¿å›å
 		result = first_garbage_environment;
 		first_garbage_environment = result->succ;
 		* ((result->succ != NULL) ? & result->succ->pred : & last_garbage_environment) = result->pred;
@@ -2747,7 +2747,7 @@ script_machine::environment * script_machine::new_environment(environment * pare
 	result->stack.length = 0;
 	result->has_result = false;
 
-	//g—p’†ƒŠƒXƒg‚Ö‚Ì’Ç‰Á
+	//ä½¿ç”¨ä¸­ãƒªã‚¹ãƒˆã¸ã®è¿½åŠ 
 	result->pred = last_using_environment;
 	result->succ = NULL;
 	* ((result->pred != NULL) ? & result->pred->succ : & first_using_environment) = result;
@@ -2760,11 +2760,11 @@ void script_machine::dispose_environment(environment * object)
 {
 	assert(object->ref_count == 0);
 
-	//g—p’†ƒŠƒXƒg‚©‚ç‚Ìíœ
+	//ä½¿ç”¨ä¸­ãƒªã‚¹ãƒˆã‹ã‚‰ã®å‰Šé™¤
 	* ((object->pred != NULL) ? & object->pred->succ : & first_using_environment) = object->succ;
 	* ((object->succ != NULL) ? & object->succ->pred : & last_using_environment) = object->pred;
 
-	//‚²‚İƒŠƒXƒg‚Ö‚Ì’Ç‰Á
+	//ã”ã¿ãƒªã‚¹ãƒˆã¸ã®è¿½åŠ 
 	object->pred = last_garbage_environment;
 	object->succ = NULL;
 	* ((object->pred != NULL) ? & object->pred->succ : & first_garbage_environment) = object;
@@ -2816,7 +2816,7 @@ void script_machine::call(std::string event_name)
 	assert(!stopped);
 	if(engine->events.find(event_name) != engine->events.end())
 	{
-		run();	//”O‚Ì‚½‚ß
+		run();	//å¿µã®ãŸã‚
 
 		int threadIndex = current_thread_index;
 		current_thread_index = 0;
@@ -2909,7 +2909,7 @@ void script_machine::advance()
 	else
 	{
 		script_engine::code * c = & (current->sub->codes.at[current->ip]);
-		error_line = c->line;	//‚§
+		error_line = c->line;	//ã‰
 		++(current->ip);
 
 		switch(c->command)
@@ -2937,7 +2937,7 @@ void script_machine::advance()
 							{
 								std::wstring error;
 								error += L"A variable was changing it's value type.\r\n";
-								error += L"(‘ã“ü‚É‚æ‚Á‚ÄŒ^‚ª•Ï‚¦‚ç‚ê‚æ‚¤‚Æ‚µ‚Ü‚µ‚½)";
+								error += L"(ä»£å…¥ã«ã‚ˆã£ã¦å‹ãŒå¤‰ãˆã‚‰ã‚Œã‚ˆã†ã¨ã—ã¾ã—ãŸ)";
 								raise_error(error);
 							}
 							* dest = * src;
@@ -2960,7 +2960,7 @@ void script_machine::advance()
 					{
 						std::wstring error;
 						error += L"A variable was changing it's value type.\r\n";
-						error += L"(‘ã“ü‚É‚æ‚Á‚ÄŒ^‚ª•Ï‚¦‚ç‚ê‚æ‚¤‚Æ‚µ‚Ü‚µ‚½)";
+						error += L"(ä»£å…¥ã«ã‚ˆã£ã¦å‹ãŒå¤‰ãˆã‚‰ã‚Œã‚ˆã†ã¨ã—ã¾ã—ãŸ)";
 						raise_error(error);
 					}
 					else
@@ -2997,7 +2997,7 @@ void script_machine::advance()
 						   || i->sub->kind == script_engine::bk_microthread)
 							   break;
 						else if (i->sub->kind == script_engine::bk_loop)
-							i->parent->stack.clear(); /*¬×H‚à‚¢‚¢‚Æ‚±‚ë*/
+							i->parent->stack.clear(); /*å°ç´°å·¥ã‚‚ã„ã„ã¨ã“ã‚*/
 					}
 				}
 				break;
@@ -3009,7 +3009,7 @@ void script_machine::advance()
 					assert(current_stack->length >= c->arguments);
 					if(c->sub->func != NULL)
 					{
-						//ƒlƒCƒeƒBƒuŒÄ‚Ño‚µ
+						//ãƒã‚¤ãƒ†ã‚£ãƒ–å‘¼ã³å‡ºã—
 						value * argv = & ((* current_stack).at[current_stack->length - c->arguments]);
 						value ret;
 						ret = c->sub->func(this, c->arguments, argv);
@@ -3020,22 +3020,22 @@ void script_machine::advance()
 						else
 						{
 							resuming = false;
-							//‹l‚Ü‚ê‚½ˆø”‚ğíœ
+							//è©°ã¾ã‚ŒãŸå¼•æ•°ã‚’å‰Šé™¤
 							for(int i = 0; i < c->arguments; ++i) current_stack->pop_back();
 							//current_stack->length -= c->arguments;
-							//–ß‚è’l
+							//æˆ»ã‚Šå€¤
 							if(c->command == script_engine::pc_call_and_push_result)
 								current_stack->push_back(ret);
 						}
 					}
 					else if(c->sub->kind == script_engine::bk_microthread)
 					{
-						//ƒ}ƒCƒNƒƒXƒŒƒbƒh‹N“®
+						//ãƒã‚¤ã‚¯ãƒ­ã‚¹ãƒ¬ãƒƒãƒ‰èµ·å‹•
 						++(current->ref_count);
 						environment * e = new_environment(current, c->sub);
 						++current_thread_index;
 						threads.insert(threads.begin() + current_thread_index, e);
-						//ˆø”‚ÌÏ‚İ‘Ö‚¦
+						//å¼•æ•°ã®ç©ã¿æ›¿ãˆ
 						for(unsigned i = 0; i < c->arguments; ++i)
 						{
 							e->stack.push_back(current_stack->at[current_stack->length - 1]);
@@ -3044,12 +3044,12 @@ void script_machine::advance()
 					}
 					else
 					{
-						//ƒXƒNƒŠƒvƒgŠÔ‚ÌŒÄ‚Ño‚µ
+						//ã‚¹ã‚¯ãƒªãƒ—ãƒˆé–“ã®å‘¼ã³å‡ºã—
 						++(current->ref_count);
 						environment * e = new_environment(current, c->sub);
 						e->has_result = c->command == script_engine::pc_call_and_push_result;
 						threads[current_thread_index] = e;
-						//ˆø”‚ÌÏ‚İ‘Ö‚¦
+						//å¼•æ•°ã®ç©ã¿æ›¿ãˆ
 						for(unsigned i = 0; i < c->arguments; ++i)
 						{
 							e->stack.push_back(current_stack->at[current_stack->length - 1]);
@@ -3246,7 +3246,7 @@ void script_machine::advance()
 						{
 							std::wstring error;
 							error += L"you are using a variable that has not been set yet.\r\n";
-							error += L"(ˆê‰ñ‚à‘ã“ü‚µ‚Ä‚¢‚È‚¢•Ï”‚ğg‚¨‚¤‚Æ‚µ‚Ü‚µ‚½)";
+							error += L"(ä¸€å›ã‚‚ä»£å…¥ã—ã¦ã„ãªã„å¤‰æ•°ã‚’ä½¿ãŠã†ã¨ã—ã¾ã—ãŸ)";
 							raise_error(error);
 						}
 						else

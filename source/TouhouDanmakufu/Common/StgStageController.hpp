@@ -82,7 +82,7 @@ class StgStageInformation
 	private:
 		bool bEndStg_;
 		bool bPause_;
-		bool bReplay_;//ƒŠƒvƒŒƒC
+		bool bReplay_;//ãƒªãƒ—ãƒ¬ã‚¤
 		int frame_;
 		int stageIndex_;
 
@@ -91,7 +91,7 @@ class StgStageInformation
 		ref_count_ptr<StgPlayerInformation> infoPlayerObject_;
 		ref_count_ptr<ReplayInformation::StageData> replayStageData_;
 
-		//STGİ’è
+		//STGè¨­å®š
 		RECT rcStgFrame_;
 		int priMinStgFrame_;
 		int priMaxStgFrame_;
@@ -100,7 +100,7 @@ class StgStageInformation
 		int priCameraFocusPermit_;
 		RECT rcShotAutoDeleteClip_;
 
-		//STGî•ñ
+		//STGæƒ…å ±
 		ref_count_ptr<MersenneTwister> rand_;
 		_int64 score_;
 		_int64 graze_;

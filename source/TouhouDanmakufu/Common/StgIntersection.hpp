@@ -11,7 +11,7 @@ class StgIntersectionTargetPoint;
 
 /**********************************************************
 //StgIntersectionManager
-//‰º‹L‚ğQl
+//ä¸‹è¨˜ã‚’å‚è€ƒ
 //http://marupeke296.com/COL_2D_No8_QuadTree.html
 **********************************************************/
 class StgIntersectionManager : public ObjectPool<StgIntersectionTarget, false>
@@ -19,9 +19,9 @@ class StgIntersectionManager : public ObjectPool<StgIntersectionTarget, false>
 	private:
 		enum
 		{
-			SPACE_PLAYER_ENEMY = 0,//©‹@-“GA“G’e
-			SPACE_PLAYERSOHT_ENEMY,//©’e,ƒXƒyƒ‹-“G
-			SPACE_PLAYERSHOT_ENEMYSHOT,//©’e,ƒXƒyƒ‹-“G’e
+			SPACE_PLAYER_ENEMY = 0,//è‡ªæ©Ÿ-æ•µã€æ•µå¼¾
+			SPACE_PLAYERSOHT_ENEMY,//è‡ªå¼¾,ã‚¹ãƒšãƒ«-æ•µ
+			SPACE_PLAYERSHOT_ENEMYSHOT,//è‡ªå¼¾,ã‚¹ãƒšãƒ«-æ•µå¼¾
 		};
 		std::vector<ref_count_ptr<StgIntersectionSpace> > listSpace_;
 		std::vector<StgIntersectionTargetPoint> listEnemyTargetPoint_;
@@ -48,9 +48,9 @@ class StgIntersectionManager : public ObjectPool<StgIntersectionTarget, false>
 
 /**********************************************************
 //StgIntersectionSpace
-//ˆÈ‰ºƒTƒCƒg‚ğQl
-//@›~i‚Ü‚é‚Ø‚¯j‚Â‚­‚ë[‚Ç‚Á‚ÆƒRƒ€
-//@http://marupeke296.com/
+//ä»¥ä¸‹ã‚µã‚¤ãƒˆã‚’å‚è€ƒ
+//ã€€â—‹Ã—ï¼ˆã¾ã‚‹ãºã‘ï¼‰ã¤ãã‚ãƒ¼ã©ã£ã¨ã‚³ãƒ 
+//ã€€http://marupeke296.com/
 **********************************************************/
 class StgIntersectionSpace
 {
@@ -63,15 +63,15 @@ class StgIntersectionSpace
 	protected:
 		//Cell TARGETA/B listTarget
 		std::vector<std::vector<std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > > >listCell_;
-		int listCountLevel_[MAX_LEVEL + 1];	// ŠeƒŒƒxƒ‹‚ÌƒZƒ‹”
-		double spaceWidth_; // —Ìˆæ‚ÌX²•
-		double spaceHeight_; // —Ìˆæ‚ÌY²•
-		double spaceLeft_; // —Ìˆæ‚Ì¶‘¤iX²Å¬’lj
-		double spaceTop_; // —Ìˆæ‚Ìã‘¤iY²Å¬’lj
-		double unitWidth_; // Å¬ƒŒƒxƒ‹‹óŠÔ‚Ì•’PˆÊ
-		double unitHeight_; // Å¬ƒŒƒxƒ‹‹óŠÔ‚Ì‚’PˆÊ
-		int countCell_; // ‹óŠÔ‚Ì”
-		int unitLevel_; // Å‰ºˆÊƒŒƒxƒ‹
+		int listCountLevel_[MAX_LEVEL + 1];	// å„ãƒ¬ãƒ™ãƒ«ã®ã‚»ãƒ«æ•°
+		double spaceWidth_; // é ˜åŸŸã®Xè»¸å¹…
+		double spaceHeight_; // é ˜åŸŸã®Yè»¸å¹…
+		double spaceLeft_; // é ˜åŸŸã®å·¦å´ï¼ˆXè»¸æœ€å°å€¤ï¼‰
+		double spaceTop_; // é ˜åŸŸã®ä¸Šå´ï¼ˆYè»¸æœ€å°å€¤ï¼‰
+		double unitWidth_; // æœ€å°ãƒ¬ãƒ™ãƒ«ç©ºé–“ã®å¹…å˜ä½
+		double unitHeight_; // æœ€å°ãƒ¬ãƒ™ãƒ«ç©ºé–“ã®é«˜å˜ä½
+		int countCell_; // ç©ºé–“ã®æ•°
+		int unitLevel_; // æœ€ä¸‹ä½ãƒ¬ãƒ™ãƒ«
 		ref_count_ptr<StgIntersectionCheckList>::unsync listCheck_;
 
 		unsigned int _GetMortonNumber( float left, float top, float right, float bottom );
@@ -122,7 +122,7 @@ class StgIntersectionCheckList
 class StgIntersectionObject
 {
 	protected:
-		bool bIntersected_;//Õ“Ë”»’è
+		bool bIntersected_;//è¡çªåˆ¤å®š
 		int intersectedCount_;
 		std::vector<ref_count_ptr<StgIntersectionTarget>::unsync > listRelativeTarget_;
 		std::vector<DxCircle> listOrgCircle_;

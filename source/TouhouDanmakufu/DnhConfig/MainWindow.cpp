@@ -24,7 +24,7 @@ bool MainWindow::Initialize()
 	Attach(hWnd_);
 	::ShowWindow(hWnd_, SW_HIDE);
 
-	//ƒ^ƒu
+	//ã‚¿ãƒ–
 	HWND hTab = GetDlgItem(hWnd_, IDC_TAB_MAIN);
 	wndTab_ = new WTabControll();
 	wndTab_->Attach(hTab);
@@ -44,7 +44,7 @@ bool MainWindow::Initialize()
 	panelOption_->Initialize(hTab);
 	wndTab_->AddTab(L"Option", panelOption_);
 
-	//‰Šú‰»Š®—¹
+	//åˆæœŸåŒ–å®Œäº†
 	ReadConfiguration();
 	MoveWindowCenter();
 	wndTab_->ShowPage();
@@ -144,7 +144,7 @@ void MainWindow::_RunExecutor()
 	);
 	if(res == 0)
 	{
-		std::wstring log = StringUtility::Format(L"Às¸”s\r\n%s", ErrorUtility::GetLastErrorMessage().c_str());
+		std::wstring log = StringUtility::Format(L"å®Ÿè¡Œå¤±æ•—\r\n%s", ErrorUtility::GetLastErrorMessage().c_str());
 		Logger::WriteTop(log);
 		return;
 	}
@@ -165,7 +165,7 @@ bool MainWindow::Load()
 	bool res = record.ReadFromFile(path);
 	if(!res)
 	{
-		//::MessageBox(hWnd_, "“Ç‚İ‚İ¸”s", "İ’è‚ğŠJ‚­", MB_OK);
+		//::MessageBox(hWnd_, "èª­ã¿è¾¼ã¿å¤±æ•—", "è¨­å®šã‚’é–‹ã", MB_OK);
 		return false;
 	}
 */
@@ -316,23 +316,23 @@ bool KeyPanel::Initialize(HWND hParent)
 
 	viewKey_ = new KeyListView();
 	viewKey_->Attach(hListKey);
-	viewKey_->AddColumn(140, COL_ACTION, L"Action(“®ì)");
-	viewKey_->AddColumn(100, COL_KEY_ASSIGN, L"Keyboard(ƒL[ƒ{[ƒh)");
-	viewKey_->AddColumn(100, COL_PAD_ASSIGN, L"Pad(ƒpƒbƒh)");
+	viewKey_->AddColumn(140, COL_ACTION, L"Action(å‹•ä½œ)");
+	viewKey_->AddColumn(100, COL_KEY_ASSIGN, L"Keyboard(ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰)");
+	viewKey_->AddColumn(100, COL_PAD_ASSIGN, L"Pad(ãƒ‘ãƒƒãƒ‰)");
 
 	std::map<int, std::wstring> mapViewText;
-	mapViewText[EDirectInput::KEY_LEFT] = L"Left(¶)";
-	mapViewText[EDirectInput::KEY_RIGHT] = L"Right(‰E)";
-	mapViewText[EDirectInput::KEY_UP] = L"Up(ã)";
-	mapViewText[EDirectInput::KEY_DOWN] = L"Down(‰º)";
-	mapViewText[EDirectInput::KEY_OK] = L"Decide(Œˆ’è)";
-	mapViewText[EDirectInput::KEY_CANCEL] = L"Cancel(ƒLƒƒƒ“ƒZƒ‹)";
-	mapViewText[EDirectInput::KEY_SHOT] = L"Shot(ƒVƒ‡ƒbƒg)";
-	mapViewText[EDirectInput::KEY_BOMB] = L"Spell(ƒXƒyƒ‹)";
-	mapViewText[EDirectInput::KEY_SLOWMOVE] = L"Slow-Moving(’á‘¬ˆÚ“®)";
-	mapViewText[EDirectInput::KEY_USER1] = L"User1(ƒ†[ƒU’è‹`1)";
-	mapViewText[EDirectInput::KEY_USER2] = L"User2(ƒ†[ƒU’è‹`2)";
-	mapViewText[EDirectInput::KEY_PAUSE] = L"Pause(ƒ|[ƒY)";
+	mapViewText[EDirectInput::KEY_LEFT] = L"Left(å·¦)";
+	mapViewText[EDirectInput::KEY_RIGHT] = L"Right(å³)";
+	mapViewText[EDirectInput::KEY_UP] = L"Up(ä¸Š)";
+	mapViewText[EDirectInput::KEY_DOWN] = L"Down(ä¸‹)";
+	mapViewText[EDirectInput::KEY_OK] = L"Decide(æ±ºå®š)";
+	mapViewText[EDirectInput::KEY_CANCEL] = L"Cancel(ã‚­ãƒ£ãƒ³ã‚»ãƒ«)";
+	mapViewText[EDirectInput::KEY_SHOT] = L"Shot(ã‚·ãƒ§ãƒƒãƒˆ)";
+	mapViewText[EDirectInput::KEY_BOMB] = L"Spell(ã‚¹ãƒšãƒ«)";
+	mapViewText[EDirectInput::KEY_SLOWMOVE] = L"Slow-Moving(ä½é€Ÿç§»å‹•)";
+	mapViewText[EDirectInput::KEY_USER1] = L"User1(ãƒ¦ãƒ¼ã‚¶å®šç¾©1)";
+	mapViewText[EDirectInput::KEY_USER2] = L"User2(ãƒ¦ãƒ¼ã‚¶å®šç¾©2)";
+	mapViewText[EDirectInput::KEY_PAUSE] = L"Pause(ãƒãƒ¼ã‚º)";
 	for(int iView = 0 ; iView < mapViewText.size() ; iView++)
 	{
 		std::wstring text = mapViewText[iView];
@@ -467,7 +467,7 @@ LRESULT KeyPanel::KeyListView::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wPara
 {
 	switch (uMsg)
 	{
-		case WM_KEYDOWN://ƒL[“ü—Í‚ğ–³‹
+		case WM_KEYDOWN://ã‚­ãƒ¼å…¥åŠ›ã‚’ç„¡è¦–
 			return FALSE;
 	}
 	return _CallPreviousWindowProcedure(hWnd, uMsg, wParam, lParam);
@@ -497,10 +497,10 @@ bool OptionPanel::Initialize(HWND hParent)
 
 	viewOption_ = new WListView();
 	viewOption_->Attach(hListOption);
-	viewOption_->AddColumn(292, 0, L"Option(ƒIƒvƒVƒ‡ƒ“)");
-	viewOption_->SetText(ROW_LOG_WINDOW, 0, L"Show LogWindow(ƒƒOƒEƒBƒ“ƒhƒE‚ğ•\¦‚·‚é)");
-	viewOption_->SetText(ROW_LOG_FILE, 0, L"Save LogFile(ƒƒOƒtƒ@ƒCƒ‹‚ğ•Û‘¶‚·‚é)");
-	viewOption_->SetText(ROW_MOUSE_UNVISIBLE, 0, L"Hide Mouse Cursor(ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ğ”ñ•\¦‚É‚·‚é)");
+	viewOption_->AddColumn(292, 0, L"Option(ã‚ªãƒ—ã‚·ãƒ§ãƒ³)");
+	viewOption_->SetText(ROW_LOG_WINDOW, 0, L"Show LogWindow(ãƒ­ã‚°ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’è¡¨ç¤ºã™ã‚‹)");
+	viewOption_->SetText(ROW_LOG_FILE, 0, L"Save LogFile(ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä¿å­˜ã™ã‚‹)");
+	viewOption_->SetText(ROW_MOUSE_UNVISIBLE, 0, L"Hide Mouse Cursor(ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã‚’éè¡¨ç¤ºã«ã™ã‚‹)");
 
 	return true;
 }

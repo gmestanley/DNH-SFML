@@ -147,7 +147,7 @@ bool DxMath::IsIntersected(DxCircle& circle1, DxCircle& circle2)
 }
 bool DxMath::IsIntersected(DxCircle& circle, DxWidthLine& line)
 {
-	//æ’[‚à‚µ‚­‚ÍI’[‚ª‰~“à‚É‚ ‚é‚©‚ğ’²‚×‚é
+	//å…ˆç«¯ã‚‚ã—ãã¯çµ‚ç«¯ãŒå††å†…ã«ã‚ã‚‹ã‹ã‚’èª¿ã¹ã‚‹
 	{
 		double radius = circle.GetR();
 		double dist1 = pow(pow(circle.GetX()-line.GetX1(),2) + pow(circle.GetY()-line.GetY1(),2), 0.5);
@@ -156,7 +156,7 @@ bool DxMath::IsIntersected(DxCircle& circle, DxWidthLine& line)
 			return true;
 	}
 
-	//ü•ª“à‚É‰~‚ª‚ ‚é‚©‚ğ’²‚×‚é
+	//ç·šåˆ†å†…ã«å††ãŒã‚ã‚‹ã‹ã‚’èª¿ã¹ã‚‹
 	{
 		double lx1 = line.GetX2() - line.GetX1();
 		double ly1 = line.GetY2() - line.GetY1();
@@ -178,15 +178,15 @@ bool DxMath::IsIntersected(DxCircle& circle, DxWidthLine& line)
 	double uy1 = line.GetY2() - line.GetY1();
 	double px = circle.GetX() - line.GetX1();
 	double py = circle.GetY() - line.GetY1();
-	double u = pow(pow((double)ux1,(double)2)+pow((double)uy1,(double)2),0.5);//’¼ü‚Ì‹——£
-	double ux2 = ux1 / u;//’¼ü‚Ì’PˆÊƒxƒNƒgƒ‹x
-	double uy2 = uy1 / u;//’¼ü‚Ì’PˆÊƒxƒNƒgƒ‹z
-	double d = px*ux2 + py*uy2;//’¼ü‚Ì’PˆÊƒxƒNƒgƒ‹‚Æn“_‚©‚ç“_‚Ü‚ÅƒxƒNƒgƒ‹‚Ì“àÏ
+	double u = pow(pow((double)ux1,(double)2)+pow((double)uy1,(double)2),0.5);//ç›´ç·šã®è·é›¢
+	double ux2 = ux1 / u;//ç›´ç·šã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«x
+	double uy2 = uy1 / u;//ç›´ç·šã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«z
+	double d = px*ux2 + py*uy2;//ç›´ç·šã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã¨å§‹ç‚¹ã‹ã‚‰ç‚¹ã¾ã§ãƒ™ã‚¯ãƒˆãƒ«ã®å†…ç©
 	double qx = d * ux2;
 	double qy = d * uy2;
-	double rx = px - qx;//“_‚©‚ç’¼ü‚Ü‚Å‚ÌÅ’Z‹——£ƒxƒNƒgƒ‹x
-	double ry = py - qy;//“_‚©‚ç’¼ü‚Ü‚Å‚ÌÅ’Z‹——£ƒxƒNƒgƒ‹z
-	double e = pow(pow((double)rx,(double)2)+pow((double)ry,(double)2),0.5);//’¼ü‚Ì‚Æ“_‚Ì‹——£
+	double rx = px - qx;//ç‚¹ã‹ã‚‰ç›´ç·šã¾ã§ã®æœ€çŸ­è·é›¢ãƒ™ã‚¯ãƒˆãƒ«x
+	double ry = py - qy;//ç‚¹ã‹ã‚‰ç›´ç·šã¾ã§ã®æœ€çŸ­è·é›¢ãƒ™ã‚¯ãƒˆãƒ«z
+	double e = pow(pow((double)rx,(double)2)+pow((double)ry,(double)2),0.5);//ç›´ç·šã®ã¨ç‚¹ã®è·é›¢
 	double r = line.GetWidth() + circle.GetR();
 
 	bool res = e < r;
@@ -204,13 +204,13 @@ bool DxMath::IsIntersected(DxLine3D& line, std::vector<DxTriangle>& triangles, s
 	for(int iTri = 0; iTri < triangles.size() ; iTri++)
 	{
 		DxTriangle& tri = triangles[iTri];
-		D3DXPLANE plane;//3ŠpŒ`‚Ì–Ê
+		D3DXPLANE plane;//3è§’å½¢ã®é¢
 		D3DXPlaneFromPoints( &plane, &tri.GetPosition(0), &tri.GetPosition(1), &tri.GetPosition(2));
 
-		D3DXVECTOR3 vOut;// –Ê‚Æ‹ü‚ÌŒğ“_‚ÌÀ•W
+		D3DXVECTOR3 vOut;// é¢ã¨è¦–ç·šã®äº¤ç‚¹ã®åº§æ¨™
 		if( D3DXPlaneIntersectLine( &vOut, &plane, &line.GetPosition(0), &line.GetPosition(1) ))
 		{
-			// “àŠO”»’è
+			// å†…å¤–åˆ¤å®š
 			D3DXVECTOR3 vN[3];
 			D3DXVECTOR3 vv1, vv2, vv3;
 			vv1 = tri.GetPosition(0) - vOut;
@@ -222,7 +222,7 @@ bool DxMath::IsIntersected(DxLine3D& line, std::vector<DxTriangle>& triangles, s
 			if( D3DXVec3Dot( &vN[0], &vN[1] ) < 0 || D3DXVec3Dot( &vN[0], &vN[2] ) < 0 )
 				continue;
 			else
-			{// “à‘¤(3ŠpŒ`‚ÉÚG)
+			{// å†…å´(3è§’å½¢ã«æ¥è§¦)
 				out.push_back(vOut);
 			}
 		}

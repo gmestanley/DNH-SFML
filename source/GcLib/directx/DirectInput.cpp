@@ -16,7 +16,7 @@ DirectInput::DirectInput()
 }
 DirectInput::~DirectInput()
 {
-	Logger::WriteTop(L"DirectInputFI—¹ŠJn");
+	Logger::WriteTop(L"DirectInputï¼šçµ‚äº†é–‹å§‹");
 	for(int iPad=0; iPad<pJoypad_.size(); iPad++)
 	{
 		if(pJoypad_[iPad]==NULL)continue;
@@ -38,21 +38,21 @@ DirectInput::~DirectInput()
 
 	if(pInput_ != NULL)pInput_->Release();
 	thisBase_=NULL;
-	Logger::WriteTop(L"DirectInputFI—¹Š®—¹");
+	Logger::WriteTop(L"DirectInputï¼šçµ‚äº†å®Œäº†");
 }
 
 bool DirectInput::Initialize(HWND hWnd)
 {
 	if(thisBase_ != NULL)return false;
-	Logger::WriteTop(L"DirectInputF‰Šú‰»");
+	Logger::WriteTop(L"DirectInputï¼šåˆæœŸåŒ–");
 	hWnd_ = hWnd;
 
 	HINSTANCE hInst = ::GetModuleHandle(NULL);
 	HRESULT hrInput = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8,(void**)&pInput_, NULL);
 	if(FAILED(hrInput))
 	{
-		Logger::WriteTop(L"DirectInputFDirectInput8Create¸”s");
-		return false;  // DirectInput8‚Ìì¬‚É¸”s
+		Logger::WriteTop(L"DirectInputï¼šDirectInput8Createå¤±æ•—");
+		return false;  // DirectInput8ã®ä½œæˆã«å¤±æ•—
 	}
 
 	_InitializeKeyBoard();
@@ -66,82 +66,82 @@ bool DirectInput::Initialize(HWND hWnd)
 	}
 
 	thisBase_ = this;
-	Logger::WriteTop(L"DirectInputF‰Šú‰»Š®—¹");
+	Logger::WriteTop(L"DirectInputï¼šåˆæœŸåŒ–å®Œäº†");
 	return true;
 }
 
 bool DirectInput::_InitializeKeyBoard()
 {
-	Logger::WriteTop(L"DirectIuputFƒL[ƒ{[ƒh‰Šú‰»");
+	Logger::WriteTop(L"DirectIuputï¼šã‚­ãƒ¼ãƒœãƒ¼ãƒ‰åˆæœŸåŒ–");
 
 	HRESULT hrDevice = pInput_->CreateDevice(GUID_SysKeyboard, &pKeyboard_, NULL); 
 	if (FAILED(hrDevice)) 
 	{ 
-		Logger::WriteTop(L"DirectInputFƒL[ƒ{[ƒh‚ÌƒfƒoƒCƒXƒIƒuƒWƒFƒNƒgì¬¸”s");
+		Logger::WriteTop(L"DirectInputï¼šã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ãƒ‡ãƒã‚¤ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä½œæˆå¤±æ•—");
 		return false;
 	}
 
 	HRESULT hrFormat = pKeyboard_->SetDataFormat(&c_dfDIKeyboard); 
 	if (FAILED(hrFormat)) 
 	{ 
-		Logger::WriteTop(L"DirectInputFƒL[ƒ{[ƒh‚Ìƒf[ƒ^ƒtƒH[ƒ}ƒbƒgİ’è¸”s");
+		Logger::WriteTop(L"DirectInputï¼šã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆè¨­å®šå¤±æ•—");
 		return false;
 	}
 
 	HRESULT hrCoop = pKeyboard_->SetCooperativeLevel(hWnd_, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND);
 	if(FAILED(hrCoop))
 	{
-		Logger::WriteTop(L"DirectInputFƒL[ƒ{[ƒh‚Ì“®ìİ’è¸”s");
+		Logger::WriteTop(L"DirectInputï¼šã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®å‹•ä½œè¨­å®šå¤±æ•—");
 		return false;
 	}
 
-	// “ü—Í§ŒäŠJn
+	// å…¥åŠ›åˆ¶å¾¡é–‹å§‹
 	pKeyboard_->Acquire();
 
-	Logger::WriteTop(L"DirectIuputFƒL[ƒ{[ƒh‰Šú‰»Š®—¹");
+	Logger::WriteTop(L"DirectIuputï¼šã‚­ãƒ¼ãƒœãƒ¼ãƒ‰åˆæœŸåŒ–å®Œäº†");
 
 	return true;
 }
 bool DirectInput::_InitializeMouse()
 {
-	Logger::WriteTop(L"DirectIuputFƒ}ƒEƒX‰Šú‰»");
+	Logger::WriteTop(L"DirectIuputï¼šãƒã‚¦ã‚¹åˆæœŸåŒ–");
 
 	HRESULT hrDevice = pInput_->CreateDevice(GUID_SysMouse, &pMouse_, NULL); 
 	if (FAILED(hrDevice)) 
 	{ 
-		Logger::WriteTop(L"DirectInputFƒ}ƒEƒX‚ÌƒfƒoƒCƒXƒIƒuƒWƒFƒNƒgì¬¸”s");
+		Logger::WriteTop(L"DirectInputï¼šãƒã‚¦ã‚¹ã®ãƒ‡ãƒã‚¤ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä½œæˆå¤±æ•—");
 		return false;
 	}
 
 	HRESULT hrFormat = pMouse_->SetDataFormat(&c_dfDIMouse); 
 	if (FAILED(hrFormat)) 
 	{ 
-		Logger::WriteTop(L"DirectInputFƒ}ƒEƒX‚Ìƒf[ƒ^ƒtƒH[ƒ}ƒbƒgİ’è¸”s");
+		Logger::WriteTop(L"DirectInputï¼šãƒã‚¦ã‚¹ã®ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆè¨­å®šå¤±æ•—");
 		return false;
 	}
 
 	HRESULT hrCoop = pMouse_->SetCooperativeLevel(hWnd_, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND);
 	if(FAILED(hrCoop))
 	{
-		Logger::WriteTop(L"DirectInputFƒ}ƒEƒX‚Ì“®ìİ’è¸”s");
+		Logger::WriteTop(L"DirectInputï¼šãƒã‚¦ã‚¹ã®å‹•ä½œè¨­å®šå¤±æ•—");
 		return false;
 	}
 
-	// “ü—Í§ŒäŠJn
+	// å…¥åŠ›åˆ¶å¾¡é–‹å§‹
 	pMouse_->Acquire();
 
-	Logger::WriteTop(L"DirectIuputFƒ}ƒEƒX‰Šú‰»Š®—¹");
+	Logger::WriteTop(L"DirectIuputï¼šãƒã‚¦ã‚¹åˆæœŸåŒ–å®Œäº†");
 	return true;
 }
 bool DirectInput::_InitializeJoypad()
 {
-	Logger::WriteTop(L"DirectIuputFƒWƒ‡ƒCƒpƒbƒh‰Šú‰»");
+	Logger::WriteTop(L"DirectIuputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰åˆæœŸåŒ–");
 	pInput_->EnumDevices(DI8DEVCLASS_GAMECTRL, (LPDIENUMDEVICESCALLBACK)_GetJoypadStaticCallback, this, DIEDFL_ATTACHEDONLY);
 	int count = pJoypad_.size();
 	if (count == 0)
 	{
-		Logger::WriteTop(L"DirectIuputFƒWƒ‡ƒCƒpƒbƒh‚ÍŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½");
-		return false;	// ƒWƒ‡ƒCƒpƒbƒh‚ªŒ©•t‚©‚ç‚È‚¢
+		Logger::WriteTop(L"DirectIuputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã¯è¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ");
+		return false;	// ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ãŒè¦‹ä»˜ã‹ã‚‰ãªã„
 	}
 
 	statePad_.resize(count);
@@ -149,7 +149,7 @@ bool DirectInput::_InitializeJoypad()
 	for(int iPad=0;iPad<count;iPad++)
 		padRes_[iPad]=500;
 
-	Logger::WriteTop(L"DirectIuputFƒWƒ‡ƒCƒpƒbƒh‰Šú‰»Š®—¹");
+	Logger::WriteTop(L"DirectIuputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰åˆæœŸåŒ–å®Œäº†");
 
 	return true;
 }
@@ -160,31 +160,31 @@ BOOL CALLBACK DirectInput::_GetJoypadStaticCallback(LPDIDEVICEINSTANCE lpddi,LPV
 }
 BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 {
-	Logger::WriteTop(L"DirectInputFƒWƒ‡ƒCƒpƒbƒh‚ğŒ©‚Â‚¯‚Ü‚µ‚½");
+	Logger::WriteTop(L"DirectInputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã‚’è¦‹ã¤ã‘ã¾ã—ãŸ");
 	LPDIRECTINPUTDEVICE8 pJoypad = NULL;
 	HRESULT hrDevice = pInput_->CreateDevice( lpddi->guidInstance, &pJoypad, NULL );
 	if (FAILED(hrDevice)) 
 	{ 
-		Logger::WriteTop(L"DirectInputF“ü—Í‘•’u‚ÌƒfƒoƒCƒXƒIƒuƒWƒFƒNƒgì¬¸”s");
+		Logger::WriteTop(L"DirectInputï¼šå…¥åŠ›è£…ç½®ã®ãƒ‡ãƒã‚¤ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä½œæˆå¤±æ•—");
 		return DIENUM_CONTINUE;
 	}
 
-	// î•ñ•\¦
+	// æƒ…å ±è¡¨ç¤º
 	{
 		DIDEVICEINSTANCE State ;
 		ZeroMemory(&State,sizeof(State));
 		State.dwSize=sizeof(State);
 		pJoypad->GetDeviceInfo(&State);
 
-		Logger::WriteTop(StringUtility::Format(L"ƒfƒoƒCƒX‚Ì“o˜^–¼:%s", State.tszInstanceName));
-		Logger::WriteTop(StringUtility::Format(L"ƒfƒoƒCƒX‚Ì»•i“o˜^–¼:%s", State.tszProductName));
+		Logger::WriteTop(StringUtility::Format(L"ãƒ‡ãƒã‚¤ã‚¹ã®ç™»éŒ²å:%s", State.tszInstanceName));
+		Logger::WriteTop(StringUtility::Format(L"ãƒ‡ãƒã‚¤ã‚¹ã®è£½å“ç™»éŒ²å:%s", State.tszProductName));
 	}
 
 	HRESULT hrFormat = pJoypad->SetDataFormat(&c_dfDIJoystick); 
 	if (FAILED(hrFormat)) 
 	{ 
 		if(pJoypad != NULL)pJoypad->Release();
-		Logger::WriteTop(L"DirectInputFƒWƒ‡ƒCƒpƒbƒh‚Ìƒf[ƒ^ƒtƒH[ƒ}ƒbƒgİ’è¸”s");
+		Logger::WriteTop(L"DirectInputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆè¨­å®šå¤±æ•—");
 		return DIENUM_CONTINUE;
 	}
 
@@ -192,11 +192,11 @@ BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 	if(FAILED(hrCoop))
 	{
 		if(pJoypad != NULL)pJoypad->Release();
-		Logger::WriteTop(L"DirectInputFƒWƒ‡ƒCƒpƒbƒh‚Ì“®ìİ’è¸”s");
+		Logger::WriteTop(L"DirectInputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®å‹•ä½œè¨­å®šå¤±æ•—");
 		return DIENUM_CONTINUE;
 	}
 
-	// x‚Ì”ÍˆÍ‚ğİ’è
+	// xã®ç¯„å›²ã‚’è¨­å®š
 	DIPROPRANGE diprg;
 	diprg.diph.dwSize=sizeof(diprg);
 	diprg.diph.dwHeaderSize=sizeof(diprg.diph);
@@ -208,29 +208,29 @@ BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 	if(FAILED(hrRangeX))
 	{
 		if(pJoypad != NULL)pJoypad->Release();
-		Logger::WriteTop( L"DirectInputFƒWƒ‡ƒCƒpƒbƒhƒfƒoƒCƒX‚Ìx²ŠÖŒW‚Ìİ’è‚É¸”s‚µ‚Ü‚µ‚½" );
+		Logger::WriteTop( L"DirectInputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®xè»¸é–¢ä¿‚ã®è¨­å®šã«å¤±æ•—ã—ã¾ã—ãŸ" );
 		return DIENUM_CONTINUE;
 	}
 
-	// y‚Ì”ÍˆÍ‚ğİ’è
+	// yã®ç¯„å›²ã‚’è¨­å®š
 	diprg.diph.dwObj=DIJOFS_Y;
 	HRESULT hrRangeY = pJoypad->SetProperty(DIPROP_RANGE, &diprg.diph);
 	if(FAILED(hrRangeY))
 	{
 		if(pJoypad != NULL)pJoypad->Release();
-		Logger::WriteTop( L"DirectInputFƒWƒ‡ƒCƒpƒbƒhƒfƒoƒCƒX‚Ìy²ŠÖŒW‚Ìİ’è‚É¸”s‚µ‚Ü‚µ‚½" );
+		Logger::WriteTop( L"DirectInputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®yè»¸é–¢ä¿‚ã®è¨­å®šã«å¤±æ•—ã—ã¾ã—ãŸ" );
 		return DIENUM_CONTINUE;
 	}
 
-	// z‚Ì”ÍˆÍ‚ğİ’è
+	// zã®ç¯„å›²ã‚’è¨­å®š
 	diprg.diph.dwObj=DIJOFS_Z;
 	HRESULT hrRangeZ = pJoypad->SetProperty(DIPROP_RANGE, &diprg.diph);
 	if(FAILED(hrRangeZ))
 	{
-		Logger::WriteTop(L"DirectInputFƒWƒ‡ƒCƒpƒbƒhƒfƒoƒCƒX‚Ìz²ŠÖŒW‚Ìİ’è‚É¸”s‚µ‚Ü‚µ‚½");
+		Logger::WriteTop(L"DirectInputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®zè»¸é–¢ä¿‚ã®è¨­å®šã«å¤±æ•—ã—ã¾ã—ãŸ");
 	}
 
-	// x‚Ì–³Œøƒ][ƒ“‚ğİ’è
+	// xã®ç„¡åŠ¹ã‚¾ãƒ¼ãƒ³ã‚’è¨­å®š
 	DIPROPDWORD dipdw;
 	dipdw.diph.dwSize=sizeof( dipdw ) ;
 	dipdw.diph.dwHeaderSize=sizeof( dipdw.diph );
@@ -241,29 +241,29 @@ BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 	if(FAILED(hrDeadX))
 	{
 		if(pJoypad != NULL)pJoypad->Release();
-		Logger::WriteTop(L"DirectInputFƒWƒ‡ƒCƒpƒbƒhƒfƒoƒCƒX‚Ìx²‚Ì–³Œøƒ][ƒ“‚Ìİ’è‚É¸”s‚µ‚Ü‚µ‚½");
+		Logger::WriteTop(L"DirectInputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®xè»¸ã®ç„¡åŠ¹ã‚¾ãƒ¼ãƒ³ã®è¨­å®šã«å¤±æ•—ã—ã¾ã—ãŸ");
 		return DIENUM_CONTINUE ;
 	}
 
-	// y‚Ì–³Œøƒ][ƒ“‚ğİ’è
+	// yã®ç„¡åŠ¹ã‚¾ãƒ¼ãƒ³ã‚’è¨­å®š
 	dipdw.diph.dwObj=DIJOFS_Y ;
 	HRESULT hrDeadY = pJoypad->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
 	if(FAILED(hrDeadY))
 	{
 		if(pJoypad != NULL)pJoypad->Release();
-		Logger::WriteTop(L"DirectInputFƒWƒ‡ƒCƒpƒbƒhƒfƒoƒCƒX‚Ìy²‚Ì–³Œøƒ][ƒ“‚Ìİ’è‚É¸”s‚µ‚Ü‚µ‚½");
+		Logger::WriteTop(L"DirectInputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®yè»¸ã®ç„¡åŠ¹ã‚¾ãƒ¼ãƒ³ã®è¨­å®šã«å¤±æ•—ã—ã¾ã—ãŸ");
 		return DIENUM_CONTINUE ;
 	}
 
-	// ‚y‚Ì–³Œøƒ][ƒ“‚ğİ’è
+	// ï¼ºã®ç„¡åŠ¹ã‚¾ãƒ¼ãƒ³ã‚’è¨­å®š
 	dipdw.diph.dwObj=DIJOFS_Z ;
 	HRESULT hrDeadZ = pJoypad->SetProperty(DIPROP_DEADZONE,&dipdw.diph);
 	if(FAILED(hrDeadZ) )
 	{
-		Logger::WriteTop(L"DirectInputFƒWƒ‡ƒCƒpƒbƒhƒfƒoƒCƒX‚Ìz²‚Ì–³Œøƒ][ƒ“‚Ìİ’è‚É¸”s‚µ‚Ü‚µ‚½");
+		Logger::WriteTop(L"DirectInputï¼šã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®zè»¸ã®ç„¡åŠ¹ã‚¾ãƒ¼ãƒ³ã®è¨­å®šã«å¤±æ•—ã—ã¾ã—ãŸ");
 	}
 
-	// “ü—Í§ŒäŠJn
+	// å…¥åŠ›åˆ¶å¾¡é–‹å§‹
 	pJoypad->Acquire();
 
 	pJoypad_.push_back(pJoypad);

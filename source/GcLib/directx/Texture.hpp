@@ -33,8 +33,8 @@ namespace directx
 			std::wstring name_;
 			volatile bool bLoad_;
 
-			IDirect3DSurface9* lpRenderSurface_;//ƒoƒbƒNƒoƒbƒtƒ@À‘Ì(ƒŒƒ“ƒ_ƒŠƒ“ƒOƒ^[ƒQƒbƒg—p)
-			IDirect3DSurface9* lpRenderZ_;//ƒoƒbƒNƒoƒbƒtƒ@‚ÌZƒoƒbƒtƒ@À‘Ì(ƒŒƒ“ƒ_ƒŠƒ“ƒOƒ^[ƒQƒbƒg—p)
+			IDirect3DSurface9* lpRenderSurface_;//ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡å®Ÿä½“(ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç”¨)
+			IDirect3DSurface9* lpRenderZ_;//ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã®Zãƒãƒƒãƒ•ã‚¡å®Ÿä½“(ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç”¨)
 		public:
 			TextureData();
 			virtual ~TextureData();
@@ -99,8 +99,8 @@ namespace directx
 			gstd::CriticalSection& GetLock(){return lock_;}
 
 			virtual void Clear();
-			virtual void Add(std::wstring name, gstd::ref_count_ptr<Texture> texture);//ƒeƒNƒXƒ`ƒƒ‚ÌQÆ‚ğ•Û‚µ‚Ü‚·
-			virtual void Release(std::wstring name);//•Û‚µ‚Ä‚¢‚éQÆ‚ğ‰ğ•ú‚µ‚Ü‚·
+			virtual void Add(std::wstring name, gstd::ref_count_ptr<Texture> texture);//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å‚ç…§ã‚’ä¿æŒã—ã¾ã™
+			virtual void Release(std::wstring name);//ä¿æŒã—ã¦ã„ã‚‹å‚ç…§ã‚’è§£æ”¾ã—ã¾ã™
 			virtual bool IsDataExists(std::wstring name);			
 			
 			virtual void ReleaseDirectGraphics(){ReleaseDxResource();}
@@ -109,9 +109,9 @@ namespace directx
 			void RestoreDxResource();
 
 			gstd::ref_count_ptr<TextureData> GetTextureData(std::wstring name);
-			gstd::ref_count_ptr<Texture> CreateFromFile(std::wstring path);//ƒeƒNƒXƒ`ƒƒ‚ğ“Ç‚İ‚İ‚Ü‚·BTextureData‚Í•Û‚µ‚Ü‚·‚ªATexture‚Í•Û‚µ‚Ü‚¹‚ñB
+			gstd::ref_count_ptr<Texture> CreateFromFile(std::wstring path);//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚TextureDataã¯ä¿æŒã—ã¾ã™ãŒã€Textureã¯ä¿æŒã—ã¾ã›ã‚“ã€‚
 			gstd::ref_count_ptr<Texture> CreateRenderTarget(std::wstring name);
-			gstd::ref_count_ptr<Texture> GetTexture(std::wstring name);//ì¬Ï‚İ‚ÌƒeƒNƒXƒ`ƒƒ‚ğæ“¾‚µ‚Ü‚·
+			gstd::ref_count_ptr<Texture> GetTexture(std::wstring name);//ä½œæˆæ¸ˆã¿ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’å–å¾—ã—ã¾ã™
 			gstd::ref_count_ptr<Texture> CreateFromFileInLoadThread(std::wstring path, bool bLoadImageInfo = false);
 			virtual void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event);
 

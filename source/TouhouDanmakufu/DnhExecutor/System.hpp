@@ -42,7 +42,7 @@ class SceneManager
 		SceneManager();
 		virtual ~SceneManager();
 
-		//ƒV[ƒ“•ÏX
+		//ã‚·ãƒ¼ãƒ³å¤‰æ›´
 		void TransTitleScene();
 
 		void TransScriptSelectScene(int type);

@@ -2,14 +2,14 @@
 #define __GSTD_MERSENNETWISTER__
 
 #include"GstdConstant.hpp"
-
+#include<random>
 namespace gstd
 {
 	/**********************************************************
 	//MersenneTwister
-	//Mersenne Twister‚ÍA¼–{áÁ E¼‘º‘ñmiƒAƒ‹ƒtƒ@ƒxƒbƒg‡j
-	//‚É‚æ‚è1996”N‚©‚ç1997”N‚É“n‚Á‚ÄŠJ”­‚³‚ê‚½
-	//‹^——”¶¬ƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B
+	//Mersenne Twisterã¯ã€æ¾æœ¬çœ ãƒ»è¥¿æ‘æ‹“å£«ï¼ˆã‚¢ãƒ«ãƒ•ã‚¡ãƒ™ãƒƒãƒˆé †ï¼‰
+	//ã«ã‚ˆã‚Š1996å¹´ã‹ã‚‰1997å¹´ã«æ¸¡ã£ã¦é–‹ç™ºã•ã‚ŒãŸ
+	//ç–‘ä¼¼ä¹±æ•°ç”Ÿæˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚
 	// http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/what-is-mt.html
 	**********************************************************/
 	class MersenneTwister
@@ -29,9 +29,13 @@ namespace gstd
 				virtual ~mt_struct(){}
 			} mt_struct;
 			mt_struct mts;
-			int seed_;
 			unsigned long _GenrandInt32();
-
+		private:
+			std::mt19937 actualTwister;
+			int seed;
+			long double maxReal = 3.402822e+38;
+			long maxInt = 2147483647;
+			unsigned long long maxInt64 = 9223372036854775807;
 		public:
 			MersenneTwister();
 			MersenneTwister(unsigned long s);
@@ -39,7 +43,8 @@ namespace gstd
 			void Initialize(unsigned long s);
 			void Initialize(unsigned long *init_key, int key_length);
 			
-			int GetSeed(){return seed_;}
+			int GetSeed(){return seed;}
+			int SeedRNG();
 			long GetInt();
 			long GetInt(long min, long max);
 			_int64 GetInt64();

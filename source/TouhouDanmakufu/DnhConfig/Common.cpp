@@ -101,17 +101,17 @@ KeyCodeList::KeyCodeList()
 	mapText_[DIK_F14] = L"F14";//NEC PC-98
 	mapText_[DIK_F15] = L"F15";//NEC PC-98
 
-	mapText_[DIK_KANA] = L"ƒJƒi";//“ú–{ŒêƒL[ƒ{[ƒh
-	mapText_[DIK_CONVERT] = L"•ÏŠ·";//“ú–{ŒêƒL[ƒ{[ƒh
-	mapText_[DIK_NOCONVERT] = L"–³•ÏŠ·";//“ú–{ŒêƒL[ƒ{[ƒh
-	mapText_[DIK_YEN] = L"\\";//“ú–{ŒêƒL[ƒ{[ƒh
+	mapText_[DIK_KANA] = L"ã‚«ãƒŠ";//æ—¥æœ¬èªžã‚­ãƒ¼ãƒœãƒ¼ãƒ‰
+	mapText_[DIK_CONVERT] = L"å¤‰æ›";//æ—¥æœ¬èªžã‚­ãƒ¼ãƒœãƒ¼ãƒ‰
+	mapText_[DIK_NOCONVERT] = L"ç„¡å¤‰æ›";//æ—¥æœ¬èªžã‚­ãƒ¼ãƒœãƒ¼ãƒ‰
+	mapText_[DIK_YEN] = L"\\";//æ—¥æœ¬èªžã‚­ãƒ¼ãƒœãƒ¼ãƒ‰
 	mapText_[DIK_NUMPADEQUALS] = L"(Numpad)";//NEC PC-98
-	mapText_[DIK_CIRCUMFLEX] = L"^";//“ú–{ŒêƒL[ƒ{[ƒh
+	mapText_[DIK_CIRCUMFLEX] = L"^";//æ—¥æœ¬èªžã‚­ãƒ¼ãƒœãƒ¼ãƒ‰
 
 	mapText_[DIK_AT] = L"@";//NEC PC-98
 	mapText_[DIK_COLON] = L":";//NEC PC-98
 	mapText_[DIK_UNDERLINE] = L"_";//NEC PC-98
-	mapText_[DIK_KANJI] = L"Š¿Žš";//“ú–{ŒêƒL[ƒ{[ƒh
+	mapText_[DIK_KANJI] = L"æ¼¢å­—";//æ—¥æœ¬èªžã‚­ãƒ¼ãƒœãƒ¼ãƒ‰
 	mapText_[DIK_STOP] = L"Stop";//NEC PC-98
 	mapText_[DIK_AX] = L"(Japan AX)";
 	mapText_[DIK_UNLABELED] = L"(J3100)";
@@ -124,12 +124,12 @@ KeyCodeList::KeyCodeList()
 	mapText_[DIK_RMENU] = L"Alt (Right)";
 	mapText_[DIK_PAUSE] = L"Pause";
 	mapText_[DIK_HOME] = L"Home";
-	mapText_[DIK_UP] = L"ª";
+	mapText_[DIK_UP] = L"â†‘";
 	mapText_[DIK_PRIOR] = L"Page Up";
-	mapText_[DIK_LEFT] = L"©";
-	mapText_[DIK_RIGHT] = L"¨";
+	mapText_[DIK_LEFT] = L"â†";
+	mapText_[DIK_RIGHT] = L"â†’";
 	mapText_[DIK_END] = L"End";
-	mapText_[DIK_DOWN] = L"«";
+	mapText_[DIK_DOWN] = L"â†“";
 	mapText_[DIK_NEXT] = L"Page Down";
 
 	mapText_[DIK_INSERT] = L"Insert";

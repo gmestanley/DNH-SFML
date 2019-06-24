@@ -51,15 +51,15 @@ std::string StringUtility::ConvertWideToMulti(std::wstring const &wstr, int code
 {
 	if(wstr == L"")return "";
 
-	//ƒ}ƒ‹ƒ`ƒoƒCƒg•ÏŠ·Œã‚ÌƒTƒCƒY‚ğ’²‚×‚Ü‚·
-	//WideCharToMultiByte‚Ì‘æ6ˆø”‚É0‚ğ“n‚·‚Æ•ÏŠ·Œã‚ÌƒTƒCƒY‚ª•Ô‚è‚Ü‚·
+	//ãƒãƒ«ãƒãƒã‚¤ãƒˆå¤‰æ›å¾Œã®ã‚µã‚¤ã‚ºã‚’èª¿ã¹ã¾ã™
+	//WideCharToMultiByteã®ç¬¬6å¼•æ•°ã«0ã‚’æ¸¡ã™ã¨å¤‰æ›å¾Œã®ã‚µã‚¤ã‚ºãŒè¿”ã‚Šã¾ã™
 	int sizeMulti = ::WideCharToMultiByte(codeMulti, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
-	if(sizeMulti == 0)return "";//¸”s(‚Æ‚è‚ ‚¦‚¸‹ó•¶š‚Æ‚µ‚Ü‚·)
+	if(sizeMulti == 0)return "";//å¤±æ•—(ã¨ã‚Šã‚ãˆãšç©ºæ–‡å­—ã¨ã—ã¾ã™)
 
-	//ÅŒã‚Ì\0‚ªŠÜ‚Ü‚ê‚é‚½‚ß
+	//æœ€å¾Œã®\0ãŒå«ã¾ã‚Œã‚‹ãŸã‚
 	sizeMulti = sizeMulti - 1;
 
-	//ƒ}ƒ‹ƒ`ƒoƒCƒg‚É•ÏŠ·‚µ‚Ü‚·
+	//ãƒãƒ«ãƒãƒã‚¤ãƒˆã«å¤‰æ›ã—ã¾ã™
 	std::string str;
 	str.resize(sizeMulti);
 	::WideCharToMultiByte(codeMulti, 0, wstr.c_str(), -1, &str[0], 
@@ -71,15 +71,15 @@ std::wstring StringUtility::ConvertMultiToWide(std::string const &str, int codeM
 {
 	if(str == "")return L"";
 
-	//UNICODE•ÏŠ·Œã‚ÌƒTƒCƒY‚ğ’²‚×‚Ü‚·
-	//MultiByteToWideChar‚Ì‘æ6ˆø”‚É0‚ğ“n‚·‚Æ•ÏŠ·Œã‚ÌƒTƒCƒY‚ª•Ô‚è‚Ü‚·
+	//UNICODEå¤‰æ›å¾Œã®ã‚µã‚¤ã‚ºã‚’èª¿ã¹ã¾ã™
+	//MultiByteToWideCharã®ç¬¬6å¼•æ•°ã«0ã‚’æ¸¡ã™ã¨å¤‰æ›å¾Œã®ã‚µã‚¤ã‚ºãŒè¿”ã‚Šã¾ã™
 	int sizeWide = ::MultiByteToWideChar(codeMulti, 0, str.c_str(), -1, NULL, 0 );
-	if(sizeWide == 0)return L"";//¸”s(‚Æ‚è‚ ‚¦‚¸‹ó•¶š‚Æ‚µ‚Ü‚·)
+	if(sizeWide == 0)return L"";//å¤±æ•—(ã¨ã‚Šã‚ãˆãšç©ºæ–‡å­—ã¨ã—ã¾ã™)
 
-	//ÅŒã‚Ì\0‚ªŠÜ‚Ü‚ê‚é‚½‚ß
+	//æœ€å¾Œã®\0ãŒå«ã¾ã‚Œã‚‹ãŸã‚
 	sizeWide = sizeWide - 1;
 
-	//UNICODE‚É•ÏŠ·‚µ‚Ü‚·
+	//UNICODEã«å¤‰æ›ã—ã¾ã™
 	std::wstring wstr;
 	wstr.resize(sizeWide);
 	::MultiByteToWideChar(codeMulti, 0, str.c_str(), -1, &wstr[0], sizeWide );
@@ -88,8 +88,8 @@ std::wstring StringUtility::ConvertMultiToWide(std::string const &str, int codeM
 
 std::string StringUtility::ConvertUtf8ToMulti(std::vector<char>& text)
 {
-	std::wstring wstr = ConvertUtf8ToWide(text); //UTF16‚É•ÏŠ·
-	std::string strShiftJIS = ConvertWideToMulti(wstr); //ShiftJIS‚É•ÏŠ·
+	std::wstring wstr = ConvertUtf8ToWide(text); //UTF16ã«å¤‰æ›
+	std::string strShiftJIS = ConvertWideToMulti(wstr); //ShiftJISã«å¤‰æ›
 
 	return strShiftJIS;
 }
@@ -104,7 +104,7 @@ std::wstring StringUtility::ConvertUtf8ToWide(std::vector<char>& text)
 	}
 
 	std::string str = &text[posText];
-	std::wstring wstr = ConvertMultiToWide(str, CP_UTF8); //UTF16‚É•ÏŠ·
+	std::wstring wstr = ConvertMultiToWide(str, CP_UTF8); //UTF16ã«å¤‰æ›
 	return wstr;
 }
 
@@ -128,9 +128,9 @@ void StringUtility::Split(std::string str, std::string delim, std::vector<std::s
 	wchar_t* cDelim = const_cast<wchar_t*>(wdelim.c_str());
 	while( (pStr = wcstok(pStr==NULL ? wsource : NULL, cDelim)) != NULL ) 
 	{
-		//Ø‚èo‚µ‚½•¶š—ñ‚ğ’Ç‰Á
+		//åˆ‡ã‚Šå‡ºã—ãŸæ–‡å­—åˆ—ã‚’è¿½åŠ 
 		std::string s = StringUtility::ConvertWideToMulti(std::wstring(pStr));
-		s = s.substr(0, s.size() - 1);//ÅŒã‚Ì\0‚ğíœ
+		s = s.substr(0, s.size() - 1);//æœ€å¾Œã®\0ã‚’å‰Šé™¤
 		res.push_back(s);
 	}
 	delete[] wsource;
@@ -144,7 +144,7 @@ void StringUtility::Split(std::string str, std::string delim, std::vector<std::s
 	char* cDelim = const_cast<char*>(delim.c_str());
 	while( (pStr = strtok(pStr==NULL ? source : NULL, cDelim)) != NULL ) 
 	{
-		//Ø‚èo‚µ‚½•¶š—ñ‚ğ’Ç‰Á
+		//åˆ‡ã‚Šå‡ºã—ãŸæ–‡å­—åˆ—ã‚’è¿½åŠ 
 		res.push_back(std::string(pStr));
 	}
 	delete[] source;
@@ -158,7 +158,7 @@ std::string StringUtility::Format(char* str, ...)
 	va_list	vl;
 	va_start(vl,str);
 	if(_vsnprintf(buf, sizeof(buf), str, vl) < 0)
-	{	//ƒoƒbƒtƒ@‚ğ’´‚¦‚Ä‚¢‚½ê‡A“®“I‚ÉŠm•Û‚·‚é
+	{	//ãƒãƒƒãƒ•ã‚¡ã‚’è¶…ãˆã¦ã„ãŸå ´åˆã€å‹•çš„ã«ç¢ºä¿ã™ã‚‹
 		int size = sizeof(buf);
 		while(true)
 		{
@@ -328,9 +328,9 @@ void StringUtility::Split(std::wstring str, std::wstring delim, std::vector<std:
 	wchar_t* cDelim = const_cast<wchar_t*>(delim.c_str());
 	while( (pStr = wcstok(pStr==NULL ? wsource : NULL, cDelim)) != NULL ) 
 	{
-		//Ø‚èo‚µ‚½•¶š—ñ‚ğ’Ç‰Á
+		//åˆ‡ã‚Šå‡ºã—ãŸæ–‡å­—åˆ—ã‚’è¿½åŠ 
 		std::wstring s = std::wstring(pStr);
-		//s = s.substr(0, s.size() - 1);//ÅŒã‚Ì\0‚ğíœ
+		//s = s.substr(0, s.size() - 1);//æœ€å¾Œã®\0ã‚’å‰Šé™¤
 		res.push_back(s);
 	}
 }
@@ -341,7 +341,7 @@ std::wstring StringUtility::Format(wchar_t* str, ...)
 	va_list	vl;
 	va_start(vl, str);
 	if(_vsnwprintf(buf, sizeof(buf) / 2, str, vl) < 0)
-	{	//ƒoƒbƒtƒ@‚ğ’´‚¦‚Ä‚¢‚½ê‡A“®“I‚ÉŠm•Û‚·‚é
+	{	//ãƒãƒƒãƒ•ã‚¡ã‚’è¶…ãˆã¦ã„ãŸå ´åˆã€å‹•çš„ã«ç¢ºä¿ã™ã‚‹
 		int size = sizeof(buf);
 		while(true)
 		{
@@ -370,7 +370,7 @@ std::wstring StringUtility::FormatToWide(char* str, ...)
 	va_list	vl;
 	va_start(vl,str);
 	if(_vsnprintf(buf, sizeof(buf), str, vl) < 0)
-	{	//ƒoƒbƒtƒ@‚ğ’´‚¦‚Ä‚¢‚½ê‡A“®“I‚ÉŠm•Û‚·‚é
+	{	//ãƒãƒƒãƒ•ã‚¡ã‚’è¶…ãˆã¦ã„ãŸå ´åˆã€å‹•çš„ã«ç¢ºä¿ã™ã‚‹
 		int size = sizeof(buf);
 		while(true)
 		{
@@ -518,7 +518,7 @@ std::wstring ErrorUtility::GetLastErrorMessage(DWORD error)
 	::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |FORMAT_MESSAGE_FROM_SYSTEM |FORMAT_MESSAGE_IGNORE_INSERTS,
 		NULL,
 		error,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Šù’è‚ÌŒ¾Œê
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // æ—¢å®šã®è¨€èª
 		(LPTSTR) &lpMsgBuf,
 		0,
 		NULL
@@ -664,11 +664,11 @@ wchar_t Scanner::_NextChar()
 {
 	if(HasNext() == false)
 	{
-		Logger::WriteTop(L"I’[ˆÙí”­¶->");
+		Logger::WriteTop(L"çµ‚ç«¯ç•°å¸¸ç™ºç”Ÿ->");
 
 		int size = buffer_.size() - textStartPointer_;
 		std::wstring source = GetString(textStartPointer_, size);
-		std::wstring target = StringUtility::Format(L"š‹å‰ğÍ‘ÎÛ -> \r\n%s...", source.c_str());
+		std::wstring target = StringUtility::Format(L"å­—å¥è§£æå¯¾è±¡ -> \r\n%s...", source.c_str());
 		Logger::WriteTop(target);
 
 		int index = 1;
@@ -682,7 +682,7 @@ wchar_t Scanner::_NextChar()
 			index++;
 		}
 
-		_RaiseError(L"_NextChar:‚·‚Å‚É•¶š—ñI’[‚Å‚·");
+		_RaiseError(L"_NextChar:ã™ã§ã«æ–‡å­—åˆ—çµ‚ç«¯ã§ã™");
 	}
 
 	if(typeEncoding_ == Encoding::UTF16LE)
@@ -715,7 +715,7 @@ void Scanner::_SkipComment()
 		wchar_t ch = _CurrentChar();
 
 		if(ch == L'/')
-		{//ƒRƒƒ“ƒgƒAƒEƒgˆ—
+		{//ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆå‡¦ç†
 			int tPos = pointer_;
 			ch = _NextChar();
 			if(ch == L'/')
@@ -744,7 +744,7 @@ void Scanner::_SkipComment()
 			}
 		}
 
-		//ƒXƒLƒbƒv‚à‹ó”’”ò‚Î‚µ‚à–³‚¢ê‡AI—¹
+		//ã‚¹ã‚­ãƒƒãƒ—ã‚‚ç©ºç™½é£›ã°ã—ã‚‚ç„¡ã„å ´åˆã€çµ‚äº†
 		if(posStart == pointer_)break;
 	}
 }
@@ -770,19 +770,19 @@ Token& Scanner::Next()
 {
 	if(!HasNext())
 	{
-		_RaiseError(L"Next:‚·‚Å‚ÉI’[‚Å‚·");
+		_RaiseError(L"Next:ã™ã§ã«çµ‚ç«¯ã§ã™");
 	}
 
-	_SkipComment();//ƒRƒƒ“ƒg‚ğ‚Æ‚Î‚µ‚Ü‚·
+	_SkipComment();//ã‚³ãƒ¡ãƒ³ãƒˆã‚’ã¨ã°ã—ã¾ã™
 
 	wchar_t ch = _CurrentChar();
 
 	Token::Type type = Token::TK_UNKNOWN;
-	int posStart = pointer_;//æ“ª‚ğ•Û‘¶
+	int posStart = pointer_;//å…ˆé ­ã‚’ä¿å­˜
 
 	switch(ch)
 	{
-		case L'\0': type = Token::TK_EOF; break;//I’[
+		case L'\0': type = Token::TK_EOF; break;//çµ‚ç«¯
 		case L',': _NextChar(); type = Token::TK_COMMA;  break;
 		case L'.': _NextChar(); type = Token::TK_PERIOD;  break;
 		case L'=': _NextChar(); type = Token::TK_EQUAL;  break;
@@ -806,29 +806,29 @@ Token& Scanner::Next()
 		
 		case L'"':
 		{
-			ch = _NextChar();//1‚Âi‚ß‚Ä
-			//while( ch != '"' )ch = _NextChar();//Ÿ‚Ìƒ_ƒuƒ‹ƒNƒI[ƒe[ƒVƒ‡ƒ“‚Ü‚Åi‚ß‚é
+			ch = _NextChar();//1ã¤é€²ã‚ã¦
+			//while( ch != '"' )ch = _NextChar();//æ¬¡ã®ãƒ€ãƒ–ãƒ«ã‚¯ã‚ªãƒ¼ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã¾ã§é€²ã‚ã‚‹
 			wchar_t pre = ch;
 			while(true)
 			{
 				if(ch == L'"' && pre != L'\\')break;
 				pre = ch;
-				ch = _NextChar();//Ÿ‚Ìƒ_ƒuƒ‹ƒNƒI[ƒe[ƒVƒ‡ƒ“‚Ü‚Åi‚ß‚é
+				ch = _NextChar();//æ¬¡ã®ãƒ€ãƒ–ãƒ«ã‚¯ã‚ªãƒ¼ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã¾ã§é€²ã‚ã‚‹
 			}
 			if(ch == L'"')
-				_NextChar();//ƒ_ƒuƒ‹ƒNƒI[ƒe[ƒVƒ‡ƒ“‚¾‚Á‚½‚ç1‚Âi‚ß‚é
+				_NextChar();//ãƒ€ãƒ–ãƒ«ã‚¯ã‚ªãƒ¼ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã ã£ãŸã‚‰1ã¤é€²ã‚ã‚‹
 			else 
 			{
 				std::wstring error = GetString(posStart, pointer_);
-				std::wstring log = StringUtility::Format(L"Next:‚·‚Å‚É•¶š—ñI’[‚Å‚·(Stringš‹å‰ğÍ) -> %s", error.c_str());
+				std::wstring log = StringUtility::Format(L"Next:ã™ã§ã«æ–‡å­—åˆ—çµ‚ç«¯ã§ã™(Stringå­—å¥è§£æ) -> %s", error.c_str());
 				_RaiseError(log);
 			}
 			type = Token::TK_STRING;
 			break;
 		}
 
-		case L'\r':case L'\n'://‰üs
-			//‰üs‚ª‚¢‚Â‚Ü‚Å‚à‘±‚­‚æ‚¤‚È‚Ì‚à1‚Â‚Ì‰üs‚Æ‚µ‚Äˆµ‚¤
+		case L'\r':case L'\n'://æ”¹è¡Œ
+			//æ”¹è¡ŒãŒã„ã¤ã¾ã§ã‚‚ç¶šãã‚ˆã†ãªã®ã‚‚1ã¤ã®æ”¹è¡Œã¨ã—ã¦æ‰±ã†
 			while(ch == L'\r' || ch == L'\n') ch = _NextChar();
 			type = Token::TK_NEWLINE;
 			break;
@@ -845,46 +845,46 @@ Token& Scanner::Next()
 				ch = _NextChar(); type = Token::TK_MINUS;
 			}
 
-			if(!bPermitSignNumber_ || !iswdigit(ch))break;//Ÿ‚ª”š‚Å‚È‚¢‚È‚ç”²‚¯‚é
+			if(!bPermitSignNumber_ || !iswdigit(ch))break;//æ¬¡ãŒæ•°å­—ã§ãªã„ãªã‚‰æŠœã‘ã‚‹
 		}
 
 		default:
 		{
 			if(IsDBCSLeadByteEx(Encoding::CP_SHIFT_JIS, ch))
 			{
-				//Shift-JISæsƒoƒCƒg
-				//‚½‚Ô‚ñ¯•Êq
+				//Shift-JISå…ˆè¡Œãƒã‚¤ãƒˆ
+				//ãŸã¶ã‚“è­˜åˆ¥å­
 				while(iswalpha(ch) || iswdigit(ch) || ch == L'_' || IsDBCSLeadByteEx(Encoding::CP_SHIFT_JIS, ch))
-					ch = _NextChar();//‚½‚Ô‚ñ¯•Êq‚ÈŠÔƒ|ƒCƒ“ƒ^‚ği‚ß‚é
+					ch = _NextChar();//ãŸã¶ã‚“è­˜åˆ¥å­ãªé–“ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã‚‹
 				type = Token::TK_ID;
 			}
 			else if(iswdigit(ch))
 			{
-				//®”‚©À”
-				while(iswdigit(ch))ch = _NextChar();//”š‚¾‚¯‚ÌŠÔƒ|ƒCƒ“ƒ^‚ği‚ß‚é
+				//æ•´æ•°ã‹å®Ÿæ•°
+				while(iswdigit(ch))ch = _NextChar();//æ•°å­—ã ã‘ã®é–“ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã‚‹
 				type = Token::TK_INT;
 				if( ch == L'.' )
 				{
-					//À”‚©®”‚©‚ğ’²‚×‚éB¬”“_‚ª‚ ‚Á‚½‚çÀ”
+					//å®Ÿæ•°ã‹æ•´æ•°ã‹ã‚’èª¿ã¹ã‚‹ã€‚å°æ•°ç‚¹ãŒã‚ã£ãŸã‚‰å®Ÿæ•°
 					ch = _NextChar();
-					while(iswdigit(ch))ch = _NextChar();//”š‚¾‚¯‚ÌŠÔƒ|ƒCƒ“ƒ^‚ği‚ß‚é
+					while(iswdigit(ch))ch = _NextChar();//æ•°å­—ã ã‘ã®é–“ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã‚‹
 					type = Token::TK_REAL;					
 				}
 				
 				if( ch == L'E' || ch == L'e')
 				{
-					//1E-5‚İ‚½‚¢‚ÈƒP[ƒX
+					//1E-5ã¿ãŸã„ãªã‚±ãƒ¼ã‚¹
 					ch = _NextChar();
-					while(iswdigit(ch) || ch == L'-')ch = _NextChar();//”š‚¾‚¯‚ÌŠÔƒ|ƒCƒ“ƒ^‚ği‚ß‚é
+					while(iswdigit(ch) || ch == L'-')ch = _NextChar();//æ•°å­—ã ã‘ã®é–“ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã‚‹
 					type = Token::TK_REAL;	
 				}
 			
 			}
 			else if(iswalpha(ch) || ch == L'_')
 			{
-				//‚½‚Ô‚ñ¯•Êq
+				//ãŸã¶ã‚“è­˜åˆ¥å­
 				while(iswalpha(ch) || iswdigit(ch) || ch == L'_')
-					ch = _NextChar();//‚½‚Ô‚ñ¯•Êq‚ÈŠÔƒ|ƒCƒ“ƒ^‚ği‚ß‚é
+					ch = _NextChar();//ãŸã¶ã‚“è­˜åˆ¥å­ãªé–“ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã‚‹
 				type = Token::TK_ID;
 			}
 			else
@@ -1041,7 +1041,7 @@ std::wstring& Token::GetIdentifier()
 {
 	if(type_ != TK_ID)
 	{
-		throw gstd::wexception(L"Token::GetIdentifier:ƒf[ƒ^‚Ìƒ^ƒCƒv‚ªˆá‚¢‚Ü‚·");
+		throw gstd::wexception(L"Token::GetIdentifier:ãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒ—ãŒé•ã„ã¾ã™");
 	}
 	return element_;
 }
@@ -1049,7 +1049,7 @@ std::wstring Token::GetString()
 {
 	if(type_ != TK_STRING)
 	{
-		throw gstd::wexception(L"Token::GetString:ƒf[ƒ^‚Ìƒ^ƒCƒv‚ªˆá‚¢‚Ü‚·");
+		throw gstd::wexception(L"Token::GetString:ãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒ—ãŒé•ã„ã¾ã™");
 	}
 	return element_.substr(1, element_.size()-2);
 }
@@ -1057,7 +1057,7 @@ int Token::GetInteger()
 {
 	if(type_ != TK_INT)
 	{
-		throw gstd::wexception(L"Token::GetInterger:ƒf[ƒ^‚Ìƒ^ƒCƒv‚ªˆá‚¢‚Ü‚·");
+		throw gstd::wexception(L"Token::GetInterger:ãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒ—ãŒé•ã„ã¾ã™");
 	}
 	return StringUtility::ToInteger(element_);
 }
@@ -1065,7 +1065,7 @@ double Token::GetReal()
 {
 	if(type_ != TK_REAL && type_ != TK_INT)
 	{
-		throw gstd::wexception(L"Token::GetReal:ƒf[ƒ^‚Ìƒ^ƒCƒv‚ªˆá‚¢‚Ü‚·");
+		throw gstd::wexception(L"Token::GetReal:ãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒ—ãŒé•ã„ã¾ã™");
 	}
 	return StringUtility::ToDouble(element_);
 }
@@ -1130,7 +1130,7 @@ TextParser::Result TextParser::_ParseComparison(int pos)
 		int type =tok.GetType();
 		if(type == Token::TK_EXCLAMATION || type == Token::TK_EQUAL)
 		{
-			//u==vu!=v
+			//ã€Œ==ã€ã€Œ!=ã€
 			bool bNot = type == Token::TK_EXCLAMATION;
 			tok = scan_->Next();
 			type =tok.GetType();
@@ -1150,7 +1150,7 @@ TextParser::Result TextParser::_ParseComparison(int pos)
 			}
 			else
 			{
-				_RaiseError(L"”äŠr‚Å‚«‚È‚¢Œ^");
+				_RaiseError(L"æ¯”è¼ƒã§ããªã„å‹");
 			}
 			res.type_ = TYPE_BOOLEAN;
 		}
@@ -1167,7 +1167,7 @@ TextParser::Result TextParser::_ParseComparison(int pos)
 			}
 			else
 			{
-				_RaiseError(L"^‹U’lˆÈŠO‚Å‚Ì||");
+				_RaiseError(L"çœŸå½å€¤ä»¥å¤–ã§ã®||");
 			}
 		}
 		else if(type == Token::TK_AMPERSAND)
@@ -1183,7 +1183,7 @@ TextParser::Result TextParser::_ParseComparison(int pos)
 			}
 			else
 			{
-				_RaiseError(L"^‹U’lˆÈŠO‚Å‚Ì&&");
+				_RaiseError(L"çœŸå½å€¤ä»¥å¤–ã§ã®&&");
 			}
 		}
 		else break;
@@ -1211,7 +1211,7 @@ TextParser::Result TextParser::_ParseSum(int pos)
 		}
 		else
 		{
-			if(tRes.type_ == TYPE_BOOLEAN)_RaiseError(L"^‹U’l‚Ì‰ÁZŒ¸Z");
+			if(tRes.type_ == TYPE_BOOLEAN)_RaiseError(L"çœŸå½å€¤ã®åŠ ç®—æ¸›ç®—");
 			res.pos_ = tRes.pos_;
 			if(type == Token::TK_PLUS)
 			{
@@ -1238,7 +1238,7 @@ TextParser::Result TextParser::_ParseProduct(int pos)
 		if(type != Token::TK_ASTERISK && type != Token::TK_SLASH)break;
 
 		Result tRes = _ParseTerm(scan_->GetCurrentPointer());
-		if(tRes.type_ == TYPE_BOOLEAN)_RaiseError(L"^‹U’l‚ÌæZœZ");
+		if(tRes.type_ == TYPE_BOOLEAN)_RaiseError(L"çœŸå½å€¤ã®ä¹—ç®—é™¤ç®—");
 
 		res.type_ = tRes.type_;
 		res.pos_ = tRes.pos_;
@@ -1278,7 +1278,7 @@ TextParser::Result TextParser::_ParseTerm(int pos)
 		res = _ParseComparison(scan_->GetCurrentPointer());
 		scan_->SetCurrentPointer(res.pos_);
 		tok = scan_->Next();
-		if(tok.GetType() != Token::TK_CLOSEP)_RaiseError(L")‚ª‚ ‚è‚Ü‚¹‚ñ");
+		if(tok.GetType() != Token::TK_CLOSEP)_RaiseError(L")ãŒã‚ã‚Šã¾ã›ã‚“");
 	}
 	else
 	{
@@ -1298,17 +1298,17 @@ TextParser::Result TextParser::_ParseTerm(int pos)
 			res.valueString_ = tok.GetString();
 			res.type_ = TYPE_STRING;
 		}
-		else _RaiseError(StringUtility::Format(L"•s³‚Èƒg[ƒNƒ“:%s", tok.GetElement().c_str()));
+		else _RaiseError(StringUtility::Format(L"ä¸æ­£ãªãƒˆãƒ¼ã‚¯ãƒ³:%s", tok.GetElement().c_str()));
 	}
 
 	if(bMinus)
 	{
-		if(res.type_ != TYPE_REAL)_RaiseError(L"À”ˆÈŠO‚Å‚Ì•‰‹L†");
+		if(res.type_ != TYPE_REAL)_RaiseError(L"å®Ÿæ•°ä»¥å¤–ã§ã®è² è¨˜å·");
 		res.valueReal_ = -res.valueReal_;
 	}
 	if(bNot)
 	{
-		if(res.type_ != TYPE_BOOLEAN)_RaiseError(L"^‹U’lˆÈŠO‚Å‚Ì”Û’è");
+		if(res.type_ != TYPE_BOOLEAN)_RaiseError(L"çœŸå½å€¤ä»¥å¤–ã§ã®å¦å®š");
 		res.valueBoolean_ = !res.valueBoolean_;
 	}
 
@@ -1335,7 +1335,7 @@ TextParser::Result TextParser::_ParseIdentifer(int pos)
 	}
 	else
 	{
-		_RaiseError(StringUtility::Format(L"•s³‚È¯•Êq:%s", id.c_str()));
+		_RaiseError(StringUtility::Format(L"ä¸æ­£ãªè­˜åˆ¥å­:%s", id.c_str()));
 	}
 
 	return res;
@@ -1351,25 +1351,25 @@ void TextParser::SetSource(std::string source)
 }
 TextParser::Result TextParser::GetResult()
 {
-	if(scan_ == NULL)_RaiseError(L"ƒeƒLƒXƒg‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+	if(scan_ == NULL)_RaiseError(L"ãƒ†ã‚­ã‚¹ãƒˆãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
 	scan_->SetPointerBegin();
 	Result res = _ParseComparison(scan_->GetCurrentPointer());
-	if(scan_->HasNext())_RaiseError(StringUtility::Format(L"•s³‚Èƒg[ƒNƒ“:%s", scan_->GetToken().GetElement().c_str()));
+	if(scan_->HasNext())_RaiseError(StringUtility::Format(L"ä¸æ­£ãªãƒˆãƒ¼ã‚¯ãƒ³:%s", scan_->GetToken().GetElement().c_str()));
 	return res;
 }
 double TextParser::GetReal()
 {
-	if(scan_ == NULL)_RaiseError(L"ƒeƒLƒXƒg‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+	if(scan_ == NULL)_RaiseError(L"ãƒ†ã‚­ã‚¹ãƒˆãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
 	scan_->SetPointerBegin();
 	Result res = _ParseSum(scan_->GetCurrentPointer());
-	if(scan_->HasNext())_RaiseError(StringUtility::Format(L"•s³‚Èƒg[ƒNƒ“:%s", scan_->GetToken().GetElement().c_str()));
+	if(scan_->HasNext())_RaiseError(StringUtility::Format(L"ä¸æ­£ãªãƒˆãƒ¼ã‚¯ãƒ³:%s", scan_->GetToken().GetElement().c_str()));
 	return res.GetReal();
 }
 
 //================================================================
 //Font
-//const wchar_t* Font::GOTHIC  = L"•W€ƒSƒVƒbƒN";
-//const wchar_t* Font::MINCHOH = L"•W€–¾’©";
+//const wchar_t* Font::GOTHIC  = L"æ¨™æº–ã‚´ã‚·ãƒƒã‚¯";
+//const wchar_t* Font::MINCHOH = L"æ¨™æº–æ˜æœ";
 const wchar_t* Font::GOTHIC  = L"MS Gothic";
 const wchar_t* Font::MINCHOH = L"MS Mincho";
 

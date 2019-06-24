@@ -29,7 +29,7 @@ void ScriptSelectDialog::Initialize()
 	listView_.AddColumn(64, LIST_PATH, L"Path");
 	listView_.AddColumn(300, LIST_TEXT, L"Text");
 
-	//ƒ{ƒ^ƒ“
+	//ãƒœã‚¿ãƒ³
 	buttonOk_.Attach(GetDlgItem(hWnd_, IDOK));
 	buttonCancel_.Attach(GetDlgItem(hWnd_, IDCANCEL));
 }
@@ -45,7 +45,7 @@ void ScriptSelectDialog::_SearchScript(std::wstring dir)
 		if((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && 
 			(name != L".." && name != L"."))
 		{
-			//ƒfƒBƒŒƒNƒgƒŠ
+			//ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
 			std::wstring tDir = dir + name;
 			tDir += L"/";
 
@@ -55,7 +55,7 @@ void ScriptSelectDialog::_SearchScript(std::wstring dir)
 		if(wcscmp(data.cFileName, L"..")==0 || wcscmp(data.cFileName, L".")==0)
 			continue;
 
-		//ƒtƒ@ƒCƒ‹
+		//ãƒ•ã‚¡ã‚¤ãƒ«
 		std::wstring path = dir + name;
 
 		std::vector<ref_count_ptr<ScriptInformation> >listInfo = 
@@ -89,7 +89,7 @@ LRESULT ScriptSelectDialog::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,L
 		{
 			switch(wParam & 0xffff)
 			{
-				case IDCANCEL://•Â‚¶‚éƒ{ƒ^ƒ“
+				case IDCANCEL://é–‰ã˜ã‚‹ãƒœã‚¿ãƒ³
 					SetWindowVisible(false);
 					_FinishMessageLoop();
 					break;
@@ -184,9 +184,9 @@ void EnemySelectDialog::Initialize()
 {
 	ScriptSelectDialog::Initialize();
 
-	SetWindowText(GetWindowHandle(), L"“GƒXƒNƒŠƒvƒg‘I‘ğ");
+	SetWindowText(GetWindowHandle(), L"æ•µã‚¹ã‚¯ãƒªãƒ—ãƒˆé¸æŠ");
 
-	//ƒRƒ“ƒ{
+	//ã‚³ãƒ³ãƒœ
 	combo_.Attach(GetDlgItem(hWnd_, IDC_COMBO_TYPE_SCRIPT));
 	combo_.InsertString(INDEX_ALL, KEY_ALL);
 	combo_.InsertString(INDEX_SINGLE, KEY_SINGLE);
@@ -284,9 +284,9 @@ void PlayerSelectDialog::Initialize()
 {
 	ScriptSelectDialog::Initialize();
 
-	SetWindowText(GetWindowHandle(), L"©‹@ƒXƒNƒŠƒvƒg‘I‘ğ");
+	SetWindowText(GetWindowHandle(), L"è‡ªæ©Ÿã‚¹ã‚¯ãƒªãƒ—ãƒˆé¸æŠ");
 
-	//ƒRƒ“ƒ{
+	//ã‚³ãƒ³ãƒœ
 	combo_.Attach(GetDlgItem(hWnd_, IDC_COMBO_TYPE_SCRIPT));
 	combo_.InsertString(INDEX_PLAYER, KEY_PLAYER);
 	combo_.SetSelectedIndex(INDEX_PLAYER);

@@ -48,7 +48,7 @@ bool DxChar::Create(int code, Font& winFont, DxFont& dxFont)
 	HDC hDC = ::GetDC(NULL);
 	HFONT oldFont = (HFONT)SelectObject(hDC, winFont.GetHandle());
 
-	// ƒtƒHƒ“ƒgƒrƒbƒgƒ}ƒbƒvæ“¾
+	// ãƒ•ã‚©ãƒ³ãƒˆãƒ“ãƒƒãƒˆãƒãƒƒãƒ—å–å¾—
 	TEXTMETRIC tm;
 	::GetTextMetrics( hDC, &tm );
 	GLYPHMETRICS gm;
@@ -60,11 +60,11 @@ bool DxChar::Create(int code, Font& winFont, DxFont& dxFont)
 	ref_count_ptr<BYTE> ptr = new BYTE[size];
 	::GetGlyphOutline(hDC, code, uFormat, &gm, size, ptr.GetPointer(), &mat);
 
-	// ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg‚ÆƒtƒHƒ“ƒgƒnƒ“ƒhƒ‹‚Ì‰ğ•ú
+	// ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã¨ãƒ•ã‚©ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ«ã®è§£æ”¾
 	::SelectObject(hDC, oldFont);
 	::ReleaseDC(NULL, hDC);
 		
-	//ƒeƒNƒXƒ`ƒƒì¬
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ä½œæˆ
 	int tex_x = gm.gmCellIncX + widthBorder*2;
 	int tex_y = tm.tmHeight + widthBorder*2;
 	int widthTexture = 0;
@@ -137,7 +137,7 @@ bool DxChar::Create(int code, Font& winFont, DxFont& dxFont)
 			{
 				if(xBmp>=0 && xBmp<iBmp_w && yBmp>=0 && yBmp<iBmp_h)
 				{
-					int lineByte = (1 + (iBmp_w / 32))*4; // 1s‚Ég—p‚µ‚Ä‚¢‚éBYTE”i4ƒoƒCƒg‹«ŠE‚ ‚èj
+					int lineByte = (1 + (iBmp_w / 32))*4; // 1è¡Œã«ä½¿ç”¨ã—ã¦ã„ã‚‹BYTEæ•°ï¼ˆ4ãƒã‚¤ãƒˆå¢ƒç•Œã‚ã‚Šï¼‰
 					int posBmp = xBmp / 8 + lineByte * yBmp;
 					alpha = BitAccess::GetBit(ptr[posBmp], 7 - xBmp % 8) ? 255 : 0;
 				}
@@ -171,7 +171,7 @@ bool DxChar::Create(int code, Font& winFont, DxFont& dxFont)
 							{
 								if(ax>=0 && ax<iBmp_w && ay>=0 && ay<iBmp_h)
 								{
-									int lineByte = (1 + (iBmp_w / 32))*4; // 1s‚Ég—p‚µ‚Ä‚¢‚éBYTE”i4ƒoƒCƒg‹«ŠE‚ ‚èj
+									int lineByte = (1 + (iBmp_w / 32))*4; // 1è¡Œã«ä½¿ç”¨ã—ã¦ã„ã‚‹BYTEæ•°ï¼ˆ4ãƒã‚¤ãƒˆå¢ƒç•Œã‚ã‚Šï¼‰
 									int tPos = ax / 8 + lineByte * ay;
 									tAlpha = BitAccess::GetBit(ptr[tPos], 7 - ax % 8) ? 255 : 0;
 								}
@@ -223,7 +223,7 @@ bool DxChar::Create(int code, Font& winFont, DxFont& dxFont)
 							{
 								if(ax>=0 && ax<iBmp_w && ay>=0 && ay<iBmp_h)
 								{
-									int lineByte = (1 + (iBmp_w / 32))*4; // 1s‚Ég—p‚µ‚Ä‚¢‚éBYTE”i4ƒoƒCƒg‹«ŠE‚ ‚èj
+									int lineByte = (1 + (iBmp_w / 32))*4; // 1è¡Œã«ä½¿ç”¨ã—ã¦ã„ã‚‹BYTEæ•°ï¼ˆ4ãƒã‚¤ãƒˆå¢ƒç•Œã‚ã‚Šï¼‰
 									int tPos = ax / 8 + lineByte * ay;
 									tAlpha = BitAccess::GetBit(ptr[tPos], 7 - ax % 8) ? 255 : 0;
 								}
@@ -308,7 +308,7 @@ ref_count_ptr<DxChar> DxCharCache::GetChar(DxCharCacheKey& key)
 	{
 		res = mapCache_[key];
 /*
-		//ƒL[‚Ì—Dæ‡ˆÊ‚ğƒgƒbƒv‚É‚·‚é
+		//ã‚­ãƒ¼ã®å„ªå…ˆé †ä½ã‚’ãƒˆãƒƒãƒ—ã«ã™ã‚‹
 		int tPri = mapKeyPri_[key];
 		mapPriKey_.erase(tPri);
 		
@@ -319,7 +319,7 @@ ref_count_ptr<DxChar> DxCharCache::GetChar(DxCharCacheKey& key)
 
 		if(countPri_ >= INT_MAX)
 		{
-			//Ä”z’u
+			//å†é…ç½®
 			_arrange();
 		}
 */
@@ -337,7 +337,7 @@ void DxCharCache::AddChar(DxCharCacheKey& key, ref_count_ptr<DxChar> value)
 	{
 		mapCache_.clear();
 /*	
-		//—Dæ“x‚Ì’á‚¢ƒLƒƒƒbƒVƒ…‚ğíœ
+		//å„ªå…ˆåº¦ã®ä½ã„ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’å‰Šé™¤
 		std::map<int, DxCharCacheKey>::iterator itrMinPri = mapPriKey_.begin();
 		int minPri = itrMinPri->first;
 		DxCharCacheKey keyMinPri = itrMinPri->second;
@@ -401,7 +401,7 @@ wchar_t DxTextScanner::_NextChar()
 		std::wstring source;
 		source.resize(buffer_.size());
 		memcpy(&source[0], &buffer_[0], source.size() * sizeof(wchar_t));
-		std::wstring log = StringUtility::Format(L"_NextChar(Text):‚·‚Å‚É•¶š—ñI’[‚Å‚· -> %s", source.c_str());
+		std::wstring log = StringUtility::Format(L"_NextChar(Text):ã™ã§ã«æ–‡å­—åˆ—çµ‚ç«¯ã§ã™ -> %s", source.c_str());
 		_RaiseError(log);
 	}
 	
@@ -421,7 +421,7 @@ void DxTextScanner::_SkipComment()
 		wchar_t ch = *pointer_;
 
 		if(ch == L'/')
-		{//ƒRƒƒ“ƒgƒAƒEƒgˆ—
+		{//ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆå‡¦ç†
 			std::vector<wchar_t>::iterator tPos = pointer_;
 			ch = _NextChar();
 			if(ch == L'/')
@@ -453,7 +453,7 @@ void DxTextScanner::_SkipComment()
 			}
 		}
 
-		//ƒXƒLƒbƒv‚à‹ó”’”ò‚Î‚µ‚à–³‚¢ê‡AI—¹
+		//ã‚¹ã‚­ãƒƒãƒ—ã‚‚ç©ºç™½é£›ã°ã—ã‚‚ç„¡ã„å ´åˆã€çµ‚äº†
 		if(posStart == pointer_)break;
 	}
 }
@@ -480,7 +480,7 @@ bool DxTextScanner::_IsTextStartSign()
 	if(false && ch == L'\\')
 	{
 		std::vector<wchar_t>::iterator pos = pointer_;
-		ch = _NextChar();//Ÿ‚Ìƒ^ƒO‚Ü‚Åi‚ß‚é
+		ch = _NextChar();//æ¬¡ã®ã‚¿ã‚°ã¾ã§é€²ã‚ã‚‹
 		bool bLess = ch == CHAR_TAG_START;
 		if(!bLess)
 		{
@@ -515,7 +515,7 @@ bool DxTextScanner::_IsTextScan()
 	}
 	else if(false && ch == L'\\')
 	{
-		ch = _NextChar();//Ÿ‚Ìƒ^ƒO‚Ü‚Åi‚ß‚é
+		ch = _NextChar();//æ¬¡ã®ã‚¿ã‚°ã¾ã§é€²ã‚ã‚‹
 		res = true;
 	}
 	else
@@ -523,7 +523,7 @@ bool DxTextScanner::_IsTextScan()
 		bool bGreater = ch == CHAR_TAG_END;
 		if(bGreater)
 		{
-			_RaiseError(L"ƒeƒLƒXƒg’†‚Éƒ^ƒOI—¹•¶š‚ª‘¶İ‚µ‚Ü‚µ‚½");
+			_RaiseError(L"ãƒ†ã‚­ã‚¹ãƒˆä¸­ã«ã‚¿ã‚°çµ‚äº†æ–‡å­—ãŒå­˜åœ¨ã—ã¾ã—ãŸ");
 		}
 		bool bNotLess = ch != CHAR_TAG_START;
 		res = bNotLess;
@@ -541,11 +541,11 @@ DxTextToken& DxTextScanner::Next()
 		std::wstring source;
 		source.resize(buffer_.size());
 		memcpy(&source[0], &buffer_[0], source.size() * sizeof(wchar_t));
-		std::wstring log = StringUtility::Format(L"Next(Text):‚·‚Å‚ÉI’[‚Å‚· -> %s", source.c_str());
+		std::wstring log = StringUtility::Format(L"Next(Text):ã™ã§ã«çµ‚ç«¯ã§ã™ -> %s", source.c_str());
 		_RaiseError(log);
 	}
 
-	_SkipComment();//ƒRƒƒ“ƒg‚ğ‚Æ‚Î‚µ‚Ü‚·
+	_SkipComment();//ã‚³ãƒ¡ãƒ³ãƒˆã‚’ã¨ã°ã—ã¾ã™
 
 	wchar_t ch = *pointer_;
 	if(ch == L'\0')
@@ -555,7 +555,7 @@ DxTextToken& DxTextScanner::Next()
 	}
 
 	DxTextToken::Type type = DxTextToken::TK_UNKNOWN;
-	std::vector<wchar_t>::iterator posStart = pointer_;//æ“ª‚ğ•Û‘¶
+	std::vector<wchar_t>::iterator posStart = pointer_;//å…ˆé ­ã‚’ä¿å­˜
 
 	if(_IsTextStartSign())
 	{
@@ -574,7 +574,7 @@ DxTextToken& DxTextScanner::Next()
 		else if(!HasNext())
 		{
 		}
-//		else _RaiseError("Next:‚·‚Å‚É•¶š—ñI’[‚Å‚·");
+//		else _RaiseError("Next:ã™ã§ã«æ–‡å­—åˆ—çµ‚ç«¯ã§ã™");
 
 		type = DxTextToken::TK_TEXT;
 		std::wstring text = std::wstring(posStart, pointer_);
@@ -585,7 +585,7 @@ DxTextToken& DxTextScanner::Next()
 	{
 		switch(ch)
 		{
-			case L'\0': type = DxTextToken::TK_EOF; break;//I’[
+			case L'\0': type = DxTextToken::TK_EOF; break;//çµ‚ç«¯
 			case L',': _NextChar(); type = DxTextToken::TK_COMMA;  break;
 			case L'=': _NextChar(); type = DxTextToken::TK_EQUAL;  break;
 			case L'(': _NextChar(); type = DxTextToken::TK_OPENP; break;
@@ -606,23 +606,23 @@ DxTextToken& DxTextScanner::Next()
 			
 			case L'"':
 			{
-				ch = _NextChar();//1‚Âi‚ß‚Ä
+				ch = _NextChar();//1ã¤é€²ã‚ã¦
 				wchar_t pre = ch;
 				while(true)
 				{
 					if(ch == L'"' && pre != L'\\')break;
 					pre = ch;
-					ch = _NextChar();//Ÿ‚Ìƒ_ƒuƒ‹ƒNƒI[ƒe[ƒVƒ‡ƒ“‚Ü‚Åi‚ß‚é
+					ch = _NextChar();//æ¬¡ã®ãƒ€ãƒ–ãƒ«ã‚¯ã‚ªãƒ¼ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã¾ã§é€²ã‚ã‚‹
 				}
 
-				if(ch == L'"') _NextChar();//ƒ_ƒuƒ‹ƒNƒI[ƒe[ƒVƒ‡ƒ“‚¾‚Á‚½‚ç1‚Âi‚ß‚é
-				else _RaiseError(L"Next(Text):‚·‚Å‚É•¶š—ñI’[‚Å‚·");
+				if(ch == L'"') _NextChar();//ãƒ€ãƒ–ãƒ«ã‚¯ã‚ªãƒ¼ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã ã£ãŸã‚‰1ã¤é€²ã‚ã‚‹
+				else _RaiseError(L"Next(Text):ã™ã§ã«æ–‡å­—åˆ—çµ‚ç«¯ã§ã™");
 				type = DxTextToken::TK_STRING;
 				break;
 			}
 
-			case L'\r':case L'\n'://‰üs
-				//‰üs‚ª‚¢‚Â‚Ü‚Å‚à‘±‚­‚æ‚¤‚È‚Ì‚à1‚Â‚Ì‰üs‚Æ‚µ‚Äˆµ‚¤
+			case L'\r':case L'\n'://æ”¹è¡Œ
+				//æ”¹è¡ŒãŒã„ã¤ã¾ã§ã‚‚ç¶šãã‚ˆã†ãªã®ã‚‚1ã¤ã®æ”¹è¡Œã¨ã—ã¦æ‰±ã†
 				while(ch == L'\r' || ch == L'\n') ch = _NextChar();
 				type = DxTextToken::TK_NEWLINE;
 				break;
@@ -639,7 +639,7 @@ DxTextToken& DxTextScanner::Next()
 					ch = _NextChar(); type = DxTextToken::TK_MINUS;
 				}
 
-				if(!iswdigit(ch))break;//Ÿ‚ª”š‚Å‚È‚¢‚È‚ç”²‚¯‚é
+				if(!iswdigit(ch))break;//æ¬¡ãŒæ•°å­—ã§ãªã„ãªã‚‰æŠœã‘ã‚‹
 			}
 
 
@@ -647,31 +647,31 @@ DxTextToken& DxTextScanner::Next()
 			{
 				if(iswdigit(ch))
 				{
-					//®”‚©À”
-					while(iswdigit(ch))ch = _NextChar();//”š‚¾‚¯‚ÌŠÔƒ|ƒCƒ“ƒ^‚ği‚ß‚é
+					//æ•´æ•°ã‹å®Ÿæ•°
+					while(iswdigit(ch))ch = _NextChar();//æ•°å­—ã ã‘ã®é–“ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã‚‹
 					type = DxTextToken::TK_INT;
 					if( ch == L'.' )
 					{
-						//À”‚©®”‚©‚ğ’²‚×‚éB¬”“_‚ª‚ ‚Á‚½‚çÀ”
+						//å®Ÿæ•°ã‹æ•´æ•°ã‹ã‚’èª¿ã¹ã‚‹ã€‚å°æ•°ç‚¹ãŒã‚ã£ãŸã‚‰å®Ÿæ•°
 						ch = _NextChar();
-						while(iswdigit(ch))ch = _NextChar();//”š‚¾‚¯‚ÌŠÔƒ|ƒCƒ“ƒ^‚ği‚ß‚é
+						while(iswdigit(ch))ch = _NextChar();//æ•°å­—ã ã‘ã®é–“ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã‚‹
 						type = DxTextToken::TK_REAL;					
 					}
 					
 					if( ch == L'E' || ch == L'e')
 					{
-						//1E-5‚İ‚½‚¢‚ÈƒP[ƒX
+						//1E-5ã¿ãŸã„ãªã‚±ãƒ¼ã‚¹
 						std::vector<wchar_t>::iterator pos = pointer_;
 						ch = _NextChar();
-						while(iswdigit(ch) || ch == L'-')ch = _NextChar();//”š‚¾‚¯‚ÌŠÔƒ|ƒCƒ“ƒ^‚ği‚ß‚é
+						while(iswdigit(ch) || ch == L'-')ch = _NextChar();//æ•°å­—ã ã‘ã®é–“ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã‚‹
 						type = DxTextToken::TK_REAL;	
 					}
 				
 				}
 				else if(iswalpha(ch) || ch == L'_')
 				{
-					//‚½‚Ô‚ñ¯•Êq
-					while(iswalpha(ch) || iswdigit(ch) || ch == L'_')ch = _NextChar();//‚½‚Ô‚ñ¯•Êq‚ÈŠÔƒ|ƒCƒ“ƒ^‚ği‚ß‚é
+					//ãŸã¶ã‚“è­˜åˆ¥å­
+					while(iswalpha(ch) || iswdigit(ch) || ch == L'_')ch = _NextChar();//ãŸã¶ã‚“è­˜åˆ¥å­ãªé–“ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã‚‹
 					type = DxTextToken::TK_ID;
 				}
 				else
@@ -687,7 +687,7 @@ DxTextToken& DxTextScanner::Next()
 
 		if(type == DxTextToken::TK_STRING)
 		{
-			//\‚ğœ‹
+			//\ã‚’é™¤å»
 			std::wstring str = StringUtility::ReplaceAll(std::wstring(posStart, pointer_), L"\\\"", L"\"");
 			token_ = DxTextToken(type, str);
 		}
@@ -758,7 +758,7 @@ std::wstring& DxTextToken::GetIdentifier()
 {
 	if(type_ != TK_ID)
 	{
-		throw gstd::wexception(L"DxTextToken::GetIdentifier:ƒf[ƒ^‚Ìƒ^ƒCƒv‚ªˆá‚¢‚Ü‚·");
+		throw gstd::wexception(L"DxTextToken::GetIdentifier:ãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒ—ãŒé•ã„ã¾ã™");
 	}
 	return element_;
 }
@@ -766,7 +766,7 @@ std::wstring DxTextToken::GetString()
 {
 	if(type_ != TK_STRING)
 	{
-		throw gstd::wexception(L"DxTextToken::GetString:ƒf[ƒ^‚Ìƒ^ƒCƒv‚ªˆá‚¢‚Ü‚·");
+		throw gstd::wexception(L"DxTextToken::GetString:ãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒ—ãŒé•ã„ã¾ã™");
 	}
 	return element_.substr(1,element_.size()-2);
 }
@@ -774,7 +774,7 @@ int DxTextToken::GetInteger()
 {
 	if(type_ != TK_INT)
 	{
-		throw gstd::wexception(L"DxTextToken::GetInterger:ƒf[ƒ^‚Ìƒ^ƒCƒv‚ªˆá‚¢‚Ü‚·");
+		throw gstd::wexception(L"DxTextToken::GetInterger:ãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒ—ãŒé•ã„ã¾ã™");
 	}
 	int res = StringUtility::ToInteger(element_);
 	return res;
@@ -783,7 +783,7 @@ double DxTextToken::GetReal()
 {
 	if(type_ != TK_REAL && type_ != TK_INT)
 	{
-		throw gstd::wexception(L"DxTextToken::GetReal:ƒf[ƒ^‚Ìƒ^ƒCƒv‚ªˆá‚¢‚Ü‚·");
+		throw gstd::wexception(L"DxTextToken::GetReal:ãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒ—ãŒé•ã„ã¾ã™");
 	}
 
 	double res = StringUtility::ToDouble(element_);
@@ -805,7 +805,7 @@ bool DxTextToken::GetBoolean()
 
 /**********************************************************
 //DxTextRenderer
-//ƒeƒLƒXƒg•`‰æƒGƒ“ƒWƒ“
+//ãƒ†ã‚­ã‚¹ãƒˆæç”»ã‚¨ãƒ³ã‚¸ãƒ³
 **********************************************************/
 //Tag
 
@@ -876,7 +876,7 @@ void DxTextRenderObject::Render()
 		sprite->SetAlpha(ColorAccess::GetColorA(color_));
 		RECT_D rcDestCopy = sprite->GetDestinationRect();
 
-		//À•W•ÏŠ·
+		//åº§æ¨™å¤‰æ›
 		if(bMatrix)
 		{
 			int countVertex = sprite->GetVertexCount();
@@ -944,11 +944,11 @@ bool DxTextRenderer::Initialize()
 }
 SIZE DxTextRenderer::_GetTextSize(HDC hDC, wchar_t* pText)
 {
-	//•¶šƒR[ƒh
+	//æ–‡å­—ã‚³ãƒ¼ãƒ‰
 	int charCount = 1;
 	int code = 0;
 
-	//•¶šƒTƒCƒYŒvZ
+	//æ–‡å­—ã‚µã‚¤ã‚ºè¨ˆç®—
 	SIZE size;
 	::GetTextExtentPoint32(hDC, pText, charCount, &size);
 	return size;
@@ -963,7 +963,7 @@ ref_count_ptr<DxTextLine> DxTextRenderer::_GetTextInfoSub(std::wstring text, DxT
 	int widthBorder = dxFont.GetBorderType() != DxFont::BORDER_NONE ? dxFont.GetBorderWidth() : 0;
 	textLine->SetSidePitch(sidePitch);
 
-	const std::wstring strFirstForbid = L"vAB";
+	const std::wstring strFirstForbid = L"ã€ã€ã€‚";
 
 	wchar_t* pText=const_cast<wchar_t*>(text.data());
 	wchar_t* eText=const_cast<wchar_t*>(text.data() + text.size());
@@ -971,17 +971,17 @@ ref_count_ptr<DxTextLine> DxTextRenderer::_GetTextInfoSub(std::wstring text, DxT
 	{
 		if(*pText == L'\0' || pText >= eText)break;
 
-		//•¶šƒR[ƒh
+		//æ–‡å­—ã‚³ãƒ¼ãƒ‰
 		int charCount = 1;
 		int code = *pText;
 
-		//‹Ö‘¥ˆ—
+		//ç¦å‰‡å‡¦ç†
 		SIZE sizeNext;
 		ZeroMemory(&sizeNext, sizeof(SIZE));
 		wchar_t* pNextChar = pText + charCount;
 		if(pNextChar < eText)
 		{
-			//Ÿ‚Ì•¶š
+			//æ¬¡ã®æ–‡å­—
 			std::wstring strNext = L"";
 			strNext.resize(1);
 			memcpy(&strNext[0], pNextChar, strNext.size() * sizeof(wchar_t));
@@ -991,13 +991,13 @@ ref_count_ptr<DxTextLine> DxTextRenderer::_GetTextInfoSub(std::wstring text, DxT
 				sizeNext = _GetTextSize(hDC, pNextChar);
 		}
 
-		//•¶šƒTƒCƒYŒvZ
+		//æ–‡å­—ã‚µã‚¤ã‚ºè¨ˆç®—
 		SIZE size = _GetTextSize(hDC, pText);
 		int lw = size.cx + widthBorder + sidePitch;
 		int lh = size.cy;
 		if(textLine->width_ + lw + sizeNext.cx >= widthMax)
 		{
-			//‰üs
+			//æ”¹è¡Œ
 			totalWidth = max(totalWidth, textLine->width_);
 			totalHeight += textLine->height_ + linePitch;
 			textInfo->AddTextLine(textLine);
@@ -1048,7 +1048,7 @@ gstd::ref_count_ptr<DxTextInfo> DxTextRenderer::GetTextInfo(DxText* dxText)
 		{
 			if(!scan.HasNext())
 			{
-				//c‚è‚ğ‰Á‚¦‚é
+				//æ®‹ã‚Šã‚’åŠ ãˆã‚‹
 				if(textLine->code_.size() > 0)
 				{
 					totalWidth = max(totalWidth, textLine->width_);
@@ -1076,10 +1076,10 @@ gstd::ref_count_ptr<DxTextInfo> DxTextRenderer::GetTextInfo(DxText* dxText)
 				std::wstring element = tok.GetElement();
 				if(element == DxTextScanner::TAG_NEW_LINE)
 				{
-					//‰üs
+					//æ”¹è¡Œ
 					if(textLine->height_ == 0) 
 					{
-						//‹ó•¶š‚Ìê‡‚à‹ó”’•¶š‚Å‚‚³‚ğŒvZ‚·‚é
+						//ç©ºæ–‡å­—ã®å ´åˆã‚‚ç©ºç™½æ–‡å­—ã§é«˜ã•ã‚’è¨ˆç®—ã™ã‚‹
 						textLine = _GetTextInfoSub(L" ", dxText, res, textLine, hDC, totalWidth, totalHeight);
 					}
 
@@ -1150,7 +1150,7 @@ gstd::ref_count_ptr<DxTextInfo> DxTextRenderer::GetTextInfo(DxText* dxText)
 						int currentCodeCount = textLineRuby->GetTextCodes().size();
 						if(codeCount == currentCodeCount)
 						{
-							//ƒ^ƒO‚ªŠ®‘S‚ÉŸ‚Ìs‚É‰ñ‚éê‡
+							//ã‚¿ã‚°ãŒå®Œå…¨ã«æ¬¡ã®è¡Œã«å›ã‚‹å ´åˆ
 							tag->SetTagIndex(0);
 							textLine->tag_.push_back(tag);
 						}
@@ -1306,22 +1306,22 @@ void DxTextRenderer::_CreateRenderObject(gstd::ref_count_ptr<DxTextRenderObject>
 			else break;
 		}
 
-		//•¶šƒR[ƒh
+		//æ–‡å­—ã‚³ãƒ¼ãƒ‰
 		int code = textLine->code_[iCode];
 
-		//ƒLƒƒƒbƒVƒ…‚É‘¶İ‚·‚é‚©Šm”F
+		//ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«å­˜åœ¨ã™ã‚‹ã‹ç¢ºèª
 		keyFont.code_ = code;
 		keyFont.font_ = dxFont;
 		ref_count_ptr<DxChar> dxChar = cache_.GetChar(keyFont);
 		if(dxChar == NULL)
 		{
-			//ƒLƒƒƒbƒVƒ…‚É‚È‚¢ê‡Aì¬‚µ‚Ä’Ç‰Á
+			//ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«ãªã„å ´åˆã€ä½œæˆã—ã¦è¿½åŠ 
 			dxChar = new DxChar();
 			dxChar->Create(code, winFont_, dxFont);
 			cache_.AddChar(keyFont, dxChar);
 		}
 
-		//•`‰æ
+		//æç”»
 		ref_count_ptr<Sprite2D> spriteText = new Sprite2D();
 		int yGap = 0;
 		yRender = pos.y + yGap;
@@ -1337,7 +1337,7 @@ void DxTextRenderer::_CreateRenderObject(gstd::ref_count_ptr<DxTextRenderObject>
 		spriteText->SetVertex(rcSrc, rcDest, colorVertex_);
 		objRender->AddRenderObject(spriteText);
 
-		//Ÿ‚Ì•¶š
+		//æ¬¡ã®æ–‡å­—
 		xRender += dxChar->GetWidth() - dxFont.GetBorderWidth() + textLine->GetSidePitch();
 	}
 }
@@ -1442,8 +1442,8 @@ void DxTextRenderer::Render(DxText* dxText, gstd::ref_count_ptr<DxTextInfo> text
 bool DxTextRenderer::AddFontFromFile(std::wstring path)
 {
 	ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
-	if(reader == NULL)throw gstd::wexception(StringUtility::Format(L"ƒtƒHƒ“ƒgƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ(%s)", path.c_str()).c_str());
-	if(!reader->Open())throw gstd::wexception(StringUtility::Format(L"ƒtƒHƒ“ƒgƒtƒ@ƒCƒ‹‚ğŠJ‚¯‚Ü‚¹‚ñ(%s)", path.c_str()).c_str());
+	if(reader == NULL)throw gstd::wexception(StringUtility::Format(L"ãƒ•ã‚©ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“(%s)", path.c_str()).c_str());
+	if(!reader->Open())throw gstd::wexception(StringUtility::Format(L"ãƒ•ã‚©ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã‘ã¾ã›ã‚“(%s)", path.c_str()).c_str());
 
 	int size = reader->GetFileSize();
 	ByteBuffer buf;
@@ -1453,13 +1453,13 @@ bool DxTextRenderer::AddFontFromFile(std::wstring path)
 	DWORD  count = 0;
 	HANDLE handle = ::AddFontMemResourceEx(buf.GetPointer(), size, NULL, &count);
 
-	Logger::WriteTop(L"ƒtƒHƒ“ƒg“Ç‚İ‚İF" + path);
+	Logger::WriteTop(L"ãƒ•ã‚©ãƒ³ãƒˆèª­ã¿è¾¼ã¿ï¼š" + path);
 	return handle != 0;
 }
 
 /**********************************************************
 //DxText
-//ƒeƒLƒXƒg•`‰æ
+//ãƒ†ã‚­ã‚¹ãƒˆæç”»
 **********************************************************/
 DxText::DxText()
 {

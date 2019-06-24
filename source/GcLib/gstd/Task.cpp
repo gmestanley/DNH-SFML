@@ -39,7 +39,7 @@ TaskManager::~TaskManager()
 }
 void TaskManager::_ArrangeTask()
 {
-	//ƒ^ƒXƒNíœ—Ìˆæ®—
+	//ã‚¿ã‚¹ã‚¯å‰Šé™¤é ˜åŸŸæ•´ç†
 	std::list<ref_count_ptr<TaskBase> >::iterator itrTask;
 	for(itrTask=listTask_.begin();itrTask!=listTask_.end();)
 	{
@@ -47,7 +47,7 @@ void TaskManager::_ArrangeTask()
 		else itrTask++;
 	}
 
-	//ŠÖ”íœ—Ìˆæ®—
+	//é–¢æ•°å‰Šé™¤é ˜åŸŸæ•´ç†
 	std::map<int, std::vector<std::list<ref_count_ptr<TaskFunction> > > >::iterator itrType;
 	for(itrType=mapFunc_.begin();itrType!=mapFunc_.end();itrType++)
 	{
@@ -71,13 +71,13 @@ void TaskManager::_ArrangeTask()
 		}
 	}
 
-	//ƒ^ƒXƒNî•ñƒpƒlƒ‹XV
+	//ã‚¿ã‚¹ã‚¯æƒ…å ±ãƒ‘ãƒãƒ«æ›´æ–°
 	if(panelInfo_ != NULL)panelInfo_->Update(this);
 }
 void TaskManager::_CheckInvalidFunctionDivision(int divFunc)
 {
 	if(mapFunc_.find(divFunc) == mapFunc_.end())
-		throw gstd::wexception(L"‘¶İ‚µ‚È‚¢‹@”\‹æ•ª");
+		throw gstd::wexception(L"å­˜åœ¨ã—ãªã„æ©Ÿèƒ½åŒºåˆ†");
 }
 void TaskManager::Clear()
 {
@@ -105,7 +105,7 @@ void TaskManager::AddTask(ref_count_ptr<TaskBase> task)
 	}
 //	task->mTask_ = this;
 
-	//TODO ID‚ÌŠ„‚èU‚è
+	//TODO IDã®å‰²ã‚ŠæŒ¯ã‚Š
 	task->indexTask_ = indexTaskManager_;
 	indexTaskManager_++;
 	listTask_.push_back(task);
@@ -196,7 +196,7 @@ void TaskManager::RemoveTaskWithoutTypeInfo(std::set<const std::type_info*> list
 void TaskManager::InitializeFunctionDivision(int divFunc, int maxPri)
 {
 	if(mapFunc_.find(divFunc) != mapFunc_.end())
-		throw gstd::wexception(L"‚·‚Å‚É‘¶İ‚µ‚Ä‚¢‚é‹@”\‹æ•ª‚ğ‰Šú‰»‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½B");
+		throw gstd::wexception(L"ã™ã§ã«å­˜åœ¨ã—ã¦ã„ã‚‹æ©Ÿèƒ½åŒºåˆ†ã‚’åˆæœŸåŒ–ã—ã‚ˆã†ã¨ã—ã¾ã—ãŸã€‚");
 	std::vector<std::list<ref_count_ptr<TaskFunction> > > vectPri;
 	vectPri.resize(maxPri);
 	mapFunc_[divFunc] = vectPri;
@@ -224,7 +224,7 @@ void TaskManager::CallFunction(int divFunc)
 void TaskManager::AddFunction(int divFunc, ref_count_ptr<TaskFunction> func,int pri,int idFunc)
 {
 	if(mapFunc_.find(divFunc) == mapFunc_.end())
-		throw gstd::wexception(L"‘¶İ‚µ‚È‚¢‹@”\‹æ•ª");
+		throw gstd::wexception(L"å­˜åœ¨ã—ãªã„æ©Ÿèƒ½åŒºåˆ†");
 	std::vector<std::list<ref_count_ptr<TaskFunction> > > &vectPri = mapFunc_[divFunc];
 	func->id_ = idFunc;
 	vectPri[pri].push_back(func);
@@ -471,7 +471,7 @@ void TaskInfoPanel::Update(TaskManager* taskManager)
 }
 void TaskInfoPanel::_UpdateTreeView(TaskManager* taskManager, ref_count_ptr<WTreeView::Item> item)
 {
-	//“o˜^
+	//ç™»éŒ²
 	std::set<int> setAddress;
 	{
 		std::list<ref_count_ptr<TaskBase> > listTask = taskManager->GetTaskList();
@@ -507,7 +507,7 @@ void TaskInfoPanel::_UpdateTreeView(TaskManager* taskManager, ref_count_ptr<WTre
 		}
 	}
 
-	//íœ
+	//å‰Šé™¤
 	{
 		std::list<ref_count_ptr<WTreeView::Item> > listChild = item->GetChildList();
 		std::list<ref_count_ptr<WTreeView::Item> >::iterator itrChild;

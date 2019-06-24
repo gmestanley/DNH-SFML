@@ -3,13 +3,13 @@
 
 #include"GstdConstant.hpp"
 
-//‰º‹L‚ğQl
+//ä¸‹è¨˜ã‚’å‚è€ƒ
 //http://marupeke296.com/CPP_SmartPointer.html
 
 namespace gstd
 {
 	//================================================================
-	//ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^”r‘¼
+	//ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿æ’ä»–
 	/*
 	class ref_count_ptr_lock
 	{
@@ -32,18 +32,18 @@ namespace gstd
 				::LeaveCriticalSection(&cs_);
 			}
 	};
-	static ref_count_ptr_lock REF_COUNT_PTR_LOCK;//”r‘¼ƒIƒuƒWƒFƒNƒg
+	static ref_count_ptr_lock REF_COUNT_PTR_LOCK;//æ’ä»–ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	*/
 
 
 	//================================================================
-	//ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^î•ñ
+	//ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿æƒ…å ±
 	template <class T>
 	struct ref_count_ptr_info
 	{
-		long *countRef_; // QÆƒJƒEƒ“ƒ^‚Ö‚Ìƒ|ƒCƒ“ƒ^
-		long *countWeak_; // QÆƒJƒEƒ“ƒ^‚Ö‚Ìƒ|ƒCƒ“ƒ^
-		T* pPtr_; // TŒ^‚ÌƒIƒuƒWƒFƒNƒg‚Ìƒ|ƒCƒ“ƒ^
+		long *countRef_; // å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+		long *countWeak_; // å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+		T* pPtr_; // Tå‹ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒã‚¤ãƒ³ã‚¿
 
 		ref_count_ptr_info()
 		{
@@ -68,12 +68,12 @@ namespace gstd
 	{
 		friend ref_count_weak_ptr<T, SYNC>;
 		public:
-			typedef ref_count_ptr<T, false> unsync;//”r‘¼‚È‚µ”Å
+			typedef ref_count_ptr<T, false> unsync;//æ’ä»–ãªã—ç‰ˆ
 
 		private:
 			ref_count_ptr_info<T> info_;
 
-			// QÆƒJƒEƒ“ƒ^‘‰Á
+			// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿å¢—åŠ 
 			void _AddRef()
 			{
 				if(info_.countRef_ == NULL)return;
@@ -90,7 +90,7 @@ namespace gstd
 				}
 			}
 
-			// QÆƒJƒEƒ“ƒ^Œ¸­
+			// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿æ¸›å°‘
 			void _Release()
 			{
 				if(info_.countRef_ == NULL)return;
@@ -126,42 +126,42 @@ namespace gstd
 			{
 				SetPointer(NULL);
 			}
-			// ƒfƒtƒHƒ‹ƒgƒRƒ“ƒXƒgƒ‰ƒNƒ^
-			//explicit •K—v?
+			// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+			//explicit å¿…è¦?
 			ref_count_ptr(T* src, long add = 0)
 			{
 				SetPointer(src, add);
 			}
 
-			// ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+			// ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 			ref_count_ptr(const ref_count_ptr<T, SYNC> &src)
 			{
-				// ‘Šè‚Ìƒ|ƒCƒ“ƒ^‚ğƒRƒs[
+				// ç›¸æ‰‹ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 				info_ = src.info_;
 
-				// ©•ª©g‚ÌQÆƒJƒEƒ“ƒ^‚ğ‘‰Á
+				// è‡ªåˆ†è‡ªèº«ã®å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’å¢—åŠ 
 				_AddRef();
 			}
 
-			// ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^iˆÃ–Ù“IƒAƒbƒvƒLƒƒƒXƒg•t‚«j
+			// ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ˆæš—é»™çš„ã‚¢ãƒƒãƒ—ã‚­ãƒ£ã‚¹ãƒˆä»˜ãï¼‰
 			template<class T2> ref_count_ptr(ref_count_ptr<T2, SYNC> &src)
 			{
-				// ‘Šè‚Ìƒ|ƒCƒ“ƒ^‚ğƒRƒs[
+				// ç›¸æ‰‹ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 				info_.countRef_ = src._GetReferenceCountPointer();
 				info_.countWeak_ = src._GetWeakCountPointer();
 				info_.pPtr_ = src.GetPointer();
 
-				// ©•ª©g‚ÌQÆƒJƒEƒ“ƒ^‚ğ‘‰Á
+				// è‡ªåˆ†è‡ªèº«ã®å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’å¢—åŠ 
 				_AddRef();
 			}
 
-			// ƒfƒXƒgƒ‰ƒNƒ^
+			// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 			~ref_count_ptr()
 			{
 				_Release();
 			}
 
-			// =‘ã“ü‰‰Zq
+			// =ä»£å…¥æ¼”ç®—å­
 			ref_count_ptr<T, SYNC>& operator =(T *src)
 			{
 				if(src == info_.pPtr_)
@@ -170,60 +170,60 @@ namespace gstd
 				return (*this);
 			}
 
-			// =‘ã“ü‰‰Zq
+			// =ä»£å…¥æ¼”ç®—å­
 			ref_count_ptr<T, SYNC>& operator =(const ref_count_ptr<T, SYNC> &src)
 			{
-				// ©•ª©g‚Ö‚Ì‘ã“ü‚Í•s³‚ÅˆÓ–¡‚ª–³‚¢‚Ì‚Å
-				// s‚í‚È‚¢B
+				// è‡ªåˆ†è‡ªèº«ã¸ã®ä»£å…¥ã¯ä¸æ­£ã§æ„å‘³ãŒç„¡ã„ã®ã§
+				// è¡Œã‚ãªã„ã€‚
 				if(src.info_.pPtr_ == info_.pPtr_)
 					return (*this);
 
-				// ©•ª‚Í‘¼l‚É‚È‚Á‚Ä‚µ‚Ü‚¤‚Ì‚Å
-				// QÆƒJƒEƒ“ƒ^‚ğ1‚ÂŒ¸­
+				// è‡ªåˆ†ã¯ä»–äººã«ãªã£ã¦ã—ã¾ã†ã®ã§
+				// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’1ã¤æ¸›å°‘
 				_Release();
 
-				// ‘Šè‚Ìƒ|ƒCƒ“ƒ^‚ğƒRƒs[
+				// ç›¸æ‰‹ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 				info_ = src.info_;
 
-				// V‚µ‚¢©•ª©g‚ÌQÆƒJƒEƒ“ƒ^‚ğ‘‰Á
+				// æ–°ã—ã„è‡ªåˆ†è‡ªèº«ã®å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’å¢—åŠ 
 				_AddRef();
 
 				return (*this);
 			}
 
-			// =‘ã“ü‰‰Zqi–¾¦“IƒAƒbƒvƒLƒƒƒXƒg•t‚«j
+			// =ä»£å…¥æ¼”ç®—å­ï¼ˆæ˜ç¤ºçš„ã‚¢ãƒƒãƒ—ã‚­ãƒ£ã‚¹ãƒˆä»˜ãï¼‰
 			template<class T2> ref_count_ptr& operator =(ref_count_ptr<T2, SYNC> &src)
 			{
-				// ©•ª©g‚Ö‚Ì‘ã“ü‚Í•s³‚ÅˆÓ–¡‚ª–³‚¢‚Ì‚Å
-				// s‚í‚È‚¢B
+				// è‡ªåˆ†è‡ªèº«ã¸ã®ä»£å…¥ã¯ä¸æ­£ã§æ„å‘³ãŒç„¡ã„ã®ã§
+				// è¡Œã‚ãªã„ã€‚
 				if(src.GetPointer() == info_.pPtr_)
 					return (*this);
 
-				// ©•ª‚Í‘¼l‚É‚È‚Á‚Ä‚µ‚Ü‚¤‚Ì‚Å
-				// QÆƒJƒEƒ“ƒ^‚ğ1‚ÂŒ¸­
+				// è‡ªåˆ†ã¯ä»–äººã«ãªã£ã¦ã—ã¾ã†ã®ã§
+				// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’1ã¤æ¸›å°‘
 				_Release();
 
-				// ‘Šè‚Ìƒ|ƒCƒ“ƒ^‚ğƒRƒs[
+				// ç›¸æ‰‹ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 				info_.countRef_ = src._GetReferenceCountPointer();
 				info_.countWeak_ = src._GetWeakCountPointer();
 				info_.pPtr_ = src.GetPointer();
 
-				// V‚µ‚¢©•ª©g‚ÌQÆƒJƒEƒ“ƒ^‚ğ‘‰Á
+				// æ–°ã—ã„è‡ªåˆ†è‡ªèº«ã®å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’å¢—åŠ 
 				_AddRef();
 
 				return (*this);
 			}
 
-			// *ŠÔÚ‰‰Zq
+			// *é–“æ¥æ¼”ç®—å­
 			T& operator *(){ return *info_.pPtr_;}
 
-			// ->ƒƒ“ƒo‘I‘ğ‰‰Zq
+			// ->ãƒ¡ãƒ³ãƒé¸æŠæ¼”ç®—å­
 			T* operator ->(){ return info_.pPtr_;}
 
-			// []”z—ñQÆ‰‰Zq
+			// []é…åˆ—å‚ç…§æ¼”ç®—å­
 			T& operator [](int n){ return info_.pPtr_[n];}
 
-			// ==”äŠr‰‰Zq
+			// ==æ¯”è¼ƒæ¼”ç®—å­
 			bool operator ==(const T* p)
 			{
 				return info_.pPtr_ == p;
@@ -238,7 +238,7 @@ namespace gstd
 				return info_.pPtr_ == p.GetPointer();
 			}
 
-			// !=”äŠr‰‰Zq
+			// !=æ¯”è¼ƒæ¼”ç®—å­
 			bool operator !=(const T* p)
 			{
 				return info_.pPtr_ != p;
@@ -253,10 +253,10 @@ namespace gstd
 				return info_.pPtr_ != p.info_.pPtr_;
 			}
 
-			// ƒ|ƒCƒ“ƒ^‚Ì–¾¦“I‚È“o˜^
+			// ãƒã‚¤ãƒ³ã‚¿ã®æ˜ç¤ºçš„ãªç™»éŒ²
 			void SetPointer(T* src = NULL, long add = 0)
 			{
-				// QÆƒJƒEƒ“ƒ^‚ğŒ¸‚ç‚µ‚½Œã‚ÉÄ‰Šú‰»
+				// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’æ¸›ã‚‰ã—ãŸå¾Œã«å†åˆæœŸåŒ–
 				_Release();
 				if(src == NULL)
 				{
@@ -274,26 +274,26 @@ namespace gstd
 				_AddRef();
 			}
 
-			// ƒ|ƒCƒ“ƒ^‚Ì‘İ‚µo‚µ
+			// ãƒã‚¤ãƒ³ã‚¿ã®è²¸ã—å‡ºã—
 			inline T* GetPointer(){return info_.pPtr_;}
 
-			// QÆƒJƒEƒ“ƒ^‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
-			inline long* _GetReferenceCountPointer(){return info_.countRef_;}//‚±‚ÌŠÖ”‚ÍŠO•”‚©‚ç‚µ‚æ‚¤‚µ‚È‚¢‚±‚Æ
-			inline long* _GetWeakCountPointer(){return info_.countWeak_;}//‚±‚ÌŠÖ”‚ÍŠO•”‚©‚ç‚µ‚æ‚¤‚µ‚È‚¢‚±‚Æ
+			// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
+			inline long* _GetReferenceCountPointer(){return info_.countRef_;}//ã“ã®é–¢æ•°ã¯å¤–éƒ¨ã‹ã‚‰ã—ã‚ˆã†ã—ãªã„ã“ã¨
+			inline long* _GetWeakCountPointer(){return info_.countWeak_;}//ã“ã®é–¢æ•°ã¯å¤–éƒ¨ã‹ã‚‰ã—ã‚ˆã†ã—ãªã„ã“ã¨
 			int GetReferenceCount(){int res = info_.countRef_ != NULL ? (int)*info_.countRef_ : 0;return res;}
 
 			template <class T2>
 			static ref_count_ptr<T, SYNC> DownCast(ref_count_ptr<T2, SYNC> &src)
 			{
-				// ˆø”‚ÌƒXƒ}[ƒgƒ|ƒCƒ“ƒ^‚ª‚Âƒ|ƒCƒ“ƒ^‚ªA
-				// ©•ª‚Ì“o˜^‚µ‚Ä‚¢‚éƒ|ƒCƒ“ƒ^‚É
-				// ƒ_ƒEƒ“ƒLƒƒƒXƒg‰Â”\‚Èê‡‚ÍƒIƒuƒWƒFƒNƒg‚ğ•Ô‚·
+				// å¼•æ•°ã®ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãŒæŒã¤ãƒã‚¤ãƒ³ã‚¿ãŒã€
+				// è‡ªåˆ†ã®ç™»éŒ²ã—ã¦ã„ã‚‹ãƒã‚¤ãƒ³ã‚¿ã«
+				// ãƒ€ã‚¦ãƒ³ã‚­ãƒ£ã‚¹ãƒˆå¯èƒ½ãªå ´åˆã¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿”ã™
 				ref_count_ptr<T, SYNC> res;
 				T* castPtr = dynamic_cast<T*>(src.GetPointer());
 				if(castPtr != NULL)
 				{
-					// ƒ_ƒEƒ“ƒLƒƒƒXƒg‰Â”\
-					res._Release();//Œ»İ‚ÌQÆ‚ğ”jŠü‚·‚é•K—v‚ª‚ ‚é
+					// ãƒ€ã‚¦ãƒ³ã‚­ãƒ£ã‚¹ãƒˆå¯èƒ½
+					res._Release();//ç¾åœ¨ã®å‚ç…§ã‚’ç ´æ£„ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 					res.info_.countRef_ = src._GetReferenceCountPointer();
 					res.info_.countWeak_ = src._GetWeakCountPointer();
 					res.info_.pPtr_ = castPtr;
@@ -309,12 +309,12 @@ namespace gstd
 	class ref_count_weak_ptr
 	{
 		public:
-			typedef ref_count_weak_ptr<T, false> unsync;//”r‘¼‚È‚µ”Å
+			typedef ref_count_weak_ptr<T, false> unsync;//æ’ä»–ãªã—ç‰ˆ
 
 		private:
 			ref_count_ptr_info<T> info_;
 
-			// QÆƒJƒEƒ“ƒ^‘‰Á
+			// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿å¢—åŠ 
 			void _AddRef()
 			{
 				if(info_.countRef_ == NULL)return;
@@ -329,7 +329,7 @@ namespace gstd
 				}
 			}
 
-			// QÆƒJƒEƒ“ƒ^Œ¸­
+			// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿æ¸›å°‘
 			void _Release()
 			{
 				if(info_.countRef_ == NULL)return;
@@ -359,27 +359,27 @@ namespace gstd
 			ref_count_weak_ptr(T* src)
 			{
 				if(src != NULL)
-					throw std::exception("ref_count_weak_ptrƒRƒ“ƒXƒgƒ‰ƒNƒ^‚É”ñNULL‚ğ‘ã“ü‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½");
+					throw std::exception("ref_count_weak_ptrã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã«éNULLã‚’ä»£å…¥ã—ã‚ˆã†ã¨ã—ã¾ã—ãŸ");
 			}
-			// ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+			// ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 			ref_count_weak_ptr(const ref_count_weak_ptr<T, SYNC> &src)
 			{
-				// ‘Šè‚Ìƒ|ƒCƒ“ƒ^‚ğƒRƒs[
+				// ç›¸æ‰‹ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 				info_ = src.info_;
 
-				// ©•ª©g‚ÌQÆƒJƒEƒ“ƒ^‚ğ‘‰Á
+				// è‡ªåˆ†è‡ªèº«ã®å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’å¢—åŠ 
 				_AddRef();
 			}
 
-			// ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^iˆÃ–Ù“IƒAƒbƒvƒLƒƒƒXƒg•t‚«j
+			// ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼ˆæš—é»™çš„ã‚¢ãƒƒãƒ—ã‚­ãƒ£ã‚¹ãƒˆä»˜ãï¼‰
 			template<class T2> ref_count_weak_ptr(ref_count_weak_ptr<T2, SYNC> &src)
 			{
-				// ‘Šè‚Ìƒ|ƒCƒ“ƒ^‚ğƒRƒs[
+				// ç›¸æ‰‹ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 				info_.countRef_ = src._GetReferenceCountPointer();
 				info_.countWeak_ = src._GetWeakCountPointer();
 				info_.pPtr_ = src.GetPointer();
 
-				// ©•ª©g‚ÌQÆƒJƒEƒ“ƒ^‚ğ‘‰Á
+				// è‡ªåˆ†è‡ªèº«ã®å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’å¢—åŠ 
 				_AddRef();
 			}
 
@@ -389,17 +389,17 @@ namespace gstd
 				_AddRef();
 			}
 
-			// ƒfƒXƒgƒ‰ƒNƒ^
+			// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 			~ref_count_weak_ptr()
 			{
 				_Release();
 			}
 
-			// =‘ã“ü‰‰Zq
+			// =ä»£å…¥æ¼”ç®—å­
 			ref_count_weak_ptr<T, SYNC>& operator =(T *src)
 			{
 				if(src != NULL)
-					throw std::exception("ref_count_weak_ptr =‚É”ñNULL‚ğ‘ã“ü‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½");
+					throw std::exception("ref_count_weak_ptr =ã«éNULLã‚’ä»£å…¥ã—ã‚ˆã†ã¨ã—ã¾ã—ãŸ");
 				_Release();
 				info_.pPtr_ = src;
 				info_.countRef_ = NULL;
@@ -408,80 +408,80 @@ namespace gstd
 			}
 			ref_count_weak_ptr<T, SYNC>& operator =(const ref_count_weak_ptr<T, SYNC> &src)
 			{
-				// ©•ª©g‚Ö‚Ì‘ã“ü‚Í•s³‚ÅˆÓ–¡‚ª–³‚¢‚Ì‚Å
-				// s‚í‚È‚¢B
+				// è‡ªåˆ†è‡ªèº«ã¸ã®ä»£å…¥ã¯ä¸æ­£ã§æ„å‘³ãŒç„¡ã„ã®ã§
+				// è¡Œã‚ãªã„ã€‚
 				if(src.info_.pPtr_ == info_.pPtr_)
 					return (*this);
 
-				// ©•ª‚Í‘¼l‚É‚È‚Á‚Ä‚µ‚Ü‚¤‚Ì‚Å
-				// QÆƒJƒEƒ“ƒ^‚ğ1‚ÂŒ¸­
+				// è‡ªåˆ†ã¯ä»–äººã«ãªã£ã¦ã—ã¾ã†ã®ã§
+				// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’1ã¤æ¸›å°‘
 				_Release();
 
-				// ‘Šè‚Ìƒ|ƒCƒ“ƒ^‚ğƒRƒs[
+				// ç›¸æ‰‹ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 				info_ = src.info_;
 
-				// V‚µ‚¢©•ª©g‚ÌQÆƒJƒEƒ“ƒ^‚ğ‘‰Á
+				// æ–°ã—ã„è‡ªåˆ†è‡ªèº«ã®å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’å¢—åŠ 
 				_AddRef();
 
 				return (*this);
 			}
 
-			// =‘ã“ü‰‰Zq
+			// =ä»£å…¥æ¼”ç®—å­
 			ref_count_weak_ptr<T, SYNC>& operator =(const ref_count_ptr<T, SYNC> &src)
 			{
-				// ©•ª©g‚Ö‚Ì‘ã“ü‚Í•s³‚ÅˆÓ–¡‚ª–³‚¢‚Ì‚Å
-				// s‚í‚È‚¢B
+				// è‡ªåˆ†è‡ªèº«ã¸ã®ä»£å…¥ã¯ä¸æ­£ã§æ„å‘³ãŒç„¡ã„ã®ã§
+				// è¡Œã‚ãªã„ã€‚
 				if(src.info_.pPtr_== info_.pPtr_)
 					return (*this);
 
-				// ©•ª‚Í‘¼l‚É‚È‚Á‚Ä‚µ‚Ü‚¤‚Ì‚Å
-				// QÆƒJƒEƒ“ƒ^‚ğ1‚ÂŒ¸­
+				// è‡ªåˆ†ã¯ä»–äººã«ãªã£ã¦ã—ã¾ã†ã®ã§
+				// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’1ã¤æ¸›å°‘
 				_Release();
 
-				// ‘Šè‚Ìƒ|ƒCƒ“ƒ^‚ğƒRƒs[
+				// ç›¸æ‰‹ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 				info_.countRef_ = src.info_.countRef_;
 				info_.countWeak_ = src.info_.countWeak_;
 				info_.pPtr_ = src.info_.pPtr_;
 
-				// V‚µ‚¢©•ª©g‚ÌQÆƒJƒEƒ“ƒ^‚ğ‘‰Á
+				// æ–°ã—ã„è‡ªåˆ†è‡ªèº«ã®å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’å¢—åŠ 
 				_AddRef();
 
 				return (*this);
 			}
 
-			// =‘ã“ü‰‰Zqi–¾¦“IƒAƒbƒvƒLƒƒƒXƒg•t‚«j
+			// =ä»£å…¥æ¼”ç®—å­ï¼ˆæ˜ç¤ºçš„ã‚¢ãƒƒãƒ—ã‚­ãƒ£ã‚¹ãƒˆä»˜ãï¼‰
 			template<class T2> ref_count_weak_ptr& operator =(ref_count_weak_ptr<T2, SYNC> &src)
 			{
-				// ©•ª©g‚Ö‚Ì‘ã“ü‚Í•s³‚ÅˆÓ–¡‚ª–³‚¢‚Ì‚Å
-				// s‚í‚È‚¢B
+				// è‡ªåˆ†è‡ªèº«ã¸ã®ä»£å…¥ã¯ä¸æ­£ã§æ„å‘³ãŒç„¡ã„ã®ã§
+				// è¡Œã‚ãªã„ã€‚
 				if(src.GetPointer() == info_.pPtr_)
 					return (*this);
 
-				// ©•ª‚Í‘¼l‚É‚È‚Á‚Ä‚µ‚Ü‚¤‚Ì‚Å
-				// QÆƒJƒEƒ“ƒ^‚ğ1‚ÂŒ¸­
+				// è‡ªåˆ†ã¯ä»–äººã«ãªã£ã¦ã—ã¾ã†ã®ã§
+				// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’1ã¤æ¸›å°‘
 				_Release();
 
-				// ‘Šè‚Ìƒ|ƒCƒ“ƒ^‚ğƒRƒs[
+				// ç›¸æ‰‹ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
 				info_.countRef_ = src._GetReferenceCountPointer();
 				info_.countWeak_ = src._GetWeakCountPointer();
 				info_.pPtr_ = src.GetPointer();
 
-				// V‚µ‚¢©•ª©g‚ÌQÆƒJƒEƒ“ƒ^‚ğ‘‰Á
+				// æ–°ã—ã„è‡ªåˆ†è‡ªèº«ã®å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã‚’å¢—åŠ 
 				_AddRef();
 
 				return (*this);
 			}
 
-			// *ŠÔÚ‰‰Zq
+			// *é–“æ¥æ¼”ç®—å­
 			T& operator *(){ return *info_.pPtr_;}
 
-			// ->ƒƒ“ƒo‘I‘ğ‰‰Zq
+			// ->ãƒ¡ãƒ³ãƒé¸æŠæ¼”ç®—å­
 			T* operator ->(){ return info_.pPtr_;}
 
-			// []”z—ñQÆ‰‰Zq
+			// []é…åˆ—å‚ç…§æ¼”ç®—å­
 			T& operator [](int n){ return info_.pPtr_[n];}
 
-			// ==”äŠr‰‰Zq
+			// ==æ¯”è¼ƒæ¼”ç®—å­
 			bool operator ==(const T* p)
 			{
 				return IsExists() ? (info_.pPtr_ == p) : (NULL == p);
@@ -496,7 +496,7 @@ namespace gstd
 				return IsExists() ? (info_.pPtr_ == p.GetPointer() ) : (NULL == p.GetPointer());
 			}
 
-			// !=”äŠr‰‰Zq
+			// !=æ¯”è¼ƒæ¼”ç®—å­
 			bool operator !=(const T* p)
 			{
 				return IsExists() ? (info_.pPtr_ != p) : (NULL != p);
@@ -511,27 +511,27 @@ namespace gstd
 				return IsExists() ? (info_.pPtr_ != p.GetPointer() ) : (NULL != p.GetPointer());
 			}
 
-			// ƒ|ƒCƒ“ƒ^‚Ì‘İ‚µo‚µ
+			// ãƒã‚¤ãƒ³ã‚¿ã®è²¸ã—å‡ºã—
 			inline T* GetPointer(){return IsExists() ? info_.pPtr_ : NULL;}
 
-			// QÆƒJƒEƒ“ƒ^‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
-			inline long* _GetReferenceCountPointer(){return info_.countRef_;}//‚±‚ÌŠÖ”‚ÍŠO•”‚©‚ç‚µ‚æ‚¤‚µ‚È‚¢‚±‚Æ
-			inline long* _GetWeakCountPointer(){return info_.countWeak_;}//‚±‚ÌŠÖ”‚ÍŠO•”‚©‚ç‚µ‚æ‚¤‚µ‚È‚¢‚±‚Æ
+			// å‚ç…§ã‚«ã‚¦ãƒ³ã‚¿ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
+			inline long* _GetReferenceCountPointer(){return info_.countRef_;}//ã“ã®é–¢æ•°ã¯å¤–éƒ¨ã‹ã‚‰ã—ã‚ˆã†ã—ãªã„ã“ã¨
+			inline long* _GetWeakCountPointer(){return info_.countWeak_;}//ã“ã®é–¢æ•°ã¯å¤–éƒ¨ã‹ã‚‰ã—ã‚ˆã†ã—ãªã„ã“ã¨
 			int GetReferenceCount(){int res = info_.countRef_ != NULL ? (int)*info_.countRef_ : 0;return res;}
 			bool IsExists(){return info_.countRef_ != NULL ? (*info_.countRef_ > 0) : false;}
 
 			template <class T2>
 			static ref_count_weak_ptr<T, SYNC> DownCast(ref_count_weak_ptr<T2, SYNC> &src)
 			{
-				// ˆø”‚ÌƒXƒ}[ƒgƒ|ƒCƒ“ƒ^‚ª‚Âƒ|ƒCƒ“ƒ^‚ªA
-				// ©•ª‚Ì“o˜^‚µ‚Ä‚¢‚éƒ|ƒCƒ“ƒ^‚É
-				// ƒ_ƒEƒ“ƒLƒƒƒXƒg‰Â”\‚Èê‡‚ÍƒIƒuƒWƒFƒNƒg‚ğ•Ô‚·
+				// å¼•æ•°ã®ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãŒæŒã¤ãƒã‚¤ãƒ³ã‚¿ãŒã€
+				// è‡ªåˆ†ã®ç™»éŒ²ã—ã¦ã„ã‚‹ãƒã‚¤ãƒ³ã‚¿ã«
+				// ãƒ€ã‚¦ãƒ³ã‚­ãƒ£ã‚¹ãƒˆå¯èƒ½ãªå ´åˆã¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿”ã™
 				ref_count_weak_ptr<T, SYNC> res;
 				T* castPtr = dynamic_cast<T*>(src.GetPointer());
 				if(castPtr != NULL)
 				{
-					// ƒ_ƒEƒ“ƒLƒƒƒXƒg‰Â”\
-					res._Release();//Œ»İ‚ÌQÆ‚ğ”jŠü‚·‚é•K—v‚ª‚ ‚é
+					// ãƒ€ã‚¦ãƒ³ã‚­ãƒ£ã‚¹ãƒˆå¯èƒ½
+					res._Release();//ç¾åœ¨ã®å‚ç…§ã‚’ç ´æ£„ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 					res.info_.countRef_ = src._GetReferenceCountPointer();
 					res.info_.countWeak_ = src._GetWeakCountPointer();
 					res.info_.pPtr_ = castPtr;

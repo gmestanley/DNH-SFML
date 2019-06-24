@@ -148,12 +148,12 @@ namespace gstd
 			void CheckRunInMainThread();
 			ScriptCommonDataManager* GetCommonDataManager(){return commonDataManager_.GetPointer();}
 
-			//‹¤’ÊŠÖ”FƒXƒNƒŠƒvƒgˆø”Œ‹‰Ê
+			//å…±é€šé–¢æ•°ï¼šã‚¹ã‚¯ãƒªãƒ—ãƒˆå¼•æ•°çµæœ
 			static value Func_GetScriptArgument(script_machine* machine, int argc, value const * argv);
 			static value Func_GetScriptArgumentCount(script_machine* machine, int argc, value const * argv);
 			static value Func_SetScriptResult(script_machine* machine, int argc, value const * argv);
 
-			//‹¤’ÊŠÖ”F”ŠwŒn
+			//å…±é€šé–¢æ•°ï¼šæ•°å­¦ç³»
 			static value Func_Min(script_machine* machine, int argc, value const * argv);
 			static value Func_Max(script_machine* machine, int argc, value const * argv);
 			static value Func_Log(script_machine* machine, int argc, value const * argv);
@@ -167,7 +167,7 @@ namespace gstd
 			static value Func_Atan2(script_machine* machine, int argc, value const * argv);
 			static value Func_Rand(script_machine* machine, int argc, value const * argv);
 
-			//‹¤’ÊŠÖ”F•¶š—ñ‘€ì
+			//å…±é€šé–¢æ•°ï¼šæ–‡å­—åˆ—æ“ä½œ
 			static value Func_ToString(script_machine* machine, int argc, value const * argv);
 			static value Func_IntToString(script_machine* machine, int argc, value const * argv);
 			static value Func_ItoA(script_machine* machine, int argc, value const * argv);
@@ -179,7 +179,7 @@ namespace gstd
 			static value Func_TrimString(script_machine* machine, int argc, value const * argv);
 			static value Func_SplitString(script_machine* machine, int argc, value const * argv);
 
-			//‹¤’ÊŠÖ”FƒpƒXŠÖ˜A
+			//å…±é€šé–¢æ•°ï¼šãƒ‘ã‚¹é–¢é€£
 			static value Func_GetModuleDirectory(script_machine* machine, int argc, value const * argv);
 			static value Func_GetMainScriptDirectory(script_machine* machine, int argc, value const * argv);
 			static value Func_GetCurrentScriptDirectory(script_machine* machine, int argc, value const * argv);
@@ -187,14 +187,14 @@ namespace gstd
 			static value Func_GetFilePathList(script_machine* machine, int argc, value const * argv);
 			static value Func_GetDirectoryList(script_machine* machine, int argc, value const * argv);
 
-			//‹¤’ÊŠÖ”FŠÖ˜A
+			//å…±é€šé–¢æ•°ï¼šæ™‚åˆ»é–¢é€£
 			static value Func_GetCurrentDateTimeS(script_machine* machine, int argc, value const * argv);
 
-			//‹¤’ÊŠÖ”FƒfƒoƒbƒOŠÖ˜A
+			//å…±é€šé–¢æ•°ï¼šãƒ‡ãƒãƒƒã‚°é–¢é€£
 			static value Func_WriteLog(script_machine* machine, int argc, value const * argv);
 			static value Func_RaiseError(script_machine* machine, int argc, value const * argv);
 
-			//‹¤’ÊŠÖ”F‹¤’Êƒf[ƒ^
+			//å…±é€šé–¢æ•°ï¼šå…±é€šãƒ‡ãƒ¼ã‚¿
 			static value Func_SetDefaultCommonDataArea(script_machine* machine, int argc, value const * argv);
 			static value Func_SetCommonData(script_machine* machine, int argc, value const * argv);
 			static value Func_GetCommonData(script_machine* machine, int argc, value const * argv);

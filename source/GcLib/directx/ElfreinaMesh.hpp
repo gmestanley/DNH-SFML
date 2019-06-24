@@ -87,7 +87,7 @@ namespace directx
 	};
 	class ElfreinaMeshData::Mesh : public RenderObjectB4NX
 	{
-		//���_�{�[���f�[�^�ǂݍ��݂Ɏg���ꎞ�f�[�^
+		//頂点ボーンデータ読み込みに使う一時データ
 		struct BoneWeightData
 		{
 			int index;

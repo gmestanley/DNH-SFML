@@ -23,7 +23,7 @@ namespace gstd
 	{
 		friend TaskManager;
 		protected:
-			ref_count_ptr<TaskBase> task_;//ƒ^ƒXƒN‚Ö‚Ìƒ|ƒCƒ“ƒ^
+			ref_count_ptr<TaskBase> task_;//ã‚¿ã‚¹ã‚¯ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 			int id_;//id
 			bool bEnable_;
 			int delay_;
@@ -50,7 +50,7 @@ namespace gstd
 			typedef void (T::*Function)();
 		protected:
 
-			Function pFunc;//ƒƒ“ƒoŠÖ”ƒ|ƒCƒ“ƒ^
+			Function pFunc;//ãƒ¡ãƒ³ãƒé–¢æ•°ãƒã‚¤ãƒ³ã‚¿
 		public:
 			TTaskFunction(ref_count_ptr<T> task,Function func){task_=task;pFunc=func;}
 			virtual void Call()
@@ -77,9 +77,9 @@ namespace gstd
 	{
 		friend TaskManager;
 		protected:
-			_int64 indexTask_;//TaskManager‚É‚æ‚Á‚Ä‚Â‚¯‚ç‚ê‚éˆêˆÓ‚ÌƒCƒ“ƒfƒbƒNƒX
+			_int64 indexTask_;//TaskManagerã«ã‚ˆã£ã¦ã¤ã‘ã‚‰ã‚Œã‚‹ä¸€æ„ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 			int idTask_;//ID
-			int idTaskGroup_;//ƒOƒ‹[ƒvID
+			int idTaskGroup_;//ã‚°ãƒ«ãƒ¼ãƒ—ID
 
 		public:
 			TaskBase();
@@ -99,44 +99,44 @@ namespace gstd
 			typedef std::map<int, std::vector<std::list<ref_count_ptr<TaskFunction> > > > function_map;
 		protected:
 			static gstd::CriticalSection lockStatic_;
-			std::list<ref_count_ptr<TaskBase> > listTask_;//ƒ^ƒXƒN‚ÌŒ³ƒNƒ‰ƒX
-			function_map mapFunc_;//ƒ^ƒXƒN‹@”\‚ÌƒŠƒXƒg(divFunc, priority, func)
-			_int64 indexTaskManager_;//ˆêˆÓ‚ÌƒCƒ“ƒfƒbƒNƒX
+			std::list<ref_count_ptr<TaskBase> > listTask_;//ã‚¿ã‚¹ã‚¯ã®å…ƒã‚¯ãƒ©ã‚¹
+			function_map mapFunc_;//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½ã®ãƒªã‚¹ãƒˆ(divFunc, priority, func)
+			_int64 indexTaskManager_;//ä¸€æ„ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 			ref_count_ptr<TaskInfoPanel> panelInfo_;
 
-			void _ArrangeTask();//•K—v‚Ì‚È‚­‚È‚Á‚½—Ìˆæíœ
+			void _ArrangeTask();//å¿…è¦ã®ãªããªã£ãŸé ˜åŸŸå‰Šé™¤
 			void _CheckInvalidFunctionDivision(int divFunc);
 
 		public:
 			TaskManager();
 			virtual ~TaskManager();
-			void Clear();//‘Sƒ^ƒXƒNíœ
+			void Clear();//å…¨ã‚¿ã‚¹ã‚¯å‰Šé™¤
 			void ClearTask();
-			void AddTask(ref_count_ptr<TaskBase> task);//ƒ^ƒXƒN‚ğ’Ç‰Á
-			ref_count_ptr<TaskBase> GetTask(int idTask);//w’è‚µ‚½ID‚Ìƒ^ƒXƒN‚ğæ“¾
+			void AddTask(ref_count_ptr<TaskBase> task);//ã‚¿ã‚¹ã‚¯ã‚’è¿½åŠ 
+			ref_count_ptr<TaskBase> GetTask(int idTask);//æŒ‡å®šã—ãŸIDã®ã‚¿ã‚¹ã‚¯ã‚’å–å¾—
 			ref_count_ptr<TaskBase> GetTask(const std::type_info& info);
-			void RemoveTask(TaskBase* task);//w’è‚µ‚½ƒ^ƒXƒN‚ğíœ
-			void RemoveTask(int idTask);//ƒ^ƒXƒNŒ³ID‚Åíœ
-			void RemoveTaskGroup(int idGroup);//ƒ^ƒXƒN‚ğƒOƒ‹[ƒv‚Åíœ
-			void RemoveTask(const std::type_info& info);//ƒNƒ‰ƒXŒ^‚Åíœ
-			void RemoveTaskWithoutTypeInfo(std::set<const std::type_info*> listInfo);//ƒNƒ‰ƒXŒ^ˆÈŠO‚Ìƒ^ƒXƒN‚ğíœ
+			void RemoveTask(TaskBase* task);//æŒ‡å®šã—ãŸã‚¿ã‚¹ã‚¯ã‚’å‰Šé™¤
+			void RemoveTask(int idTask);//ã‚¿ã‚¹ã‚¯å…ƒIDã§å‰Šé™¤
+			void RemoveTaskGroup(int idGroup);//ã‚¿ã‚¹ã‚¯ã‚’ã‚°ãƒ«ãƒ¼ãƒ—ã§å‰Šé™¤
+			void RemoveTask(const std::type_info& info);//ã‚¯ãƒ©ã‚¹å‹ã§å‰Šé™¤
+			void RemoveTaskWithoutTypeInfo(std::set<const std::type_info*> listInfo);//ã‚¯ãƒ©ã‚¹å‹ä»¥å¤–ã®ã‚¿ã‚¹ã‚¯ã‚’å‰Šé™¤
 			std::list<ref_count_ptr<TaskBase> > GetTaskList(){return listTask_;}
 
 			void InitializeFunctionDivision(int divFunc, int maxPri);
-			void CallFunction(int divFunc);//ƒ^ƒXƒN‹@”\Às
-			void AddFunction(int divFunc, ref_count_ptr<TaskFunction> func,int pri,int idFunc=TASK_FREE_ID);//ƒ^ƒXƒN‹@”\’Ç‰Á
-			void RemoveFunction(TaskBase* task);//ƒ^ƒXƒN‹@”\íœ
-			void RemoveFunction(TaskBase* task,int divFunc, int idFunc);//ƒ^ƒXƒN‹@”\íœ
-			void RemoveFunction(const std::type_info& info);//ƒ^ƒXƒN‹@”\íœ
+			void CallFunction(int divFunc);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½å®Ÿè¡Œ
+			void AddFunction(int divFunc, ref_count_ptr<TaskFunction> func,int pri,int idFunc=TASK_FREE_ID);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½è¿½åŠ 
+			void RemoveFunction(TaskBase* task);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½å‰Šé™¤
+			void RemoveFunction(TaskBase* task,int divFunc, int idFunc);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½å‰Šé™¤
+			void RemoveFunction(const std::type_info& info);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½å‰Šé™¤
 			function_map GetFunctionMap(){return mapFunc_;}
 
-			void SetFunctionEnable(bool bEnable);//‘Sƒ^ƒXƒN‹@”\‚Ìó‘Ô‚ğØ‚è‘Ö‚¦‚é
-			void SetFunctionEnable(bool bEnable, int divFunc);//ƒ^ƒXƒN‹@”\‚Ìó‘Ô‚ğØ‚è‘Ö‚¦‚é
-			void SetFunctionEnable(bool bEnable, int idTask, int divFunc);//ƒ^ƒXƒN‹@”\‚Ìó‘Ô‚ğØ‚è‘Ö‚¦‚é
-			void SetFunctionEnable(bool bEnable, int idTask, int divFunc, int idFunc);//ƒ^ƒXƒN‹@”\‚Ìó‘Ô‚ğØ‚è‘Ö‚¦‚é
-			void SetFunctionEnable(bool bEnable, TaskBase* task, int divFunc);//ƒ^ƒXƒN‹@”\‚Ìó‘Ô‚ğØ‚è‘Ö‚¦‚é
-			void SetFunctionEnable(bool bEnable, TaskBase* task, int divFunc, int idFunc);//ƒ^ƒXƒN‹@”\‚Ìó‘Ô‚ğØ‚è‘Ö‚¦‚é
-			void SetFunctionEnable(bool bEnable, const std::type_info& info, int divFunc);//ƒ^ƒXƒN‹@”\‚Ìó‘Ô‚ğØ‚è‘Ö‚¦‚é
+			void SetFunctionEnable(bool bEnable);//å…¨ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½ã®çŠ¶æ…‹ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+			void SetFunctionEnable(bool bEnable, int divFunc);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½ã®çŠ¶æ…‹ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+			void SetFunctionEnable(bool bEnable, int idTask, int divFunc);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½ã®çŠ¶æ…‹ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+			void SetFunctionEnable(bool bEnable, int idTask, int divFunc, int idFunc);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½ã®çŠ¶æ…‹ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+			void SetFunctionEnable(bool bEnable, TaskBase* task, int divFunc);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½ã®çŠ¶æ…‹ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+			void SetFunctionEnable(bool bEnable, TaskBase* task, int divFunc, int idFunc);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½ã®çŠ¶æ…‹ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+			void SetFunctionEnable(bool bEnable, const std::type_info& info, int divFunc);//ã‚¿ã‚¹ã‚¯æ©Ÿèƒ½ã®çŠ¶æ…‹ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
 
 			void SetInfoPanel(ref_count_ptr<TaskInfoPanel> panel){panelInfo_ = panel;}
 			gstd::CriticalSection& GetStaticLock(){return lockStatic_;}
@@ -177,14 +177,14 @@ namespace gstd
 
 	/**********************************************************
 	//WorkRenderTaskManager
-	//“®ìA•`‰æ‹@”\‚ğ•Û‚·‚éTaskManager
+	//å‹•ä½œã€æç”»æ©Ÿèƒ½ã‚’ä¿æŒã™ã‚‹TaskManager
 	**********************************************************/
 	class WorkRenderTaskManager : public TaskManager
 	{
 		enum 
 		{
-			DIV_FUNC_WORK,//“®ì
-			DIV_FUNC_RENDER,//•`‰æ
+			DIV_FUNC_WORK,//å‹•ä½œ
+			DIV_FUNC_RENDER,//æç”»
 		};
 
 		public:
@@ -192,7 +192,7 @@ namespace gstd
 			~WorkRenderTaskManager();
 			virtual void InitializeFunctionDivision(int maxPriWork, int maxPriRender);
 
-			//“®ì‹@”\
+			//å‹•ä½œæ©Ÿèƒ½
 			void CallWorkFunction();
 			void AddWorkFunction(ref_count_ptr<TaskFunction> func,int pri,int idFunc=TASK_FREE_ID);
 			void RemoveWorkFunction(TaskBase* task, int idFunc);
@@ -203,7 +203,7 @@ namespace gstd
 			void SetWorkFunctionEnable(bool bEnable, TaskBase* task, int idFunc);
 			void SetWorkFunctionEnable(bool bEnable, const std::type_info& info);
 
-			//•`‰æ‹@”\
+			//æç”»æ©Ÿèƒ½
 			void CallRenderFunction();
 			void AddRenderFunction(ref_count_ptr<TaskFunction> func,int pri,int idFunc=TASK_FREE_ID);
 			void RemoveRenderFunction(TaskBase* task, int idFunc);

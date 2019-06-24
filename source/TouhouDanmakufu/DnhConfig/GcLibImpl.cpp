@@ -15,7 +15,7 @@ EApplication::~EApplication()
 bool EApplication::_Initialize()
 {
 	ELogger* logger = ELogger::GetInstance();
-	Logger::WriteTop(L"ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‰Šú‰»");
+	Logger::WriteTop(L"ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³åˆæœŸåŒ–");
 
 	EFileManager* fileManager = EFileManager::CreateInstance();
 	fileManager->Initialize();
@@ -32,7 +32,7 @@ bool EApplication::_Initialize()
 	wndMain->StartUp();
 	::SetForegroundWindow(wndMain->GetWindowHandle());
 
-	Logger::WriteTop(L"ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‰Šú‰»Š®—¹");
+	Logger::WriteTop(L"ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³åˆæœŸåŒ–å®Œäº†");
 
 	return true;
 }
@@ -46,7 +46,7 @@ bool EApplication::_Loop()
 	HWND hWndLogger = ELogger::GetInstance()->GetWindowHandle();
 	if(hWndFocused != hWndMain && hWndFocused != hWndLogger)
 	{
-		//”ñƒAƒNƒeƒBƒu‚Í“®ì‚µ‚È‚¢
+		//éã‚¢ã‚¯ãƒ†ã‚£ãƒ–æ™‚ã¯å‹•ä½œã—ãªã„
 		::Sleep(10);
 		return true;
 	}
@@ -61,11 +61,11 @@ bool EApplication::_Loop()
 }
 bool EApplication::_Finalize()
 {
-	Logger::WriteTop(L"ƒAƒvƒŠƒP[ƒVƒ‡ƒ“I—¹ˆ—ŠJn");
+	Logger::WriteTop(L"ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†å‡¦ç†é–‹å§‹");
 	EFileManager::GetInstance()->EndLoadThread();
 	EDirectInput::DeleteInstance();
 	EFileManager::DeleteInstance();
-	Logger::WriteTop(L"ƒAƒvƒŠƒP[ƒVƒ‡ƒ“I—¹ˆ—Š®—¹");
+	Logger::WriteTop(L"ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†å‡¦ç†å®Œäº†");
 	return true;
 }
 

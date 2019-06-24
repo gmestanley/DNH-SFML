@@ -21,8 +21,8 @@ class StgControlScriptManager : public ScriptManager
 **********************************************************/
 class StgControlScriptInformation 
 {
-		std::vector<ref_count_ptr<ScriptInformation> > listFreePlayer_; //•W€©‹@
-		ref_count_ptr<ReplayInformationManager> replayManager_; //ƒŠƒvƒŒƒCî•ñ
+		std::vector<ref_count_ptr<ScriptInformation> > listFreePlayer_; //æ¨™æº–è‡ªæ©Ÿ
+		ref_count_ptr<ReplayInformationManager> replayManager_; //ãƒªãƒ—ãƒ¬ã‚¤æƒ…å ±
 
 	public:
 		StgControlScriptInformation();
@@ -43,7 +43,7 @@ class StgControlScript : public DnhScript
 	public:
 		enum
 		{
-			//ƒCƒxƒ“ƒg
+			//ã‚¤ãƒ™ãƒ³ãƒˆ
 			EV_USER_COUNT = 100000,
 			EV_USER = 1000000,
 			EV_USER_SYSTEM = 2000000,
@@ -85,24 +85,24 @@ class StgControlScript : public DnhScript
 	protected:
 		StgSystemController* systemController_;
 
-		//ƒXƒNƒŠƒvƒgî•ñ‚ÌƒLƒƒƒbƒVƒ…
+		//ã‚¹ã‚¯ãƒªãƒ—ãƒˆæƒ…å ±ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥
 		std::map<std::wstring, ref_count_ptr<ScriptInformation> > mapScriptInfo_;
 
 	public:
 		StgControlScript(StgSystemController* systemController);
 
-		//STG§Œä‹¤’ÊŠÖ”F‹¤’Êƒf[ƒ^
+		//STGåˆ¶å¾¡å…±é€šé–¢æ•°ï¼šå…±é€šãƒ‡ãƒ¼ã‚¿
 		static gstd::value Func_SaveCommonDataAreaA1(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_LoadCommonDataAreaA1(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_SaveCommonDataAreaA2(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_LoadCommonDataAreaA2(gstd::script_machine* machine, int argc, gstd::value const * argv);
 
-		//STG§Œä‹¤’ÊŠÖ”FƒL[Œn
+		//STGåˆ¶å¾¡å…±é€šé–¢æ•°ï¼šã‚­ãƒ¼ç³»
 		static gstd::value Func_AddVirtualKey(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_AddReplayTargetVirtualKey(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_SetSkipModeKey(gstd::script_machine* machine, int argc, gstd::value const * argv);
 
-		//STG§Œä‹¤’ÊŠÖ”FƒVƒXƒeƒ€ŠÖ˜A
+		//STGåˆ¶å¾¡å…±é€šé–¢æ•°ï¼šã‚·ã‚¹ãƒ†ãƒ é–¢é€£
 		static gstd::value Func_GetScore(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_AddScore(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_GetGraze(gstd::script_machine* machine, int argc, gstd::value const * argv);
@@ -126,7 +126,7 @@ class StgControlScript : public DnhScript
 		static gstd::value Func_GetScriptInfoA1(gstd::script_machine* machine, int argc, gstd::value const * argv);
 						
 
-		//STG§Œä‹¤’ÊŠÖ”F•`‰æŠÖ˜A
+		//STGåˆ¶å¾¡å…±é€šé–¢æ•°ï¼šæç”»é–¢é€£
 		static gstd::value Func_ClearInvalidRenderPriority(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_SetInvalidRenderPriorityA1(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_GetReservedRenderTargetName(gstd::script_machine* machine, int argc, gstd::value const * argv);
@@ -135,21 +135,21 @@ class StgControlScript : public DnhScript
 		static gstd::value Func_SaveSnapShotA1(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_SaveSnapShotA2(gstd::script_machine* machine, int argc, gstd::value const * argv);
 
-		//STG§Œä‹¤’ÊŠÖ”F©‹@ŠÖ˜A
+		//STGåˆ¶å¾¡å…±é€šé–¢æ•°ï¼šè‡ªæ©Ÿé–¢é€£
 		static gstd::value Func_GetPlayerID(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_GetPlayerReplayName(gstd::script_machine* machine, int argc, gstd::value const * argv);
 
-		//STG§Œä‹¤’ÊŠÖ”Fƒ†[ƒUƒXƒNƒŠƒvƒg
+		//STGåˆ¶å¾¡å…±é€šé–¢æ•°ï¼šãƒ¦ãƒ¼ã‚¶ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 		static gstd::value Func_SetPauseScriptPath(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_SetEndSceneScriptPath(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_SetReplaySaveSceneScriptPath(gstd::script_machine* machine, int argc, gstd::value const * argv);
 
-		//STG§Œä‹¤’ÊŠÖ”F©‹@ƒXƒNƒŠƒvƒg
+		//STGåˆ¶å¾¡å…±é€šé–¢æ•°ï¼šè‡ªæ©Ÿã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 		static gstd::value Func_GetLoadFreePlayerScriptList(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_GetFreePlayerScriptCount(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_GetFreePlayerScriptInfo(gstd::script_machine* machine, int argc, gstd::value const * argv);
 
-		//STG§Œä‹¤’ÊŠÖ”FƒŠƒvƒŒƒCŠÖ˜A
+		//STGåˆ¶å¾¡å…±é€šé–¢æ•°ï¼šãƒªãƒ—ãƒ¬ã‚¤é–¢é€£
 		static gstd::value Func_LoadReplayList(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_GetValidReplayIndices(gstd::script_machine* machine, int argc, gstd::value const * argv);
 		static gstd::value Func_IsValidReplayIndex(gstd::script_machine* machine, int argc, gstd::value const * argv);
@@ -170,7 +170,7 @@ class ScriptInfoPanel : public WindowLogger::Panel
 	protected:
 		WButton buttonTerminateScript_;
 		virtual bool _AddedLogger(HWND hTab);
-		virtual LRESULT _WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);//ƒI[ƒo[ƒ‰ƒCƒh—pƒvƒƒV[ƒWƒƒ
+		virtual LRESULT _WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);//ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ç”¨ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 
 		void _TerminateScriptAll();
 

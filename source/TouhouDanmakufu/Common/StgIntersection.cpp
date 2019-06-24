@@ -38,14 +38,14 @@ void StgIntersectionManager::Work()
 		int countCheck = listCheck->GetCheckCount();
 		for(int iCheck = 0 ; iCheck < countCheck ; iCheck++)
 		{
-			//Get‚Í1‰ñ‚µ‚©g—p‚Å‚«‚Ü‚¹‚ñ
+			//Getã¯1å›ã—ã‹ä½¿ç”¨ã§ãã¾ã›ã‚“
 			ref_count_ptr<StgIntersectionTarget>::unsync targetA = listCheck->GetTargetA(iCheck);
 			ref_count_ptr<StgIntersectionTarget>::unsync targetB = listCheck->GetTargetB(iCheck);
 
 			bool bIntersected = IsIntersected(targetA, targetB);
 			if(!bIntersected)continue;
 
-			//Graze‚ÌŠÖŒW‚ÅAæ‚É©‹@‚Ì“–‚½‚è”»’è‚ğ‚·‚é•K—v‚ª‚ ‚éB
+			//Grazeã®é–¢ä¿‚ã§ã€å…ˆã«è‡ªæ©Ÿã®å½“ãŸã‚Šåˆ¤å®šã‚’ã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã€‚
 			ref_count_weak_ptr<StgIntersectionObject>::unsync objA = targetA->GetObject();
 			ref_count_weak_ptr<StgIntersectionObject>::unsync objB = targetB->GetObject();
 			if(objA != NULL)
@@ -89,9 +89,9 @@ void StgIntersectionManager::Work()
 }
 void StgIntersectionManager::AddTarget(ref_count_ptr<StgIntersectionTarget>::unsync target)
 {
-	//SPACE_PLAYER_ENEMY = 0,//©‹@-“GA“G’e
-	//SPACE_PLAYERSOHT_ENEMY,//©’e,ƒXƒyƒ‹-“G
-	//SPACE_PLAYERSHOT_ENEMYSHOT,//©’e,ƒXƒyƒ‹-“G’e
+	//SPACE_PLAYER_ENEMY = 0,//è‡ªæ©Ÿ-æ•µã€æ•µå¼¾
+	//SPACE_PLAYERSOHT_ENEMY,//è‡ªå¼¾,ã‚¹ãƒšãƒ«-æ•µ
+	//SPACE_PLAYERSHOT_ENEMYSHOT,//è‡ªå¼¾,ã‚¹ãƒšãƒ«-æ•µå¼¾
 
 	target->SetMortonNumber(-1);
 	//target->ClearObjectIntersectedIdList();
@@ -110,7 +110,7 @@ void StgIntersectionManager::AddTarget(ref_count_ptr<StgIntersectionTarget>::uns
 		{
 			listSpace_[SPACE_PLAYERSOHT_ENEMY]->RegistTargetA(target);
 
-			//’eÁ‚µ”\—Í•t‰Á‚È‚ç
+			//å¼¾æ¶ˆã—èƒ½åŠ›ä»˜åŠ ãªã‚‰
 			bool bEraseShot = false;
 			if(type == StgIntersectionTarget::TYPE_PLAYER_SHOT)
 			{
@@ -257,7 +257,7 @@ bool StgIntersectionManager::IsIntersected(ref_count_ptr<StgIntersectionTarget>:
 }
 bool StgIntersectionManager::IsIntersected(DxCircle& circle, DxWidthLine& line)
 {
-	//æ’[‚à‚µ‚­‚ÍI’[‚ª‰~“à‚É‚ ‚é‚©‚ğ’²‚×‚é
+	//å…ˆç«¯ã‚‚ã—ãã¯çµ‚ç«¯ãŒå††å†…ã«ã‚ã‚‹ã‹ã‚’èª¿ã¹ã‚‹
 	{
 		double radius = circle.GetR();
 		double dist1 = pow(pow(circle.GetX()-line.GetX1(),2) + pow(circle.GetY()-line.GetY1(),2), 0.5);
@@ -266,7 +266,7 @@ bool StgIntersectionManager::IsIntersected(DxCircle& circle, DxWidthLine& line)
 			return true;
 	}
 
-	//ü•ª“à‚É‰~‚ª‚ ‚é‚©‚ğ’²‚×‚é
+	//ç·šåˆ†å†…ã«å††ãŒã‚ã‚‹ã‹ã‚’èª¿ã¹ã‚‹
 	{
 		double lx1 = line.GetX2() - line.GetX1();
 		double ly1 = line.GetY2() - line.GetY1();
@@ -285,11 +285,11 @@ bool StgIntersectionManager::IsIntersected(DxCircle& circle, DxWidthLine& line)
 	}
 
 	if(false)
-	{//tr1:ƒŒ[ƒU[‚Ì’·‚³Atr2:ƒŒ[ƒU[‚Ìæ‚©‚ç”»’èæ‚Ü‚Å‚Ì’·‚³
+	{//tr1:ãƒ¬ãƒ¼ã‚¶ãƒ¼ã®é•·ã•ã€tr2:ãƒ¬ãƒ¼ã‚¶ãƒ¼ã®å…ˆã‹ã‚‰åˆ¤å®šå…ˆã¾ã§ã®é•·ã•
 		double radius = circle.GetR();//pow(pow(line.GetX2()-line.GetX1(),2) + pow(line.GetY2()-line.GetY1(),2), 0.5);
 		double dist1 = pow(pow(circle.GetX()-line.GetX1(),2) + pow(circle.GetY()-line.GetY1(),2), 0.5);
 		double dist2 = pow(pow(circle.GetX()-line.GetX2(),2) + pow(circle.GetY()-line.GetY2(),2), 0.5);
-		//tr1 -= 18;//’[‚ğ”»’è‚µ‚È‚¢‚½‚ß‚Ì•â³
+		//tr1 -= 18;//ç«¯ã‚’åˆ¤å®šã—ãªã„ãŸã‚ã®è£œæ­£
 		//if(tr1 < 18)tr1 = 18;
 		if(radius < dist1 && radius < dist2)
 			return false;
@@ -299,17 +299,17 @@ bool StgIntersectionManager::IsIntersected(DxCircle& circle, DxWidthLine& line)
 	double ly = line.GetY2()-line.GetY1();
 	double px = circle.GetX()-line.GetX1();
 	double py = circle.GetY()-line.GetY1();
-	double u = pow(pow(lx,2) + pow(ly, 2), 0.5);//’¼ü‚Ì‹——£
+	double u = pow(pow(lx,2) + pow(ly, 2), 0.5);//ç›´ç·šã®è·é›¢
 	if(u <= 0)return false;
 
-	double ux = lx/u;//’¼ü‚Ì’PˆÊƒxƒNƒgƒ‹x
-	double uy = ly/u;//’¼ü‚Ì’PˆÊƒxƒNƒgƒ‹z
-	double d = px*ux + py*uy;//’¼ü‚Ì’PˆÊƒxƒNƒgƒ‹‚Æn“_‚©‚ç“_‚Ü‚ÅƒxƒNƒgƒ‹‚Ì“àÏ
+	double ux = lx/u;//ç›´ç·šã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«x
+	double uy = ly/u;//ç›´ç·šã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«z
+	double d = px*ux + py*uy;//ç›´ç·šã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã¨å§‹ç‚¹ã‹ã‚‰ç‚¹ã¾ã§ãƒ™ã‚¯ãƒˆãƒ«ã®å†…ç©
 	double qx = d*ux;
 	double qy = d*uy;
-	double rx = px-qx;//“_‚©‚ç’¼ü‚Ü‚Å‚ÌÅ’Z‹——£ƒxƒNƒgƒ‹x
-	double ry = py-qy;//“_‚©‚ç’¼ü‚Ü‚Å‚ÌÅ’Z‹——£ƒxƒNƒgƒ‹z
-	double e = pow(pow(rx, 2) + pow(ry, 2),0.5);//’¼ü‚Ì‚Æ“_‚Ì‹——£
+	double rx = px-qx;//ç‚¹ã‹ã‚‰ç›´ç·šã¾ã§ã®æœ€çŸ­è·é›¢ãƒ™ã‚¯ãƒˆãƒ«x
+	double ry = py-qy;//ç‚¹ã‹ã‚‰ç›´ç·šã¾ã§ã®æœ€çŸ­è·é›¢ãƒ™ã‚¯ãƒˆãƒ«z
+	double e = pow(pow(rx, 2) + pow(ry, 2),0.5);//ç›´ç·šã®ã¨ç‚¹ã®è·é›¢
 	double r = line.GetWidth() + circle.GetR();
 	bool res  = e < r;
 	return res;
@@ -374,7 +374,7 @@ StgIntersectionSpace::StgIntersectionSpace()
 	countCell_ = 0;
 	unitLevel_ = 0;
 
-	// ŠeƒŒƒxƒ‹‚Å‚Ì‹óŠÔ”‚ğZo
+	// å„ãƒ¬ãƒ™ãƒ«ã§ã®ç©ºé–“æ•°ã‚’ç®—å‡º
 	listCountLevel_[0] = 1;
 	for(int iLevel = 1 ; iLevel < MAX_LEVEL + 1 ; iLevel++)
 		listCountLevel_[iLevel] = listCountLevel_[iLevel - 1] * 4;
@@ -387,7 +387,7 @@ StgIntersectionSpace::~StgIntersectionSpace()
 }
 bool StgIntersectionSpace::Initialize(int level, int left, int top, int right, int bottom)
 {
-	// İ’èÅ‚ƒŒƒxƒ‹ˆÈã‚Ì‹óŠÔ‚Íì‚ê‚È‚¢
+	// è¨­å®šæœ€é«˜ãƒ¬ãƒ™ãƒ«ä»¥ä¸Šã®ç©ºé–“ã¯ä½œã‚Œãªã„
 	if(level >= MAX_LEVEL)
 		return false;
 
@@ -416,7 +416,7 @@ bool StgIntersectionSpace::RegistTarget(int type, ref_count_ptr<StgIntersectionT
 		rect.left > (spaceLeft_ + spaceWidth_) || rect.top > (spaceTop_ + spaceHeight_))
 		return false;
 
-	// ƒIƒuƒWƒFƒNƒg‚Ì‹«ŠE”ÍˆÍ‚©‚ç“o˜^ƒ‚[ƒgƒ“”Ô†‚ğZo
+	// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¢ƒç•Œç¯„å›²ã‹ã‚‰ç™»éŒ²ãƒ¢ãƒ¼ãƒˆãƒ³ç•ªå·ã‚’ç®—å‡º
 	bool res = false;
 	int index = target->GetMortonNumber();
 	if(index < 0)
@@ -467,7 +467,7 @@ void StgIntersectionSpace::_WriteIntersectionCheckList(int indexSpace, ref_count
 		{
 			std::vector<ref_count_ptr<StgIntersectionTarget>::unsync >& list2 = listCell[iType2];
 
-			// ‡@ ‹óŠÔ“à‚ÌƒIƒuƒWƒFƒNƒg“¯m‚ÌÕ“ËƒŠƒXƒgì¬
+			// â‘  ç©ºé–“å†…ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåŒå£«ã®è¡çªãƒªã‚¹ãƒˆä½œæˆ
 			std::vector<ref_count_ptr<StgIntersectionTarget>::unsync >::iterator itr1 = list1.begin();
 			for(; itr1 != list1.end() ; itr1++)
 			{
@@ -488,7 +488,7 @@ void StgIntersectionSpace::_WriteIntersectionCheckList(int indexSpace, ref_count
 			if(iType1 == iType2)continue;
 			std::vector<ref_count_ptr<StgIntersectionTarget>::unsync >& list2 = listCell[iType2];
 
-			// ‡A Õ“ËƒXƒ^ƒbƒN‚Æ‚ÌÕ“ËƒŠƒXƒgì¬
+			// â‘¡ è¡çªã‚¹ã‚¿ãƒƒã‚¯ã¨ã®è¡çªãƒªã‚¹ãƒˆä½œæˆ
 			std::vector<ref_count_ptr<StgIntersectionTarget>::unsync >::iterator itrStack = stack.begin();
 			for(; itrStack != stack.end() ; itrStack++)
 			{
@@ -506,7 +506,7 @@ void StgIntersectionSpace::_WriteIntersectionCheckList(int indexSpace, ref_count
 		}
 	}
 
-	//‹óŠÔ“à‚ÌƒIƒuƒWƒFƒNƒg‚ğƒXƒ^ƒbƒN‚É’Ç‰Á
+	//ç©ºé–“å†…ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã‚¹ã‚¿ãƒƒã‚¯ã«è¿½åŠ 
 	int iType = 0;
 	for(iType = 0 ; iType < typeCount ; iType++)
 	{
@@ -520,7 +520,7 @@ void StgIntersectionSpace::_WriteIntersectionCheckList(int indexSpace, ref_count
 		}
 	}
 
-	// ‡B q‹óŠÔ‚ÉˆÚ“®
+	// â‘¢ å­ç©ºé–“ã«ç§»å‹•
 	for(int iChild = 0 ; iChild < 4 ; iChild++)
 	{
 		int indexChild = indexSpace * 4 + 1 + iChild;
@@ -530,7 +530,7 @@ void StgIntersectionSpace::_WriteIntersectionCheckList(int indexSpace, ref_count
 		}
 	}
 
-	//ƒXƒ^ƒbƒN‚©‚ç‰ğœ
+	//ã‚¹ã‚¿ãƒƒã‚¯ã‹ã‚‰è§£é™¤
 	for(iType = 0 ; iType < typeCount ; iType++)
 	{
 		std::vector<ref_count_ptr<StgIntersectionTarget>::unsync >& list = listCell[iType];
@@ -544,13 +544,13 @@ void StgIntersectionSpace::_WriteIntersectionCheckList(int indexSpace, ref_count
 }
 unsigned int StgIntersectionSpace::_GetMortonNumber( float left, float top, float right, float bottom )
 {
-	// À•W‚©‚ç‹óŠÔ”Ô†‚ğZo
-	// Å¬ƒŒƒxƒ‹‚É‚¨‚¯‚éŠe²ˆÊ’u‚ğZo
+	// åº§æ¨™ã‹ã‚‰ç©ºé–“ç•ªå·ã‚’ç®—å‡º
+	// æœ€å°ãƒ¬ãƒ™ãƒ«ã«ãŠã‘ã‚‹å„è»¸ä½ç½®ã‚’ç®—å‡º
 	unsigned int  LT = _GetPointElem(left, top);
 	unsigned int  RB = _GetPointElem(right, bottom );
 
-	// ‹óŠÔ”Ô†‚Ì”r‘¼“I˜_—˜a‚©‚ç
-	// Š‘®ƒŒƒxƒ‹‚ğZo
+	// ç©ºé–“ç•ªå·ã®æ’ä»–çš„è«–ç†å’Œã‹ã‚‰
+	// æ‰€å±ãƒ¬ãƒ™ãƒ«ã‚’ç®—å‡º
 	unsigned int def = RB ^ LT;
 	unsigned int hiLevel = 0;
 	for(int iLevel = 0; iLevel<unitLevel_; iLevel++)
@@ -570,7 +570,7 @@ unsigned int StgIntersectionSpace::_GetMortonNumber( float left, float top, floa
 }
 unsigned int StgIntersectionSpace::_BitSeparate32(unsigned int n )
 {
-	// ƒrƒbƒg•ªŠ„ŠÖ”
+	// ãƒ“ãƒƒãƒˆåˆ†å‰²é–¢æ•°
 	n = (n|(n<<8)) & 0x00ff00ff;
 	n = (n|(n<<4)) & 0x0f0f0f0f;
 	n = (n|(n<<2)) & 0x33333333;
@@ -578,12 +578,12 @@ unsigned int StgIntersectionSpace::_BitSeparate32(unsigned int n )
 }
 unsigned short StgIntersectionSpace::_Get2DMortonNumber( unsigned short x, unsigned short y )
 {
-	// 2Dƒ‚[ƒgƒ“‹óŠÔ”Ô†ZoŠÖ”
+	// 2Dãƒ¢ãƒ¼ãƒˆãƒ³ç©ºé–“ç•ªå·ç®—å‡ºé–¢æ•°
 	return (unsigned short)(_BitSeparate32(x) | (_BitSeparate32(y)<<1));
 }
 unsigned int  StgIntersectionSpace::_GetPointElem(float pos_x, float pos_y )
 {
-	// À•W¨üŒ`4•ª–Ø—v‘f”Ô†•ÏŠ·ŠÖ”
+	// åº§æ¨™â†’ç·šå½¢4åˆ†æœ¨è¦ç´ ç•ªå·å¤‰æ›é–¢æ•°
 	float val1 = max(pos_x-spaceLeft_, 0);
 	float val2 = max(pos_y-spaceTop_, 0);
 	return _Get2DMortonNumber(

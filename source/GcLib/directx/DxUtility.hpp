@@ -36,7 +36,7 @@ namespace directx
 
 
 	/**********************************************************
-	//Õ“Ë”»’è—p}Œ`
+	//è¡çªåˆ¤å®šç”¨å›³å½¢
 	**********************************************************/
 	class DxCircle
 	{
@@ -58,7 +58,7 @@ namespace directx
 
 	class DxWidthLine
 	{
-		//•‚Ì‚ ‚éü•ª
+		//å¹…ã®ã‚ã‚‹ç·šåˆ†
 		private:
 			double posX1_;
 			double posY1_;
@@ -162,22 +162,22 @@ namespace directx
 				return *D3DXVec3Cross(&D3DXVECTOR3() ,&v1, &v2);
 			}
 
-			//ƒxƒNƒgƒ‹‚Æs—ñ‚ÌÏ
+			//ãƒ™ã‚¯ãƒˆãƒ«ã¨è¡Œåˆ—ã®ç©
 			static D3DXVECTOR4 VectMatMulti(D3DXVECTOR4 v, D3DMATRIX& mat);
 
-			//Õ“Ë”»’èF“_|‘½ŠpŒ`
+			//è¡çªåˆ¤å®šï¼šç‚¹ï¼å¤šè§’å½¢
 			static bool IsIntersected(D3DXVECTOR2& pos, std::vector<D3DXVECTOR2>& list);
 
-			//Õ“Ë”»’èF‰~-‰~
+			//è¡çªåˆ¤å®šï¼šå††-å††
 			static bool IsIntersected(DxCircle& circle1, DxCircle& circle2);
 
-			//Õ“Ë”»’èF‰~-’¼ü
+			//è¡çªåˆ¤å®šï¼šå††-ç›´ç·š
 			static bool IsIntersected(DxCircle& circle, DxWidthLine& line);
 
-			//Õ“Ë”»’èF’¼ü-’¼ü
+			//è¡çªåˆ¤å®šï¼šç›´ç·š-ç›´ç·š
 			static bool IsIntersected(DxWidthLine& line1, DxWidthLine& line2);
 
-			//Õ“Ë”»’èF’¼üFOŠp
+			//è¡çªåˆ¤å®šï¼šç›´ç·šï¼šä¸‰è§’
 			static bool IsIntersected(DxLine3D& line, std::vector<DxTriangle>& triangles, std::vector<D3DXVECTOR3>& out);
 	};
 

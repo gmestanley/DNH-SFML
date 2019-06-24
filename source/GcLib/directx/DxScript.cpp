@@ -107,7 +107,7 @@ void DxScriptPrimitiveObject2D::Render()
 {
 	RenderObjectTLX* obj = GetObjectPointer();
 
-	//ƒtƒHƒO‚ğ‰ğœ‚·‚é
+	//ãƒ•ã‚©ã‚°ã‚’è§£é™¤ã™ã‚‹
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	DWORD bEnableFog = FALSE;
 	graphics->GetDevice()->GetRenderState(D3DRS_FOGENABLE, &bEnableFog);
@@ -300,7 +300,7 @@ void DxScriptPrimitiveObject3D::Render()
 	SetRenderState();
 	obj->Render();
 
-	//ƒtƒHƒO‚Ìó‘Ô‚ğƒŠƒZƒbƒg
+	//ãƒ•ã‚©ã‚°ã®çŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆ
 	if(bEnvFogEnable)
 		graphics->SetFogEnable(true);
 }
@@ -508,7 +508,7 @@ void DxScriptMeshObject::Render()
 	SetRenderState();
 	mesh_->Render(anime_, time_);
 
-	//ƒtƒHƒO‚Ìó‘Ô‚ğƒŠƒZƒbƒg
+	//ãƒ•ã‚©ã‚°ã®çŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆ
 	if(bEnvFogEnable)
 		graphics->SetFogEnable(true);
 }
@@ -567,7 +567,7 @@ DxScriptTextObject::DxScriptTextObject()
 }
 void DxScriptTextObject::Render()
 {
-	//ƒtƒHƒO‚ğ‰ğœ‚·‚é
+	//ãƒ•ã‚©ã‚°ã‚’è§£é™¤ã™ã‚‹
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	DWORD bEnableFog = FALSE;
 	graphics->GetDevice()->GetRenderState(D3DRS_FOGENABLE, &bEnableFog);
@@ -834,7 +834,7 @@ bool DxTextFileObject::Store()
 }
 std::string DxTextFileObject::GetLine(int line)
 {
-	line--; //s”‚Í1ŠJn
+	line--; //è¡Œæ•°ã¯1é–‹å§‹
 	if(line >= listLine_.size())return "";
 
 	std::string res = listLine_[line];
@@ -886,7 +886,7 @@ bool DxBinaryFileObject::IsReadableSize(int size)
 **********************************************************/
 DxScriptObjectManager::DxScriptObjectManager()
 {
-	SetMaxObject(256*256);
+	SetMaxObject(256*256); //orig: 256*256 - hard limit is 256*256*16 without crashing, and going higher causes undefined behavior
 	SetRenderBucketCapacity(101);
 	totalObjectCreateCount_ = 0;
 
@@ -937,11 +937,11 @@ int DxScriptObjectManager::AddObject(gstd::ref_count_ptr<DxScriptObjectBase>::un
 	int res = DxScript::ID_INVALID;
 	if(listUnusedIndex_.size() <= obj_.size() / 2)
 	{
-		//‹ó‚«‚ª‚È‚¢(”O‚Ì‚½‚ß‚É‹ó‚«‚ª”¼•ªˆÈ‰º)‚Ì‚ÅŠg’£
+		//ç©ºããŒãªã„(å¿µã®ãŸã‚ã«ç©ºããŒåŠåˆ†ä»¥ä¸‹)ã®ã§æ‹¡å¼µ
 		int oldSize = obj_.size();
 		int newSize = oldSize * 1.5;
 		SetMaxObject(newSize);
-		Logger::WriteTop(StringUtility::Format(L"DxScriptObjectManagerƒTƒCƒYŠg’£[%d->%d]", oldSize, newSize));
+		Logger::WriteTop(StringUtility::Format(L"DxScriptObjectManagerã‚µã‚¤ã‚ºæ‹¡å¼µ[%d->%d]", oldSize, newSize));
 	}
 
 	if(listUnusedIndex_.size() != 0)
@@ -1075,7 +1075,7 @@ void DxScriptObjectManager::WorkObject()
 		obj->Work();
 	}
 
-	//‰¹ºÄ¶
+	//éŸ³å£°å†ç”Ÿ
 	DirectSoundManager* soundManager = DirectSoundManager::GetBase();
 	std::map<std::wstring, ref_count_ptr<SoundInfo> >::iterator itrSound = mapReservedSound_.begin();
 	for(; itrSound != mapReservedSound_.end() ; itrSound++) 
@@ -1181,17 +1181,17 @@ void DxScriptObjectManager::SetFogParam(bool bEnable, D3DCOLOR fogColor, float s
 **********************************************************/
 function const dxFunction[] =  
 {
-	//DxŠÖ”FƒVƒXƒeƒ€ŒnŒn
+	//Dxé–¢æ•°ï¼šã‚·ã‚¹ãƒ†ãƒ ç³»ç³»
 	{"InstallFont", DxScript::Func_InstallFont, 1},
 
-	//DxŠÖ”F‰¹ºŒn
+	//Dxé–¢æ•°ï¼šéŸ³å£°ç³»
 	{"LoadSound", DxScript::Func_LoadSound, 1},
 	{"RemoveSound", DxScript::Func_RemoveSound, 1},
 	{"PlayBGM", DxScript::Func_PlayBGM, 3},
 	{"PlaySE", DxScript::Func_PlaySE, 1},
 	{"StopSound", DxScript::Func_StopSound, 1},
 
-	//DxŠÖ”FƒL[Œn
+	//Dxé–¢æ•°ï¼šã‚­ãƒ¼ç³»
 	{"GetKeyState", DxScript::Func_GetKeyState, 1},
 	{"GetMouseX", DxScript::Func_GetMouseX, 0},
 	{"GetMouseY", DxScript::Func_GetMouseY, 0},
@@ -1200,7 +1200,7 @@ function const dxFunction[] =
 	{"GetVirtualKeyState", DxScript::Func_GetVirtualKeyState, 1},
 	{"SetVirtualKeyState", DxScript::Func_SetVirtualKeyState, 2},
 
-	//DxŠÖ”F•`‰æŒn
+	//Dxé–¢æ•°ï¼šæç”»ç³»
 	{"GetScreenWidth", DxScript::Func_GetScreenWidth, 0},
 	{"GetScreenHeight", DxScript::Func_GetScreenHeight, 0},
 	{"LoadTexture", DxScript::Func_LoadTexture, 1},
@@ -1221,7 +1221,7 @@ function const dxFunction[] =
 	{"ResetShader", DxScript::Func_ResetShader, 2},
 	{"ResetShaderI", DxScript::Func_ResetShaderI, 2},
 
-	//DxŠÖ”FƒJƒƒ‰3D
+	//Dxé–¢æ•°ï¼šã‚«ãƒ¡ãƒ©3D
 	{"SetCameraFocusX", DxScript::Func_SetCameraFocusX, 1},
 	{"SetCameraFocusY", DxScript::Func_SetCameraFocusY, 1},
 	{"SetCameraFocusZ", DxScript::Func_SetCameraFocusZ, 1},
@@ -1246,7 +1246,7 @@ function const dxFunction[] =
 	{"GetCameraRoll", DxScript::Func_GetCameraRoll, 0},
 	{"SetCameraPerspectiveClip", DxScript::Func_SetCameraPerspectiveClip, 2},
 
-	//DxŠÖ”FƒJƒƒ‰2D
+	//Dxé–¢æ•°ï¼šã‚«ãƒ¡ãƒ©2D
 	{"Set2DCameraFocusX", DxScript::Func_Set2DCameraFocusX, 1},
 	{"Set2DCameraFocusY", DxScript::Func_Set2DCameraFocusY, 1},
 	{"Set2DCameraAngleZ", DxScript::Func_Set2DCameraAngleZ, 1},
@@ -1261,12 +1261,12 @@ function const dxFunction[] =
 	{"Get2DCameraRatioX", DxScript::Func_Get2DCameraRatioX, 0},
 	{"Get2DCameraRatioY", DxScript::Func_Get2DCameraRatioY, 0},
 
-	//DxŠÖ”F‚»‚Ì‘¼
+	//Dxé–¢æ•°ï¼šãã®ä»–
 	{"GetObjectDistance", DxScript::Func_GetObjectDistance, 2},
 	{"GetObject2dPosition", DxScript::Func_GetObject2dPosition, 1},
 	{"Get2dPosition", DxScript::Func_Get2dPosition, 3},
 
-	//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(‹¤’Ê)
+	//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(å…±é€š)
 	{"Obj_Delete", DxScript::Func_Obj_Delete, 1},
 	{"Obj_IsDeleted", DxScript::Func_Obj_IsDeleted, 1},
 	{"Obj_SetVisible", DxScript::Func_Obj_SetVisible, 2},
@@ -1282,7 +1282,7 @@ function const dxFunction[] =
 	{"Obj_IsValueExists", DxScript::Func_Obj_IsValueExists, 2},
 	{"Obj_GetType", DxScript::Func_Obj_GetType, 1},
 
-	//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(RenderObject)
+	//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(RenderObject)
 	{"ObjRender_SetX", DxScript::Func_ObjRender_SetX, 2},
 	{"ObjRender_SetY", DxScript::Func_ObjRender_SetY, 2},
 	{"ObjRender_SetZ", DxScript::Func_ObjRender_SetZ, 2},
@@ -1316,7 +1316,7 @@ function const dxFunction[] =
 	{"ObjRender_SetPermitCamera", DxScript::Func_ObjRender_SetPermitCamera, 2},
 	{"ObjRender_GetBlendType", DxScript::Func_ObjRender_GetBlendType, 1},
 
-	//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(ShaderObject)
+	//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(ShaderObject)
 	{"ObjShader_Create", DxScript::Func_ObjShader_Create, 0},
 	{"ObjShader_SetShaderF", DxScript::Func_ObjShader_SetShaderF, 2},
 	{"ObjShader_SetShaderO", DxScript::Func_ObjShader_SetShaderO, 2},
@@ -1329,7 +1329,7 @@ function const dxFunction[] =
 	{"ObjShader_SetFloatArray", DxScript::Func_ObjShader_SetFloatArray, 3},
 	{"ObjShader_SetTexture", DxScript::Func_ObjShader_SetTexture, 3},
 
-	//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(PrimitiveObject)
+	//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(PrimitiveObject)
 	{"ObjPrim_Create", DxScript::Func_ObjPrimitive_Create, 1},
 	{"ObjPrim_SetPrimitiveType", DxScript::Func_ObjPrimitive_SetPrimitiveType, 2},
 	{"ObjPrim_SetVertexCount", DxScript::Func_ObjPrimitive_SetVertexCount, 2},
@@ -1342,12 +1342,12 @@ function const dxFunction[] =
 	{"ObjPrim_SetVertexAlpha", DxScript::Func_ObjPrimitive_SetVertexAlpha, 3},
 	{"ObjPrim_GetVertexPosition", DxScript::Func_ObjPrimitive_GetVertexPosition, 2},
 
-	//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(Sprite2D)
+	//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(Sprite2D)
 	{"ObjSprite2D_SetSourceRect", DxScript::Func_ObjSprite2D_SetSourceRect, 5},
 	{"ObjSprite2D_SetDestRect", DxScript::Func_ObjSprite2D_SetDestRect, 5},
 	{"ObjSprite2D_SetDestCenter", DxScript::Func_ObjSprite2D_SetDestCenter, 1},
 
-	//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(SpriteList2D)
+	//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(SpriteList2D)
 	{"ObjSpriteList2D_SetSourceRect", DxScript::Func_ObjSpriteList2D_SetSourceRect, 5},
 	{"ObjSpriteList2D_SetDestRect", DxScript::Func_ObjSpriteList2D_SetDestRect, 5},
 	{"ObjSpriteList2D_SetDestCenter", DxScript::Func_ObjSpriteList2D_SetDestCenter, 1},
@@ -1355,18 +1355,18 @@ function const dxFunction[] =
 	{"ObjSpriteList2D_CloseVertex", DxScript::Func_ObjSpriteList2D_CloseVertex, 1},
 	{"ObjSpriteList2D_ClearVertexCount", DxScript::Func_ObjSpriteList2D_ClearVertexCount, 1},
 
-	//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(Sprite3D)
+	//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(Sprite3D)
 	{"ObjSprite3D_SetSourceRect", DxScript::Func_ObjSprite3D_SetSourceRect, 5},
 	{"ObjSprite3D_SetDestRect", DxScript::Func_ObjSprite3D_SetDestRect, 5},
 	{"ObjSprite3D_SetSourceDestRect", DxScript::Func_ObjSprite3D_SetSourceDestRect, 5},
 	{"ObjSprite3D_SetBillboard", DxScript::Func_ObjSprite3D_SetBillboard, 2},
 
-	//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(TrajectoryObject3D)
+	//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(TrajectoryObject3D)
 	{"ObjTrajectory3D_SetInitialPoint", DxScript::Func_ObjTrajectory3D_SetInitialPoint, 7},
 	{"ObjTrajectory3D_SetAlphaVariation", DxScript::Func_ObjTrajectory3D_SetAlphaVariation, 2},
 	{"ObjTrajectory3D_SetComplementCount", DxScript::Func_ObjTrajectory3D_SetComplementCount, 2},
 
-	//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(DxMesh)
+	//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(DxMesh)
 	{"ObjMesh_Create", DxScript::Func_ObjMesh_Create, 0},
 	{"ObjMesh_Load", DxScript::Func_ObjMesh_Load, 2},
 	{"ObjMesh_SetColor", DxScript::Func_ObjMesh_SetColor, 4},
@@ -1375,7 +1375,7 @@ function const dxFunction[] =
 	{"ObjMesh_SetCoordinate2D", DxScript::Func_ObjMesh_SetCoordinate2D, 2},
 	{"ObjMesh_GetPath", DxScript::Func_ObjMesh_GetPath, 1},
 
-	//DxŠÖ”FƒeƒLƒXƒg‘€ì(DxText)
+	//Dxé–¢æ•°ï¼šãƒ†ã‚­ã‚¹ãƒˆæ“ä½œ(DxText)
 	{"ObjText_Create", DxScript::Func_ObjText_Create, 0},
 	{"ObjText_SetText", DxScript::Func_ObjText_SetText, 2},
 	{"ObjText_SetFontType", DxScript::Func_ObjText_SetFontType, 2},
@@ -1401,7 +1401,7 @@ function const dxFunction[] =
 	{"ObjText_GetTotalWidth", DxScript::Func_ObjText_GetTotalWidth, 1},
 	{"ObjText_GetTotalHeight", DxScript::Func_ObjText_GetTotalHeight, 1},
 
-	//DxŠÖ”F‰¹º‘€ì(DxSoundObject)
+	//Dxé–¢æ•°ï¼šéŸ³å£°æ“ä½œ(DxSoundObject)
 	{"ObjSound_Create", DxScript::Func_ObjSound_Create, 0},
 	{"ObjSound_Load", DxScript::Func_ObjSound_Load, 2},
 	{"ObjSound_Play", DxScript::Func_ObjSound_Play, 1},
@@ -1417,21 +1417,21 @@ function const dxFunction[] =
 	{"ObjSound_IsPlaying", DxScript::Func_ObjSound_IsPlaying, 1},
 	{"ObjSound_GetVolumeRate", DxScript::Func_ObjSound_GetVolumeRate, 1},
 
-	//DxŠÖ”Fƒtƒ@ƒCƒ‹‘€ì(DxFileObject)
+	//Dxé–¢æ•°ï¼šãƒ•ã‚¡ã‚¤ãƒ«æ“ä½œ(DxFileObject)
 	{"ObjFile_Create", DxScript::Func_ObjFile_Create, 1},
 	{"ObjFile_Open", DxScript::Func_ObjFile_Open, 2},
 	{"ObjFile_OpenNW", DxScript::Func_ObjFile_OpenNW, 2},
 	{"ObjFile_Store", DxScript::Func_ObjFile_Store, 1},
 	{"ObjFile_GetSize", DxScript::Func_ObjFile_GetSize, 1},
 
-	//DxŠÖ”Fƒtƒ@ƒCƒ‹‘€ì(DxTextFileObject)
+	//Dxé–¢æ•°ï¼šãƒ•ã‚¡ã‚¤ãƒ«æ“ä½œ(DxTextFileObject)
 	{"ObjFileT_GetLineCount", DxScript::Func_ObjFileT_GetLineCount, 1},
 	{"ObjFileT_GetLineText", DxScript::Func_ObjFileT_GetLineText, 2},
 	{"ObjFileT_SplitLineText", DxScript::Func_ObjFileT_SplitLineText, 3},
 	{"ObjFileT_AddLine", DxScript::Func_ObjFileT_AddLine, 2},
 	{"ObjFileT_ClearLine", DxScript::Func_ObjFileT_ClearLine, 1},
 
-	////DxŠÖ”Fƒtƒ@ƒCƒ‹‘€ì(DxBinalyFileObject)
+	////Dxé–¢æ•°ï¼šãƒ•ã‚¡ã‚¤ãƒ«æ“ä½œ(DxBinalyFileObject)
 	{"ObjFileB_SetByteOrder", DxScript::Func_ObjFileB_SetByteOrder, 2},
 	{"ObjFileB_SetCharacterCode", DxScript::Func_ObjFileB_SetCharacterCode, 2},
 	{"ObjFileB_GetPointer", DxScript::Func_ObjFileB_GetPointer, 1},
@@ -1445,7 +1445,7 @@ function const dxFunction[] =
 	{"ObjFileB_ReadDouble", DxScript::Func_ObjFileB_ReadDouble, 1},
 	{"ObjFileB_ReadString", DxScript::Func_ObjFileB_ReadString, 2},
 
-	//’è”
+	//å®šæ•°
 	{"ID_INVALID",constant<DxScript::ID_INVALID>::func,0},
 	{"OBJ_PRIMITIVE_2D",constant<DxScript::OBJ_PRIMITIVE_2D>::func,0},
 	{"OBJ_SPRITE_2D",constant<DxScript::OBJ_SPRITE_2D>::func,0},
@@ -1673,7 +1673,7 @@ gstd::ref_count_ptr<Texture> DxScript::_GetTexture(std::wstring name)
 	return res;
 }
 
-//DxŠÖ”FƒVƒXƒeƒ€ŒnŒn
+//Dxé–¢æ•°ï¼šã‚·ã‚¹ãƒ†ãƒ ç³»ç³»
 gstd::value DxScript::Func_InstallFont(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -1695,7 +1695,7 @@ gstd::value DxScript::Func_InstallFont(gstd::script_machine* machine, int argc, 
 	return value(machine->get_engine()->get_boolean_type(), res);
 }
 
-//DxŠÖ”F‰¹ºŒn
+//Dxé–¢æ•°ï¼šéŸ³å£°ç³»
 value DxScript::Func_LoadSound(script_machine* machine, int argc, value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -1787,7 +1787,7 @@ value DxScript::Func_StopSound(script_machine* machine, int argc, value const * 
 	return value();
 }
 
-//DxŠÖ”FƒL[Œn
+//Dxé–¢æ•°ï¼šã‚­ãƒ¼ç³»
 gstd::value DxScript::Func_GetKeyState(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DirectInput* input = DirectInput::GetBase();
@@ -1847,7 +1847,7 @@ gstd::value DxScript::Func_SetVirtualKeyState(gstd::script_machine* machine, int
 
 	return value();
 }
-//DxŠÖ”F•`‰æŒn
+//Dxé–¢æ•°ï¼šæç”»ç³»
 gstd::value DxScript::Func_GetScreenWidth(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
@@ -2021,12 +2021,12 @@ gstd::value DxScript::Func_SaveRenderedTextureA1(gstd::script_machine* machine, 
 
 	if(texture != NULL)
 	{
-		//ƒtƒHƒ‹ƒ_¶¬
+		//ãƒ•ã‚©ãƒ«ãƒ€ç”Ÿæˆ
 		std::wstring dir = PathProperty::GetFileDirectory(path);
 		File fDir(dir);
 		fDir.CreateDirectory();
 
-		//•Û‘¶
+		//ä¿å­˜
 		IDirect3DSurface9* pSurface = texture->GetD3DSurface();
 		RECT rect = {0, 0, graphics->GetScreenWidth(), graphics->GetScreenHeight()};
 		D3DXSaveSurfaceToFile(path.c_str(), D3DXIFF_BMP, 
@@ -2056,12 +2056,12 @@ gstd::value DxScript::Func_SaveRenderedTextureA2(gstd::script_machine* machine, 
 		texture = textureManager->GetTexture(nameTexture);
 	if(texture != NULL)
 	{
-		//ƒtƒHƒ‹ƒ_¶¬
+		//ãƒ•ã‚©ãƒ«ãƒ€ç”Ÿæˆ
 		std::wstring dir = PathProperty::GetFileDirectory(path);
 		File fDir(dir);
 		fDir.CreateDirectory();
 
-		//•Û‘¶
+		//ä¿å­˜
 		IDirect3DSurface9* pSurface = texture->GetD3DSurface();
 		RECT rect = {rcLeft, rcTop, rcRight, rcBottom};
 		D3DXSaveSurfaceToFile(path.c_str(), D3DXIFF_BMP, 
@@ -2151,7 +2151,7 @@ gstd::value DxScript::Func_ResetShaderI(gstd::script_machine* machine, int argc,
 	return value();
 }
 
-//DxŠÖ”FƒJƒƒ‰3D
+//Dxé–¢æ•°ï¼šã‚«ãƒ¡ãƒ©3D
 value DxScript::Func_SetCameraFocusX(script_machine* machine, int argc, value const * argv)
 {
 	float x = argv[0].as_real();
@@ -2310,7 +2310,7 @@ value DxScript::Func_SetCameraPerspectiveClip(script_machine* machine, int argc,
 	return value();
 }
 
-//DxŠÖ”FƒJƒƒ‰2D
+//Dxé–¢æ•°ï¼šã‚«ãƒ¡ãƒ©2D
 gstd::value DxScript::Func_Set2DCameraFocusX(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	float x = argv[0].as_real();
@@ -2396,7 +2396,7 @@ gstd::value DxScript::Func_Get2DCameraRatioY(gstd::script_machine* machine, int 
 	return value(machine->get_engine()->get_real_type(), res);
 }
 
-//DxŠÖ”F‚»‚Ì‘¼
+//Dxé–¢æ•°ï¼šãã®ä»–
 gstd::value DxScript::Func_GetObjectDistance(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -2456,7 +2456,7 @@ gstd::value DxScript::Func_Get2dPosition(gstd::script_machine* machine, int argc
 	return res;
 }
 
-//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(‹¤’Ê)
+//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(å…±é€š)
 value DxScript::Func_Obj_Delete(script_machine* machine, int argc, value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -2621,7 +2621,7 @@ value DxScript::Func_Obj_GetType(script_machine* machine, int argc, value const 
 }
 
 
-//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(RenderObject)
+//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(RenderObject)
 value DxScript::Func_ObjRender_SetX(script_machine* machine, int argc, value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -2953,7 +2953,7 @@ gstd::value DxScript::Func_ObjRender_GetBlendType(gstd::script_machine* machine,
 	return value(machine->get_engine()->get_real_type(), (long double)res);
 }
 
-//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(ShaderObject)
+//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(ShaderObject)
 gstd::value DxScript::Func_ObjShader_Create(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -3203,7 +3203,7 @@ gstd::value DxScript::Func_ObjShader_SetTexture(gstd::script_machine* machine, i
 	return value();
 }
 
-//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(PrimitiveObject)
+//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(PrimitiveObject)
 value DxScript::Func_ObjPrimitive_Create(script_machine* machine, int argc, value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -3366,7 +3366,7 @@ value DxScript::Func_ObjPrimitive_GetVertexPosition(script_machine* machine, int
 	return res;
 }
 
-//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(Sprite2D)
+//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(Sprite2D)
 value DxScript::Func_ObjSprite2D_SetSourceRect(script_machine* machine, int argc, value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -3413,7 +3413,7 @@ value DxScript::Func_ObjSprite2D_SetDestCenter(gstd::script_machine* machine, in
 	return value();
 }
 
-//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(SpriteList2D)
+//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(SpriteList2D)
 gstd::value DxScript::Func_ObjSpriteList2D_SetSourceRect(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -3493,7 +3493,7 @@ gstd::value DxScript::Func_ObjSpriteList2D_ClearVertexCount(gstd::script_machine
 	return value();
 }
 
-//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(Sprite3D)
+//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(Sprite3D)
 value DxScript::Func_ObjSprite3D_SetSourceRect(script_machine* machine, int argc, value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -3556,7 +3556,7 @@ value DxScript::Func_ObjSprite3D_SetBillboard(script_machine* machine, int argc,
 
 	return value();
 }
-//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(TrajectoryObject3D)
+//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(TrajectoryObject3D)
 value DxScript::Func_ObjTrajectory3D_SetInitialPoint(script_machine* machine, int argc, value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -3593,7 +3593,7 @@ value DxScript::Func_ObjTrajectory3D_SetComplementCount(script_machine* machine,
 	return value();
 }
 
-//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(DxMesh)
+//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(DxMesh)
 value DxScript::Func_ObjMesh_Create(script_machine* machine, int argc, value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -3662,7 +3662,7 @@ value DxScript::Func_ObjMesh_SetAnimation(script_machine* machine, int argc, val
 	obj->anime_ = anime;
 	obj->time_ = (int)argv[2].as_real();
 
-//	D3DXMATRIX mat = obj->mesh_->GetAnimationMatrix(anime, obj->time_, "—I‹v‘O•”");
+//	D3DXMATRIX mat = obj->mesh_->GetAnimationMatrix(anime, obj->time_, "æ‚ ä¹…å‰éƒ¨");
 //	D3DXVECTOR3 pos;
 //	D3DXVec3TransformCoord(&pos, &D3DXVECTOR3(0,0,0), &mat);
 	return value();
@@ -3691,7 +3691,7 @@ value DxScript::Func_ObjMesh_GetPath(script_machine* machine, int argc, value co
 	return value(machine->get_engine()->get_string_type(), res);
 }
 
-//DxŠÖ”FƒIƒuƒWƒFƒNƒg‘€ì(DxText)
+//Dxé–¢æ•°ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œ(DxText)
 value DxScript::Func_ObjText_Create(script_machine* machine, int argc, value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -3962,7 +3962,7 @@ value DxScript::Func_ObjText_GetTotalHeight(script_machine* machine, int argc, v
 	return value(machine->get_engine()->get_real_type(), (long double)res);
 }
 
-//DxŠÖ”F‰¹º‘€ì(DxSoundObject)
+//Dxé–¢æ•°ï¼šéŸ³å£°æ“ä½œ(DxSoundObject)
 gstd::value DxScript::Func_ObjSound_Create(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -4165,7 +4165,7 @@ gstd::value DxScript::Func_ObjSound_GetVolumeRate(gstd::script_machine* machine,
 	return value(machine->get_engine()->get_real_type(),(long double)rate);
 }
 
-//DxŠÖ”Fƒtƒ@ƒCƒ‹‘€ì(DxFileObject)
+//Dxé–¢æ•°ï¼šãƒ•ã‚¡ã‚¤ãƒ«æ“ä½œ(DxFileObject)
 gstd::value DxScript::Func_ObjFile_Create(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -4238,7 +4238,7 @@ gstd::value DxScript::Func_ObjFile_GetSize(gstd::script_machine* machine, int ar
 	return value(machine->get_engine()->get_real_type(), (long double)res);
 }
 
-//DxŠÖ”Fƒtƒ@ƒCƒ‹‘€ì(DxTextFileObject)
+//Dxé–¢æ•°ï¼šãƒ•ã‚¡ã‚¤ãƒ«æ“ä½œ(DxTextFileObject)
 gstd::value DxScript::Func_ObjFileT_GetLineCount(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;
@@ -4298,7 +4298,7 @@ gstd::value DxScript::Func_ObjFileT_ClearLine(gstd::script_machine* machine, int
 	return value();
 }
 
-//DxŠÖ”Fƒtƒ@ƒCƒ‹‘€ì(DxBinalyFileObject)
+//Dxé–¢æ•°ï¼šãƒ•ã‚¡ã‚¤ãƒ«æ“ä½œ(DxBinalyFileObject)
 gstd::value DxScript::Func_ObjFileB_SetByteOrder(gstd::script_machine* machine, int argc, gstd::value const * argv)
 {
 	DxScript* script = (DxScript*)machine->data;

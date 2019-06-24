@@ -88,7 +88,7 @@ namespace gstd
 			static std::string Trim(const std::string& str);
 
 			//----------------------------------------------------------------
-			//std::wstring.size‚Í•¶š”‚ğ•Ô‚·BƒoƒCƒg”‚Å‚Í‚È‚¢B
+			//std::wstring.sizeã¯æ–‡å­—æ•°ã‚’è¿”ã™ã€‚ãƒã‚¤ãƒˆæ•°ã§ã¯ãªã„ã€‚
 			static std::vector<std::wstring> Split(std::wstring str, std::wstring delim);
 			static void Split(std::wstring str, std::wstring delim, std::vector<std::wstring>& res);
 			static std::wstring Format(wchar_t* str, ...);
@@ -209,7 +209,7 @@ namespace gstd
 
 			static std::wstring GetDirectoryName(std::wstring path)
 			{
-				//ƒfƒBƒŒƒNƒgƒŠ–¼‚ğ•Ô‚·
+				//ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªåã‚’è¿”ã™
 				std::wstring dir = GetFileDirectory(path);
 				dir = StringUtility::ReplaceAll(dir, L"\\", L"/");
 				std::vector<std::wstring> strs = StringUtility::Split(dir, L"/");
@@ -249,7 +249,7 @@ namespace gstd
 			{
 				wchar_t modulePath[_MAX_PATH];
 				ZeroMemory(modulePath ,sizeof(modulePath));
-				GetModuleFileName(NULL, modulePath, sizeof(modulePath)-1);//Àsƒtƒ@ƒCƒ‹ƒpƒXæ“¾
+				GetModuleFileName(NULL, modulePath, sizeof(modulePath)-1);//å®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹å–å¾—
 				return GetFileNameWithoutExtension(std::wstring(modulePath));
 			}
 
@@ -257,11 +257,11 @@ namespace gstd
 			{
 				wchar_t modulePath[_MAX_PATH];
 				ZeroMemory(modulePath ,sizeof(modulePath));
-				GetModuleFileName(NULL, modulePath, sizeof(modulePath)-1);//Àsƒtƒ@ƒCƒ‹ƒpƒXæ“¾
+				GetModuleFileName(NULL, modulePath, sizeof(modulePath)-1);//å®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹å–å¾—
 				return GetFileDirectory(std::wstring(modulePath));
 			}
 			static std::wstring GetDirectoryWithoutModuleDirectory(std::wstring path)
-			{	//ƒpƒX‚©‚çÀsƒtƒ@ƒCƒ‹ƒfƒBƒŒƒNƒgƒŠ‚ğœ‚¢‚½ƒfƒBƒŒƒNƒgƒŠ‚ğ•Ô‚·
+			{	//ãƒ‘ã‚¹ã‹ã‚‰å®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’é™¤ã„ãŸãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’è¿”ã™
 				std::wstring res = GetFileDirectory(path);
 				std::wstring dirModule = GetModuleDirectory();
 				if(res.find(dirModule) != std::wstring::npos)
@@ -271,7 +271,7 @@ namespace gstd
 				return res;
 			}
 			static std::wstring GetPathWithoutModuleDirectory(std::wstring path)
-			{	//ƒpƒX‚©‚çÀsƒtƒ@ƒCƒ‹ƒfƒBƒŒƒNƒgƒŠ‚ğæ‚èœ‚­
+			{	//ãƒ‘ã‚¹ã‹ã‚‰å®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å–ã‚Šé™¤ã
 				std::wstring dirModule = GetModuleDirectory();
 				dirModule = ReplaceYenToSlash(dirModule);
 				path = Canonicalize(path);
@@ -367,7 +367,7 @@ namespace gstd
 
 	//================================================================
 	//InnerClass
-	//C++‚É‚Í“à•”ƒNƒ‰ƒX‚ª‚È‚¢‚Ì‚ÅAŠO•”ƒNƒ‰ƒXƒAƒNƒZƒX—p
+	//C++ã«ã¯å†…éƒ¨ã‚¯ãƒ©ã‚¹ãŒãªã„ã®ã§ã€å¤–éƒ¨ã‚¯ãƒ©ã‚¹ã‚¢ã‚¯ã‚»ã‚¹ç”¨
 	template <class T>
 	class InnerClass 
 	{
@@ -401,7 +401,7 @@ namespace gstd
 			{
 				if(_This()==NULL)
 				{
-					throw std::exception("Singleton::GetInstance –¢‰Šú‰»");
+					throw std::exception("Singleton::GetInstance æœªåˆæœŸåŒ–");
 				}
 				return _This();
 			}
@@ -473,17 +473,17 @@ namespace gstd
 			int typeEncoding_;
 			int textStartPointer_;
 			std::vector<char> buffer_;
-			int pointer_;//¡‚ÌˆÊ’u
-			Token token_;//Œ»İ‚Ìƒg[ƒNƒ“
+			int pointer_;//ä»Šã®ä½ç½®
+			Token token_;//ç¾åœ¨ã®ãƒˆãƒ¼ã‚¯ãƒ³
 			bool bPermitSignNumber_;
 			std::list<Token> listDebugToken_;
 
 			wchar_t _CurrentChar();
-			wchar_t _NextChar();//ƒ|ƒCƒ“ƒ^‚ği‚ß‚ÄŸ‚Ì•¶š‚ğ’²‚×‚é
+			wchar_t _NextChar();//ãƒã‚¤ãƒ³ã‚¿ã‚’é€²ã‚ã¦æ¬¡ã®æ–‡å­—ã‚’èª¿ã¹ã‚‹
 			
-			virtual void _SkipComment();//ƒRƒƒ“ƒg‚ğ‚Æ‚Î‚·
-			virtual void _SkipSpace();//‹ó”’‚ğ‚Æ‚Î‚·
-			virtual void _RaiseError(std::wstring str);//—áŠO‚ğ“Š‚°‚Ü‚·
+			virtual void _SkipComment();//ã‚³ãƒ¡ãƒ³ãƒˆã‚’ã¨ã°ã™
+			virtual void _SkipSpace();//ç©ºç™½ã‚’ã¨ã°ã™
+			virtual void _RaiseError(std::wstring str);//ä¾‹å¤–ã‚’æŠ•ã’ã¾ã™
 		public:
 			Scanner(char* str, int size);
 			Scanner(std::string str);
@@ -494,7 +494,7 @@ namespace gstd
 			void SetPermitSignNumber(bool bEnable){bPermitSignNumber_ = bEnable;}
 			int GetEncoding(){return typeEncoding_;}
 
-			Token& GetToken();//Œ»İ‚Ìƒg[ƒNƒ“‚ğæ“¾
+			Token& GetToken();//ç¾åœ¨ã®ãƒˆãƒ¼ã‚¯ãƒ³ã‚’å–å¾—
 			Token& Next();
 			bool HasNext();
 			void CheckType(Token& tok, Token::Type type);
