@@ -3,7 +3,7 @@
 
 All hail our lord and savior Mima and our queen, Kogasa's Woo.
 This version of Danmakufu is made for the purposes of both optimization and fixing some issues with the original source that mkm dropped.  (See James7132's repo for a link to the original download)
-<b>This version of Danmakufu is completely backwards compatible with ph3.  If something doesn't work as expected, please make an issue thread.</b>
+<b>This version of Danmakufu is completely backwards compatible with ph3.  If something doesn't work as expected, please let me know.</b>  My Discord tag is WishMakers#0426 if you need to reach me.
 
 ## Changes
 
