@@ -2381,7 +2381,7 @@ void StgCurveLaserObject::RenderOnShotManager(D3DXMATRIX& mat) {    //original: 
 		double expa = 0.5f + (double)delay_ / 30.0f * 2;
 		if (expa > 3.5)expa = 3.5;
 
-		double ang = GetDirectionAngle() + D3DXToRadian(270);   //original: GetDirectionAngle() + 270
+		double ang = GetDirectionAngle() + D3DXToRadian(270);   //D3DXToRadian(GetDirectionAngle() + 270)
 		double c = cos(ang);
 		double s = sin(ang);
 
