@@ -11,6 +11,7 @@ Here's a list of changes compared to original Danmakufu that may enable your com
 
 ## Known Issues
 ✻.dat file extraction doesn't work as expected.
+</br>✻Repo organization itself is slightly messed up - "unchanged" prioritized over changes
 
 ## Special Thanks
 Natashi - for the code that made curvy lasers run a lot better than what I could do
