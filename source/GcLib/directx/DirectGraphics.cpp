@@ -707,7 +707,7 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 		wcex.hInstance=hInst;
 		wcex.hIcon=NULL;
 		wcex.hCursor=LoadCursor(NULL, IDC_ARROW);
-		wcex.hbrBackground=(HBRUSH)(COLOR_WINDOW+2);
+		wcex.hbrBackground=(HBRUSH)(COLOR_WINDOW+5);
 		wcex.lpszMenuName=NULL;
 		wcex.lpszClassName=nameClass.c_str();
 		wcex.hIconSm=NULL;
@@ -739,7 +739,7 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 		wcex.lpfnWndProc=(WNDPROC)WindowBase::_StaticWindowProcedure;
 		wcex.hInstance=hInst;
 		wcex.hCursor=LoadCursor(NULL, IDC_ARROW);
-		wcex.hbrBackground=(HBRUSH)(COLOR_WINDOW+2);
+		wcex.hbrBackground=(HBRUSH)(COLOR_WINDOW+5);
 		wcex.lpszClassName=nameClass.c_str();
 		::RegisterClassEx(&wcex);
 
