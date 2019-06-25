@@ -10,7 +10,7 @@ Here's a list of changes compared to original Danmakufu that may enable your com
 </br>✻Attempts to fix the window resolution issue (not quite 640x480) that occurs with the source when built, but not the original ph3 build.
 
 ## Known Issues
-✻.dat file extraction doesn't work as expected.
+✻.dat file extraction doesn't work as expected. (FOUND: mkm literally didn't implement the dat extraction in DNH's code, so unable to fix unless I can find a code base)
 </br>✻Repo organization itself is slightly messed up - "unchanged" prioritized over changes
 
 ## Special Thanks
