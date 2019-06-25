@@ -264,19 +264,19 @@ bool EDirectGraphics::Initialize()
 				switch(windowSize)
 				{
 				case DnhConfiguration::WINDOW_SIZE_800x600:
-					width = 800; height = 600;
+					width = 800; height = 600; // + ::GetSystemMetrics(SM_CXEDGE) * 2; + ::GetSystemMetrics(SM_CXEDGE) * 3;
 					break;
 				case DnhConfiguration::WINDOW_SIZE_960x720:
-					width = 960; height = 720;
+					width = 960; height = 720; // + ::GetSystemMetrics(SM_CXEDGE) * 2; + ::GetSystemMetrics(SM_CXEDGE) * 3;
 					break;
 				case DnhConfiguration::WINDOW_SIZE_1280x960:
-					width = 1280; height = 960;
+					width = 1280; height = 960; // + ::GetSystemMetrics(SM_CXEDGE) * 2; + ::GetSystemMetrics(SM_CXEDGE) * 3;
 					break;
 				case DnhConfiguration::WINDOW_SIZE_1600x1200:
-					width = 1600; height = 1200;
+					width = 1600; height = 1200;  // + ::GetSystemMetrics(SM_CXEDGE) * 2; + ::GetSystemMetrics(SM_CXEDGE) * 3;
 					break;
 				case DnhConfiguration::WINDOW_SIZE_1920x1200:
-					width = 1920; height = 1200;
+					width = 1920; height = 1200; // + ::GetSystemMetrics(SM_CXEDGE) * 2; + ::GetSystemMetrics(SM_CXEDGE) * 3;
 					break;
 				}
 			}
@@ -289,8 +289,8 @@ bool EDirectGraphics::Initialize()
 			if(height > wHeight) height = wHeight;
 			width = (double)height / ratioHW;
 
-			int tw=::GetSystemMetrics(SM_CXEDGE)+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
-			int th=::GetSystemMetrics(SM_CYEDGE)+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
+			int tw=::GetSystemMetrics(SM_CXEDGE)*2+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
+			int th=::GetSystemMetrics(SM_CYEDGE)*3+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 			width += tw;
 			height += th;
 

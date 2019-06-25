@@ -821,7 +821,7 @@ LRESULT DirectGraphicsPrimaryWindow::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM
 				int width = rect.right;
 				int height = rect.bottom ;
 
-				int screenWidth = config_.GetScreenWidth();
+				int screenWidth = config_.GetScreenWidth() ;
 				int screenHeight = config_.GetScreenHeight();
 
 				double ratioWH = (double)screenWidth / (double)screenHeight;
@@ -891,8 +891,8 @@ void DirectGraphicsPrimaryWindow::ChangeScreenMode()
 	{
 		if(modeScreen_ == SCREENMODE_WINDOW)
 		{
-			int screenWidth = config_.GetScreenWidth();
-			int screenHeight = config_.GetScreenHeight();
+			int screenWidth = config_.GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) * 2;
+			int screenHeight = config_.GetScreenHeight() + ::GetSystemMetrics(SM_CXEDGE) * 3;
 			int wWidth = ::GetSystemMetrics(SM_CXFULLSCREEN);
 			int wHeight = ::GetSystemMetrics(SM_CYFULLSCREEN);
 			bool bFullScreenEnable = screenWidth <= wWidth && screenHeight <= wHeight;
@@ -917,8 +917,8 @@ void DirectGraphicsPrimaryWindow::ChangeScreenMode()
 			::ShowWindow(hAttachedWindow_, SW_SHOW);
 
 			//Windowを画面の中央に移動
-			int tw=::GetSystemMetrics(SM_CXEDGE)*2+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
-			int th=::GetSystemMetrics(SM_CYEDGE)*3+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
+			int tw=::GetSystemMetrics(SM_CXEDGE)+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
+			int th=::GetSystemMetrics(SM_CYEDGE)+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 			RECT drect,mrect;
 			HWND hDesk=::GetDesktopWindow();
 			::GetWindowRect(hDesk, &drect);
@@ -955,8 +955,8 @@ void DirectGraphicsPrimaryWindow::ChangeScreenMode()
 			::ShowWindow(hWnd_, SW_SHOW);
 
 			//Windowを画面の中央に移動
-			int tw=::GetSystemMetrics(SM_CXEDGE)*2+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
-			int th=::GetSystemMetrics(SM_CYEDGE)*3+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
+			int tw=::GetSystemMetrics(SM_CXEDGE)+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
+			int th=::GetSystemMetrics(SM_CYEDGE)+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 
 			int wWidth = ::GetSystemMetrics( SM_CXFULLSCREEN );
 			int wHeight = ::GetSystemMetrics( SM_CYFULLSCREEN );
