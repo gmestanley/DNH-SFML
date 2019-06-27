@@ -479,8 +479,8 @@ DnhConfiguration::DnhConfiguration()
 	bLogFile_ = false;
 	bMouseVisible_ = true;
 
-	screenWidth_ = 640 + ::GetSystemMetrics(SM_CXEDGE) * 2;
-	screenHeight_ = 480 + ::GetSystemMetrics(SM_CXEDGE) * 3;
+	screenWidth_ = 640 + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
+	screenHeight_ = 480 + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
 
 	LoadConfigFile();
 	_LoadDefintionFile();
@@ -502,13 +502,13 @@ bool DnhConfiguration::_LoadDefintionFile()
 
 	windowTitle_ = prop.GetString(L"window.title", L"");
 
-	screenWidth_ = prop.GetInteger(L"screen.width", 640); // + ::GetSystemMetrics(SM_CXEDGE) * 2
-	screenWidth_ = max(screenWidth_, 640); // + ::GetSystemMetrics(SM_CXEDGE) * 2
-	screenWidth_ = min(screenWidth_, 1920); // + ::GetSystemMetrics(SM_CXEDGE) * 2
+	screenWidth_ = prop.GetInteger(L"screen.width", 640); // + ::GetSystemMetrics(SM_CXEDGE) + 10 
+	screenWidth_ = max(screenWidth_, 640); // + ::GetSystemMetrics(SM_CXEDGE) + 10 
+	screenWidth_ = min(screenWidth_, 1920); // + ::GetSystemMetrics(SM_CXEDGE) + 10 
 
-	screenHeight_ = prop.GetInteger(L"screen.height", 480); // +::GetSystemMetrics(SM_CXEDGE) * 3
-	screenHeight_ = max(screenHeight_, 480); // +::GetSystemMetrics(SM_CXEDGE) * 3
-	screenHeight_ = min(screenHeight_, 1200); // +::GetSystemMetrics(SM_CXEDGE) * 3
+	screenHeight_ = prop.GetInteger(L"screen.height", 480); // +::GetSystemMetrics(SM_CXEDGE) + 10 
+	screenHeight_ = max(screenHeight_, 480); // +::GetSystemMetrics(SM_CXEDGE) + 10 
+	screenHeight_ = min(screenHeight_, 1200); // +::GetSystemMetrics(SM_CXEDGE) + 10 
 
 	return true;
 }

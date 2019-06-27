@@ -715,8 +715,8 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 
 		int wWidth = config.GetScreenWidth();
 		int wHeight = config.GetScreenHeight();
-		int tw=::GetSystemMetrics(SM_CXEDGE) * 2 + GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
-		int th=::GetSystemMetrics(SM_CXEDGE) * 3 + GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
+		int tw=::GetSystemMetrics(SM_CXEDGE) + 10  + GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
+		int th=::GetSystemMetrics(SM_CXEDGE) + 10  + GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 		wWidth += tw;
 		wHeight += th;
 
@@ -743,8 +743,8 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 		wcex.lpszClassName=nameClass.c_str();
 		::RegisterClassEx(&wcex);
 
-		int screenWidth = config_.GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) * 2;
-		int screenHeight = config_.GetScreenHeight() + ::GetSystemMetrics(SM_CXEDGE) * 3;
+		int screenWidth = config_.GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
+		int screenHeight = config_.GetScreenHeight() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
    		HWND hWnd = ::CreateWindow(wcex.lpszClassName,
 			L"",
 			WS_CHILD | WS_VISIBLE,
@@ -841,7 +841,7 @@ LRESULT DirectGraphicsPrimaryWindow::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM
 		}
 		case WM_GETMINMAXINFO:
 		{
-			int tw=::GetSystemMetrics(SM_CXEDGE)*2+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
+			int tw=::GetSystemMetrics(SM_CXEDGE) + 10 +GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
 			int th=::GetSystemMetrics(SM_CYEDGE)*3+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 
 			MINMAXINFO* info = (MINMAXINFO*)lParam;
@@ -891,8 +891,8 @@ void DirectGraphicsPrimaryWindow::ChangeScreenMode()
 	{
 		if(modeScreen_ == SCREENMODE_WINDOW)
 		{
-			int screenWidth = config_.GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) * 2;
-			int screenHeight = config_.GetScreenHeight() + ::GetSystemMetrics(SM_CXEDGE) * 3;
+			int screenWidth = config_.GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
+			int screenHeight = config_.GetScreenHeight() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
 			int wWidth = ::GetSystemMetrics(SM_CXFULLSCREEN);
 			int wHeight = ::GetSystemMetrics(SM_CYFULLSCREEN);
 			bool bFullScreenEnable = screenWidth <= wWidth && screenHeight <= wHeight;

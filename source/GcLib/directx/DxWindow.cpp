@@ -612,8 +612,8 @@ void DxMessageBox::SetButton(std::vector<gstd::ref_count_ptr<DxButton> > listBut
 void DxMessageBox::UpdateWindowRect()
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	int scrnWidth = graphics->GetScreenWidth();
-	int scrnHeight = graphics->GetScreenHeight();
+	int scrnWidth = graphics->GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
+	int scrnHeight = graphics->GetScreenHeight() +::GetSystemMetrics(SM_CXEDGE) + 10 ;
 
 	int margin = 16;
 	RECT rcWnd = GetWindowRect();
