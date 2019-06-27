@@ -1,0 +1,10 @@
+*.sdf
+*.ipch
+*.db-wal
+*.db-shm
+*.db
+*.opendb
+Release/
+bin_th_dnh/
+source/TouhouDanmakufu/DnhExecutor/icon1.ico
+note_sheet.txt
