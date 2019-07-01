@@ -842,7 +842,7 @@ LRESULT DirectGraphicsPrimaryWindow::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM
 		case WM_GETMINMAXINFO:
 		{
 			int tw=::GetSystemMetrics(SM_CXEDGE) + 10 +GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
-			int th=::GetSystemMetrics(SM_CYEDGE)*3+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
+			int th=::GetSystemMetrics(SM_CYEDGE) + 10+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 
 			MINMAXINFO* info = (MINMAXINFO*)lParam;
 			int wWidth = ::GetSystemMetrics( SM_CXFULLSCREEN );
