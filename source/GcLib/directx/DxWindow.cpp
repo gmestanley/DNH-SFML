@@ -613,7 +613,7 @@ void DxMessageBox::UpdateWindowRect()
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	int scrnWidth = graphics->GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
-	int scrnHeight = graphics->GetScreenHeight() +::GetSystemMetrics(SM_CXEDGE) + 10 ;
+	int scrnHeight = graphics->GetScreenHeight() +::GetSystemMetrics(SM_CYEDGE) + 10 ;
 
 	int margin = 16;
 	RECT rcWnd = GetWindowRect();

@@ -289,7 +289,7 @@ bool EDirectGraphics::Initialize()
 			if(height > wHeight) height = wHeight;
 			width = (double)height / ratioHW;
 
-			int tw=::GetSystemMetrics(SM_CXEDGE) + 10 +GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
+			int tw=::GetSystemMetrics(SM_CXEDGE) + 10+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
 			int th=::GetSystemMetrics(SM_CYEDGE) + 10+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 			width += tw;
 			height += th;

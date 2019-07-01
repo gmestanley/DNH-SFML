@@ -608,7 +608,7 @@ double DirectGraphics::GetScreenWidthRatio()
 	if(modeScreen_ == SCREENMODE_WINDOW &&
 		(style & (WS_OVERLAPPEDWINDOW-WS_SIZEBOX)) > 0)
 	{
-		widthWindow -= GetSystemMetrics(SM_CXEDGE)+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
+		widthWindow -= GetSystemMetrics(SM_CXEDGE) + 10+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
 	}
 
 	return widthWindow / widthView;
@@ -625,7 +625,7 @@ double DirectGraphics::GetScreenHeightRatio()
 		(style & (WS_OVERLAPPEDWINDOW-WS_SIZEBOX)) > 0)
 	{
 		heightWindow -= 
-			GetSystemMetrics(SM_CYEDGE)+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
+			GetSystemMetrics(SM_CYEDGE) + 10+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 	}
 
 	return heightWindow / heightView;
@@ -716,7 +716,7 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 		int wWidth = config.GetScreenWidth();
 		int wHeight = config.GetScreenHeight();
 		int tw=::GetSystemMetrics(SM_CXEDGE) + 10  + GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
-		int th=::GetSystemMetrics(SM_CXEDGE) + 10  + GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
+		int th=::GetSystemMetrics(SM_CYEDGE) + 10  + GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 		wWidth += tw;
 		wHeight += th;
 
@@ -744,7 +744,7 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 		::RegisterClassEx(&wcex);
 
 		int screenWidth = config_.GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
-		int screenHeight = config_.GetScreenHeight() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
+		int screenHeight = config_.GetScreenHeight() + ::GetSystemMetrics(SM_CYEDGE) + 10 ;
    		HWND hWnd = ::CreateWindow(wcex.lpszClassName,
 			L"",
 			WS_CHILD | WS_VISIBLE,
@@ -892,7 +892,7 @@ void DirectGraphicsPrimaryWindow::ChangeScreenMode()
 		if(modeScreen_ == SCREENMODE_WINDOW)
 		{
 			int screenWidth = config_.GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
-			int screenHeight = config_.GetScreenHeight() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
+			int screenHeight = config_.GetScreenHeight() + ::GetSystemMetrics(SM_CYEDGE) + 10 ;
 			int wWidth = ::GetSystemMetrics(SM_CXFULLSCREEN);
 			int wHeight = ::GetSystemMetrics(SM_CYFULLSCREEN);
 			bool bFullScreenEnable = screenWidth <= wWidth && screenHeight <= wHeight;
@@ -917,8 +917,8 @@ void DirectGraphicsPrimaryWindow::ChangeScreenMode()
 			::ShowWindow(hAttachedWindow_, SW_SHOW);
 
 			//Windowを画面の中央に移動
-			int tw=::GetSystemMetrics(SM_CXEDGE)+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
-			int th=::GetSystemMetrics(SM_CYEDGE)+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
+			int tw=::GetSystemMetrics(SM_CXEDGE)+10+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
+			int th=::GetSystemMetrics(SM_CYEDGE)+10+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 			RECT drect,mrect;
 			HWND hDesk=::GetDesktopWindow();
 			::GetWindowRect(hDesk, &drect);
@@ -955,8 +955,8 @@ void DirectGraphicsPrimaryWindow::ChangeScreenMode()
 			::ShowWindow(hWnd_, SW_SHOW);
 
 			//Windowを画面の中央に移動
-			int tw=::GetSystemMetrics(SM_CXEDGE)+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
-			int th=::GetSystemMetrics(SM_CYEDGE)+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
+			int tw=::GetSystemMetrics(SM_CXEDGE)+10+GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXDLGFRAME);
+			int th=::GetSystemMetrics(SM_CYEDGE)+10+GetSystemMetrics(SM_CYBORDER)+GetSystemMetrics(SM_CYDLGFRAME)+GetSystemMetrics(SM_CYCAPTION);
 
 			int wWidth = ::GetSystemMetrics( SM_CXFULLSCREEN );
 			int wHeight = ::GetSystemMetrics( SM_CYFULLSCREEN );

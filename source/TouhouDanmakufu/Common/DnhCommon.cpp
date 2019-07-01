@@ -479,8 +479,8 @@ DnhConfiguration::DnhConfiguration()
 	bLogFile_ = false;
 	bMouseVisible_ = true;
 
-	screenWidth_ = 640 + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
-	screenHeight_ = 480 + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
+	screenWidth_ = 640;
+	screenHeight_ = 480;
 
 	LoadConfigFile();
 	_LoadDefintionFile();
