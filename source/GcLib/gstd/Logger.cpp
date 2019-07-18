@@ -178,31 +178,34 @@ void WindowLogger::SaveState()
 	RecordBuffer recordMain;
 	bool bRecordExists = recordMain.ReadFromFile(path);
 
-	int panelIndex = wndTab_->GetCurrentPage();
-	recordMain.SetRecordAsInteger("panelIndex", panelIndex);
+	if (wndTab_ != nullptr) {
+		int panelIndex = wndTab_->GetCurrentPage();
+		recordMain.SetRecordAsInteger("panelIndex", panelIndex);
 
-	RECT rcWnd;
-	ZeroMemory(&rcWnd, sizeof(RECT));
-	if(bRecordExists)
-		recordMain.GetRecord("windowRect", rcWnd);
-	if(IsWindowVisible())
-		GetWindowRect(hWnd_, &rcWnd);
-	recordMain.SetRecord("windowRect", rcWnd);
-	
-	RecordBuffer recordPanel;
-	int panelCount = wndTab_->GetPageCount();
-	for(int iPanel = 0 ; iPanel < panelCount ; iPanel++)
-	{
-		ref_count_ptr<WindowLogger::Panel> panel = 
-			ref_count_ptr<WindowLogger::Panel>::DownCast(wndTab_->GetPanel(iPanel));
-		if(panel == NULL)continue;
+		RECT rcWnd;
+		ZeroMemory(&rcWnd, sizeof(RECT));
+		if (bRecordExists)
+			recordMain.GetRecord("windowRect", rcWnd);
+		if (IsWindowVisible())
+			GetWindowRect(hWnd_, &rcWnd);
+		recordMain.SetRecord("windowRect", rcWnd);
 
-		panel->_WriteRecord(recordPanel);
+		RecordBuffer recordPanel;
+		int panelCount = wndTab_->GetPageCount();
+		for (int iPanel = 0; iPanel < panelCount; iPanel++)
+		{
+			ref_count_ptr<WindowLogger::Panel> panel =
+				ref_count_ptr<WindowLogger::Panel>::DownCast(wndTab_->GetPanel(iPanel));
+			if (panel == NULL)continue;
+
+			panel->_WriteRecord(recordPanel);
+		}
+
+
+		recordMain.SetRecordAsRecordBuffer("panel", recordPanel);
+
+		recordMain.WriteToFile(path);
 	}
-
-	recordMain.SetRecordAsRecordBuffer("panel", recordPanel);
-
-	recordMain.WriteToFile(path);
 }
 void WindowLogger::LoadState()
 {
