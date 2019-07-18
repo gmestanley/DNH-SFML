@@ -115,6 +115,7 @@ namespace gstd
 			void SetSize(int size);		
 			int GetSize(){return size_;}
 			int GetOffset(){return offset_;}
+			int Decompress();
 
 			virtual DWORD Write(LPVOID buf,DWORD size);
 			virtual DWORD Read(LPVOID buf,DWORD size);
@@ -578,6 +579,7 @@ namespace gstd
 			DeCompressor();
 			virtual ~DeCompressor();
 			bool DeCompress(ByteBuffer& bufIn, ByteBuffer& bufOut);
+			bool DeCompressHeader(ByteBuffer& bufIn, ByteBuffer& bufOut);
 	};
 
 	/**********************************************************

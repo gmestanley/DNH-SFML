@@ -1,6 +1,8 @@
 #include"File.hpp"
 #include"GstdUtility.hpp"
 #include"Logger.hpp"
+#include"zlib.h"
+#include <cassert>
 
 using namespace gstd;
 
@@ -38,12 +40,13 @@ void ByteBuffer::_Resize(int size)
 
 	//元のデータをコピー
 	int sizeCopy = min(size, oldSize);
-	memcpy(data_, oldData, sizeCopy);
+	if (oldData != NULL) {
+		memcpy(data_, oldData, sizeCopy);
+		//古いデータを削除
+		delete[] oldData;
+	}
 	reserve_ = size;
 	size_ = size;
-
-	//古いデータを削除
-	delete[] oldData;
 }
 void ByteBuffer::Copy(ByteBuffer& src)
 {
@@ -107,6 +110,26 @@ char* ByteBuffer::GetPointer(int offset)
 		throw gstd::wexception(L"ByteBuffer:インデックスエラー");
 	}
 	return &data_[offset];
+}
+int ByteBuffer::Decompress() {
+	int size = size_ * 1000;
+	char* dest = new char[size];
+
+	z_stream infstream;
+	infstream.zalloc = Z_NULL;
+	infstream.zfree = Z_NULL;
+	infstream.opaque = Z_NULL;
+	infstream.avail_in = (uInt)size_;
+	infstream.next_in = (Bytef*)data_;
+	infstream.avail_out = (uInt)size;
+	infstream.next_out = (Bytef*)dest;
+
+	inflateInit(&infstream);
+	inflate(&infstream, Z_NO_FLUSH);
+	inflateEnd(&infstream);
+	delete[] data_;
+	data_ = dest;
+	return infstream.total_out;
 }
 
 /**********************************************************
@@ -512,17 +535,14 @@ bool ArchiveFile::Open()
 		int sizeArchiveHeader = file_->ReadInteger();
 
 		ref_count_ptr<Reader> reader = NULL;
+		ByteBuffer* bufIn = new ByteBuffer;
 		if(!bCompress)reader = file_;
 		else
 		{
-			ByteBuffer bufIn;
-			ByteBuffer* bufOut = new ByteBuffer();
-			bufIn.SetSize(sizeArchiveHeader);
-			file_->Read(bufIn.GetPointer(), sizeArchiveHeader);
-			DeCompressor decomp;
-			decomp.DeCompress(bufIn, *bufOut);
-
-			reader = bufOut;
+			bufIn->SetSize(sizeArchiveHeader);
+			file_->Read(bufIn->GetPointer(), sizeArchiveHeader);
+			bufIn->Decompress();
+			reader = bufIn;
 		}
 
 		for(int iEntry = 0 ; iEntry < countEntry ; iEntry++)
@@ -530,6 +550,7 @@ bool ArchiveFile::Open()
 			ref_count_ptr<ArchiveFileEntry> entry = new ArchiveFileEntry();
 			int sizeEntry = reader->ReadInteger();
 			ByteBuffer buf;
+			//buf.Clear();
 			buf.SetSize(sizeEntry);
 			reader->Read(buf.GetPointer(), sizeEntry);
 			entry->_ReadEntryRecord(buf);
@@ -541,7 +562,7 @@ bool ArchiveFile::Open()
 			mapEntry_.insert(std::pair<std::wstring, ref_count_ptr<ArchiveFileEntry> >(key, entry));
 
 		}
-
+		reader = NULL;
 		res = true;
 	}
 	catch(...)
@@ -605,14 +626,12 @@ ref_count_ptr<ByteBuffer> ArchiveFile::CreateEntryBuffer(ref_count_ptr<ArchiveFi
 		else if(entry->GetCompressType() == ArchiveFileEntry::CT_COMPRESS)
 		{
 			file.Seek(entry->GetOffset());
-			res = new ByteBuffer();
-
+			
 			ByteBuffer bufComp;
 			bufComp.SetSize(entry->GetCompressedDataSize());
 			file.Read(bufComp.GetPointer(), bufComp.GetSize());
-
-			gstd::DeCompressor deflater;
-			deflater.DeCompress(bufComp, *res.GetPointer());
+			bufComp.Decompress();
+			res = new ByteBuffer(bufComp);
 		}
 	}
 	return res;
@@ -1557,8 +1576,22 @@ bool DeCompressor::DeCompress(ByteBuffer& bufIn, ByteBuffer& bufOut)
 {
 	//TODO 要独自の圧縮を実装
 	//公開ソースでは、受け渡されたデータをそのまま返す
+	//why mkm why
 	bool res = true;
+	//zlib stuff
+	/*
+	if (!Compressed)
+		return 0;*/
+	
+	return res;
+}
 
+bool DeCompressor::DeCompressHeader(ByteBuffer& bufIn, ByteBuffer& bufOut)
+{
+	//TODO 要独自の圧縮を実装
+	//公開ソースでは、受け渡されたデータをそのまま返す
+	//why mkm why
+	bool res = true;
 	int inputSize = bufIn.GetSize();
 	bufOut.SetSize(inputSize);
 	memcpy(bufOut.GetPointer(0), bufIn.GetPointer(0), inputSize);
