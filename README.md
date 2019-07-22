@@ -8,21 +8,25 @@ Here's a list of changes compared to original Danmakufu that may enable your com
 </br>✻Removes a LOT of unnecessary vertices calculated (but not used) when drawing curvy lasers (see Special Thanks) 
 </br>✻Enables a lot of optimization flags that mkm for some reason disabled (basically everything under /O2) 
 </br>✻Attempts to fix the window resolution issue (not quite 640x480) that occurs with the source when built, but not the original ph3 build.
+</br>✻Dat extraction now works properly, enables the use of games like Kaisendo's Hollow Song of Birds and other games that use dat archives.
+</br>✻Side bars in fullscreen are now black as opposed to the ubiquitous DNH Gray.
 
 ## Known Issues
-✻.dat file extraction doesn't work as expected. (FOUND: mkm literally didn't implement the dat extraction in DNH's code, so unable to fix unless I can find a code base)
-</br>✻Repo organization itself is slightly messed up - "unchanged" prioritized over changes
+✻Project file causes some problems when trying to compile from source downloaded off of Git, like zlib files not being included.
+</br>✻GetEventArgument supposedly doesn't work with object IDs now?
 
 ## Special Thanks
 Natashi - for the code that made curvy lasers run a lot better than what I could do
 </br>Trickysticks - for the woo art that graced the world
+</br>UltimaOmega - for helping me with my sorry excuse for zlib code
 
 ## Contributions
 Unlike the original source, this version is *technically* in active development (though my primary focus will be Danmakufu Remastered - check out Ultima's repo for that here) so pull requests are absolutely accepted provided they don't break the game. Though bear in mind that as this version of DNH still relies on mkm's original source code (most of which is either very unoptimized even with optimization flags or is very outdated in execution), there is only so far we can go in attempting to make it better. 
 </br>In addition, *this build will be focused on optimization and performance improvements only.* If you want to suggest brand new features, bug fixes, etc. please turn your attention to Danmakufu Remastered instead - this version is made to be completely backwards compatible, and as such new features can't simply be added.
 
 ## License
-(from James7132's repo of the original source, maintaining the same license.) </br>This code is licensed under the NYSL (Niru nari Yaku nari Suki ni shiro License'). Main translated points:
+zlib library has its own license, please check zlib.h in the repo for that information.</br></br>
+(quoted from James7132's repo of the original source, maintaining the same license.) </br>This code is licensed under the NYSL (Niru nari Yaku nari Suki ni shiro License'). Main translated points:
 
  * "No warranty" disclaimer is explicitly included.
  * Modified version of the software MUST be distributed under the responsibility of the distributer.
