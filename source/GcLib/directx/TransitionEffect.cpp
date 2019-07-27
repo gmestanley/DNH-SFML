@@ -1,4 +1,4 @@
-#include"TransitionEffect.hpp"
+#include "TransitionEffect.hpp"
 
 using namespace gstd;
 using namespace directx;
@@ -8,11 +8,9 @@ using namespace directx;
 **********************************************************/
 TransitionEffect::TransitionEffect()
 {
-
 }
 TransitionEffect::~TransitionEffect()
 {
-
 }
 
 /**********************************************************
@@ -20,15 +18,16 @@ TransitionEffect::~TransitionEffect()
 **********************************************************/
 void TransitionEffect_FadeOut::Work()
 {
-	if(sprite_ == NULL)return;
+	if (sprite_ == NULL)
+		return;
 	alpha_ -= diffAlpha_;
 	alpha_ = max(alpha_, 0);
 	sprite_->SetAlpha((int)alpha_);
 }
 void TransitionEffect_FadeOut::Render()
 {
-	if(sprite_ == NULL)return;
-
+	if (sprite_ == NULL)
+		return;
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	graphics->SetBlendMode(DirectGraphics::MODE_BLEND_ALPHA);
 	graphics->SetZBufferEnable(false);
@@ -47,7 +46,7 @@ void TransitionEffect_FadeOut::Initialize(int frame, gstd::ref_count_ptr<Texture
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	int width = graphics->GetScreenWidth();
 	int height = graphics->GetScreenHeight();
-	RECT_D rect ={0., 0., (double)width, (double)height};
+	RECT_D rect = { 0., 0., (double)width, (double)height };
 
 	sprite_ = new Sprite2D();
 	sprite_->SetTexture(texture);
@@ -69,12 +68,12 @@ void TransitionEffectTask::SetTransition(gstd::ref_count_ptr<TransitionEffect> e
 }
 void TransitionEffectTask::Work()
 {
-	if(effect_ != NULL)
-	{
+	if (effect_ != NULL) {
 		effect_->Work();
 	}
 }
 void TransitionEffectTask::Render()
 {
-	if(effect_ != NULL)effect_->Render();
+	if (effect_ != NULL)
+		effect_->Render();
 }
