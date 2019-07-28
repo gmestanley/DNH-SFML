@@ -4,7 +4,6 @@
 #include"GcLibImpl.hpp"
 #include"Common.hpp"
 
-
 class ScriptSelectSceneMenuItem;
 class ScriptSelectModel;
 /**********************************************************
@@ -120,7 +119,7 @@ class ScriptSelectModel
 	public:
 		ScriptSelectModel();
 		virtual ~ScriptSelectModel();
-		
+
 		virtual void CreateMenuItem() = 0;
 		bool IsCreated(){return bCreated_;}
 };
@@ -137,7 +136,7 @@ class ScriptSelectFileModel : public ScriptSelectModel , public Thread
 			TYPE_DIR = ScriptSelectScene::TYPE_DIR,
 			TYPE_ALL = ScriptSelectScene::TYPE_ALL,
 		};
-		
+
 	protected:
 		int type_;
 		std::wstring dir_;
@@ -223,7 +222,7 @@ class PlayerSelectScene : public TaskBase , public MenuTask
 };
 class PlayerSelectMenuItem : public TextLightUpMenuItem
 {
-		ref_count_ptr<ScriptInformation> info_;//é©ã@èÓïÒ
+		ref_count_ptr<ScriptInformation> info_;
 
 		PlayerSelectScene* _GetTitleScene(){return (PlayerSelectScene*)menu_;}
 	public:
