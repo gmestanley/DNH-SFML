@@ -991,11 +991,11 @@ value predecessor(script_machine* machine, int argc, value const* argv)
 	switch (argv[0].get_type()->get_kind()) {
 	case type_data::tk_real:
 		return value(argv[0].get_type(), argv[0].as_real() - 1);
-
-	case type_data::tk_char:
+	case type_data::tk_char: {
 		wchar_t c = argv[0].as_char();
 		--c;
 		return value(argv[0].get_type(), c);
+	}
 	case type_data::tk_boolean:
 		return value(argv[0].get_type(), false);
 	default:

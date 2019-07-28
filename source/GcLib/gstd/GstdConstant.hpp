@@ -59,13 +59,14 @@
 #include <vector>
 
 //Windows
+#include <windows.h>
+#include <windowsx.h>
+
 #include <commctrl.h>
 #include <mmsystem.h>
 #include <pdh.h>
 #include <process.h>
 #include <shlwapi.h>
-#include <windows.h>
-#include <windowsx.h>
 #include <wingdi.h>
 
 #include <mlang.h>
