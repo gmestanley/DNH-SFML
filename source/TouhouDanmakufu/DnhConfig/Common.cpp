@@ -1,4 +1,4 @@
-#include"Common.hpp"
+#include "Common.hpp"
 
 /**********************************************************
 //KeyCodeList
@@ -49,7 +49,7 @@ KeyCodeList::KeyCodeList()
 	mapText_[DIK_APOSTROPHE] = L"'";
 	mapText_[DIK_GRAVE] = L"`";
 	mapText_[DIK_LSHIFT] = L"Shift (Left)";
- 	mapText_[DIK_BACKSLASH] = L"\\";
+	mapText_[DIK_BACKSLASH] = L"\\";
 
 	mapText_[DIK_Z] = L"Z";
 	mapText_[DIK_X] = L"X";
@@ -97,28 +97,28 @@ KeyCodeList::KeyCodeList()
 
 	mapText_[DIK_F11] = L"F11";
 	mapText_[DIK_F12] = L"F12";
-	mapText_[DIK_F13] = L"F13";//NEC PC-98
-	mapText_[DIK_F14] = L"F14";//NEC PC-98
-	mapText_[DIK_F15] = L"F15";//NEC PC-98
+	mapText_[DIK_F13] = L"F13"; //NEC PC-98
+	mapText_[DIK_F14] = L"F14"; //NEC PC-98
+	mapText_[DIK_F15] = L"F15"; //NEC PC-98
 
-	mapText_[DIK_KANA] = L"カナ";//日本語キーボード
-	mapText_[DIK_CONVERT] = L"変換";//日本語キーボード
-	mapText_[DIK_NOCONVERT] = L"無変換";//日本語キーボード
-	mapText_[DIK_YEN] = L"\\";//日本語キーボード
-	mapText_[DIK_NUMPADEQUALS] = L"(Numpad)";//NEC PC-98
-	mapText_[DIK_CIRCUMFLEX] = L"^";//日本語キーボード
+	mapText_[DIK_KANA] = L"カナ"; //日本語キーボード
+	mapText_[DIK_CONVERT] = L"変換"; //日本語キーボード
+	mapText_[DIK_NOCONVERT] = L"無変換"; //日本語キーボード
+	mapText_[DIK_YEN] = L"\\"; //日本語キーボード
+	mapText_[DIK_NUMPADEQUALS] = L"(Numpad)"; //NEC PC-98
+	mapText_[DIK_CIRCUMFLEX] = L"^"; //日本語キーボード
 
-	mapText_[DIK_AT] = L"@";//NEC PC-98
-	mapText_[DIK_COLON] = L":";//NEC PC-98
-	mapText_[DIK_UNDERLINE] = L"_";//NEC PC-98
-	mapText_[DIK_KANJI] = L"漢字";//日本語キーボード
-	mapText_[DIK_STOP] = L"Stop";//NEC PC-98
+	mapText_[DIK_AT] = L"@"; //NEC PC-98
+	mapText_[DIK_COLON] = L":"; //NEC PC-98
+	mapText_[DIK_UNDERLINE] = L"_"; //NEC PC-98
+	mapText_[DIK_KANJI] = L"漢字"; //日本語キーボード
+	mapText_[DIK_STOP] = L"Stop"; //NEC PC-98
 	mapText_[DIK_AX] = L"(Japan AX)";
 	mapText_[DIK_UNLABELED] = L"(J3100)";
 
 	mapText_[DIK_NUMPADENTER] = L"Enter (Numpad)";
 	mapText_[DIK_RCONTROL] = L"Ctrl (Right)";
-	mapText_[DIK_NUMPADCOMMA] = L", (Numpad)";//NEC PC-98
+	mapText_[DIK_NUMPADCOMMA] = L", (Numpad)"; //NEC PC-98
 	mapText_[DIK_DIVIDE] = L"/ (Numpad)";
 	mapText_[DIK_SYSRQ] = L"Sys Rq";
 	mapText_[DIK_RMENU] = L"Alt (Right)";
@@ -141,8 +141,7 @@ KeyCodeList::KeyCodeList()
 	mapText_[DIK_SLEEP] = L"Sleep";
 
 	std::map<int, std::wstring>::iterator itr = mapText_.begin();
-	for(; itr != mapText_.end() ; itr++)
-	{
+	for (; itr != mapText_.end(); itr++) {
 		int code = itr->first;
 		listValidCode_.push_back(code);
 	}
@@ -157,7 +156,8 @@ bool KeyCodeList::IsValidCode(int code)
 }
 std::wstring KeyCodeList::GetCodeText(int code)
 {
-	if(!IsValidCode(code))return L"";
+	if (!IsValidCode(code))
+		return L"";
 
 	std::wstring res = mapText_[code];
 	return res;
