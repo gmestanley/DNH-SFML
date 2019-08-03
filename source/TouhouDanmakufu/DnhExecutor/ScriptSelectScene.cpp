@@ -112,7 +112,7 @@ void ScriptSelectScene::Work()
 				int index = GetSelectedItemIndex();
 				ScriptSelectSceneMenuItem* pItem = (ScriptSelectSceneMenuItem*)item_[index].GetPointer();
 				std::wstring dir = pItem->GetPath();
-				
+
 				//ページリセット
 				cursorX_ = 0;
 				cursorY_ = 0;
@@ -142,7 +142,7 @@ void ScriptSelectScene::Work()
 				taskManager->AddWorkFunction(TTaskFunction<PlayTypeSelectScene>::Create(
 					task, &PlayTypeSelectScene::Work), PlayTypeSelectScene::TASK_PRI_WORK);
 				taskManager->AddRenderFunction(TTaskFunction<PlayTypeSelectScene>::Create(
-					task, &PlayTypeSelectScene::Render), PlayTypeSelectScene::TASK_PRI_RENDER);				
+					task, &PlayTypeSelectScene::Render), PlayTypeSelectScene::TASK_PRI_RENDER);
 
 				return;
 			}
@@ -179,7 +179,7 @@ void ScriptSelectScene::Work()
 				return;
 			}
 		}
-		
+
 		if(bTitle)
 		{
 			SceneManager* sceneManager = SystemController::GetInstance()->GetSceneManager();
@@ -274,7 +274,7 @@ void ScriptSelectScene::Render()
 			}
 		}
 
-		ref_count_ptr<ScriptSelectSceneMenuItem> item = 
+		ref_count_ptr<ScriptSelectSceneMenuItem> item =
 			ref_count_ptr<ScriptSelectSceneMenuItem>::DownCast(GetSelectedMenuItem());
 		if(bActive_ && item != NULL && item->GetType() != ScriptSelectSceneMenuItem::TYPE_DIR)
 		{
@@ -303,7 +303,7 @@ void ScriptSelectScene::Render()
 				}
 				else
 					spriteImage_->SetTexture(NULL);
-					
+
 			}
 
 			texture = spriteImage_->GetTexture();
@@ -322,7 +322,7 @@ void ScriptSelectScene::Render()
 			root = PathProperty::ReplaceYenToSlash(root);
 			path = PathProperty::ReplaceYenToSlash(path);
 			path = StringUtility::ReplaceAll(path, root, L"");
-			
+
 			std::wstring archive = info->GetArchivePath();
 			if(archive.size() > 0)
 			{
@@ -461,7 +461,7 @@ void ScriptSelectScene::AddMenuItem(std::list<ref_count_ptr<ScriptSelectSceneMen
 				if(path.size() > 0)
 					bWait = true;
 			}
-			
+
 			if(path.size() == 0 && (pageCurrent_ > 1 || cursorY_ > 0))
 			{
 				ScriptSelectSceneMenuItem* pItem = (ScriptSelectSceneMenuItem*)item.GetPointer();
@@ -540,7 +540,7 @@ void ScriptSelectFileModel::_SearchScript(std::wstring dir)
 	HANDLE hFind;
 	std::wstring findDir = dir + L"*.*";
 	hFind = FindFirstFile(findDir.c_str(), &data);
-	do 
+	do
 	{
 		if(GetStatus() != RUN)return;
 
@@ -554,7 +554,7 @@ void ScriptSelectFileModel::_SearchScript(std::wstring dir)
 		}
 
 		std::wstring name = data.cFileName;
-		if((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && 
+		if((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) &&
 			(name != L".." && name != L"."))
 		{
 			//ディレクトリ
@@ -587,7 +587,7 @@ void ScriptSelectFileModel::_SearchScript(std::wstring dir)
 }
 void ScriptSelectFileModel::_CreateMenuItem(std::wstring path)
 {
-	std::vector<ref_count_ptr<ScriptInformation> >listInfo = 
+	std::vector<ref_count_ptr<ScriptInformation> >listInfo =
 		ScriptInformation::CreateScriptInformationList(path, true);
 	for(int iInfo = 0 ; iInfo < listInfo.size() ; iInfo++)
 	{
@@ -688,7 +688,7 @@ PlayTypeSelectScene::PlayTypeSelectScene(ref_count_ptr<ScriptInformation> info)
 			int itemY = 256 + (itemCount % pageMaxY_) * 20;
 
 			std::wstring text = StringUtility::Format(L"No.%02d %-8s %012I64d %-8s (%2.2ffps) <%s>",
-				index, 	
+				index,
 				replay->GetUserName().c_str(),
 				replay->GetTotalScore(),
 				replay->GetPlayerScriptReplayName().c_str(),
@@ -719,7 +719,7 @@ void PlayTypeSelectScene::Work()
 		{
 			//パッケージ以外
 			int indexSelect = GetSelectedItemIndex();
-			if(indexSelect == 0) 
+			if(indexSelect == 0)
 			{
 				//自機選択
 				TransitionManager* transitionManager = SystemController::GetInstance()->GetTransitionManager();
@@ -735,7 +735,7 @@ void PlayTypeSelectScene::Work()
 				taskManager->AddWorkFunction(TTaskFunction<PlayerSelectScene>::Create(
 					task, &PlayerSelectScene::Work), PlayerSelectScene::TASK_PRI_WORK);
 				taskManager->AddRenderFunction(TTaskFunction<PlayerSelectScene>::Create(
-					task, &PlayerSelectScene::Render), PlayerSelectScene::TASK_PRI_RENDER);	
+					task, &PlayerSelectScene::Render), PlayerSelectScene::TASK_PRI_RENDER);
 			}
 			else
 			{
@@ -754,7 +754,7 @@ void PlayTypeSelectScene::Work()
 	else if(input->GetVirtualKeyState(EDirectInput::KEY_CANCEL) == KEY_PUSH)
 	{
 		ETaskManager* taskManager = ETaskManager::GetInstance();
-		ref_count_ptr<ScriptSelectScene> scriptSelectScene = 
+		ref_count_ptr<ScriptSelectScene> scriptSelectScene =
 			ref_count_ptr<ScriptSelectScene>::DownCast(taskManager->GetTask(typeid(ScriptSelectScene)));
 		scriptSelectScene->SetActive(true);
 
@@ -830,7 +830,7 @@ PlayerSelectScene::PlayerSelectScene(ref_count_ptr<ScriptInformation> info)
 	int screenHeight = graphics->GetScreenHeight();
 	RECT_D srcBack = {0., 0., 640., 480.};
 	RECT_D destBack = {0., 0., (double)screenWidth, (double)screenHeight};
-	
+
 	spriteBack_ = new Sprite2D();
 	spriteBack_->SetTexture(textureBack);
 	spriteBack_->SetVertex(srcBack, destBack);
@@ -858,7 +858,7 @@ PlayerSelectScene::PlayerSelectScene(ref_count_ptr<ScriptInformation> info)
 
 	std::vector<ref_count_ptr<ScriptInformation> > listLastPlayerSelect = systemInfo->GetLastPlayerSelectedList();
 	bool bSameList = false;
-	if(listPlayer_.size() == listLastPlayerSelect.size()) 
+	if(listPlayer_.size() == listLastPlayerSelect.size())
 	{
 		bSameList = true;
 		for(int iList = 0 ; iList < listPlayer_.size() ; iList++)
@@ -955,7 +955,7 @@ void PlayerSelectScene::Render()
 			}
 			else
 				spriteImage_->SetTexture(NULL);
-				
+
 		}
 
 		texture = spriteImage_->GetTexture();
@@ -974,7 +974,7 @@ void PlayerSelectScene::Render()
 		root = PathProperty::ReplaceYenToSlash(root);
 		path = PathProperty::ReplaceYenToSlash(path);
 		path = StringUtility::ReplaceAll(path, root, L"");
-		
+
 		std::wstring archive = infoSelected->GetArchivePath();
 		if(archive.size() > 0)
 		{

@@ -1,16 +1,14 @@
-#include"GcLibImpl.hpp"
-#include"MainWindow.hpp"
+#include "GcLibImpl.hpp"
+#include "MainWindow.hpp"
 
 /**********************************************************
 //EApplication
 **********************************************************/
 EApplication::EApplication()
 {
-
 }
 EApplication::~EApplication()
 {
-
 }
 bool EApplication::_Initialize()
 {
@@ -22,8 +20,8 @@ bool EApplication::_Initialize()
 
 	HWND hWndMain = MainWindow::GetInstance()->GetWindowHandle();
 	WindowLogger::InsertOpenCommandInSystemMenu(hWndMain);
-//	::SetWindowText(hWndMain, "DnhViewer");
-//	::SetClassLong(hWndMain, GCL_HICON, (LONG)LoadIcon(GetApplicationHandle(), MAKEINTRESOURCE(IDI_ICON)));
+	// ::SetWindowText(hWndMain, "DnhViewer");
+	// ::SetClassLong(hWndMain, GCL_HICON, (LONG)LoadIcon(GetApplicationHandle(), MAKEINTRESOURCE(IDI_ICON)));
 
 	EDirectInput* input = EDirectInput::CreateInstance();
 	input->Initialize(hWndMain);
@@ -44,8 +42,7 @@ bool EApplication::_Loop()
 	HWND hWndFocused = ::GetForegroundWindow();
 	HWND hWndMain = mainWindow->GetWindowHandle();
 	HWND hWndLogger = ELogger::GetInstance()->GetWindowHandle();
-	if(hWndFocused != hWndMain && hWndFocused != hWndLogger)
-	{
+	if (hWndFocused != hWndMain && hWndFocused != hWndLogger) {
 		//非アクティブ時は動作しない
 		::Sleep(10);
 		return true;
@@ -68,5 +65,3 @@ bool EApplication::_Finalize()
 	Logger::WriteTop(L"アプリケーション終了処理完了");
 	return true;
 }
-
-

@@ -1,5 +1,5 @@
-#include"StgCommon.hpp"
-#include"StgSystem.hpp"
+#include "StgCommon.hpp"
+#include "StgSystem.hpp"
 
 /**********************************************************
 //StgMoveObject
@@ -13,18 +13,16 @@ StgMoveObject::StgMoveObject(StgStageController* stageController)
 }
 StgMoveObject::~StgMoveObject()
 {
-
 }
 void StgMoveObject::_Move()
 {
-	if(pattern_ == NULL)return;
+	if (pattern_ == NULL)
+		return;
 
-	if(mapPattern_.size() > 0)
-	{
-		std::map<int, ref_count_ptr<StgMovePattern>::unsync >::iterator itr = mapPattern_.begin();
+	if (mapPattern_.size() > 0) {
+		std::map<int, ref_count_ptr<StgMovePattern>::unsync>::iterator itr = mapPattern_.begin();
 		int frame = itr->first;
-		if(frame == framePattern_)
-		{
+		if (frame == framePattern_) {
 			ref_count_ptr<StgMovePattern>::unsync pattern = itr->second;
 			_AttachReservedPattern(pattern);
 			mapPattern_.erase(frame);
@@ -37,20 +35,17 @@ void StgMoveObject::_Move()
 void StgMoveObject::_AttachReservedPattern(ref_count_ptr<StgMovePattern>::unsync pattern)
 {
 	//速度継続など
-	if(pattern_ == NULL)
+	if (pattern_ == NULL)
 		pattern_ = new StgMovePattern_Angle(this);
 
 	int newMoveType = pattern->GetType();
-	if(newMoveType == StgMovePattern::TYPE_ANGLE)
-	{
+	if (newMoveType == StgMovePattern::TYPE_ANGLE) {
 		StgMovePattern_Angle* angPattern = (StgMovePattern_Angle*)pattern.GetPointer();
-		if(angPattern->GetSpeed() == StgMovePattern::NO_CHANGE)
+		if (angPattern->GetSpeed() == StgMovePattern::NO_CHANGE)
 			angPattern->SetSpeed(pattern_->GetSpeed());
-		if(angPattern->GetDirectionAngle() == StgMovePattern::NO_CHANGE)
+		if (angPattern->GetDirectionAngle() == StgMovePattern::NO_CHANGE)
 			angPattern->SetDirectionAngle(pattern_->GetDirectionAngle());
-	}
-	else if(newMoveType == StgMovePattern::TYPE_XY)
-	{
+	} else if (newMoveType == StgMovePattern::TYPE_XY) {
 		StgMovePattern_XY* xyPattern = (StgMovePattern_XY*)pattern.GetPointer();
 
 		double speed = pattern_->GetSpeed();
@@ -61,9 +56,9 @@ void StgMoveObject::_AttachReservedPattern(ref_count_ptr<StgMovePattern>::unsync
 		double speedX = speed * c;
 		double speedY = speed * s;
 
-		if(xyPattern->GetSpeedX() == StgMovePattern::NO_CHANGE)
+		if (xyPattern->GetSpeedX() == StgMovePattern::NO_CHANGE)
 			xyPattern->SetSpeedX(speedX);
-		if(xyPattern->GetSpeedY() == StgMovePattern::NO_CHANGE)
+		if (xyPattern->GetSpeedY() == StgMovePattern::NO_CHANGE)
 			xyPattern->SetSpeedY(speedY);
 	}
 
@@ -72,14 +67,14 @@ void StgMoveObject::_AttachReservedPattern(ref_count_ptr<StgMovePattern>::unsync
 }
 double StgMoveObject::GetSpeed()
 {
-	if(pattern_ == NULL)return 0;
+	if (pattern_ == NULL)
+		return 0;
 	double res = pattern_->GetSpeed();
 	return res;
 }
 void StgMoveObject::SetSpeed(double speed)
 {
-	if(pattern_ == NULL || pattern_->GetType() != StgMovePattern::TYPE_ANGLE)
-	{
+	if (pattern_ == NULL || pattern_->GetType() != StgMovePattern::TYPE_ANGLE) {
 		pattern_ = new StgMovePattern_Angle(this);
 	}
 	StgMovePattern_Angle* pattern = (StgMovePattern_Angle*)pattern_.GetPointer();
@@ -87,14 +82,14 @@ void StgMoveObject::SetSpeed(double speed)
 }
 double StgMoveObject::GetDirectionAngle()
 {
-	if(pattern_ == NULL)return 0;
+	if (pattern_ == NULL)
+		return 0;
 	double res = pattern_->GetDirectionAngle();
 	return res;
 }
 void StgMoveObject::SetDirectionAngle(double angle)
 {
-	if(pattern_ == NULL || pattern_->GetType() != StgMovePattern::TYPE_ANGLE)
-	{
+	if (pattern_ == NULL || pattern_->GetType() != StgMovePattern::TYPE_ANGLE) {
 		pattern_ = new StgMovePattern_Angle(this);
 	}
 	StgMovePattern_Angle* pattern = (StgMovePattern_Angle*)pattern_.GetPointer();
@@ -102,15 +97,15 @@ void StgMoveObject::SetDirectionAngle(double angle)
 }
 void StgMoveObject::AddPattern(int frameDelay, ref_count_ptr<StgMovePattern>::unsync pattern)
 {
-	if(frameDelay == 0)
+	if (frameDelay == 0)
 		_AttachReservedPattern(pattern);
-	else
-	{
+	else {
 		int frame = frameDelay + framePattern_;
 		mapPattern_[frame] = pattern;
 	}
 }
-double StgMoveObject::cssn(double s, double ang) {
+double StgMoveObject::cssn(double s, double ang)
+{
 	const double PAI = 3.14159265358979323846;
 	const double TWOPAI = PAI * 2;
 	double c = sqrt(1 - s * s);
@@ -138,13 +133,15 @@ ref_count_ptr<StgMoveObject>::unsync StgMovePattern::_GetMoveObject(int id)
 {
 	StgStageController* controller = _GetStageController();
 	ref_count_ptr<DxScriptObjectBase>::unsync base = controller->GetMainRenderObject(id);
-	if(base == NULL || base->IsDeleted())return NULL;
+	if (base == NULL || base->IsDeleted())
+		return NULL;
 
 	return ref_count_ptr<StgMoveObject>::unsync::DownCast(base);
 }
 
 //StgMovePattern_Angle
-StgMovePattern_Angle::StgMovePattern_Angle(StgMoveObject* target) : StgMovePattern(target)
+StgMovePattern_Angle::StgMovePattern_Angle(StgMoveObject* target)
+	: StgMovePattern(target)
 {
 	typeMove_ = TYPE_ANGLE;
 	speed_ = 0;
@@ -156,20 +153,18 @@ StgMovePattern_Angle::StgMovePattern_Angle(StgMoveObject* target) : StgMovePatte
 }
 void StgMovePattern_Angle::Move()
 {
-	if(frameWork_ == 0)
+	if (frameWork_ == 0)
 		_Activate();
 	double angle = angDirection_;
 
-	if(acceleration_ != 0)
-	{
+	if (acceleration_ != 0) {
 		speed_ += acceleration_;
-		if(acceleration_ > 0)
+		if (acceleration_ > 0)
 			speed_ = min(speed_, maxSpeed_);
-		if(acceleration_ < 0)
+		if (acceleration_ < 0)
 			speed_ = max(speed_, maxSpeed_);
 	}
-	if(angularVelocity_ != 0)
-	{
+	if (angularVelocity_ != 0) {
 		angDirection_ += angularVelocity_;
 	}
 
@@ -187,26 +182,24 @@ void StgMovePattern_Angle::Move()
 	frameWork_++;
 }
 
-double StgMovePattern::cssn(double s, double ang) {
+double StgMovePattern::cssn(double s, double ang)
+{
 	const double PAI = 3.14159265358979323846;
 	const double TWOPAI = PAI * 2;
 	double c = sqrt(1 - s * s);
-	double angMod = fmod(ang,TWOPAI);
+	double angMod = fmod(ang, TWOPAI);
 	double fullRad = (angMod * TWOPAI < 0) ? (angMod + TWOPAI) : angMod;
 	double normRad = (fullRad > PAI) ? (fullRad - TWOPAI) : fullRad;
-	if (abs(normRad) > (PAI / 2)) {
+	if (abs(normRad) > (PAI / 2))
 		c *= -1;
-	}
 	return c;
 }
 
 void StgMovePattern_Angle::_Activate()
 {
-	if(idRalativeID_ != DxScript::ID_INVALID)
-	{
+	if (idRalativeID_ != DxScript::ID_INVALID) {
 		ref_count_ptr<StgMoveObject>::unsync obj = _GetMoveObject(idRalativeID_);
-		if(obj != NULL)
-		{
+		if (obj != NULL) {
 			double px = target_->GetPositionX();
 			double py = target_->GetPositionY();
 			double tx = obj->GetPositionX();
@@ -215,11 +208,11 @@ void StgMovePattern_Angle::_Activate()
 			angDirection_ += angle;
 		}
 	}
-
 }
 
 //StgMovePattern_XY
-StgMovePattern_XY::StgMovePattern_XY(StgMoveObject* target) : StgMovePattern(target)
+StgMovePattern_XY::StgMovePattern_XY(StgMoveObject* target)
+	: StgMovePattern(target)
 {
 	typeMove_ = TYPE_XY;
 	speedX_ = 0;
@@ -231,23 +224,21 @@ StgMovePattern_XY::StgMovePattern_XY(StgMoveObject* target) : StgMovePattern(tar
 }
 void StgMovePattern_XY::Move()
 {
-	if(frameWork_ == 0)
+	if (frameWork_ == 0)
 		_Activate();
 
-	if(accelerationX_ != 0)
-	{
+	if (accelerationX_ != 0) {
 		speedX_ += accelerationX_;
-		if(accelerationX_ > 0)
+		if (accelerationX_ > 0)
 			speedX_ = min(speedX_, maxSpeedX_);
-		if(accelerationX_ < 0)
+		if (accelerationX_ < 0)
 			speedX_ = max(speedX_, maxSpeedX_);
 	}
-	if(accelerationY_ != 0)
-	{
+	if (accelerationY_ != 0) {
 		speedY_ += accelerationY_;
-		if(accelerationY_ > 0)
+		if (accelerationY_ > 0)
 			speedY_ = min(speedY_, maxSpeedY_);
-		if(accelerationY_ < 0)
+		if (accelerationY_ < 0)
 			speedY_ = max(speedY_, maxSpeedY_);
 	}
 
@@ -271,7 +262,8 @@ double StgMovePattern_XY::GetDirectionAngle()
 }
 
 //StgMovePattern_Line
-StgMovePattern_Line::StgMovePattern_Line(StgMoveObject* target) : StgMovePattern(target)
+StgMovePattern_Line::StgMovePattern_Line(StgMoveObject* target)
+	: StgMovePattern(target)
 {
 	typeMove_ = TYPE_NONE;
 	speed_ = 0;
@@ -282,8 +274,7 @@ StgMovePattern_Line::StgMovePattern_Line(StgMoveObject* target) : StgMovePattern
 }
 void StgMovePattern_Line::Move()
 {
-	if(typeLine_ == TYPE_SPEED || typeLine_ == TYPE_FRAME)
-	{
+	if (typeLine_ == TYPE_SPEED || typeLine_ == TYPE_FRAME) {
 		double ang = Math::DegreeToRadian(angDirection_);
 		double s = sin(ang);
 		double c = cos(ang);
@@ -295,26 +286,20 @@ void StgMovePattern_Line::Move()
 		target_->SetPositionX(px);
 		target_->SetPositionY(py);
 		frameStop_--;
-		if(frameStop_ <= 0)
-		{
+		if (frameStop_ <= 0) {
 			typeLine_ = TYPE_NONE;
 			speed_ = 0;
 		}
-	}
-	else if(typeLine_ == TYPE_WEIGHT)
-	{
+	} else if (typeLine_ == TYPE_WEIGHT) {
 		double nx = target_->GetPositionX();
 		double ny = target_->GetPositionY();
 		double dist = pow(pow(toX_ - nx, 2) + pow(toY_ - ny, 2), 0.5);
-		if(dist < 1)
-		{
+		if (dist < 1) {
 			typeLine_ = TYPE_NONE;
 			speed_ = 0;
-		}
-		else
-		{
+		} else {
 			speed_ = dist / weight_;
-			if(speed_ > maxSpeed_)
+			if (speed_ > maxSpeed_)
 				speed_ = maxSpeed_;
 			double ang = Math::DegreeToRadian(angDirection_);
 			double s = sin(ang);
@@ -326,7 +311,6 @@ void StgMovePattern_Line::Move()
 			target_->SetPositionX(px);
 			target_->SetPositionY(py);
 		}
-
 	}
 }
 void StgMovePattern_Line::SetAtSpeed(double tx, double ty, double speed)

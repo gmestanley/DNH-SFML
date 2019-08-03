@@ -1,5 +1,5 @@
-#include"DnhGcLibImpl.hpp"
-#include"DnhCommon.hpp"
+#include "DnhGcLibImpl.hpp"
+#include "DnhCommon.hpp"
 
 /**********************************************************
 //EPathProperty
@@ -56,31 +56,26 @@ std::wstring EPathProperty::GetCommonDataPath(std::wstring scriptPath, std::wstr
 std::wstring EPathProperty::ExtendRelativeToFull(std::wstring dir, std::wstring path)
 {
 	path = StringUtility::ReplaceAll(path, L"\\", L"/");
-	if(path.size() >= 2)
-	{
-		if(path[0] == L'.' && path[1] == L'/')
-		{
+	if (path.size() >= 2) {
+		if (path[0] == L'.' && path[1] == L'/') {
 			path = path.substr(2);
 			path = dir + path;
 		}
 	}
 
 	std::wstring drive = PathProperty::GetDriveName(path);
-	if(drive.size() == 0)
-	{
+	if (drive.size() == 0) {
 		path = GetModuleDirectory() + path;
 	}
 
 	return path;
 }
 
-
 /**********************************************************
 //ELogger
 **********************************************************/
 ELogger::ELogger()
 {
-
 }
 void ELogger::Initialize(bool bFile, bool bWindow)
 {
@@ -107,19 +102,14 @@ EFpsController::EFpsController()
 {
 	DnhConfiguration* config = DnhConfiguration::GetInstance();
 	int fpsType = config->GetFpsType();
-	if(fpsType == DnhConfiguration::FPS_NORMAL ||
-		fpsType == DnhConfiguration::FPS_1_2 ||
-		fpsType == DnhConfiguration::FPS_1_3)
-	{
+	if (fpsType == DnhConfiguration::FPS_NORMAL || fpsType == DnhConfiguration::FPS_1_2 || fpsType == DnhConfiguration::FPS_1_3) {
 		StaticFpsController* controller = new StaticFpsController();
-		if(fpsType == DnhConfiguration::FPS_1_2)
+		if (fpsType == DnhConfiguration::FPS_1_2)
 			controller->SetSkipRate(1);
-		else if(fpsType == DnhConfiguration::FPS_1_3)
+		else if (fpsType == DnhConfiguration::FPS_1_3)
 			controller->SetSkipRate(2);
 		controller_ = controller;
-	}
-	else
-	{
+	} else {
 		AutoSkipFpsController* controller = new AutoSkipFpsController();
 		controller_ = controller;
 	}
@@ -145,7 +135,6 @@ bool ETaskManager::Initialize()
 	return true;
 }
 
-
 /**********************************************************
 //ETextureManager
 **********************************************************/
@@ -153,16 +142,14 @@ bool ETextureManager::Initialize()
 {
 	bool res = TextureManager::Initialize();
 
-	for(int iRender = 0 ; iRender < MAX_RESERVED_RENDERTARGET ; iRender++)
-	{
+	for (int iRender = 0; iRender < MAX_RESERVED_RENDERTARGET; iRender++) {
 		std::wstring name = GetReservedRenderTargetName(iRender);
 		ref_count_ptr<Texture> texture = new Texture();
 		res &= texture->CreateRenderTarget(name);
 		Add(name, texture);
 	}
 
-	if(!res)
-	{
+	if (!res) {
 		throw gstd::wexception(L"ETextureManager初期化失敗");
 	}
 	return res;
@@ -200,7 +187,7 @@ void EDirectInput::ResetVirtualKeyMap()
 	AddKeyMap(KEY_DOWN, config->GetVirtualKey(KEY_DOWN));
 
 	AddKeyMap(KEY_OK, config->GetVirtualKey(KEY_OK));
-	AddKeyMap(KEY_CANCEL, config->GetVirtualKey(KEY_CANCEL));	
+	AddKeyMap(KEY_CANCEL, config->GetVirtualKey(KEY_CANCEL));
 
 	AddKeyMap(KEY_SHOT, config->GetVirtualKey(KEY_SHOT));
 	AddKeyMap(KEY_BOMB, config->GetVirtualKey(KEY_BOMB));

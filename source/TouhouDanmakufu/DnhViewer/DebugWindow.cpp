@@ -1,5 +1,5 @@
-#include"DebugWindow.hpp"
-#include"MainWindow.hpp"
+#include "DebugWindow.hpp"
+#include "MainWindow.hpp"
 
 /**********************************************************
 //DebugWindow
@@ -11,14 +11,14 @@ void DebugWindow::Initialize()
 {
 	MainWindow* mainWindow = MainWindow::GetInstance();
 	HWND hParent = MainWindow::GetInstance()->GetWindowHandle();
-	hWnd_ = CreateDialog((HINSTANCE)GetWindowLong(hParent,GWL_HINSTANCE),
-							MAKEINTRESOURCE(IDD_DIALOG_DEBUG),
-							hParent,(DLGPROC)this->_StaticWindowProcedure);
+	hWnd_ = CreateDialog((HINSTANCE)GetWindowLong(hParent, GWL_HINSTANCE),
+		MAKEINTRESOURCE(IDD_DIALOG_DEBUG),
+		hParent, (DLGPROC)this->_StaticWindowProcedure);
 	this->Attach(hWnd_);
 
 	int wx = mainWindow->GetClientX() + mainWindow->GetClientWidth() - GetClientWidth();
 	int wy = mainWindow->GetClientY();
-	POINT pos = {wx, wy};
+	POINT pos = { wx, wy };
 	ClientToScreen(hParent, &pos);
 
 	checkPlayerInvincivility_.Attach(GetDlgItem(hWnd_, IDC_CHECK_PLAYER_INVINCIBILITY));
@@ -29,41 +29,34 @@ void DebugWindow::ShowModeless()
 {
 	SetWindowVisible(true);
 }
-LRESULT DebugWindow::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
+LRESULT DebugWindow::_WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	switch (uMsg)
-	{
-		case WM_CLOSE:
-		{
-			SetWindowVisible(false);
+	switch (uMsg) {
+	case WM_CLOSE: {
+		SetWindowVisible(false);
+		break;
+	}
+	case WM_COMMAND: {
+		switch (wParam & 0xffff) {
+		case IDC_CHECK_PLAYER_INVINCIBILITY:
 			break;
 		}
-		case WM_COMMAND:
-		{
-			switch(wParam & 0xffff)
-			{
-				case IDC_CHECK_PLAYER_INVINCIBILITY:
-					break;
-			}
-			break;
-		}
-
+		break;
+	}
 	}
 	return _CallPreviousWindowProcedure(hWnd, uMsg, wParam, lParam);
 }
 
 void DebugWindow::SetPlayerInvincivility(bool bInvincivility)
 {
-	SendMessage(checkPlayerInvincivility_.GetWindowHandle() , BM_SETCHECK , 
-		bInvincivility ? BST_CHECKED : BST_UNCHECKED , 0);
+	SendMessage(checkPlayerInvincivility_.GetWindowHandle(), BM_SETCHECK,
+		bInvincivility ? BST_CHECKED : BST_UNCHECKED, 0);
 }
 bool DebugWindow::IsPlayerInvincivility()
 {
-	bool res = 
-		SendMessage(checkPlayerInvincivility_.GetWindowHandle() , BM_GETCHECK , 0 , 0) == BST_CHECKED;
+	bool res = SendMessage(checkPlayerInvincivility_.GetWindowHandle(), BM_GETCHECK, 0, 0) == BST_CHECKED;
 	return res;
 }
-
 
 /**********************************************************
 //DebugTask
@@ -82,39 +75,27 @@ void DebugTask::Work()
 	DebugWindow* wndDebug = mainWindow->GetDebugWindow();
 
 	EDirectInput* input = EDirectInput::GetInstance();
-	if(input->GetKeyState(DIK_I) == KEY_PUSH)
-	{
+	if (input->GetKeyState(DIK_I) == KEY_PUSH) {
 		bool bPlayerInvincivility = wndDebug->IsPlayerInvincivility();
 		wndDebug->SetPlayerInvincivility(!bPlayerInvincivility);
 	}
 
-	if(controller == NULL)
-	{
+	if (controller == NULL) {
 		bPlayerInvincivility_ = false;
-	}
-	else
-	{
+	} else {
 		int FRAME_PLAYER_INVINCIVILITY = 256 * 256 * 256;
 		bool bPlayerInvincivility = wndDebug->IsPlayerInvincivility();
 		StgStageController* stageController = controller->GetStageController();
-		if(stageController != NULL)
-		{
+		if (stageController != NULL) {
 			ref_count_ptr<StgPlayerObject>::unsync objPlayer = stageController->GetPlayerObject();
-			if(bPlayerInvincivility && objPlayer->GetInvincibilityFrame() < FRAME_PLAYER_INVINCIVILITY)
-			{
+			if (bPlayerInvincivility && objPlayer->GetInvincibilityFrame() < FRAME_PLAYER_INVINCIVILITY) {
 				//自機無敵
 				objPlayer->SetInvincibilityFrame(FRAME_PLAYER_INVINCIVILITY);
-			}
-			else if(bPlayerInvincivility_ && !bPlayerInvincivility)
-			{
+			} else if (bPlayerInvincivility_ && !bPlayerInvincivility) {
 				//自機無敵解除
 				objPlayer->SetInvincibilityFrame(0);
 			}
 		}
-
 		bPlayerInvincivility_ = bPlayerInvincivility;
 	}
-
-
-
 }

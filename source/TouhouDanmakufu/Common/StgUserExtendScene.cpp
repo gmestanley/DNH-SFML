@@ -1,7 +1,7 @@
-#include"StgUserExtendScene.hpp"
+#include "StgUserExtendScene.hpp"
 
-#include"StgSystem.hpp"
-#include"StgStageScript.hpp"
+#include "StgStageScript.hpp"
+#include "StgSystem.hpp"
 
 /**********************************************************
 //StgUserExtendScene
@@ -17,46 +17,45 @@ void StgUserExtendScene::_InitializeTransitionTexture()
 {
 	//画面キャプチャ
 	StgStageController* stageController = systemController_->GetStageController();
-	if(stageController != NULL)
-	{
+	if (stageController != NULL)
 		stageController->RenderToTransitionTexture();
-	}
-
 }
 void StgUserExtendScene::_InitializeScript(std::wstring path, int type)
 {
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	_int64 idScript = scriptManager_->LoadScript(path, type);
 	scriptManager_->StartScript(idScript);
 }
 void StgUserExtendScene::_CallScriptMainLoop()
 {
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	scriptManager_->Work();
 }
 void StgUserExtendScene::_CallScriptFinalize()
 {
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	scriptManager_->CallScriptFinalizeAll();
 }
 void StgUserExtendScene::_AddRelativeManager()
 {
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	ref_count_ptr<ScriptManager> scriptManager = scriptManager_;
 
 	StgStageController* stageController = systemController_->GetStageController();
-	if(stageController != NULL)
-	{
+	if (stageController != NULL) {
 		ref_count_ptr<ScriptManager> stageScriptManager = stageController->GetScriptManagerR();
-		if(stageScriptManager != NULL)
+		if (stageScriptManager != NULL)
 			ScriptManager::AddRelativeScriptManagerMutual(scriptManager, stageScriptManager);
 	}
 
 	StgPackageController* packageController = systemController_->GetPackageController();
-	if(packageController != NULL)
-	{
+	if (packageController != NULL) {
 		ref_count_ptr<ScriptManager> packageScriptManager = packageController->GetScriptManager();
-		if(packageScriptManager != NULL)
+		if (packageScriptManager != NULL)
 			ScriptManager::AddRelativeScriptManagerMutual(scriptManager, packageScriptManager);
 	}
 }
@@ -66,7 +65,8 @@ void StgUserExtendScene::Work()
 }
 void StgUserExtendScene::Render()
 {
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	scriptManager_->Render();
 }
 
@@ -90,16 +90,12 @@ StgUserExtendSceneScriptManager::~StgUserExtendSceneScriptManager()
 }
 void StgUserExtendSceneScriptManager::Work()
 {
-	if(!IsError())
-	{
+	if (!IsError()) {
 		StgControlScriptManager::Work();
 		objectManager_->WorkObject();
-	}
-	else
-	{
+	} else {
 		systemController_->GetSystemInformation()->SetError(error_);
 	}
-
 }
 void StgUserExtendSceneScriptManager::Render()
 {
@@ -108,21 +104,19 @@ void StgUserExtendSceneScriptManager::Render()
 ref_count_ptr<ManagedScript> StgUserExtendSceneScriptManager::Create(int type)
 {
 	ref_count_ptr<ManagedScript> res;
-	switch(type)
-	{
-		case StgUserExtendSceneScript::TYPE_PAUSE_SCENE:
-			res = new StgPauseSceneScript(systemController_);
-			break;
-		case StgUserExtendSceneScript::TYPE_END_SCENE:
-			res = new StgEndSceneScript(systemController_);
-			break;
-		case StgUserExtendSceneScript::TYPE_REPLAY_SCENE:
-			res = new StgReplaySaveScript(systemController_);
-			break;
+	switch (type) {
+	case StgUserExtendSceneScript::TYPE_PAUSE_SCENE:
+		res = new StgPauseSceneScript(systemController_);
+		break;
+	case StgUserExtendSceneScript::TYPE_END_SCENE:
+		res = new StgEndSceneScript(systemController_);
+		break;
+	case StgUserExtendSceneScript::TYPE_REPLAY_SCENE:
+		res = new StgReplaySaveScript(systemController_);
+		break;
 	}
 
-	if(res != NULL)
-	{
+	if (res != NULL) {
 		res->SetObjectManager(objectManager_);
 		res->SetScriptManager(this);
 	}
@@ -131,24 +125,21 @@ ref_count_ptr<ManagedScript> StgUserExtendSceneScriptManager::Create(int type)
 }
 void StgUserExtendSceneScriptManager::CallScriptFinalizeAll()
 {
-	std::list<ref_count_ptr<ManagedScript> >::iterator itr = listScriptRun_.begin();
-	for(; itr != listScriptRun_.end(); itr++)
-	{
+	std::list<ref_count_ptr<ManagedScript>>::iterator itr = listScriptRun_.begin();
+	for (; itr != listScriptRun_.end(); itr++) {
 		ref_count_ptr<ManagedScript> script = (*itr);
-		if(script->IsEventExists("Finalize"))
+		if (script->IsEventExists("Finalize"))
 			script->Run("Finalize");
 	}
 }
 gstd::value StgUserExtendSceneScriptManager::GetResultValue()
 {
 	gstd::value res;
-	std::list<ref_count_ptr<ManagedScript> >::iterator itr = listScriptRun_.begin();
-	for(; itr != listScriptRun_.end(); itr++)
-	{
+	std::list<ref_count_ptr<ManagedScript>>::iterator itr = listScriptRun_.begin();
+	for (; itr != listScriptRun_.end(); itr++) {
 		ref_count_ptr<ManagedScript> script = (*itr);
 		gstd::value v = script->GetResultValue();
-		if(v.has_data())
-		{
+		if (v.has_data()) {
 			res = v;
 			break;
 		}
@@ -157,7 +148,8 @@ gstd::value StgUserExtendSceneScriptManager::GetResultValue()
 }
 bool StgUserExtendSceneScriptManager::IsRealValue(gstd::value val)
 {
-	if(listScriptRun_.size() == 0)return false;
+	if (listScriptRun_.size() == 0)
+		return false;
 	ref_count_ptr<ManagedScript> script = *listScriptRun_.begin();
 
 	bool res = script->IsRealValue(val);
@@ -167,7 +159,8 @@ bool StgUserExtendSceneScriptManager::IsRealValue(gstd::value val)
 /**********************************************************
 //StgUserExtendSceneScript
 **********************************************************/
-StgUserExtendSceneScript::StgUserExtendSceneScript(StgSystemController* systemController) : StgControlScript(systemController)
+StgUserExtendSceneScript::StgUserExtendSceneScript(StgSystemController* systemController)
+	: StgControlScript(systemController)
 {
 	StgStageController* stageController = systemController_->GetStageController();
 
@@ -179,11 +172,11 @@ StgUserExtendSceneScript::~StgUserExtendSceneScript()
 {
 }
 
-
 /**********************************************************
 //StgPauseScene
 **********************************************************/
-StgPauseScene::StgPauseScene(StgSystemController* controller) : StgUserExtendScene(controller)
+StgPauseScene::StgPauseScene(StgSystemController* controller)
+	: StgUserExtendScene(controller)
 {
 }
 StgPauseScene::~StgPauseScene()
@@ -191,34 +184,26 @@ StgPauseScene::~StgPauseScene()
 }
 void StgPauseScene::Work()
 {
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	_CallScriptMainLoop();
 
 	ref_count_ptr<StgSystemInformation> infoSystem = systemController_->GetSystemInformation();
 	ref_count_ptr<StgStageInformation> infoStage = systemController_->GetStageController()->GetStageInformation();
 	gstd::value resValue = scriptManager_->GetResultValue();
-	if(scriptManager_->IsRealValue(resValue))
-	{
+	if (scriptManager_->IsRealValue(resValue)) {
 		int result = (int)resValue.as_real();
-		if(result == StgControlScript::RESULT_CANCEL)
-		{
-		}
-		else if(result == StgControlScript::RESULT_END)
-		{
-			if(infoSystem->IsPackageMode())
-			{
+		if (result == StgControlScript::RESULT_CANCEL) {
+		} else if (result == StgControlScript::RESULT_END) {
+			if (infoSystem->IsPackageMode()) {
 				infoStage->SetResult(StgStageInformation::RESULT_BREAK_OFF);
 				infoStage->SetEnd();
-				//infoSystem->SetScene(StgSystemInformation::SCENE_PACKAGE_CONTROL);
-			}
-			else
-			{
+				// infoSystem->SetScene(StgSystemInformation::SCENE_PACKAGE_CONTROL);
+			} else {
 				infoSystem->SetStgEnd();
 			}
-		}
-		else if(result == StgControlScript::RESULT_RETRY)
-		{
-			if(!infoStage->IsReplay())
+		} else if (result == StgControlScript::RESULT_RETRY) {
+			if (!infoStage->IsReplay())
 				infoSystem->SetRetry();
 		}
 		EDirectInput::GetInstance()->ResetInputState();
@@ -245,16 +230,17 @@ void StgPauseScene::Start()
 	std::wstring path = sysInfo->GetPauseScriptPath();
 	_InitializeScript(path, StgUserExtendSceneScript::TYPE_PAUSE_SCENE);
 
-	if(stageController != NULL)
+	if (stageController != NULL)
 		stageController->GetStageInformation()->SetPause(true);
 }
 void StgPauseScene::Finish()
 {
 	StgStageController* stageController = systemController_->GetStageController();
-	if(stageController != NULL)
+	if (stageController != NULL)
 		stageController->GetStageInformation()->SetPause(false);
 
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	_CallScriptFinalize();
 	scriptManager_ = NULL;
 
@@ -266,15 +252,15 @@ void StgPauseScene::Finish()
 /**********************************************************
 //StgPauseSceneScript
 **********************************************************/
-const function stgPauseFunction[] =  
-{
+const function stgPauseFunction[] = {
 	//関数：
 
 	//定数：
-	{"__stgPauseFunction__", constant<0>::func, 0},
+	{ "__stgPauseFunction__", constant<0>::func, 0 },
 
 };
-StgPauseSceneScript::StgPauseSceneScript(StgSystemController* controller) : StgUserExtendSceneScript(controller)
+StgPauseSceneScript::StgPauseSceneScript(StgSystemController* controller)
+	: StgUserExtendSceneScript(controller)
 {
 	typeScript_ = TYPE_PAUSE_SCENE;
 	_AddFunction(stgPauseFunction, sizeof(stgPauseFunction) / sizeof(function));
@@ -285,44 +271,37 @@ StgPauseSceneScript::~StgPauseSceneScript()
 
 //一時停止専用関数：一時停止操作
 
-
 /**********************************************************
 //StgEndScene
 **********************************************************/
-StgEndScene::StgEndScene(StgSystemController* controller) : StgUserExtendScene(controller)
+StgEndScene::StgEndScene(StgSystemController* controller)
+	: StgUserExtendScene(controller)
 {
-
 }
 StgEndScene::~StgEndScene()
 {
 }
 void StgEndScene::Work()
 {
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	_CallScriptMainLoop();
 
 	ref_count_ptr<StgSystemInformation> infoSystem = systemController_->GetSystemInformation();
 	gstd::value resValue = scriptManager_->GetResultValue();
-	if(scriptManager_->IsRealValue(resValue))
-	{
+	if (scriptManager_->IsRealValue(resValue)) {
 		int result = (int)resValue.as_real();
-		if(result == StgControlScript::RESULT_SAVE_REPLAY)
-		{
-			//info->SetStgEnd();
+		if (result == StgControlScript::RESULT_SAVE_REPLAY) {
+			// info->SetStgEnd();
 			systemController_->TransReplaySaveScene();
-		}
-		else if(result == StgControlScript::RESULT_END)
-		{
+		} else if (result == StgControlScript::RESULT_END) {
 			infoSystem->SetStgEnd();
-		}
-		else if(result == StgControlScript::RESULT_RETRY)
-		{
+		} else if (result == StgControlScript::RESULT_RETRY) {
 			infoSystem->SetRetry();
 		}
 		EDirectInput::GetInstance()->ResetInputState();
 		Finish();
 	}
-
 }
 
 void StgEndScene::Start()
@@ -343,7 +322,8 @@ void StgEndScene::Finish()
 {
 	ref_count_ptr<StgSystemInformation> info = systemController_->GetSystemInformation();
 
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	_CallScriptFinalize();
 	scriptManager_ = NULL;
 }
@@ -351,15 +331,15 @@ void StgEndScene::Finish()
 /**********************************************************
 //StgEndSceneScript
 **********************************************************/
-const function stgEndFunction[] =  
-{
+const function stgEndFunction[] = {
 	//関数：
 
 	//定数：
-	{"__stgEndFunction__", constant<0>::func, 0},
+	{ "__stgEndFunction__", constant<0>::func, 0 },
 
 };
-StgEndSceneScript::StgEndSceneScript(StgSystemController* controller) : StgUserExtendSceneScript(controller)
+StgEndSceneScript::StgEndSceneScript(StgSystemController* controller)
+	: StgUserExtendSceneScript(controller)
 {
 	typeScript_ = TYPE_END_SCENE;
 	_AddFunction(stgEndFunction, sizeof(stgEndFunction) / sizeof(function));
@@ -371,29 +351,26 @@ StgEndSceneScript::~StgEndSceneScript()
 /**********************************************************
 //StgReplaySaveScene
 **********************************************************/
-StgReplaySaveScene::StgReplaySaveScene(StgSystemController* controller) : StgUserExtendScene(controller)
+StgReplaySaveScene::StgReplaySaveScene(StgSystemController* controller)
+	: StgUserExtendScene(controller)
 {
-
 }
 StgReplaySaveScene::~StgReplaySaveScene()
 {
 }
 void StgReplaySaveScene::Work()
 {
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	_CallScriptMainLoop();
 
 	ref_count_ptr<StgSystemInformation> infoSystem = systemController_->GetSystemInformation();
 	gstd::value resValue = scriptManager_->GetResultValue();
-	if(scriptManager_->IsRealValue(resValue))
-	{
+	if (scriptManager_->IsRealValue(resValue)) {
 		int result = (int)resValue.as_real();
-		if(result == StgControlScript::RESULT_END)
-		{
+		if (result == StgControlScript::RESULT_END) {
 			infoSystem->SetStgEnd();
-		}
-		else if(result == StgControlScript::RESULT_CANCEL)
-		{
+		} else if (result == StgControlScript::RESULT_CANCEL) {
 			systemController_->TransStgEndScene();
 		}
 
@@ -410,7 +387,7 @@ void StgReplaySaveScene::Start()
 
 	ref_count_ptr<StgSystemInformation> info = systemController_->GetSystemInformation();
 
-	//_InitializeTransitionTexture();
+	// _InitializeTransitionTexture();
 
 	//スクリプト初期化
 	std::wstring path = info->GetReplaySaveSceneScriptPath();
@@ -420,7 +397,8 @@ void StgReplaySaveScene::Finish()
 {
 	ref_count_ptr<StgSystemInformation> info = systemController_->GetSystemInformation();
 
-	if(scriptManager_ == NULL)return;
+	if (scriptManager_ == NULL)
+		return;
 	_CallScriptFinalize();
 	scriptManager_ = NULL;
 }
@@ -428,15 +406,15 @@ void StgReplaySaveScene::Finish()
 /**********************************************************
 //StgReplaySaveScript
 **********************************************************/
-const function stgReplaySaveFunction[] =  
-{
+const function stgReplaySaveFunction[] = {
 	//関数：
 
 	//定数：
-	{"__stgReplaySaveFunction__", constant<0>::func, 0},
+	{ "__stgReplaySaveFunction__", constant<0>::func, 0 },
 
 };
-StgReplaySaveScript::StgReplaySaveScript(StgSystemController* controller) : StgUserExtendSceneScript(controller)
+StgReplaySaveScript::StgReplaySaveScript(StgSystemController* controller)
+	: StgUserExtendSceneScript(controller)
 {
 	typeScript_ = TYPE_REPLAY_SCENE;
 	_AddFunction(stgReplaySaveFunction, sizeof(stgReplaySaveFunction) / sizeof(function));

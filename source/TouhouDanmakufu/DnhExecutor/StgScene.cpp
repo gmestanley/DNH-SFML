@@ -1,5 +1,5 @@
-#include"StgScene.hpp"
-#include"System.hpp"
+#include "StgScene.hpp"
+#include "System.hpp"
 
 /**********************************************************
 //EStgSystemController
@@ -14,7 +14,6 @@ void EStgSystemController::DoRetry()
 	ref_count_ptr<StgStageInformation> infoStage = stageController_->GetStageInformation();
 	sceneManager->TransStgScene(infoStage->GetMainScriptInformation(), infoStage->GetPlayerScriptInformation(), NULL);
 }
-
 
 /**********************************************************
 //PStgSystemController

@@ -1,4 +1,4 @@
-#include"Common.hpp"
+#include "Common.hpp"
 
 /**********************************************************
 //SystemResidentTask
@@ -9,10 +9,10 @@ SystemResidentTask::SystemResidentTask()
 	int screenWidth = graphics->GetScreenWidth();
 	int screenHeight = graphics->GetScreenHeight();
 
-	textFps_.SetFontColorTop(D3DCOLOR_ARGB(255,160,160,255));
-	textFps_.SetFontColorBottom(D3DCOLOR_ARGB(255,64,64,255));
+	textFps_.SetFontColorTop(D3DCOLOR_ARGB(255, 160, 160, 255));
+	textFps_.SetFontColorBottom(D3DCOLOR_ARGB(255, 64, 64, 255));
 	textFps_.SetFontBorderType(directx::DxFont::BORDER_FULL);
-	textFps_.SetFontBorderColor(D3DCOLOR_ARGB(255,255,255,255));
+	textFps_.SetFontBorderColor(D3DCOLOR_ARGB(255, 255, 255, 255));
 	textFps_.SetFontBorderWidth(2);
 	textFps_.SetFontSize(14);
 	textFps_.SetFontBold(true);
@@ -34,5 +34,5 @@ void SystemResidentTask::RenderFps()
 	EFpsController* fpsController = EFpsController::GetInstance();
 	float fps = fpsController->GetCurrentWorkFps();
 	textFps_.SetText(StringUtility::Format(L"%.2ffps", fps));
-	//textFps_.Render();
+	// textFps_.Render();
 }
