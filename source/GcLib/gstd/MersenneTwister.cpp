@@ -1,4 +1,4 @@
-#include"MersenneTwister.hpp"
+#include "MersenneTwister.hpp"
 #include <random>
 using namespace gstd;
 
@@ -17,10 +17,18 @@ const cardinal UPPER_MASK = 0x80000000UL;
 const cardinal LOWER_MASK = 0x7fffffffUL;
 
 #define FIX32(value) value // 32bitの型が無い環境では value & 0xffffffffUL とか
-static cardinal const mag01[2]={0x0UL, MATRIX_A};
+static cardinal const mag01[2] = { 0x0UL, MATRIX_A };
 
-MersenneTwister::MersenneTwister() : actualTwister(0), seed(0) {}
-MersenneTwister::MersenneTwister(unsigned long s) : actualTwister(s), seed(s) {}
+MersenneTwister::MersenneTwister()
+	: actualTwister(0)
+	, seed(0)
+{
+}
+MersenneTwister::MersenneTwister(unsigned long s)
+	: actualTwister(s)
+	, seed(s)
+{
+}
 unsigned long MersenneTwister::_GenrandInt32()
 {
 	std::uniform_int_distribution<long> new_param(0, maxInt);
@@ -31,11 +39,12 @@ void MersenneTwister::Initialize(unsigned long s)
 	actualTwister.seed(s);
 	seed = s;
 }
-void MersenneTwister::Initialize(unsigned long *init_key, int key_length)
+void MersenneTwister::Initialize(unsigned long* init_key, int key_length)
 {
 	Initialize(0);
 }
-int MersenneTwister::SeedRNG() {
+int MersenneTwister::SeedRNG()
+{
 	long result;
 	std::uniform_int_distribution<int> new_param(0, maxInt);
 	result = new_param(actualTwister);
@@ -59,7 +68,7 @@ _int64 MersenneTwister::GetInt64()
 }
 _int64 MersenneTwister::GetInt64(_int64 min, _int64 max)
 {
-	std::uniform_int_distribution<_int64> new_param(min,max);
+	std::uniform_int_distribution<_int64> new_param(min, max);
 	return new_param(actualTwister);
 }
 long double MersenneTwister::GetReal()

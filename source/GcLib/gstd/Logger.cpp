@@ -1,4 +1,4 @@
-#include"Logger.hpp"
+#include "Logger.hpp"
 
 using namespace gstd;
 
@@ -8,19 +8,18 @@ using namespace gstd;
 Logger* Logger::top_ = NULL;
 Logger::Logger()
 {
-
 }
 Logger::~Logger()
 {
 	listLogger_.clear();
-	if(top_ == this)top_ = NULL;
+	if (top_ == this)
+		top_ = NULL;
 }
 void Logger::_WriteChild(SYSTEMTIME& time, std::wstring str)
 {
 	_Write(time, str);
-	std::list<ref_count_ptr<Logger> >::iterator itr = listLogger_.begin();
-	for(;itr!=listLogger_.end();itr++)
-	{
+	std::list<ref_count_ptr<Logger>>::iterator itr = listLogger_.begin();
+	for (; itr != listLogger_.end(); itr++) {
 		(*itr)->_Write(time, str);
 	}
 }
@@ -32,22 +31,21 @@ void Logger::Write(std::wstring str)
 	this->_WriteChild(systemTime, str);
 }
 
-
 /**********************************************************
 //FileLogger
 **********************************************************/
 FileLogger::FileLogger()
 {
-	sizeMax_ = 10*1024*1024;//10MB
+	sizeMax_ = 10 * 1024 * 1024; // 10MB
 }
 
 FileLogger::~FileLogger()
 {
-
 }
 void FileLogger::Clear()
 {
-	if(!bEnable_)return;
+	if (!bEnable_)
+		return;
 
 	File file1(path_);
 	file1.Delete();
@@ -63,22 +61,19 @@ bool FileLogger::Initialize(bool bEnable)
 bool FileLogger::Initialize(std::wstring path, bool bEnable)
 {
 	bEnable_ = bEnable;
-	if(path.size() == 0)
-	{
-		path = PathProperty::GetModuleDirectory()+
-			PathProperty::GetModuleName() + 
-			std::wstring(L".log");
+	if (path.size() == 0) {
+		path = PathProperty::GetModuleDirectory() + PathProperty::GetModuleName() + std::wstring(L".log");
 	}
 	return this->SetPath(path);
 }
 bool FileLogger::SetPath(std::wstring path)
 {
-	if(!bEnable_)return false;
+	if (!bEnable_)
+		return false;
 
 	path_ = path;
 	File file(path);
-	if(file.IsExists() == false)
-	{
+	if (file.IsExists() == false) {
 		file.CreateDirectory();
 		_CreateFile(file);
 	}
@@ -96,20 +91,21 @@ void FileLogger::_CreateFile(File& file)
 }
 void FileLogger::_Write(SYSTEMTIME& time, std::wstring str)
 {
-	if(!bEnable_)return;
+	if (!bEnable_)
+		return;
 
 	{
 		Lock lock(lock_);
-		std::wstring strTime = 
-			StringUtility::Format(L"%.4d/%.2d/%.2d %.2d:%.2d:%.2d.%.3d ",time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+		std::wstring strTime = StringUtility::Format(L"%.4d/%.2d/%.2d %.2d:%.2d:%.2d.%.3d ", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
 
 		File file(path_);
-		if(!file.Open(File::WRITE))return;
+		if (!file.Open(File::WRITE))
+			return;
 
 		std::wstring out = strTime;
 		out += str;
 		out += L"\r\n";
-		
+
 		int pos = file.GetSize();
 		file.Seek(pos);
 		file.Write(&out[0], StringUtility::GetByteSize(out));
@@ -117,8 +113,7 @@ void FileLogger::_Write(SYSTEMTIME& time, std::wstring str)
 		bool bOverSize = file.GetSize() > sizeMax_;
 		file.Close();
 
-		if(bOverSize)
-		{
+		if (bOverSize) {
 			::MoveFileEx(path_.c_str(), path2_.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
 			File file1(path_);
 			_CreateFile(file1);
@@ -126,13 +121,11 @@ void FileLogger::_Write(SYSTEMTIME& time, std::wstring str)
 	}
 }
 
-
 /**********************************************************
 //WindowLogger
 **********************************************************/
 WindowLogger::WindowLogger()
 {
-
 }
 WindowLogger::~WindowLogger()
 {
@@ -141,25 +134,24 @@ WindowLogger::~WindowLogger()
 	wndLogPanel_ = NULL;
 	wndStatus_ = NULL;
 	wndTab_ = NULL;
-	if(hWnd_ != NULL)
+	if (hWnd_ != NULL)
 		SendMessage(hWnd_, WM_ENDLOGGER, 0, 0);
-	if(threadWindow_ != NULL)
-	{
+	if (threadWindow_ != NULL) {
 		threadWindow_->Stop();
-		threadWindow_->Join(2000);//念のためにタイムアウト設定
+		threadWindow_->Join(2000); //念のためにタイムアウト設定
 	}
 }
 bool WindowLogger::Initialize(bool bEnable)
 {
 	bEnable_ = bEnable;
-	if(!bEnable)return true;
+	if (!bEnable)
+		return true;
 
 	threadWindow_ = new WindowThread(this);
 	threadWindow_->Start();
 
-	while(GetWindowHandle() == NULL)
-	{
-		Sleep(10);//ウィンドウが作成完了するまで待機
+	while (GetWindowHandle() == NULL) {
+		Sleep(10); //ウィンドウが作成完了するまで待機
 	}
 
 	//LogPanel
@@ -192,15 +184,12 @@ void WindowLogger::SaveState()
 
 		RecordBuffer recordPanel;
 		int panelCount = wndTab_->GetPageCount();
-		for (int iPanel = 0; iPanel < panelCount; iPanel++)
-		{
-			ref_count_ptr<WindowLogger::Panel> panel =
-				ref_count_ptr<WindowLogger::Panel>::DownCast(wndTab_->GetPanel(iPanel));
-			if (panel == NULL)continue;
-
+		for (int iPanel = 0; iPanel < panelCount; iPanel++) {
+			ref_count_ptr<WindowLogger::Panel> panel = ref_count_ptr<WindowLogger::Panel>::DownCast(wndTab_->GetPanel(iPanel));
+			if (panel == NULL)
+				continue;
 			panel->_WriteRecord(recordPanel);
 		}
-
 
 		recordMain.SetRecordAsRecordBuffer("panel", recordPanel);
 
@@ -211,17 +200,16 @@ void WindowLogger::LoadState()
 {
 	std::wstring path = PathProperty::GetModuleDirectory() + L"LogWindow.dat";
 	RecordBuffer recordMain;
-	if(!recordMain.ReadFromFile(path))return;
+	if (!recordMain.ReadFromFile(path))
+		return;
 
 	int panelIndex = recordMain.GetRecordAsInteger("panelIndex");
-	if(panelIndex >= 0 && panelIndex < wndTab_->GetPageCount())
+	if (panelIndex >= 0 && panelIndex < wndTab_->GetPageCount())
 		wndTab_->SetCurrentPage(panelIndex);
 
 	RECT rcWnd;
 	recordMain.GetRecord("windowRect", rcWnd);
-	if(rcWnd.left >= 0 && rcWnd.right > rcWnd.left &&
-		rcWnd.top >= 0 && rcWnd.bottom > rcWnd.top)
-	{
+	if (rcWnd.left >= 0 && rcWnd.right > rcWnd.left && rcWnd.top >= 0 && rcWnd.bottom > rcWnd.top) {
 		SetBounds(rcWnd.left, rcWnd.top, rcWnd.right - rcWnd.left, rcWnd.bottom - rcWnd.top);
 	}
 
@@ -229,11 +217,10 @@ void WindowLogger::LoadState()
 	recordMain.GetRecordAsRecordBuffer("panel", recordPanel);
 
 	int panelCount = wndTab_->GetPageCount();
-	for(int iPanel = 0 ; iPanel < panelCount ; iPanel++)
-	{
-		ref_count_ptr<WindowLogger::Panel> panel = 
-			ref_count_ptr<WindowLogger::Panel>::DownCast(wndTab_->GetPanel(iPanel));
-		if(panel == NULL)continue;
+	for (int iPanel = 0; iPanel < panelCount; iPanel++) {
+		ref_count_ptr<WindowLogger::Panel> panel = ref_count_ptr<WindowLogger::Panel>::DownCast(wndTab_->GetPanel(iPanel));
+		if (panel == NULL)
+			continue;
 
 		panel->_ReadRecord(recordPanel);
 	}
@@ -244,22 +231,22 @@ void WindowLogger::_CreateWindow()
 	std::wstring wName = L"LogWindow";
 
 	WNDCLASSEX wcex;
-	ZeroMemory(&wcex,sizeof(wcex));
-	wcex.cbSize=sizeof(WNDCLASSEX); 
-	wcex.lpfnWndProc=(WNDPROC)WindowBase::_StaticWindowProcedure;
-	wcex.hInstance=hInst;
-	wcex.hIcon=NULL;
-	wcex.hCursor=LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground=(HBRUSH)(COLOR_WINDOW);
-	wcex.lpszMenuName=NULL;
-	wcex.lpszClassName=wName.c_str();
-	wcex.hIconSm=NULL;
+	ZeroMemory(&wcex, sizeof(wcex));
+	wcex.cbSize = sizeof(WNDCLASSEX);
+	wcex.lpfnWndProc = (WNDPROC)WindowBase::_StaticWindowProcedure;
+	wcex.hInstance = hInst;
+	wcex.hIcon = NULL;
+	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW);
+	wcex.lpszMenuName = NULL;
+	wcex.lpszClassName = wName.c_str();
+	wcex.hIconSm = NULL;
 	RegisterClassEx(&wcex);
 
-   	hWnd_=::CreateWindow(wcex.lpszClassName,
+	hWnd_ = ::CreateWindow(wcex.lpszClassName,
 		wName.c_str(),
-		WS_OVERLAPPEDWINDOW  ,
-		0,0,640,480,NULL,(HMENU)NULL,hInst,NULL);
+		WS_OVERLAPPEDWINDOW,
+		0, 0, 640, 480, NULL, (HMENU)NULL, hInst, NULL);
 	::ShowWindow(hWnd_, SW_HIDE);
 	this->Attach(hWnd_);
 
@@ -281,7 +268,7 @@ void WindowLogger::_CreateWindow()
 	threadInfoCollect_->Start();
 
 	//初期化完了
-	this->SetBounds(32,32,280,480);
+	this->SetBounds(32, 32, 280, 480);
 	wndTab_->ShowPage();
 
 	::UpdateWindow(hWnd_);
@@ -290,19 +277,19 @@ void WindowLogger::_Run()
 {
 	_CreateWindow();
 	MSG msg;
-	while(GetMessage(&msg, NULL, 0, 0))
-	{	//メッセージループ
+	while (GetMessage(&msg, NULL, 0, 0)) { //メッセージループ
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 }
 void WindowLogger::_Write(SYSTEMTIME& systemTime, std::wstring str)
 {
-	if(hWnd_ == NULL)return;
+	if (hWnd_ == NULL)
+		return;
 
 	wchar_t timeStr[256];
 	swprintf(timeStr, L"%.4d/%.2d/%.2d %.2d:%.2d:%.2d.%.3d ",
-		systemTime.wYear, systemTime.wMonth, systemTime.wDay, 
+		systemTime.wYear, systemTime.wMonth, systemTime.wDay,
 		systemTime.wHour, systemTime.wMinute, systemTime.wSecond, systemTime.wMilliseconds);
 
 	std::wstring out = timeStr;
@@ -313,94 +300,85 @@ void WindowLogger::_Write(SYSTEMTIME& systemTime, std::wstring str)
 		wndLogPanel_->AddText(out);
 	}
 }
-LRESULT WindowLogger::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
+LRESULT WindowLogger::_WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	switch (uMsg)
-	{
-		case WM_DESTROY:
-		{
-			::PostQuitMessage(0);
-			return FALSE;
-		}
-		case WM_CLOSE:
-		{
-			SaveState();
-			::ShowWindow(hWnd, SW_HIDE);
-			return FALSE;
-		}
-		case WM_SIZE:
-		{
-			RECT rect;
-			::GetClientRect(hWnd_, &rect);
-			int wx = rect.left;
-			int wy = rect.top;
-			int wWidth = rect.right-rect.left;
-			int wHeight = rect.bottom-rect.top;
+	switch (uMsg) {
+	case WM_DESTROY: {
+		::PostQuitMessage(0);
+		return FALSE;
+	}
+	case WM_CLOSE: {
+		SaveState();
+		::ShowWindow(hWnd, SW_HIDE);
+		return FALSE;
+	}
+	case WM_SIZE: {
+		RECT rect;
+		::GetClientRect(hWnd_, &rect);
+		int wx = rect.left;
+		int wy = rect.top;
+		int wWidth = rect.right - rect.left;
+		int wHeight = rect.bottom - rect.top;
 
-			wndStatus_->SetBounds(wParam, lParam);
-			wndTab_->SetBounds(wx+8, wy+4, wWidth-16, wHeight-32);
-			::InvalidateRect(wndTab_->GetWindowHandle(), NULL, TRUE);
+		wndStatus_->SetBounds(wParam, lParam);
+		wndTab_->SetBounds(wx + 8, wy + 4, wWidth - 16, wHeight - 32);
+		::InvalidateRect(wndTab_->GetWindowHandle(), NULL, TRUE);
 
+		return FALSE;
+	}
+	case WM_NOTIFY: {
+		switch (((NMHDR*)lParam)->code) {
+		case TCN_SELCHANGE:
+			wndTab_->ShowPage();
 			return FALSE;
 		}
-		case WM_NOTIFY:
+		break;
+	}
+	case WM_ENDLOGGER: {
+		::DestroyWindow(hWnd);
+		break;
+	}
+	case WM_ADDPANEL: {
 		{
-			switch (((NMHDR *)lParam)->code)
-			{
-				case TCN_SELCHANGE:
-					wndTab_->ShowPage();
-					return FALSE;
+			Lock lock(lock_);
+			std::list<AddPanelEvent>::iterator itr;
+			for (itr = listEventAddPanel_.begin(); itr != listEventAddPanel_.end(); itr++) {
+				AddPanelEvent event = *itr;
+				std::wstring name = event.name;
+				ref_count_ptr<Panel> panel = event.panel;
+
+				HWND hTab = wndTab_->GetWindowHandle();
+				panel->_AddedLogger(hTab);
+				wndTab_->AddTab(name, panel);
+
+				RECT rect;
+				::GetClientRect(hWnd_, &rect);
+				int wx = rect.left;
+				int wy = rect.top;
+				int wWidth = rect.right - rect.left;
+				int wHeight = rect.bottom - rect.top;
+				wndTab_->SetBounds(wx + 8, wy + 4, wWidth - 16, wHeight - 32);
+				wndTab_->LocateParts();
 			}
-			break;
+			listEventAddPanel_.clear();
 		}
-		case WM_ENDLOGGER:
-		{
-			::DestroyWindow(hWnd);
-			break;
-		}
-		case WM_ADDPANEL:
-		{
-			{
-				Lock lock(lock_);
-				std::list<AddPanelEvent>::iterator itr;
-				for(itr=listEventAddPanel_.begin(); itr != listEventAddPanel_.end();itr++)
-				{
-					AddPanelEvent event = *itr;
-					std::wstring name = event.name;
-					ref_count_ptr<Panel> panel = event.panel;
-
-					HWND hTab = wndTab_->GetWindowHandle();
-					panel->_AddedLogger(hTab);
-					wndTab_->AddTab(name, panel);
-
-					RECT rect;
-					::GetClientRect(hWnd_, &rect);
-					int wx = rect.left;
-					int wy = rect.top;
-					int wWidth = rect.right-rect.left;
-					int wHeight = rect.bottom-rect.top;
-					wndTab_->SetBounds(wx+8, wy+4, wWidth-16, wHeight-32);
-					wndTab_->LocateParts();
-				}
-				listEventAddPanel_.clear();
-			}
-			break;
-		}
+		break;
+	}
 	}
 	return _CallPreviousWindowProcedure(hWnd, uMsg, wParam, lParam);
-
 }
-
 
 void WindowLogger::SetInfo(int row, std::wstring textInfo, std::wstring textData)
 {
-	if(hWnd_ == NULL)return;
+	if (hWnd_ == NULL)
+		return;
 	wndInfoPanel_->SetInfo(row, textInfo, textData);
 }
 
 bool WindowLogger::AddPanel(ref_count_ptr<Panel> panel, std::wstring name)
 {
-	if(hWnd_ == NULL)return false;
+	if (hWnd_ == NULL)
+		return false;
 
 	AddPanelEvent event;
 	event.name = name;
@@ -412,15 +390,15 @@ bool WindowLogger::AddPanel(ref_count_ptr<Panel> panel, std::wstring name)
 
 	::SendMessage(hWnd_, WM_ADDPANEL, 0, 0);
 
-	while(panel->GetWindowHandle() == NULL)
-	{
-		Sleep(10);//ウィンドウが作成完了するまで待機
+	while (panel->GetWindowHandle() == NULL) {
+		Sleep(10); //ウィンドウが作成完了するまで待機
 	}
 	return true;
 }
 void WindowLogger::ShowLogWindow()
 {
-	if(!bEnable_)return;
+	if (!bEnable_)
+		return;
 	ShowWindow(hWnd_, SW_SHOW);
 }
 void WindowLogger::InsertOpenCommandInSystemMenu(HWND hWnd)
@@ -454,20 +432,16 @@ void WindowLogger::WindowThread::_Run()
 //WindowLogger::LogPanel
 WindowLogger::LogPanel::LogPanel()
 {
-
 }
 WindowLogger::LogPanel::~LogPanel()
 {
-
 }
 bool WindowLogger::LogPanel::_AddedLogger(HWND hTab)
 {
 	Create(hTab);
 
 	gstd::WEditBox::Style styleEdit;
-	styleEdit.SetStyle(WS_CHILD | WS_VISIBLE |
-		ES_MULTILINE|ES_READONLY|ES_AUTOHSCROLL|ES_AUTOVSCROLL|
-		WS_HSCROLL | WS_VSCROLL);
+	styleEdit.SetStyle(WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL | WS_HSCROLL | WS_VSCROLL);
 	styleEdit.SetStyleEx(WS_EX_CLIENTEDGE);
 	wndEdit_.Create(hWnd_, styleEdit);
 	return true;
@@ -484,8 +458,7 @@ void WindowLogger::LogPanel::AddText(std::wstring text)
 {
 	HWND hEdit = wndEdit_.GetWindowHandle();
 	int pos = GetWindowTextLength(hEdit);
-	if(pos + wndEdit_.GetTextLength() >= wndEdit_.GetMaxTextLength())
-	{
+	if (pos + wndEdit_.GetTextLength() >= wndEdit_.GetMaxTextLength()) {
 		//最大文字数を超えたら50%削除
 		std::wstring text = wndEdit_.GetText();
 		text = text.erase(0, text.size() / 2);
@@ -494,27 +467,24 @@ void WindowLogger::LogPanel::AddText(std::wstring text)
 
 		pos = GetWindowTextLength(hEdit);
 	}
-	::SendMessage( hEdit, EM_SETSEL, pos, pos );
-	::SendMessage( hEdit, EM_REPLACESEL, 0, (LPARAM)text.c_str() );
+	::SendMessage(hEdit, EM_SETSEL, pos, pos);
+	::SendMessage(hEdit, EM_REPLACESEL, 0, (LPARAM)text.c_str());
 }
 //WindowLogger::InfoPanel
 WindowLogger::InfoPanel::InfoPanel()
 {
-
 }
 WindowLogger::InfoPanel::~InfoPanel()
 {
-
 }
 bool WindowLogger::InfoPanel::_AddedLogger(HWND hTab)
 {
 	Create(hTab);
 
 	gstd::WListView::Style styleListView;
-	styleListView.SetStyle(WS_CHILD | WS_VISIBLE | 
-		LVS_REPORT | LVS_SHOWSELALWAYS | LVS_SINGLESEL| LVS_NOSORTHEADER);
+	styleListView.SetStyle(WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_NOSORTHEADER);
 	styleListView.SetStyleEx(WS_EX_CLIENTEDGE);
-	styleListView.SetListViewStyleEx(LVS_EX_FULLROWSELECT|LVS_EX_GRIDLINES);
+	styleListView.SetListViewStyleEx(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	wndListView_.Create(hWnd_, styleListView);
 
 	wndListView_.AddColumn(120, ROW_INFO, L"Info");
@@ -552,26 +522,27 @@ void WindowLogger::InfoCollectThread::_Run()
 	//     送るとき、固まる可能性あり。
 	infoCpu_ = this->_GetCpuInformation();
 
-	while(this->GetStatus() == RUN)
-	{
+	while (this->GetStatus() == RUN) {
 		::Sleep(500);
 	}
-/*
+	/*
 	PROCESS_MEMORY_COUNTERS memoryCounter;
 	ZeroMemory(&memoryCounter, sizeof(PROCESS_MEMORY_COUNTERS));
 	DWORD dwProcessID = GetCurrentProcessId();
-	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE ,dwProcessID);
-	while(this->GetStatus() == RUN)
-	{
+	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwProcessID);
+	while (this->GetStatus() == RUN) {
 		GetProcessMemoryInfo(hProcess, &memoryCounter, sizeof(PROCESS_MEMORY_COUNTERS));
 		double pageFileUsage = memoryCounter.PagefileUsage / 1024. / 1024.;
 		std::string strMemory = StringUtility::Format("Memory [ %.2fMB ]", pageFileUsage);
-		if(this->GetStatus() == RUN)wndStatus_->SetText(STATUS_MEMORY, strMemory);
+		if (this->GetStatus() == RUN
+			wndStatus_->SetText(STATUS_MEMORY, strMemory);
 
 		double cpuPerformance=this->_GetCpuPerformance();
 		CpuInfo &ci=this->infoCpu_;
-		std::string strCpu = StringUtility::Format("%s %s [ %4.2fMHz (%3d %%) type:%d family:%d model:%d stepping:%d ]",ci.venderID,ci.cpuName.c_str(),ci.clock/1000/1000,(int)cpuPerformance,ci.type,ci.family,ci.model,ci.stepping);
-		if(this->GetStatus() == RUN)wndStatus_->SetText(STATUS_CPU, strCpu);
+		std::string strCpu = StringUtility::Format("%s %s [ %4.2fMHz (%3d %%) type:%d family:%d model:%d stepping:%d ]",
+				ci.venderID, ci.cpuName.c_str(), ci.clock/1000/1000, (int)cpuPerformance, ci.type, ci.family, ci.model, ci.stepping);
+		if (this->GetStatus() == RUN)
+			wndStatus_->SetText(STATUS_CPU, strCpu);
 
 		::Sleep(500);
 	}
@@ -584,16 +555,15 @@ WindowLogger::InfoCollectThread::CpuInfo WindowLogger::InfoCollectThread::_GetCp
 	char VenderID[13];
 	char name[17];
 	int eax1cpuid_supported;
-	int	eax_flags;
-	int	edx_flags;
+	int eax_flags;
+	int edx_flags;
 	unsigned long CPUClock;
 	unsigned long start;
 
 	CpuInfo ci;
-	ZeroMemory(&ci,sizeof(CpuInfo));
+	ZeroMemory(&ci, sizeof(CpuInfo));
 
-	try
-	{
+	try {
 		/*CPUID命令をサポートしているか調べる。
 		（Pentium以降のCPUならばサポートしているらしい…）
 		フラグレジスタの２１ビット目を変えることができればサポートしている。*/
@@ -618,8 +588,7 @@ WindowLogger::InfoCollectThread::CpuInfo WindowLogger::InfoCollectThread::_GetCp
 			exitasm:
 		};
 
-		if(!cpuid_supported)
-		{//CPUID 命令をサポートしてない
+		if (!cpuid_supported) { //CPUID 命令をサポートしてない
 			throw gstd::wexception();
 		}
 
@@ -640,11 +609,10 @@ WindowLogger::InfoCollectThread::CpuInfo WindowLogger::InfoCollectThread::_GetCp
 		};
 
 		//ベンダーIDをコピー
-		strcpy(ci.venderID,VenderID);
+		strcpy(ci.venderID, VenderID);
 
 		//VenderIDがAuthenticAMDならCPU名を取得できます。
-		if(0 == strcmp(ci.venderID,"AuthenticAMD"))
-		{	
+		if (0 == strcmp(ci.venderID, "AuthenticAMD")) {
 			//CPU名を取得するためにeax=08000002hでCPUIDを呼び出します。
 			_asm
 			{
@@ -656,7 +624,7 @@ WindowLogger::InfoCollectThread::CpuInfo WindowLogger::InfoCollectThread::_GetCp
 				mov DWORD PTR [name+12], edx
 				mov BYTE PTR [name+16], 0    ; 最後にNULLを入れる
 			};
-			strcpy(ci.name,name);
+			strcpy(ci.name, name);
 
 			_asm
 			{
@@ -668,7 +636,7 @@ WindowLogger::InfoCollectThread::CpuInfo WindowLogger::InfoCollectThread::_GetCp
 				mov DWORD PTR [name+12], edx
 				mov BYTE PTR [name+16], 0    ; 最後にNULLを入れる
 			};
-			strcat(ci.name,name);
+			strcat(ci.name, name);
 
 			_asm
 			{
@@ -680,11 +648,11 @@ WindowLogger::InfoCollectThread::CpuInfo WindowLogger::InfoCollectThread::_GetCp
 				mov DWORD PTR [name+12], edx
 				mov BYTE PTR [name+16], 0    ; 最後にNULLを入れる
 			};
-			strcat(ci.name,name);
+			strcat(ci.name, name);
 		}
 
 		//ax=1のときCPUID命令がサポートされているかの調査
-		if(1 > eax1cpuid_supported){
+		if (1 > eax1cpuid_supported) {
 			//eaxレジスタが１の時にCPUID命令がサポートされていない
 			throw gstd::wexception();
 		}
@@ -697,52 +665,49 @@ WindowLogger::InfoCollectThread::CpuInfo WindowLogger::InfoCollectThread::_GetCp
 		・RDTSC命令のサポート（サポートしていればクロック周波数を測定）
 		を調べます。*/
 		_asm
-		{
+			{
 			mov	eax,1
 			cpuid
 			mov eax_flags,eax
 			mov	edx_flags,edx
-		};
+			};
 
 		//CPUのtype,family,Mode,steppingを調べる
-		ci.type     = (eax_flags >>12) & 0xF;
-		ci.family   = (eax_flags >> 8) & 0xF;
-		ci.model    = (eax_flags >> 4) & 0xF;
+		ci.type = (eax_flags >> 12) & 0xF;
+		ci.family = (eax_flags >> 8) & 0xF;
+		ci.model = (eax_flags >> 4) & 0xF;
 		ci.stepping = eax_flags & 0xF;
 
 		//MMX命令をサポートしているか
-		ci.bMMXEnabled = (edx_flags & 0x00800000)? true: false;
+		ci.bMMXEnabled = (edx_flags & 0x00800000) ? true : false;
 
 		//SIMD命令をサポートしているか
-		ci.bSIMDEnabled = (edx_flags & 0x02000000)? true: false;
+		ci.bSIMDEnabled = (edx_flags & 0x02000000) ? true : false;
 
 		//AMD 3DNow!をサポートしているか
-		ci.bAMD3DNowEnabled = (edx_flags & 0x80000000)? true: false;
+		ci.bAMD3DNowEnabled = (edx_flags & 0x80000000) ? true : false;
 
 		//RDTSC命令をサポートしているか調べる
-		if(edx_flags & 0x00000010)
-		{
+		if (edx_flags & 0x00000010) {
 			//サポートしていればクロック周波数を測定
 			//RDTSR命令はCPUコアのTime Stamp Counterをeaxレジスタに格納する命令です。
 			//Time Stamp CounterはCPU1クロックごとにカウントアップしています。
 			_asm rdtsc;
 			_asm mov CPUClock, eax;
 			start = timeGetTime();
-			while(timeGetTime()-start < 1000);//1000ms待つ
-//			Sleep(1000);
+			while (timeGetTime() - start < 1000) {}; //1000ms待つ
+			//			Sleep(1000);
 			_asm rdtsc;
-			_asm sub eax,CPUClock;/*引き算*/
+			_asm sub eax, CPUClock; /*引き算*/
 			_asm mov CPUClock, eax;
-			ci.clock=(double)(CPUClock);
-		}
-		else
-		{
+			ci.clock = (double)(CPUClock);
+		} else {
 			//RDTSC命令をサポートしていない。
 			throw gstd::wexception();
 		}
 
-		ci.cpuName=ci.name;
-		if(strcmp(ci.venderID,"AuthenticAMD")==0)//AMD
+		ci.cpuName = ci.name;
+		if (strcmp(ci.venderID, "AuthenticAMD") == 0) //AMD
 		{
 			//if(ci.family==5&&ci.model==8)ci.cpuName="K6-2";
 			//else if(ci.family==5&&ci.model==9)ci.cpuName="K6-Ⅲ";
@@ -751,8 +716,7 @@ WindowLogger::InfoCollectThread::CpuInfo WindowLogger::InfoCollectThread::_GetCp
 			//else if(ci.family==6&&ci.model==3)ci.cpuName="Athlon";
 			//else if(ci.family==6&&ci.model==4)ci.cpuName="Athlon";
 			//else if(ci.family==6&&ci.model==6)ci.cpuName="AthlonXp";
-		}
-		else if(strcmp(ci.venderID,"GenuineIntel")==0)//Intel
+		} else if (strcmp(ci.venderID, "GenuineIntel") == 0) //Intel
 		{
 			//if(ci.family==5&&ci.model==1)ci.cpuName="Pentium 60 / 66";
 			//else if(ci.family==5&&ci.model==2)ci.cpuName="Pentium";
@@ -769,10 +733,7 @@ WindowLogger::InfoCollectThread::CpuInfo WindowLogger::InfoCollectThread::_GetCp
 			//else if(ci.family==15&&ci.model==0)ci.cpuName="Pentium4";
 		}
 
-	}
-	catch(...)
-	{
-
+	} catch (...) {
 	}
 	return ci;
 }
@@ -784,7 +745,7 @@ double WindowLogger::InfoCollectThread::_GetCpuPerformance()
 	PDH_FMT_COUNTERVALUE FmtValue;
 
 	PdhOpenQuery(NULL, 0, &hQuery);
-	PdhAddCounter(hQuery, L"\\Processor(_Total)\\% Processor Time", 0, &hCounter);	
+	PdhAddCounter(hQuery, L"\\Processor(_Total)\\% Processor Time", 0, &hCounter);
 	Sleep(500);
 	PdhCollectQueryData(hQuery);
 	Sleep(500);
