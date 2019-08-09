@@ -5,18 +5,18 @@ All hail our lord and savior Mima and our queen, Kogasa's Woo. This version of D
 The original creator of each change will be listed here in parentheses next to the new function/change's listing.
  * Added SetShotDelayRenderBlendType (gtbot)
     - argument 1: Blend Type
-    Globally forces all delay clouds to use the specified blend type
-    use BLEND_NONE to disable this. BLEND_NONE is the default.
+    - Globally forces all delay clouds to use the specified blend type
+    - use BLEND_NONE to disable this. BLEND_NONE is the default.
  * Added GetShotDelayRenderBlendType (gtbot)
-    returns the value that's specified in SetShotDelayRenderBlendType    
+    - returns the value that's specified in SetShotDelayRenderBlendType    
  * Added ObjSpell_SetEraseShotType (gtbot)
     - argument 1: ObjSpell ID
     - argument 2: bullet deletion type
-    Sets the method that objspells delete bullets into
-    0: immediately deletes
-    1: sets bullets to fade out and delete
-    2: bullets create items 
-    2 is the default value
+    - Sets the method that objspells delete bullets into
+      * 0: immediately deletes
+      * 1: sets bullets to fade out and delete
+      * 2: bullets create items 
+      * 2 is the default value
 
  
  ## Changes To Master Branch
