@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Êó•Êú¨Ë™û resources
+// Japanese (Japan) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
-#ifdef _WIN32
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 #pragma code_page(932)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -27,18 +25,18 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "\r\n"
     "\0"
@@ -52,7 +50,7 @@ END
 // Menu
 //
 
-IDR_MENU_MAIN MENU DISCARDABLE 
+IDR_MENU_MAIN MENU
 BEGIN
     POPUP "File(&F)"
     BEGIN
@@ -66,11 +64,11 @@ END
 // Dialog
 //
 
-IDD_DIALOG_MAIN DIALOG DISCARDABLE  0, 0, 269, 209
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_DIALOG_MAIN DIALOGEX 0, 0, 269, 209
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dnh Config ph3"
 MENU IDR_MENU_MAIN
-FONT 9, "Ôº≠Ôº≥ Ôº∞„Ç¥„Ç∑„ÉÉ„ÇØ"
+FONT 9, "@ÇlÇr ÇoÉSÉVÉbÉN", 400, 0, 0x80
 BEGIN
     PUSHBUTTON      "OK",IDOK,156,190,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,212,190,50,14
@@ -78,48 +76,36 @@ BEGIN
     PUSHBUTTON      "Start Game",ID_BUTTON_EXECUTE,100,190,50,14
 END
 
-IDD_PANEL_DEVICE DIALOG DISCARDABLE  0, 0, 195, 96
-STYLE WS_CHILD
-FONT 9, "Ôº≠Ôº≥ Ôº∞„Ç¥„Ç∑„ÉÉ„ÇØ"
+IDD_PANEL_DEVICE DIALOGEX 0, 0, 195, 96
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "@ÇlÇr ÇoÉSÉVÉbÉN", 400, 0, 0x0
 BEGIN
     GROUPBOX        "Window Style",IDC_STATIC,6,3,117,24
-    CONTROL         "Full Screen",IDC_RADIO_FULLSCREEN,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP,11,13,49,10
-    CONTROL         "Window",IDC_RADIO_WINDOW,"Button",BS_AUTORADIOBUTTON,80,
-                    13,38,10
+    CONTROL         "Full Screen",IDC_RADIO_FULLSCREEN,"Button",BS_AUTORADIOBUTTON | WS_GROUP,11,13,49,10
+    CONTROL         "Window",IDC_RADIO_WINDOW,"Button",BS_AUTORADIOBUTTON,80,13,38,10
     GROUPBOX        "Window Size",IDC_STATIC,6,32,117,29
-    COMBOBOX        IDC_COMBO_WINDOWSIZE,13,43,71,30,CBS_DROPDOWNLIST | 
-                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_WINDOWSIZE,13,43,71,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Screen Refresh Rate (ÊèèÁîªÈñìÈöî)",IDC_STATIC,6,65,171,24
-    CONTROL         "1/1(ÊØéÂõû)",IDC_RADIO_FPS_1,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP,11,75,42,10
-    CONTROL         "1/2",IDC_RADIO_FPS_2,"Button",BS_AUTORADIOBUTTON,58,75,
-                    26,10
-    CONTROL         "1/3",IDC_RADIO_FPS_3,"Button",BS_AUTORADIOBUTTON,87,75,
-                    26,10
-    CONTROL         "Flexible(ÂèØÂ§â)",IDC_RADIO_FPS_AUTO,"Button",
-                    BS_AUTORADIOBUTTON,117,75,55,10
+    CONTROL         "1/1(ÊØéÂõû)",IDC_RADIO_FPS_1,"Button",BS_AUTORADIOBUTTON | WS_GROUP,11,75,42,10
+    CONTROL         "1/2",IDC_RADIO_FPS_2,"Button",BS_AUTORADIOBUTTON,58,75,26,10
+    CONTROL         "1/3",IDC_RADIO_FPS_3,"Button",BS_AUTORADIOBUTTON,87,75,26,10
+    CONTROL         "Flexible(ÂèØÂ§ÅE",IDC_RADIO_FPS_AUTO,"Button",BS_AUTORADIOBUTTON,117,75,55,10
 END
 
-IDD_PANEL_KEY DIALOG DISCARDABLE  0, 0, 248, 171
-STYLE WS_CHILD
-FONT 9, "Ôº≠Ôº≥ Ôº∞„Ç¥„Ç∑„ÉÉ„ÇØ"
+IDD_PANEL_KEY DIALOGEX 0, 0, 248, 171
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "ÇlÇr ÇoÉSÉVÉbÉN", 400, 0, 0x0
 BEGIN
-    CONTROL         "List1",IDC_LIST_KEY,"SysListView32",LVS_REPORT | 
-                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOSORTHEADER | 
-                    WS_BORDER | WS_TABSTOP,7,36,234,124
-    COMBOBOX        IDC_COMBO_PADINDEX,13,14,222,15,CBS_DROPDOWNLIST | 
-                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "List1",IDC_LIST_KEY,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,36,234,124
+    COMBOBOX        IDC_COMBO_PADINDEX,13,14,222,15,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Pad Device",IDC_STATIC,7,3,234,29
 END
 
-IDD_PANEL_OPTION DIALOG DISCARDABLE  0, 0, 249, 167
-STYLE WS_CHILD
-FONT 9, "Ôº≠Ôº≥ Ôº∞„Ç¥„Ç∑„ÉÉ„ÇØ"
+IDD_PANEL_OPTION DIALOGEX 0, 0, 249, 167
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "ÇlÇr ÇoÉSÉVÉbÉN", 400, 0, 0x0
 BEGIN
-    CONTROL         "List1",IDC_LIST_OPTION,"SysListView32",LVS_REPORT | 
-                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOSORTHEADER | 
-                    WS_BORDER | WS_TABSTOP,7,7,235,153
+    CONTROL         "List1",IDC_LIST_OPTION,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,7,235,153
 END
 
 
@@ -129,7 +115,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_DIALOG_MAIN, DIALOG
     BEGIN
@@ -161,7 +147,33 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Êó•Êú¨Ë™û resources
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DIALOG_MAIN AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PANEL_DEVICE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PANEL_KEY AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PANEL_OPTION AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // Japanese (Japan) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -175,3 +187,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
