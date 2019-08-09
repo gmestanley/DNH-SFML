@@ -1,5 +1,5 @@
-#include"StgPackageController.hpp"
-#include"StgSystem.hpp"
+#include "StgPackageController.hpp"
+#include "StgSystem.hpp"
 
 /**********************************************************
 //StgPackageController
@@ -7,7 +7,6 @@
 StgPackageController::StgPackageController(StgSystemController* systemController)
 {
 	systemController_ = systemController;
-
 }
 StgPackageController::~StgPackageController()
 {
@@ -33,12 +32,12 @@ void StgPackageController::Work()
 {
 	scriptManager_->Work();
 	//スクリプトが閉じられた場合は再度実行(描画の継ぎ目を目立たなくする)
-	if(scriptManager_->IsHasCloseScliptWork()) 
+	if (scriptManager_->IsHasCloseScliptWork())
 		scriptManager_->Work();
 }
 void StgPackageController::Render()
 {
-	//scriptManager_->Render();
+	// scriptManager_->Render();
 }
 void StgPackageController::RenderToTransitionTexture()
 {
@@ -89,5 +88,4 @@ void StgPackageInformation::FinishCurrentStage()
 
 	ref_count_ptr<StgPlayerInformation> infoPlayer = currentStageInfo->GetPlayerObjectInformation();
 	nextStageStartData_->SetPrevPlayerInformation(infoPlayer);
-
 }

@@ -1,11 +1,11 @@
 #ifndef __DIRECTX_HLSL__
 #define __DIRECTX_HLSL__
 
-#include<string>
+#include <string>
 
-namespace directx
-{
-	static const std::string HLSL_DEFAULT_SKINED_MESH = "\
+namespace directx {
+
+static const std::string HLSL_DEFAULT_SKINED_MESH = "\
 		float4 lightDirection;  \r\n\
 		float4 materialAmbient : MATERIALAMBIENT;\r\n\
 		float4 materialDiffuse : MATERIALDIFFUSE;\r\n\
@@ -82,7 +82,6 @@ namespace directx
 		\r\n\
 	";
 
-
-}
+} // namespace directx
 
 #endif

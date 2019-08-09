@@ -1,6 +1,6 @@
-#include"DxWindow.hpp"
-#include"DirectGraphics.hpp"
-#include"DirectInput.hpp"
+#include "DxWindow.hpp"
+#include "DirectGraphics.hpp"
+#include "DirectInput.hpp"
 
 using namespace gstd;
 using namespace directx;
@@ -22,27 +22,26 @@ void DxWindowManager::Clear()
 }
 void DxWindowManager::_ArrangeWindow()
 {
-	std::list<gstd::ref_count_ptr<DxWindow> >::iterator itr;
-	for(itr = listWindow_.begin() ; itr != listWindow_.end() ; )
-	{
-		if(*itr == NULL)
+	std::list<gstd::ref_count_ptr<DxWindow>>::iterator itr;
+	for (itr = listWindow_.begin(); itr != listWindow_.end();) {
+		if (*itr == NULL)
 			itr = listWindow_.erase(itr);
-		else if((*itr)->IsWindowDelete())
-		{
+		else if ((*itr)->IsWindowDelete()) {
 			(*itr)->Dispose();
 			itr = listWindow_.erase(itr);
-		}
-		else itr++;
+		} else
+			itr++;
 	}
 }
 
 void DxWindowManager::AddWindow(gstd::ref_count_ptr<DxWindow> window)
 {
-	std::list<ref_count_ptr<DxWindow> >::iterator itr = listWindow_.begin();
-	for(; itr!= listWindow_.end(); itr++)
-	{
-		if( (*itr) == NULL)continue;
-		if( (*itr) == window)return;//多重登録はさせない		
+	std::list<ref_count_ptr<DxWindow>>::iterator itr = listWindow_.begin();
+	for (; itr != listWindow_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr) == window)
+			return; //多重登録はさせない
 	}
 	window->manager_ = this;
 	listWindow_.push_back(window);
@@ -50,35 +49,40 @@ void DxWindowManager::AddWindow(gstd::ref_count_ptr<DxWindow> window)
 }
 void DxWindowManager::DeleteWindow(DxWindow* window)
 {
-	std::list<ref_count_ptr<DxWindow> >::iterator itr = listWindow_.begin();
-	for(; itr!= listWindow_.end(); itr++)
-	{
-		if( (*itr) == NULL)continue;
-		if( (*itr) != window)continue;
+	std::list<ref_count_ptr<DxWindow>>::iterator itr = listWindow_.begin();
+	for (; itr != listWindow_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr) != window)
+			continue;
 		(*itr)->DeleteWindow();
 		return;
 	}
 }
 void DxWindowManager::DeleteWindowFromID(int id)
 {
-	std::list<ref_count_ptr<DxWindow> >::iterator itr;
-	for(itr = listWindow_.begin(); itr!= listWindow_.end(); itr++)
-	{
-		if((*itr) == NULL)continue;
-		if((*itr)->IsWindowDelete())continue;
-		if((*itr)->idWindow_ != id)continue;
+	std::list<ref_count_ptr<DxWindow>>::iterator itr;
+	for (itr = listWindow_.begin(); itr != listWindow_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
+		if ((*itr)->idWindow_ != id)
+			continue;
 		(*itr)->DeleteWindow();
 		return;
 	}
 }
 void DxWindowManager::Work()
 {
-	std::list<ref_count_ptr<DxWindow> >::iterator itr;
-	for(itr = listWindow_.begin(); itr!= listWindow_.end(); itr++)
-	{
-		if( (*itr) == NULL)continue;
-		if(!(*itr)->IsWindowEnable())continue;
-		if((*itr)->IsWindowDelete())continue;
+	std::list<ref_count_ptr<DxWindow>>::iterator itr;
+	for (itr = listWindow_.begin(); itr != listWindow_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if (!(*itr)->IsWindowEnable())
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
 		(*itr)->Work();
 	}
 	_DispatchMouseEvent();
@@ -91,68 +95,80 @@ void DxWindowManager::Render()
 	graphics->SetZBufferEnable(false);
 	graphics->SetZWriteEnalbe(false);
 	graphics->SetBlendMode(DirectGraphics::MODE_BLEND_ALPHA);
-	std::list<ref_count_ptr<DxWindow> >::reverse_iterator itr;
-	for(itr = listWindow_.rbegin(); itr!= listWindow_.rend(); itr++)
-	{
-		if( (*itr) == NULL)continue;
-		if((*itr)->IsWindowDelete())continue;
-		if(!(*itr)->IsWindowVisible())continue;
+	std::list<ref_count_ptr<DxWindow>>::reverse_iterator itr;
+	for (itr = listWindow_.rbegin(); itr != listWindow_.rend(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
+		if (!(*itr)->IsWindowVisible())
+			continue;
 		(*itr)->Render();
 	}
 }
 gstd::ref_count_ptr<DxWindow> DxWindowManager::GetIntersectedWindow()
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	if(graphics == NULL)return NULL;
+	if (graphics == NULL)
+		return NULL;
 
 	DirectInput* input = DirectInput::GetBase();
-	if(input == NULL)return NULL;
+	if (input == NULL)
+		return NULL;
 
 	gstd::ref_count_ptr<DxWindow> res = NULL;
 	POINT posMouse = graphics->GetMousePosition();
-	std::list<ref_count_ptr<DxWindow> >::iterator itr;
-	for(itr = listWindow_.begin(); itr!= listWindow_.end(); itr++)
-	{
-		if( (*itr) == NULL)continue;
-		if((*itr)->IsWindowDelete())continue;
-		if(!(*itr)->IsWindowEnable())continue;
-		if(!(*itr)->IsWindowVisible())continue;
+	std::list<ref_count_ptr<DxWindow>>::iterator itr;
+	for (itr = listWindow_.begin(); itr != listWindow_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
+		if (!(*itr)->IsWindowEnable())
+			continue;
+		if (!(*itr)->IsWindowVisible())
+			continue;
 		res = GetIntersectedWindow(posMouse, (*itr));
-		if(res != NULL)break;
+		if (res != NULL)
+			break;
 	}
 	return res;
 }
 gstd::ref_count_ptr<DxWindow> DxWindowManager::GetIntersectedWindow(POINT& pos, gstd::ref_count_ptr<DxWindow> parent)
 {
 	gstd::ref_count_ptr<DxWindow> res = NULL;
-	if(parent == NULL)
-	{
+	if (parent == NULL) {
 		parent = *listWindow_.begin();
 	}
-	if(parent == NULL)return NULL;
-
-	if(!parent->IsWindowEnable() || !parent->IsWindowVisible() || parent->IsWindowDelete())
+	if (parent == NULL)
 		return NULL;
 
-	std::list<gstd::ref_count_ptr<DxWindow> >::iterator itr;
-	for(itr = parent->listWindowChild_.begin() ; itr != parent->listWindowChild_.end() ; itr++)
-	{
-		if(*itr == NULL)continue;
-		if((*itr)->IsWindowDelete())continue;
-		if(!(*itr)->IsWindowEnable())continue;
-		if(!(*itr)->IsWindowVisible())continue;
+	if (!parent->IsWindowEnable() || !parent->IsWindowVisible() || parent->IsWindowDelete())
+		return NULL;
+
+	std::list<gstd::ref_count_ptr<DxWindow>>::iterator itr;
+	for (itr = parent->listWindowChild_.begin(); itr != parent->listWindowChild_.end(); itr++) {
+		if (*itr == NULL)
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
+		if (!(*itr)->IsWindowEnable())
+			continue;
+		if (!(*itr)->IsWindowVisible())
+			continue;
 
 		res = GetIntersectedWindow(pos, (*itr));
-		if(res != NULL)break;
+		if (res != NULL)
+			break;
 
 		bool bIntersect = (*itr)->IsIntersected(pos);
-		if(!bIntersect)continue;
+		if (!bIntersect)
+			continue;
 		res = *itr;
 		break;
 	}
 
-	if(res == NULL)
-	{
+	if (res == NULL) {
 		res = parent->IsIntersected(pos) ? parent : NULL;
 	}
 
@@ -161,7 +177,8 @@ gstd::ref_count_ptr<DxWindow> DxWindowManager::GetIntersectedWindow(POINT& pos, 
 void DxWindowManager::_DispatchMouseEvent()
 {
 	DirectInput* input = DirectInput::GetBase();
-	if(input == NULL)return;
+	if (input == NULL)
+		return;
 
 	gstd::ref_count_ptr<DxWindowEvent> event = new DxWindowEvent();
 	gstd::ref_count_ptr<DxWindow> wndIntersect = GetIntersectedWindow();
@@ -169,87 +186,74 @@ void DxWindowManager::_DispatchMouseEvent()
 	//左クリック
 	int mLeftState = input->GetMouseState(DI_MOUSE_LEFT);
 	int mRightState = input->GetMouseState(DI_MOUSE_RIGHT);
-	if(wndCapture_ == NULL)
-	{
-		if(wndIntersect != NULL)
-		{
-			if(mLeftState == KEY_PUSH)
-			{
+	if (wndCapture_ == NULL) {
+		if (wndIntersect != NULL) {
+			if (mLeftState == KEY_PUSH) {
 				wndCapture_ = wndIntersect;
 				event->AddEventType(DxWindowEvent::TYPE_MOUSE_LEFT_PUSH);
 				event->SetSourceWindow(wndIntersect);
-			}
-			else if(mLeftState == KEY_HOLD)
-			{
+			} else if (mLeftState == KEY_HOLD) {
 				wndCapture_ = wndIntersect;
 				event->AddEventType(DxWindowEvent::TYPE_MOUSE_LEFT_PUSH);
 				event->AddEventType(DxWindowEvent::TYPE_MOUSE_LEFT_HOLD);
 				event->SetSourceWindow(wndIntersect);
 			}
 		}
-	}
-	else
-	{
-		if(wndIntersect != NULL && wndIntersect == wndCapture_)
-		{
-			if(mLeftState == KEY_PULL)
-			{
+	} else {
+		if (wndIntersect != NULL && wndIntersect == wndCapture_) {
+			if (mLeftState == KEY_PULL) {
 				event->AddEventType(DxWindowEvent::TYPE_MOUSE_LEFT_RELEASE);
 				event->AddEventType(DxWindowEvent::TYPE_MOUSE_LEFT_CLICK);
 				event->SetSourceWindow(wndIntersect);
 				wndCapture_ = NULL;
 			}
-		}
-		else
-		{
-			if(mLeftState == KEY_PULL || mLeftState == KEY_FREE)
-			{
+		} else {
+			if (mLeftState == KEY_PULL || mLeftState == KEY_FREE) {
 				event->AddEventType(DxWindowEvent::TYPE_MOUSE_LEFT_RELEASE);
 				event->SetSourceWindow(wndCapture_);
 				wndCapture_ = NULL;
-			}
-			else if(mLeftState == KEY_PUSH || mLeftState == KEY_HOLD)
-			{
+			} else if (mLeftState == KEY_PUSH || mLeftState == KEY_HOLD) {
 				event->AddEventType(DxWindowEvent::TYPE_MOUSE_LEFT_HOLD);
 				event->SetSourceWindow(wndCapture_);
 			}
 		}
 	}
 
-	if(event->IsEmpty())
-	{
-		if(mLeftState == KEY_PUSH)
+	if (event->IsEmpty()) {
+		if (mLeftState == KEY_PUSH)
 			event->AddEventType(DxWindowEvent::TYPE_MOUSE_LEFT_PUSH);
-		else if(mLeftState == KEY_PULL)
+		else if (mLeftState == KEY_PULL)
 			event->AddEventType(DxWindowEvent::TYPE_MOUSE_LEFT_RELEASE);
 
-		if(mRightState == KEY_PUSH)
+		if (mRightState == KEY_PUSH)
 			event->AddEventType(DxWindowEvent::TYPE_MOUSE_RIGHT_PUSH);
-		else if(mRightState == KEY_PULL)
+		else if (mRightState == KEY_PULL)
 			event->AddEventType(DxWindowEvent::TYPE_MOUSE_RIGHT_RELEASE);
 	}
 
-	if(!event->IsEmpty())
-	{
-		std::list<ref_count_ptr<DxWindow> >::iterator itr;
-		for(itr = listWindow_.begin(); itr!= listWindow_.end(); itr++)
-		{
-			if((*itr) == NULL)continue;
-			if((*itr)->IsWindowDelete())continue;
-			if(!(*itr)->IsWindowEnable())continue;
-			if(!(*itr)->IsWindowVisible())continue;
+	if (!event->IsEmpty()) {
+		std::list<ref_count_ptr<DxWindow>>::iterator itr;
+		for (itr = listWindow_.begin(); itr != listWindow_.end(); itr++) {
+			if ((*itr) == NULL)
+				continue;
+			if ((*itr)->IsWindowDelete())
+				continue;
+			if (!(*itr)->IsWindowEnable())
+				continue;
+			if (!(*itr)->IsWindowVisible())
+				continue;
 			(*itr)->DispatchedEvent(event);
-		}		
+		}
 	}
-
 }
 void DxWindowManager::SetAllWindowEnable(bool bEnable)
 {
-	std::list<ref_count_ptr<DxWindow> >::iterator itr;
-	for(itr = listWindow_.begin(); itr!= listWindow_.end(); itr++)
-	{
-		if((*itr) == NULL)continue;
-		if((*itr)->IsWindowDelete())continue;
+	std::list<ref_count_ptr<DxWindow>>::iterator itr;
+	for (itr = listWindow_.begin(); itr != listWindow_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
 		(*itr)->SetWindowEnable(bEnable);
 	}
 	listLockID_.clear();
@@ -257,54 +261,47 @@ void DxWindowManager::SetAllWindowEnable(bool bEnable)
 void DxWindowManager::SetWindowEnableWithoutArgumentWindow(bool bEnable, DxWindow* window)
 {
 	DxWindow* parent = window;
-	while(parent->windowParent_ != NULL)
-	{
+	while (parent->windowParent_ != NULL) {
 		parent = parent->windowParent_;
 	}
 	int id = parent->GetID();
 
-	if(bEnable)
-	{
+	if (bEnable) {
 		bool bError = false;
 		int idLock = -1;
-		if(listLockID_.size() > 0)
-		{
+		if (listLockID_.size() > 0) {
 			idLock = *listLockID_.begin();
-			if(id != idLock)
+			if (id != idLock)
 				bError = true;
 
 			listLockID_.pop_front();
-			if(listLockID_.size() > 0)
+			if (listLockID_.size() > 0)
 				id = *listLockID_.begin();
-		}
-		else
-		{
+		} else {
 			return;
 		}
 
-		if(bError)
-		{
-			throw gstd::wexception(StringUtility::Format(L"DxWindowロックが不正です:id[%d] idLock[%d]", 
-							id, idLock).c_str());
+		if (bError) {
+			throw gstd::wexception(StringUtility::Format(L"DxWindowロックが不正です:id[%d] idLock[%d]", id, idLock).c_str());
 		}
-	}
-	else
-	{
+	} else {
 		std::list<int>::iterator itr;
-		for(itr = listLockID_.begin() ; itr != listLockID_.end() ; itr++)
-		{
-			if((*itr) != id)continue;
+		for (itr = listLockID_.begin(); itr != listLockID_.end(); itr++) {
+			if ((*itr) != id)
+				continue;
 			return;
 		}
 		listLockID_.push_front(id);
 	}
 
-	std::list<ref_count_ptr<DxWindow> >::iterator itr;
-	for(itr = listWindow_.begin(); itr!= listWindow_.end(); itr++)
-	{
-		if((*itr) == NULL)continue;
-		if((*itr)->IsWindowDelete())continue;
-		if(id != -1 && (*itr)->GetID() == id)continue;
+	std::list<ref_count_ptr<DxWindow>>::iterator itr;
+	for (itr = listWindow_.begin(); itr != listWindow_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
+		if (id != -1 && (*itr)->GetID() == id)
+			continue;
 		(*itr)->SetWindowEnable(bEnable);
 	}
 }
@@ -326,9 +323,9 @@ DxWindow::DxWindow()
 	listWndId_.sort();
 	int idFree = 0;
 	std::list<int>::iterator itr;
-	for(itr=listWndId_.begin(); itr!= listWndId_.end(); itr++)
-	{
-		if(*itr != idFree)break;
+	for (itr = listWndId_.begin(); itr != listWndId_.end(); itr++) {
+		if (*itr != idFree)
+			break;
 		idFree++;
 	}
 	idWindow_ = idFree;
@@ -340,9 +337,9 @@ DxWindow::~DxWindow()
 {
 	//WindowID解放
 	std::list<int>::iterator itr;
-	for(itr=listWndId_.begin(); itr!= listWndId_.end(); itr++)
-	{
-		if(*itr != idWindow_)continue;
+	for (itr = listWndId_.begin(); itr != listWndId_.end(); itr++) {
+		if (*itr != idWindow_)
+			continue;
 		listWndId_.erase(itr);
 		break;
 	}
@@ -350,15 +347,14 @@ DxWindow::~DxWindow()
 void DxWindow::DeleteWindow()
 {
 	bWindowDelete_ = true;
-	if(windowParent_ == NULL && manager_ != NULL)
-	{
+	if (windowParent_ == NULL && manager_ != NULL) {
 		manager_->DeleteWindowFromID(idWindow_);
 	}
 
-	std::list<gstd::ref_count_ptr<DxWindow> >::iterator itr;
-	for(itr = listWindowChild_.begin(); itr != listWindowChild_.end() ; itr++)
-	{
-		if((*itr)->IsWindowDelete())continue;
+	std::list<gstd::ref_count_ptr<DxWindow>>::iterator itr;
+	for (itr = listWindowChild_.begin(); itr != listWindowChild_.end(); itr++) {
+		if ((*itr)->IsWindowDelete())
+			continue;
 		(*itr)->DeleteWindow();
 	}
 }
@@ -369,11 +365,13 @@ void DxWindow::Dispose()
 }
 void DxWindow::AddChild(gstd::ref_count_ptr<DxWindow> window)
 {
-	std::list<ref_count_ptr<DxWindow> >::iterator itr;;
-	for(itr = listWindowChild_.begin(); itr!= listWindowChild_.end(); itr++)
-	{
-		if( (*itr) == NULL)continue;
-		if( (*itr) == window)return;//多重登録はさせない		
+	std::list<ref_count_ptr<DxWindow>>::iterator itr;
+	;
+	for (itr = listWindowChild_.begin(); itr != listWindowChild_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr) == window)
+			return; //多重登録はさせない
 	}
 	window->manager_ = manager_;
 	window->windowParent_ = this;
@@ -382,42 +380,54 @@ void DxWindow::AddChild(gstd::ref_count_ptr<DxWindow> window)
 }
 void DxWindow::_WorkChild()
 {
-	if(bWindowDelete_)return;
-	std::list<ref_count_ptr<DxWindow> >::iterator itr;;
-	for(itr = listWindowChild_.begin(); itr!= listWindowChild_.end(); itr++)
-	{
-		if((*itr) == NULL)continue;
-		if((*itr)->IsWindowDelete())continue;
+	if (bWindowDelete_)
+		return;
+	std::list<ref_count_ptr<DxWindow>>::iterator itr;
+	;
+	for (itr = listWindowChild_.begin(); itr != listWindowChild_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
 		(*itr)->Work();
 	}
 }
 void DxWindow::_RenderChild()
 {
-	if(!bWindowVisible_ || bWindowDelete_)return;
-	std::list<ref_count_ptr<DxWindow> >::iterator itr;;
-	for(itr = listWindowChild_.begin(); itr!= listWindowChild_.end(); itr++)
-	{
-		if((*itr) == NULL)continue;
-		if((*itr)->IsWindowDelete())continue;
-		if(!(*itr)->IsWindowVisible())continue;
+	if (!bWindowVisible_ || bWindowDelete_)
+		return;
+	std::list<ref_count_ptr<DxWindow>>::iterator itr;
+	;
+	for (itr = listWindowChild_.begin(); itr != listWindowChild_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
+		if (!(*itr)->IsWindowVisible())
+			continue;
 		(*itr)->Render();
 	}
 }
 void DxWindow::_DispatchEventToChild(gstd::ref_count_ptr<DxWindowEvent> event)
 {
-	if(!bWindowEnable_ || bWindowDelete_)return;
-	std::list<ref_count_ptr<DxWindow> >::iterator itr;;
-	for(itr = listWindowChild_.begin(); itr!= listWindowChild_.end(); itr++)
-	{
-		if((*itr) == NULL)continue;
-		if((*itr)->IsWindowDelete())continue;
-		if(!(*itr)->IsWindowEnable())continue;
+	if (!bWindowEnable_ || bWindowDelete_)
+		return;
+	std::list<ref_count_ptr<DxWindow>>::iterator itr;
+	;
+	for (itr = listWindowChild_.begin(); itr != listWindowChild_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
+		if (!(*itr)->IsWindowEnable())
+			continue;
 		(*itr)->DispatchedEvent(event);
 	}
 }
 void DxWindow::_RenderFrame()
 {
-	if(spriteFrame_ == NULL)return;
+	if (spriteFrame_ == NULL)
+		return;
 
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	graphics->SetBlendMode(typeRenderFrame_);
@@ -435,15 +445,14 @@ void DxWindow::_RenderFrame()
 }
 bool DxWindow::IsIntersected(POINT pos)
 {
-	RECT rect=GetAbsoluteWindowRect();
+	RECT rect = GetAbsoluteWindowRect();
 	return pos.x >= rect.left && pos.x <= rect.right && pos.y >= rect.top && pos.y <= rect.bottom;
 }
 RECT DxWindow::GetAbsoluteWindowRect()
 {
 	RECT res = rectWindow_;
 	DxWindow* parent = windowParent_;
-	while(parent != NULL)
-	{
+	while (parent != NULL) {
 		RECT& rect = parent->rectWindow_;
 		res.left += rect.left;
 		res.right += rect.left;
@@ -455,16 +464,21 @@ RECT DxWindow::GetAbsoluteWindowRect()
 }
 bool DxWindow::IsWindowExists(int id)
 {
-	if(bWindowDelete_)return false;
+	if (bWindowDelete_)
+		return false;
 	bool res = false;
-	if(GetID() == id)return true;
-	std::list<ref_count_ptr<DxWindow> >::iterator itr;;
-	for(itr = listWindowChild_.begin(); itr!= listWindowChild_.end(); itr++)
-	{
-		if((*itr) == NULL)continue;
-		if((*itr)->IsWindowDelete())continue;
+	if (GetID() == id)
+		return true;
+	std::list<ref_count_ptr<DxWindow>>::iterator itr;
+	;
+	for (itr = listWindowChild_.begin(); itr != listWindowChild_.end(); itr++) {
+		if ((*itr) == NULL)
+			continue;
+		if ((*itr)->IsWindowDelete())
+			continue;
 		res |= (*itr)->IsWindowExists(id);
-		if(res)break;
+		if (res)
+			break;
 	}
 	return res;
 }
@@ -472,8 +486,7 @@ int DxWindow::GetAbsoluteAlpha()
 {
 	int res = GetAlpha();
 	DxWindow* parent = windowParent_;
-	while(parent != NULL)
-	{
+	while (parent != NULL) {
 		res = res * parent->GetAlpha() / 255;
 		parent = parent->windowParent_;
 	}
@@ -492,13 +505,13 @@ void DxLabel::Work()
 void DxLabel::Render()
 {
 	_RenderFrame();
-	if(text_ != NULL)text_->Render();
+	if (text_ != NULL)
+		text_->Render();
 	_RenderChild();
 }
 void DxLabel::SetText(std::wstring str)
 {
-	if(text_ == NULL)
-	{
+	if (text_ == NULL) {
 		RECT rect = GetAbsoluteWindowRect();
 		int width = rect.right - rect.left;
 		int height = rect.bottom - rect.top;
@@ -513,18 +526,16 @@ void DxLabel::SetText(ref_count_ptr<DxText> text, bool bArrange)
 {
 	text_ = text;
 
-	if(bArrange)
-	{
+	if (bArrange) {
 		int sizeFont = text->GetFontSize();
 		RECT rect = GetAbsoluteWindowRect();
 		int width = rect.right - rect.left;
 		int height = rect.bottom - rect.top;
 		text_->SetMaxWidth(width);
 		text_->SetHorizontalAlignment(DxText::ALIGNMENT_CENTER);
-		text_->SetPosition(rect.left, rect.top + (height - sizeFont) / 2);	
+		text_->SetPosition(rect.left, rect.top + (height - sizeFont) / 2);
 	}
 }
-
 
 /**********************************************************
 //DxButton
@@ -536,14 +547,15 @@ DxButton::DxButton()
 }
 void DxButton::Work()
 {
-	if(manager_ == NULL)return;
-	if(IsWindowDelete())return;
+	if (manager_ == NULL)
+		return;
+	if (IsWindowDelete())
+		return;
 	ref_count_ptr<DxWindow> wnd = manager_->GetIntersectedWindow();
 
 	bool bOldIntersected = bIntersected_;
 	bIntersected_ = wnd != NULL && wnd->GetID() == GetID();
-	if(!bOldIntersected && bIntersected_)
-	{
+	if (!bOldIntersected && bIntersected_) {
 		IntersectMouseCursor();
 	}
 	_WorkChild();
@@ -551,23 +563,26 @@ void DxButton::Work()
 void DxButton::Render()
 {
 	_RenderFrame();
-	if(text_ != NULL)text_->Render();
+	if (text_ != NULL)
+		text_->Render();
 	_RenderChild();
 
-	if(bIntersected_)
+	if (bIntersected_)
 		RenderIntersectedFrame();
-	if(bSelected_)
+	if (bSelected_)
 		RenderSelectedFrame();
 }
 void DxButton::RenderIntersectedFrame()
 {
-	if(!bIntersected_)return;
-	if(!IsWindowEnable())return;
+	if (!bIntersected_)
+		return;
+	if (!IsWindowEnable())
+		return;
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	graphics->SetBlendMode(DirectGraphics::MODE_BLEND_ADD_RGB);
 	Sprite2D sprite;
 	int alpha = 64;
-	RECT_D rcSrc = {1, 1, 2, 2};
+	RECT_D rcSrc = { 1, 1, 2, 2 };
 	RECT_D rcDest = GetRectD(GetAbsoluteWindowRect());
 	sprite.SetVertex(rcSrc, rcDest, D3DCOLOR_ARGB(alpha, alpha, alpha, alpha));
 	sprite.Render();
@@ -575,19 +590,20 @@ void DxButton::RenderIntersectedFrame()
 }
 void DxButton::RenderSelectedFrame()
 {
-	if(!bSelected_)return;
-	if(!IsWindowEnable())return;
+	if (!bSelected_)
+		return;
+	if (!IsWindowEnable())
+		return;
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	graphics->SetBlendMode(DirectGraphics::MODE_BLEND_ADD_RGB);
 	Sprite2D sprite;
 	int alpha = 64;
-	RECT_D rcSrc = {1, 1, 2, 2};
+	RECT_D rcSrc = { 1, 1, 2, 2 };
 	RECT_D rcDest = GetRectD(GetAbsoluteWindowRect());
 	sprite.SetVertex(rcSrc, rcDest, D3DCOLOR_ARGB(alpha, alpha, alpha, alpha));
 	sprite.Render();
 	graphics->SetBlendMode(DirectGraphics::MODE_BLEND_ALPHA);
 }
-
 
 /**********************************************************
 //DxMessageBox
@@ -599,21 +615,20 @@ DxMessageBox::DxMessageBox()
 void DxMessageBox::DispatchedEvent(gstd::ref_count_ptr<DxWindowEvent> event)
 {
 	_DispatchEventToChild(event);
-
 }
 void DxMessageBox::SetText(ref_count_ptr<DxText> text)
 {
 	text_ = text;
 }
-void DxMessageBox::SetButton(std::vector<gstd::ref_count_ptr<DxButton> > listButton)
+void DxMessageBox::SetButton(std::vector<gstd::ref_count_ptr<DxButton>> listButton)
 {
 	listButton_ = listButton;
 }
 void DxMessageBox::UpdateWindowRect()
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	int scrnWidth = graphics->GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) + 10 ;
-	int scrnHeight = graphics->GetScreenHeight() +::GetSystemMetrics(SM_CYEDGE) + 10 ;
+	int scrnWidth = graphics->GetScreenWidth() + ::GetSystemMetrics(SM_CXEDGE) + 10;
+	int scrnHeight = graphics->GetScreenHeight() + ::GetSystemMetrics(SM_CYEDGE) + 10;
 
 	int margin = 16;
 	RECT rcWnd = GetWindowRect();
@@ -623,11 +638,10 @@ void DxMessageBox::UpdateWindowRect()
 	gstd::ref_count_ptr<DxTextInfo> textInfo = text_->GetTextInfo();
 	int textHeight = textInfo->GetTotalHeight();
 
-	int iButton = 0 ;
+	int iButton = 0;
 	int totalButtonWidth = 0;
 	int buttonHeight = 0;
-	for(iButton = 0 ; iButton < listButton_.size() ; iButton++)
-	{
+	for (iButton = 0; iButton < listButton_.size(); iButton++) {
 		RECT rect = listButton_[iButton]->GetWindowRect();
 		totalButtonWidth += rect.right - rect.left + margin;
 		buttonHeight = max(buttonHeight, rect.bottom - rect.top);
@@ -635,16 +649,15 @@ void DxMessageBox::UpdateWindowRect()
 
 	int leftButton = wndWidth / 2 - totalButtonWidth / 2;
 	int topButton = textHeight + margin * 2;
-	for(iButton = 0 ; iButton < listButton_.size() ; iButton++)
-	{
+	for (iButton = 0; iButton < listButton_.size(); iButton++) {
 		RECT rcButton = listButton_[iButton]->GetWindowRect();
 		int width = rcButton.right - rcButton.left;
 		int height = rcButton.bottom - rcButton.top;
-		RECT rect = {leftButton, topButton, leftButton + width, topButton + height};
+		RECT rect = { leftButton, topButton, leftButton + width, topButton + height };
 		leftButton += width + margin;
 		listButton_[iButton]->SetWindowRect(rect);
 	}
 
-	RECT rect = {rcWnd.left, rcWnd.top, rcWnd.right, rcWnd.top + textHeight + buttonHeight + margin * 3};
+	RECT rect = { rcWnd.left, rcWnd.top, rcWnd.right, rcWnd.top + textHeight + buttonHeight + margin * 3 };
 	SetWindowRect(rect);
 }

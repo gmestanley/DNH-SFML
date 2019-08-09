@@ -1,42 +1,31 @@
-#include"ScenePanel.hpp"
-#include"MainWindow.hpp"
-
+#include "ScenePanel.hpp"
+#include "MainWindow.hpp"
 
 /**********************************************************
 //EventScenePanel
 **********************************************************/
-LRESULT ScenePanel::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
+LRESULT ScenePanel::_WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	switch (uMsg)
-	{
-		case WM_COMMAND:
-		{
-			int id = wParam & 0xffff;//LOWORD(wParam);
-			if(id == buttonStart_.GetWindowId())
-			{
-				MainWindow* wndMain = MainWindow::GetInstance();
-				if(wndMain->GetStgController() == NULL)
-				{
-					StartStg();
-				}
-				else
-				{
-					DirectSoundManager* soundManager = DirectSoundManager::GetBase();
-					soundManager->Clear();
-					EndStg();
-				}
-
-			}
-			else if(id == buttonPause_.GetWindowId())
-			{
-				bool bCheck = SendMessage(buttonPause_.GetWindowHandle() , BM_GETCHECK , 0 , 0) == BST_CHECKED;
-				ETaskManager::GetInstance()->SetWorkFunctionEnable(!bCheck);
-				EFpsController::GetInstance()->SetCriticalFrame();
+	switch (uMsg) {
+	case WM_COMMAND: {
+		int id = wParam & 0xffff; // LOWORD(wParam);
+		if (id == buttonStart_.GetWindowId()) {
+			MainWindow* wndMain = MainWindow::GetInstance();
+			if (wndMain->GetStgController() == NULL) {
+				StartStg();
+			} else {
+				DirectSoundManager* soundManager = DirectSoundManager::GetBase();
+				soundManager->Clear();
+				EndStg();
 			}
 
-			break;
+		} else if (id == buttonPause_.GetWindowId()) {
+			bool bCheck = SendMessage(buttonPause_.GetWindowHandle(), BM_GETCHECK, 0, 0) == BST_CHECKED;
+			ETaskManager::GetInstance()->SetWorkFunctionEnable(!bCheck);
+			EFpsController::GetInstance()->SetCriticalFrame();
 		}
-
+		break;
+	}
 	}
 	return WPanel::_WindowProcedure(hWnd, uMsg, wParam, lParam);
 }
@@ -55,7 +44,7 @@ bool ScenePanel::Initialize(HWND hParent)
 	panelPathPlayer_->Initialize(ScriptPathPanel::TYPE_PLAYER, hWnd_);
 
 	WButton::Style styleCheck;
-	styleCheck.SetStyle(WS_CHILD | WS_VISIBLE | BS_PUSHLIKE | BS_AUTOCHECKBOX );
+	styleCheck.SetStyle(WS_CHILD | WS_VISIBLE | BS_PUSHLIKE | BS_AUTOCHECKBOX);
 	buttonPause_.Create(hWnd_, styleCheck);
 	buttonPause_.SetText(L"停止");
 	buttonPause_.SetWindowEnable(false);
@@ -83,21 +72,17 @@ void ScenePanel::LocateParts()
 	int gWidth = 640;
 	int gHeight = 480;
 
-	if(!bFixedArea_)
-	{
+	if (!bFixedArea_) {
 /*
-		if(gWidth > gHeight*4/3)
-		{//横幅が広い
-			gWidth = gHeight*4/3;
-			gHeight = gWidth*3/4;
+		if (gWidth > gHeight * 4 / 3) { //横幅が広い
+			gWidth = gHeight * 4 / 3;
+			gHeight = gWidth * 3 / 4;
 			gHeight = gHeight > wHeight ? wHeight : gHeight;
-			gWidth = gHeight*4/3;
-		}
-		else 
-		{//縦幅が広い
-			gHeight = gWidth*3/4;
+			gWidth = gHeight * 4 / 3;
+		} else { //縦幅が広い
+			gHeight = gWidth * 3 / 4;
 			gHeight = gHeight > wHeight ? wHeight : gHeight;
-			gWidth = gHeight*4/3;
+			gWidth = gHeight * 4 / 3;
 		}
 */
 		DnhConfiguration* config = DnhConfiguration::CreateInstance();
@@ -109,13 +94,16 @@ void ScenePanel::LocateParts()
 		double ratioWH = (double)screenWidth / (double)screenHeight;
 		double ratioHW = (double)screenHeight / (double)screenWidth;
 
-		if(height > wHeight) height = wHeight;
+		if (height > wHeight)
+			height = wHeight;
 		width = (double)height / ratioHW;
 
-		if(width > wWidth)width = wWidth;
+		if (width > wWidth)
+			width = wWidth;
 		height = (double)width / ratioWH;
 
-		if(height > wHeight) height = wHeight;
+		if (height > wHeight)
+			height = wHeight;
 		width = (double)height / ratioHW;
 
 		gWidth = width;
@@ -131,23 +119,21 @@ bool ScenePanel::StartStg()
 	std::wstring pathEnemy = panelPathEnemy_->GetPath();
 	std::wstring pathPlayer = panelPathPlayer_->GetPath();
 	bool res = false;
-	try
-	{
+	try {
 		ref_count_ptr<ScriptInformation> infoEnemy = panelPathEnemy_->GetSelectedScriptInformation();
-		if(infoEnemy == NULL)throw gstd::wexception(L"敵スクリプトが不正です");
+		if (infoEnemy == NULL)
+			throw gstd::wexception(L"敵スクリプトが不正です");
 
 		ref_count_ptr<StgControllerForViewer> controller = StgControllerForViewer::Create();
-		if(infoEnemy->GetType() == ScriptInformation::TYPE_PACKAGE)
-		{
+		if (infoEnemy->GetType() == ScriptInformation::TYPE_PACKAGE) {
 			ref_count_ptr<StgSystemInformation> infoStgSystem = new StgSystemInformation();
 			infoStgSystem->SetMainScriptInformation(infoEnemy);
 			controller->Initialize(infoStgSystem);
 			controller->Start(NULL, NULL);
-		}
-		else
-		{
+		} else {
 			ref_count_ptr<ScriptInformation> infoPlayer = panelPathPlayer_->GetSelectedScriptInformation();
-			if(infoPlayer == NULL)throw gstd::wexception(L"自機スクリプトが不正です");
+			if (infoPlayer == NULL)
+				throw gstd::wexception(L"自機スクリプトが不正です");
 
 			ref_count_ptr<StgSystemInformation> infoStgSystem = new StgSystemInformation();
 			infoStgSystem->SetMainScriptInformation(infoEnemy);
@@ -158,14 +144,10 @@ bool ScenePanel::StartStg()
 		}
 
 		wndMain->SetStgController(controller);
-	}
-	catch(gstd::wexception& e)
-	{
+	} catch (gstd::wexception& e) {
 		ErrorDialog::ShowErrorDialog(e.what());
 		Logger::WriteTop(e.what());
-	}
-	catch(...)
-	{
+	} catch (...) {
 		MessageBox(hWnd_, L"開始失敗", L"error", MB_OK);
 		Logger::WriteTop(L"開始失敗");
 	}
@@ -180,16 +162,13 @@ bool ScenePanel::EndStg()
 }
 void ScenePanel::SetStgState(bool bStart)
 {
-	if(bStart)
-	{
+	if (bStart) {
 		buttonStart_.SetText(L"終了");
 		buttonPause_.SetWindowEnable(true);
 
 		panelPathEnemy_->SetWindowEnable(false);
 		panelPathPlayer_->SetWindowEnable(false);
-	}
-	else
-	{
+	} else {
 		buttonStart_.SetText(L"開始");
 		buttonPause_.SetWindowEnable(false);
 		panelPathEnemy_->SetWindowEnable(true);
@@ -218,7 +197,6 @@ void ScenePanel::Write(RecordBuffer& record)
 //ScriptPathPanel
 ScenePanel::ScriptPathPanel::~ScriptPathPanel()
 {
-
 }
 bool ScenePanel::ScriptPathPanel::Initialize(int type, HWND hParent)
 {
@@ -232,13 +210,12 @@ bool ScenePanel::ScriptPathPanel::Initialize(int type, HWND hParent)
 
 	{
 		labelPath_.Create(hWnd_);
-		if(type == TYPE_ENEMY)
+		if (type == TYPE_ENEMY)
 			labelPath_.SetText(L"敵スクリプト");
 		else
 			labelPath_.SetText(L"自機スクリプト");
 
 		editPath_.Create(hWnd_, styleEdit);
-
 
 		buttonPath_.Create(hWnd_, stylePath);
 		buttonPath_.SetText(L"選択");
@@ -250,9 +227,9 @@ bool ScenePanel::ScriptPathPanel::Initialize(int type, HWND hParent)
 
 	DragAcceptFiles(hWnd_, TRUE);
 
-	if(type == TYPE_ENEMY)
+	if (type == TYPE_ENEMY)
 		dialogSelect_ = new EnemySelectDialog();
-	else 
+	else
 		dialogSelect_ = new PlayerSelectDialog();
 
 	dialogSelect_->Initialize();
@@ -264,21 +241,18 @@ void ScenePanel::ScriptPathPanel::SetWindowEnable(bool bEnable)
 	editPath_.SetWindowEnable(bEnable);
 	buttonPath_.SetWindowEnable(bEnable);
 }
-LRESULT ScenePanel::ScriptPathPanel::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
+LRESULT ScenePanel::ScriptPathPanel::_WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	switch (uMsg)
-	{
-		case WM_COMMAND:
-		{
-			int id = wParam & 0xffff;//LOWORD(wParam);
-			if(id == buttonPath_.GetWindowId())
-			{
+	switch (uMsg) {
+	case WM_COMMAND: {
+		int id = wParam & 0xffff; // LOWORD(wParam);
+		if (id == buttonPath_.GetWindowId()) {
 /*
 				std::string path;
 				path.resize(MAX_PATH*4);
 				OPENFILENAME ofn;
-				ZeroMemory(&ofn,sizeof(OPENFILENAME));
-				ofn.lStructSize=sizeof(OPENFILENAME);
+				ZeroMemory(&ofn, sizeof(OPENFILENAME));
+				ofn.lStructSize = sizeof(OPENFILENAME);
 				ofn.hwndOwner = hWnd_;
 				ofn.nMaxFile = path.size();
 				ofn.lpstrFile = &path[0];
@@ -287,71 +261,64 @@ LRESULT ScenePanel::ScriptPathPanel::_WindowProcedure(HWND hWnd,UINT uMsg,WPARAM
 				ofn.lpstrDefExt = ".txt";
 				ofn.lpstrFilter = "全てのファイル (*.*)\0*.*\0";
 				ofn.lpstrTitle = "スクリプトを開く";
-				if(GetOpenFileName(&ofn))
-				{
+				if (GetOpenFileName(&ofn))
 					editPath_.SetText(path);
-				}
 */
-				std::wstring path = editPath_.GetText();
-				dialogSelect_->ShowModal(path);
+			std::wstring path = editPath_.GetText();
+			dialogSelect_->ShowModal(path);
 
-				ref_count_ptr<ScriptInformation> info = dialogSelect_->GetSelectedScript();
-				if(info != NULL)
-				{
-					infoSelected_ = info;
-					editPath_.SetText(info->GetScriptPath());
-				}
+			ref_count_ptr<ScriptInformation> info = dialogSelect_->GetSelectedScript();
+			if (info != NULL) {
+				infoSelected_ = info;
+				editPath_.SetText(info->GetScriptPath());
+			}
+		}
+		break;
+	}
+	case WM_DROPFILES: {
+		wchar_t szFileName[MAX_PATH];
+		HDROP hDrop = (HDROP)wParam;
+		UINT uFileNo = DragQueryFile((HDROP)wParam, 0xFFFFFFFF, NULL, 0);
+
+		for (int iDrop = 0; iDrop < (int)uFileNo; iDrop++) {
+			DragQueryFile(hDrop, iDrop, szFileName, sizeof(szFileName));
+			std::wstring path = szFileName;
+
+			ref_count_ptr<ScriptInformation> info = _CreateScriptInformation(path);
+			if (info != NULL) {
+				infoSelected_ = info;
+				editPath_.SetText(info->GetScriptPath());
 			}
 			break;
 		}
-		case WM_DROPFILES:
-		{
-			wchar_t szFileName[MAX_PATH];
-			HDROP hDrop = (HDROP)wParam;
-			UINT uFileNo = DragQueryFile((HDROP)wParam,0xFFFFFFFF,NULL,0);
+		DragFinish(hDrop);
 
-			for(int iDrop = 0 ; iDrop < (int)uFileNo ; iDrop++)
-			{
-				DragQueryFile(hDrop, iDrop, szFileName, sizeof(szFileName));
-				std::wstring path = szFileName;
-
-				ref_count_ptr<ScriptInformation> info = _CreateScriptInformation(path);
-				if(info != NULL)
-				{
-					infoSelected_ = info;
-					editPath_.SetText(info->GetScriptPath());
-				}
-				break;
-			}
-			DragFinish(hDrop);
-
-			break;
-		}
+		break;
+	}
 	}
 	return WPanel::_WindowProcedure(hWnd, uMsg, wParam, lParam);
 }
 ref_count_ptr<ScriptInformation> ScenePanel::ScriptPathPanel::_CreateScriptInformation(std::wstring path)
 {
 	File file(path);
-	if(!file.Open())return NULL;
+	if (!file.Open())
+		return NULL;
 
 	std::string source = "";
 	int size = file.GetSize();
 	source.resize(size);
 	file.Read(&source[0], size);
 
-	ref_count_ptr<ScriptInformation> info = 
-		ScriptInformation::CreateScriptInformation(path, L"", source);
+	ref_count_ptr<ScriptInformation> info = ScriptInformation::CreateScriptInformation(path, L"", source);
 
 	return info;
 }
 void ScenePanel::ScriptPathPanel::SetPath(std::wstring path)
 {
 	ref_count_ptr<ScriptInformation> info = _CreateScriptInformation(path);
-	if(info == NULL)return;
+	if (info == NULL)
+		return;
 
 	infoSelected_ = info;
 	editPath_.SetText(path);
 }
-
-
