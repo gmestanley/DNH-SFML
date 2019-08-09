@@ -167,10 +167,12 @@ public:
 	static gstd::value Func_SetStgFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetItemRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetShotRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_SetShotDelayRenderBlendType(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetStgFrameRenderPriorityMinI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetStgFrameRenderPriorityMaxI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetItemRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetShotRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_GetShotDelayRenderBlendType(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetPlayerRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetCameraFocusPermitPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_CloseStgScene(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -443,6 +445,7 @@ public:
 	static gstd::value Func_ObjSpell_SetDamage(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjSpell_SetPenetration(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjSpell_SetEraseShot(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ObjSpell_SetEraseShotType(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjSpell_SetIntersectionCircle(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjSpell_SetIntersectionLine(gstd::script_machine* machine, int argc, gstd::value const* argv);
 };

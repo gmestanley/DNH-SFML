@@ -106,6 +106,8 @@ public:
 	void SetStgFrameMaxPriority(int pri) { priMaxStgFrame_ = pri; }
 	int GetShotObjectPriority() { return priShotObject_; }
 	void SetShotObjectPriority(int pri) { priShotObject_ = pri; }
+	int GetShotObjectDelayBlend() { return priShotDelayBlend_; }
+	void SetShotObjectDelayBlend(int blend) { priShotDelayBlend_ = blend; }
 	int GetItemObjectPriority() { return priItemObject_; }
 	void SetItemObjectPriority(int pri) { priItemObject_ = pri; }
 	int GetCameraFocusPermitPriority() { return priCameraFocusPermit_; }
@@ -148,6 +150,7 @@ private:
 	int priMinStgFrame_;
 	int priMaxStgFrame_;
 	int priShotObject_;
+	int priShotDelayBlend_;
 	int priItemObject_;
 	int priCameraFocusPermit_;
 	RECT rcShotAutoDeleteClip_;

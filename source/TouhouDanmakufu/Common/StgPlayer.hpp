@@ -168,6 +168,11 @@ public:
 **********************************************************/
 class StgPlayerSpellObject : public DxScriptPrimitiveObject2D, public StgIntersectionObject {
 public:
+	enum {
+		TO_TYPE_IMMEDIATE,
+		TO_TYPE_FADE,
+		TO_TYPE_ITEM,
+	};
 	StgPlayerSpellObject(StgStageController* stageController);
 	virtual void Work();
 	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
@@ -175,7 +180,9 @@ public:
 	double GetDamage() { return damage_; }
 	void SetDamage(double damage) { damage_ = damage; }
 	bool IsEraseShot() { return bEraseShot_; }
+	int ShotDeleteTo() { return bEraseShotTypeTo_; }
 	void SetEraseShot(bool b) { bEraseShot_ = b; }
+	void SetEraseShotTypeTo(int bEraseType) { bEraseShotTypeTo_ = bEraseType; }
 	double GetLife() { return life_; }
 	void SetLife(double life) { life_ = life; }
 
@@ -183,6 +190,7 @@ protected:
 	StgStageController* stageController_;
 	double damage_;
 	bool bEraseShot_;
+	int bEraseShotTypeTo_; //Bullet deletion type
 	double life_; //貫通力
 };
 

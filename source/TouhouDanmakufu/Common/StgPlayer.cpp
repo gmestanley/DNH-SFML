@@ -334,6 +334,7 @@ StgPlayerSpellObject::StgPlayerSpellObject(StgStageController* stageController)
 	stageController_ = stageController;
 	damage_ = 0;
 	bEraseShot_ = true;
+	bEraseShotTypeTo_ = TO_TYPE_ITEM;
 	life_ = 256 * 256 * 256;
 }
 void StgPlayerSpellObject::Work()

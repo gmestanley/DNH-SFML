@@ -231,10 +231,12 @@ function const stgFunction[] = {
 	{ "SetStgFrame", StgStageScript::Func_SetStgFrame, 6 },
 	{ "SetItemRenderPriorityI", StgStageScript::Func_SetItemRenderPriorityI, 1 },
 	{ "SetShotRenderPriorityI", StgStageScript::Func_SetShotRenderPriorityI, 1 },
+	{ "SetShotDelayRenderBlendType", StgStageScript::Func_SetShotDelayRenderBlendType, 1 },
 	{ "GetStgFrameRenderPriorityMinI", StgStageScript::Func_GetStgFrameRenderPriorityMinI, 0 },
 	{ "GetStgFrameRenderPriorityMaxI", StgStageScript::Func_GetStgFrameRenderPriorityMaxI, 0 },
 	{ "GetItemRenderPriorityI", StgStageScript::Func_GetItemRenderPriorityI, 0 },
 	{ "GetShotRenderPriorityI", StgStageScript::Func_GetShotRenderPriorityI, 0 },
+	{ "GetShotDelayRenderBlendType", StgStageScript::Func_GetShotDelayRenderBlendType, 0 },
 	{ "GetPlayerRenderPriorityI", StgStageScript::Func_GetPlayerRenderPriorityI, 0 },
 	{ "GetCameraFocusPermitPriorityI", StgStageScript::Func_GetCameraFocusPermitPriorityI, 0 },
 	{ "CloseStgScene", StgStageScript::Func_CloseStgScene, 0 },
@@ -668,6 +670,15 @@ gstd::value StgStageScript::Func_SetShotRenderPriorityI(gstd::script_machine* ma
 	info->SetShotObjectPriority(pri);
 	return value();
 }
+gstd::value StgStageScript::Func_SetShotDelayRenderBlendType(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	ref_count_ptr<StgStageInformation> info = stageController->GetStageInformation();
+	int blend = (int)argv[0].as_real();
+	info->SetShotObjectDelayBlend(blend);
+	return value();
+}
 gstd::value StgStageScript::Func_GetStgFrameRenderPriorityMinI(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -694,6 +705,13 @@ gstd::value StgStageScript::Func_GetShotRenderPriorityI(gstd::script_machine* ma
 	StgStageScript* script = (StgStageScript*)machine->data;
 	StgStageController* stageController = script->stageController_;
 	long double res = stageController->GetStageInformation()->GetShotObjectPriority();
+	return value(machine->get_engine()->get_real_type(), res);
+}
+gstd::value StgStageScript::Func_GetShotDelayRenderBlendType(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	long double res = stageController->GetStageInformation()->GetShotObjectDelayBlend();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value StgStageScript::Func_GetPlayerRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv)
@@ -4044,6 +4062,7 @@ function const stgPlayerFunction[] = {
 	{ "ObjSpell_SetDamage", StgStagePlayerScript::Func_ObjSpell_SetDamage, 2 },
 	{ "ObjSpell_SetPenetration", StgStagePlayerScript::Func_ObjSpell_SetPenetration, 2 },
 	{ "ObjSpell_SetEraseShot", StgStagePlayerScript::Func_ObjSpell_SetEraseShot, 2 },
+	{ "ObjSpell_SetEraseShotType", StgStagePlayerScript::Func_ObjSpell_SetEraseShotType, 2 },
 	{ "ObjSpell_SetIntersectionCircle", StgStagePlayerScript::Func_ObjSpell_SetIntersectionCircle, 4 },
 	{ "ObjSpell_SetIntersectionLine", StgStagePlayerScript::Func_ObjSpell_SetIntersectionLine, 6 },
 
@@ -4221,6 +4240,20 @@ gstd::value StgStagePlayerScript::Func_ObjSpell_SetEraseShot(gstd::script_machin
 
 	bool bEraseShot = argv[1].as_boolean();
 	objSpell->SetEraseShot(bEraseShot);
+	return value();
+}
+gstd::value StgStagePlayerScript::Func_ObjSpell_SetEraseShotType(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStagePlayerScript* script = (StgStagePlayerScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+
+	int id = (int)argv[0].as_real();
+	ref_count_ptr<StgPlayerSpellObject>::unsync objSpell = ref_count_ptr<StgPlayerSpellObject>::unsync::DownCast(stageController->GetMainRenderObject(id));
+	if (objSpell == NULL)
+		return value();
+
+	int typeTo = argv[1].as_real();
+	objSpell->SetEraseShotTypeTo(typeTo);
 	return value();
 }
 gstd::value StgStagePlayerScript::Func_ObjSpell_SetIntersectionCircle(gstd::script_machine* machine, int argc, gstd::value const* argv)

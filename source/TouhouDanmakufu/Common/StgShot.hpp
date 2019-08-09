@@ -238,7 +238,9 @@ public:
 	void SetAutoDelete(bool b) { bAutoDelete_ = b; }
 	void SetAutoDeleteFrame(int frame) { frameAutoDelete_ = frame; }
 	bool IsEraseShot() { return bEraseShot_; }
+	int ShotDeleteTo() { return bEraseShotTypeTo_; }
 	void SetEraseShot(bool bErase) { bEraseShot_ = bErase; }
+	void SetEraseShotTypeTo(int bEraseType) { bEraseShotTypeTo_ = bEraseType; }
 	bool IsSpellFactor() { return bSpellFactor_; }
 	void SetSpellFactor(bool bSpell) { bSpellFactor_ = bSpell; }
 	void SetUserIntersectionMode(bool b) { bUserIntersectionMode_ = b; }
@@ -265,6 +267,7 @@ protected:
 	double life_; //貫通力
 	bool bAutoDelete_;
 	bool bEraseShot_; //弾削除機能
+	int bEraseShotTypeTo_; //Bullet deletion type
 	bool bSpellFactor_; //スペル付加
 	int frameAutoDelete_; //自動削除フレーム
 	ref_count_ptr<ReserveShotList>::unsync listReserveShot_;

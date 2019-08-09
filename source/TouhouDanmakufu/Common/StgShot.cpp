@@ -688,6 +688,7 @@ StgShotObject::StgShotObject(StgStageController* stageController)
 	life_ = LIFE_SPELL_UNREGIST;
 	bAutoDelete_ = true;
 	bEraseShot_ = false;
+	bEraseShotTypeTo_ = 2;
 	bSpellFactor_ = false;
 
 	color_ = D3DCOLOR_ARGB(255, 255, 255, 255);
@@ -1184,12 +1185,17 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX& matO)
 	int shotBlendType = DirectGraphics::MODE_BLEND_ALPHA;
 	if (delay_ > 0) {
 		//遅延時間
-		int objDelayBlendType = GetSourceBlendType();
-		if (objDelayBlendType == DirectGraphics::MODE_BLEND_NONE) {
-			shotBlendType = shotData->GetDelayRenderType();
-			renderer = shotData->GetRendererFromGraphicsBlendType(shotBlendType);
-		} else {
-			renderer = shotData->GetRendererFromGraphicsBlendType(objDelayBlendType);
+		int shotDelayBlendType = stageController_->GetStageInformation()->GetShotObjectDelayBlend();
+		if(shotDelayBlendType == DirectGraphics::MODE_BLEND_NONE){
+			int objDelayBlendType = GetSourceBlendType();
+			if (objDelayBlendType == DirectGraphics::MODE_BLEND_NONE) {
+				shotBlendType = shotData->GetDelayRenderType();
+				renderer = shotData->GetRendererFromGraphicsBlendType(shotBlendType);
+			} else {
+				renderer = shotData->GetRendererFromGraphicsBlendType(objDelayBlendType);
+			}
+		}else{
+			renderer = shotData->GetRendererFromGraphicsBlendType(shotDelayBlendType);
 		}
 	} else {
 		int objBlendType = GetBlendType();
@@ -1211,9 +1217,18 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX& matO)
 	D3DCOLOR color;
 	if (delay_ > 0) {
 		//遅延時間
-		double expa = 0.5f + (double)delay_ / 30.0f * 2;
-		if (expa > 2)
-			expa = 2;
+		rcSrc = shotData->GetDelayRect();
+		color = shotData->GetDelayColor();
+		
+		double rectSize = (double)rcSrc.right - (double)rcSrc.left;
+		double minscale = 0.23f * (rectSize/16.0f);
+		double expa = minscale+3.0f * (double)delay_ / 75.0f;
+		if(expa > minscale+3.0f){
+			expa = minscale+3.0f;
+		}
+		// double expa = 0.5f + (double)delay_ / 30.0f * 2;
+		// if (expa > 2)
+			// expa = 2;
 
 		double angleZ = 0;
 		if (!shotData->IsFixedAngle())
@@ -1226,18 +1241,19 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX& matO)
 		D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
 		mat = matScale * matRot * matTrans * mat;
 
-		rcSrc = shotData->GetDelayRect();
-		color = shotData->GetDelayColor();
 	} else {
 		double angleZ = 0;
-		if (!shotData->IsFixedAngle())
+		if (!shotData->IsFixedAngle()){
 			angleZ = GetDirectionAngle() + 90 + angle_.z;
-		else
+			D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
+		}else{
 			angleZ = angle_.z;
+			D3DXMatrixTranslation(&matTrans, round(position_.x), round(position_.y), round(position_.z));
+		}		
 
 		D3DXMatrixScaling(&matScale, scale_.x, scale_.y, scale_.z);
 		D3DXMatrixRotationYawPitchRoll(&matRot, D3DXToRadian(angle_.y), D3DXToRadian(angle_.x), D3DXToRadian(angleZ));
-		D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
+		// D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
 		mat = matScale * matRot * matTrans * mat;
 
 		rcSrc = shotData->GetRect(frameWork_);
@@ -1305,9 +1321,16 @@ void StgNormalShotObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 		//自機弾
 		StgShotObject* shot = (StgShotObject*)otherTarget->GetObject().GetPointer();
 		if (shot != NULL) {
+			int typeTo = bEraseShotTypeTo_;
 			bool bEraseShot = shot->IsEraseShot();
-			if (bEraseShot && life_ != LIFE_SPELL_REGIST)
-				ConvertToItem();
+			if (bEraseShot && life_ != LIFE_SPELL_REGIST){
+				if (typeTo == 0)
+					DeleteImmediate();
+				else if (typeTo == 1)
+					SetFadeDelete();
+				else if (typeTo == 2)
+					ConvertToItem();
+			}
 		}
 		break;
 	}
@@ -1315,9 +1338,16 @@ void StgNormalShotObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 		//自機スペル
 		StgPlayerSpellObject* spell = (StgPlayerSpellObject*)otherTarget->GetObject().GetPointer();
 		if (spell != NULL) {
+			int typeTo = spell->ShotDeleteTo();
 			bool bEraseShot = spell->IsEraseShot();
-			if (bEraseShot && life_ != LIFE_SPELL_REGIST)
-				ConvertToItem();
+			if (bEraseShot && life_ != LIFE_SPELL_REGIST){
+				if (typeTo == 0)
+					DeleteImmediate();
+				else if (typeTo == 1)
+					SetFadeDelete();
+				else if (typeTo == 2)
+					ConvertToItem();
+			}
 		}
 		break;
 	}
@@ -1454,9 +1484,16 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 		StgShotObject* shot = (StgShotObject*)otherTarget->GetObject().GetPointer();
 		if (shot != NULL) {
 			bool bEraseShot = shot->IsEraseShot();
+			int typeTo = bEraseShotTypeTo_;
 			if (bEraseShot && life_ != LIFE_SPELL_REGIST) {
 				damage = shot->GetDamage();
-				ConvertToItem();
+				
+				if (typeTo == 0)
+					DeleteImmediate();
+				else if (typeTo == 1)
+					SetFadeDelete();
+				else if (typeTo == 2)
+					ConvertToItem();
 			}
 		}
 		break;
@@ -1466,9 +1503,17 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 		StgPlayerSpellObject* spell = (StgPlayerSpellObject*)otherTarget->GetObject().GetPointer();
 		if (spell != NULL) {
 			bool bEraseShot = spell->IsEraseShot();
+			int typeTo = spell->ShotDeleteTo();
 			if (bEraseShot && life_ != LIFE_SPELL_REGIST) {
 				damage = spell->GetDamage();
-				ConvertToItem();
+				
+				if (typeTo == 0)
+					DeleteImmediate();
+				else if (typeTo == 1)
+					SetFadeDelete();
+				else if (typeTo == 2)
+					ConvertToItem();
+			
 			}
 		}
 		break;

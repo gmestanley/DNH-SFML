@@ -453,6 +453,7 @@ StgStageInformation::StgStageInformation()
 	priMinStgFrame_ = 20;
 	priMaxStgFrame_ = 80;
 	priShotObject_ = 50;
+	priShotDelayBlend_ = DirectGraphics::MODE_BLEND_NONE;
 	priItemObject_ = 60;
 	priCameraFocusPermit_ = 69;
 	SetRect(&rcShotAutoDeleteClip_, -64, -64, 64, 64);
