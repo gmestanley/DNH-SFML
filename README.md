@@ -1,7 +1,25 @@
 # Touhou Danmakufu ph3.5 ~ Woo Edition
 All hail our lord and savior Mima and our queen, Kogasa's Woo. This version of Danmakufu is made for the purposes of both optimization and fixing some issues with the original source that mkm dropped. (See James7132's repo for a link to the original download) <b>This version of Danmakufu is completely backwards compatible with ph3. If something doesn't work as expected, please let me know.</b> My Discord tag is WishMakers#0426 if you need to reach me.
 
-## Changes
+## Changes To New Feature Branch
+The original creator of each change will be listed here in parentheses next to the new function/change's listing.
+ * Added SetShotDelayRenderBlendType (gtbot)
+    - argument 1: Blend Type
+    Globally forces all delay clouds to use the specified blend type
+    use BLEND_NONE to disable this. BLEND_NONE is the default.
+ * Added GetShotDelayRenderBlendType (gtbot)
+    returns the value that's specified in SetShotDelayRenderBlendType    
+ * Added ObjSpell_SetEraseShotType (gtbot)
+    - argument 1: ObjSpell ID
+    - argument 2: bullet deletion type
+    Sets the method that objspells delete bullets into
+    0: immediately deletes
+    1: sets bullets to fade out and delete
+    2: bullets create items 
+    2 is the default value
+
+ 
+ ## Changes To Master Branch
 Here's a list of changes compared to original Danmakufu that may enable your computer to use it better.
  * Changes the way RNG is determined to be much more stable than previously (mt19937 compared to a Mersenne Twister from 1996, lmao)
  * Removes a lot of repeated function calls (in bullet movement only as of 6/24/2019)
