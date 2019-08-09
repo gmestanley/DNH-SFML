@@ -9,7 +9,7 @@ The original creator of each change will be listed here in parentheses next to t
     - use BLEND_NONE to disable this. BLEND_NONE is the default.
  * Added GetShotDelayRenderBlendType (gtbot)
     - returns the value that's specified in SetShotDelayRenderBlendType    
- * Added ObjSpell_SetEraseShotType (gtbot) (CURRENTLY UNIMPLEMENTED FUNCTION)
+ * Added ObjSpell_SetEraseShotType (gtbot)
     - argument 1: ObjSpell ID
     - argument 2: bullet deletion type
     - Sets the method that objspells delete bullets into
