@@ -127,6 +127,7 @@ public:
 	double GetAngularVelocityMin() { return angularVelocityMin_; }
 	double GetAngularVelocityMax() { return angularVelocityMax_; }
 	bool IsFixedAngle() { return bFixedAngle_; }
+	bool IsSolidPixel() { return bSolidPixel_; }
 
 	ref_count_ptr<Texture> GetTexture();
 	StgShotRenderer* GetRenderer();
@@ -151,6 +152,7 @@ private:
 	double angularVelocityMin_;
 	double angularVelocityMax_;
 	bool bFixedAngle_;
+	bool bSolidPixel_;
 };
 
 /**********************************************************

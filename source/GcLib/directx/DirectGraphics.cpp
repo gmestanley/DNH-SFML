@@ -35,6 +35,7 @@ DirectGraphics::DirectGraphics()
 	pDevice_ = NULL;
 	pBackSurf_ = NULL;
 	pZBuffer_ = NULL;
+	renderMode_ = D3DX_DEFAULT;
 	camera_ = new DxCamera();
 	camera2D_ = new DxCamera2D();
 }

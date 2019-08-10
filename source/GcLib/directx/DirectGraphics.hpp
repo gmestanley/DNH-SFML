@@ -140,6 +140,9 @@ public:
 
 	void SaveBackSurfaceToFile(std::wstring path);
 	bool IsPixelShaderSupported(int major, int minor);
+	
+	int GetDirectXRenderMethod() { return renderMode_; };
+	void SetDirectXRenderMethod(int type) { renderMode_ = type; };
 
 protected:
 	IDirect3D9* pDirect3D_;
@@ -154,6 +157,7 @@ protected:
 	DWORD wndStyleFull_;
 	DWORD wndStyleWin_;
 	int modeScreen_;
+	int renderMode_;
 	std::list<DirectGraphicsListener*> listListener_;
 
 	gstd::ref_count_ptr<DxCamera> camera_;

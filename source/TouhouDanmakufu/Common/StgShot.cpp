@@ -462,6 +462,10 @@ void StgShotDataList::_ScanShot(std::vector<ref_count_ptr<StgShotData>::unsync>&
 				scanner.CheckType(scanner.Next(), Token::TK_EQUAL);
 				tok = scanner.Next();
 				data->bFixedAngle_ = tok.GetElement() == L"true";
+			} else if (element == L"solid_pixel") {
+				scanner.CheckType(scanner.Next(), Token::TK_EQUAL);
+				tok = scanner.Next();
+				data->bSolidPixel_ = tok.GetElement() == L"true";
 			} else if (element == L"AnimationData") {
 				_ScanAnimation(data, scanner);
 			}
@@ -560,6 +564,7 @@ StgShotData::StgShotData(StgShotDataList* listShotData)
 	angularVelocityMin_ = 0;
 	angularVelocityMax_ = 0;
 	bFixedAngle_ = false;
+	bSolidPixel_ = false;
 }
 StgShotData::~StgShotData()
 {
@@ -1220,15 +1225,15 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX& matO)
 		rcSrc = shotData->GetDelayRect();
 		color = shotData->GetDelayColor();
 		
-		double rectSize = (double)rcSrc.right - (double)rcSrc.left;
-		double minscale = 0.23f * (rectSize/16.0f);
-		double expa = minscale+3.0f * (double)delay_ / 75.0f;
-		if(expa > minscale+3.0f){
-			expa = minscale+3.0f;
-		}
-		// double expa = 0.5f + (double)delay_ / 30.0f * 2;
-		// if (expa > 2)
-			// expa = 2;
+		// double rectSize = (double)rcSrc.right - (double)rcSrc.left;
+		// double minscale = 0.23f * (rectSize/16.0f);
+		// double expa = minscale+3.0f * (double)delay_ / 75.0f;
+		// if(expa > minscale+3.0f){
+			// expa = minscale+3.0f;
+		// }
+		double expa = 0.5f + (double)delay_ / 30.0f * 2;
+		if (expa > 2)
+			expa = 2;
 
 		double angleZ = 0;
 		if (!shotData->IsFixedAngle())
@@ -1245,11 +1250,16 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX& matO)
 		double angleZ = 0;
 		if (!shotData->IsFixedAngle()){
 			angleZ = GetDirectionAngle() + 90 + angle_.z;
-			D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
 		}else{
 			angleZ = angle_.z;
+		}
+		
+		if(shotData->IsSolidPixel()){
 			D3DXMatrixTranslation(&matTrans, round(position_.x), round(position_.y), round(position_.z));
-		}		
+		}else{
+			D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
+		}
+		
 
 		D3DXMatrixScaling(&matScale, scale_.x, scale_.y, scale_.z);
 		D3DXMatrixRotationYawPitchRoll(&matRot, D3DXToRadian(angle_.y), D3DXToRadian(angle_.x), D3DXToRadian(angleZ));
@@ -1321,15 +1331,19 @@ void StgNormalShotObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 		//自機弾
 		StgShotObject* shot = (StgShotObject*)otherTarget->GetObject().GetPointer();
 		if (shot != NULL) {
-			int typeTo = bEraseShotTypeTo_;
 			bool bEraseShot = shot->IsEraseShot();
 			if (bEraseShot && life_ != LIFE_SPELL_REGIST){
+				int typeTo = shot->ShotDeleteTo();
 				if (typeTo == 0)
 					DeleteImmediate();
 				else if (typeTo == 1)
 					SetFadeDelete();
 				else if (typeTo == 2)
 					ConvertToItem();
+				else if (typeTo == 3)
+					SetMoveProcess(true);
+				else if (typeTo == 4)
+					SetMoveProcess(false);
 			}
 		}
 		break;
@@ -1338,15 +1352,19 @@ void StgNormalShotObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 		//自機スペル
 		StgPlayerSpellObject* spell = (StgPlayerSpellObject*)otherTarget->GetObject().GetPointer();
 		if (spell != NULL) {
-			int typeTo = spell->ShotDeleteTo();
 			bool bEraseShot = spell->IsEraseShot();
 			if (bEraseShot && life_ != LIFE_SPELL_REGIST){
+				int typeTo = spell->ShotDeleteTo();
 				if (typeTo == 0)
 					DeleteImmediate();
 				else if (typeTo == 1)
 					SetFadeDelete();
 				else if (typeTo == 2)
 					ConvertToItem();
+				else if (typeTo == 3)
+					SetMoveProcess(true);
+				else if (typeTo == 4)
+					SetMoveProcess(false);
 			}
 		}
 		break;
@@ -1484,8 +1502,8 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 		StgShotObject* shot = (StgShotObject*)otherTarget->GetObject().GetPointer();
 		if (shot != NULL) {
 			bool bEraseShot = shot->IsEraseShot();
-			int typeTo = bEraseShotTypeTo_;
 			if (bEraseShot && life_ != LIFE_SPELL_REGIST) {
+				int typeTo = shot->ShotDeleteTo();
 				damage = shot->GetDamage();
 				
 				if (typeTo == 0)
@@ -1494,6 +1512,10 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 					SetFadeDelete();
 				else if (typeTo == 2)
 					ConvertToItem();
+				else if (typeTo == 3)
+					SetMoveProcess(true);
+				else if (typeTo == 4)
+					SetMoveProcess(false);
 			}
 		}
 		break;
@@ -1503,8 +1525,8 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 		StgPlayerSpellObject* spell = (StgPlayerSpellObject*)otherTarget->GetObject().GetPointer();
 		if (spell != NULL) {
 			bool bEraseShot = spell->IsEraseShot();
-			int typeTo = spell->ShotDeleteTo();
 			if (bEraseShot && life_ != LIFE_SPELL_REGIST) {
+				int typeTo = spell->ShotDeleteTo();
 				damage = spell->GetDamage();
 				
 				if (typeTo == 0)
@@ -1513,6 +1535,10 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 					SetFadeDelete();
 				else if (typeTo == 2)
 					ConvertToItem();
+				else if (typeTo == 3)
+					SetMoveProcess(true);
+				else if (typeTo == 4)
+					SetMoveProcess(false);
 			
 			}
 		}

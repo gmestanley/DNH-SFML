@@ -3,6 +3,15 @@ All hail our lord and savior Mima and our queen, Kogasa's Woo. This version of D
 
 ## Changes To New Feature Branch
 The original creator of each change will be listed here in parentheses next to the new function/change's listing.
+ * Added "solid_pixel" tag to shot data definitions (gtbot)
+	- In a shot data definition, if you add solid_pixel = true, the bullet will be rendered on solid pixels, preserving image quality.
+ * Added SetTextureRenderMethod (gtbot)
+	- Argument 1: Texture Width/Height determination
+	- Determines how future loaded textures' internal widths and heights are determined
+		* D3DX_DEFAULT: Textures will be rounded up to a power of 2 (blurry if not in a power of 2, but faster)
+		* D3DX_DEFAULT_NONPOW2: Textures will not be rounded up to a power of 2 (crisper image if not in a power of 2, but slower)
+	- Keep in mind that changes to this will only affect textures loaded after this function was called.
+	- D3DX_DEFAULT is the default value.
  * Added SetShotDelayRenderBlendType (gtbot)
     - argument 1: Blend Type
     - Globally forces all delay clouds to use the specified blend type
@@ -11,12 +20,31 @@ The original creator of each change will be listed here in parentheses next to t
     - returns the value that's specified in SetShotDelayRenderBlendType    
  * Added ObjSpell_SetEraseShotType (gtbot)
     - argument 1: ObjSpell ID
-    - argument 2: bullet deletion type
-    - Sets the method that objspells delete bullets into
-      * 0: immediately deletes
-      * 1: sets bullets to fade out and delete
-      * 2: bullets create items 
-      * 2 is the default value
+    - argument 2: bullet collision behaviour 
+    - Sets the behaviour of ObjSpells when colliding with an enemy bullet
+    - TO_TYPE_ITEM is the default value
+      * TO_TYPE_ITEM: Deletes bullets and spawns an item 
+      * TO_TYPE_IMMEDIATE: Immediately deletes bullets
+      * TO_TYPE_FADE: Sets bullets to fade out and delete
+	  * TO_TYPE_MOVEMENT_FREEZE: Stops the movement processing of bullets
+	  * TO_TYPE_MOVEMENT_RESTORE: Restores the movement processing of bullets
+	- Exercise caution when using TO_TYPE_MOVEMENT_FREEZE, as the bullets will never move again until you restore their movement.
+	- ObjMove_SetProcessMovement can also restore these frozen bullets, and vice versa
+ * Added ObjShot_SetEraseShotType (gtbot)
+    - Argument 1: ObjShot ID
+    - argument 2: bullet collision behaviour 
+	- When bullets are set to erase shots, their behaviour can be changed with this function.
+	- Argument 2 accepts the same constants found in ObjSpell_SetEraseShotType.
+    - TO_TYPE_ITEM is the default value
+ * Added ObjMove_SetProcessMovement (gtbot)
+	- Argument 1: object ID
+	- Argument 2: set movement processing on/off (boolean)
+	- Determines whether the specified object will run their movement process or not.
+	- Exercise caution when using ObjMove_SetProcessMovement, as objects will never move again until you restore their movement.
+	- true is the default value.
+ * Added ObjMove_GetProcessMovement (gtbot)
+	- Argument 1: object ID
+	- returns the value that's specified in ObjMove_SetProcessMovement
 
  
  ## Changes To Master Branch
@@ -36,7 +64,8 @@ Here's a list of changes compared to original Danmakufu that may enable your com
 ## Known Issues
  * GetEventArgument supposedly doesn't work with object IDs now?  Unconfirmed.
  * Wine 4.12.1 (confirmed on macOS at least) suffers some scaling problems with the window size, being 9 pixels too wide and 7 pixels too tall.  This causes some nasty scaling on in-game assets, possibly a result of old Windows size calls not being 100% compatible with Wine releases.
-
+ * The exe will crash when trying to load a sound file that is both: not 1411kbs and is stereo
+ 
 ## Special Thanks
 Natashi - for the code that made curvy lasers run a lot better than what I could do
 </br>Trickysticks - for the woo art that graced the world

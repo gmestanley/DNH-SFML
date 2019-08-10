@@ -348,6 +348,8 @@ function const stgFunction[] = {
 	{ "ObjMove_AddPatternB1", StgStageScript::Func_ObjMove_AddPatternB1, 4 },
 	{ "ObjMove_AddPatternB2", StgStageScript::Func_ObjMove_AddPatternB2, 8 },
 	{ "ObjMove_AddPatternB3", StgStageScript::Func_ObjMove_AddPatternB3, 9 },
+	{ "ObjMove_SetProcessMovement", StgStageScript::Func_ObjMove_ProcessMovement, 2 },
+	{ "ObjMove_GetProcessMovement", StgStageScript::Func_ObjMove_GetProcessMovement, 1 },
 	{ "ObjMove_GetX", StgStageScript::Func_ObjMove_GetX, 1 },
 	{ "ObjMove_GetY", StgStageScript::Func_ObjMove_GetY, 1 },
 	{ "ObjMove_GetSpeed", StgStageScript::Func_ObjMove_GetSpeed, 1 },
@@ -386,6 +388,7 @@ function const stgFunction[] = {
 	{ "ObjShot_SetDamage", StgStageScript::Func_ObjShot_SetDamage, 2 },
 	{ "ObjShot_SetPenetration", StgStageScript::Func_ObjShot_SetPenetration, 2 },
 	{ "ObjShot_SetEraseShot", StgStageScript::Func_ObjShot_SetEraseShot, 2 },
+	{ "ObjShot_SetEraseShotType", StgStageScript::Func_ObjShot_SetEraseShotType, 2 },
 	{ "ObjShot_SetSpellFactor", StgStageScript::Func_ObjShot_SetSpellFactor, 2 },
 	{ "ObjShot_ToItem", StgStageScript::Func_ObjShot_ToItem, 1 },
 	{ "ObjShot_AddShotA1", StgStageScript::Func_ObjShot_AddShotA1, 3 },
@@ -443,6 +446,12 @@ function const stgFunction[] = {
 	{ "TYPE_IMMEDIATE", constant<StgStageScript::TYPE_IMMEDIATE>::func, 0 },
 	{ "TYPE_FADE", constant<StgStageScript::TYPE_FADE>::func, 0 },
 	{ "TYPE_ITEM", constant<StgStageScript::TYPE_ITEM>::func, 0 },
+	
+	{ "TO_TYPE_IMMEDIATE", constant<0>::func, 0 },
+	{ "TO_TYPE_FADE", constant<1>::func, 0 },
+	{ "TO_TYPE_ITEM", constant<2>::func, 0 },
+	{ "TO_TYPE_MOVEMENT_RESTORE", constant<3>::func, 0 },
+	{ "TO_TYPE_MOVEMENT_FREEZE", constant<4>::func, 0 },
 
 	{ "STATE_NORMAL", constant<StgPlayerObject::STATE_NORMAL>::func, 0 },
 	{ "STATE_HIT", constant<StgPlayerObject::STATE_HIT>::func, 0 },
@@ -2659,6 +2668,29 @@ gstd::value StgStageScript::Func_ObjMove_AddPatternB3(gstd::script_machine* mach
 
 	return value();
 }
+gstd::value StgStageScript::Func_ObjMove_ProcessMovement(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	int id = (int)argv[0].as_real();
+	StgMoveObject* obj = dynamic_cast<StgMoveObject*>(script->GetObjectPointer(id));
+	if (obj == NULL)
+		return value();
+
+	bool result = argv[1].as_boolean();
+	obj->SetMoveProcess(result);
+	return value();
+}
+gstd::value StgStageScript::Func_ObjMove_GetProcessMovement(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	int id = (int)argv[0].as_real();
+	StgMoveObject* obj = dynamic_cast<StgMoveObject*>(script->GetObjectPointer(id));
+	if (obj == NULL)
+		return value(machine->get_engine()->get_real_type(), (bool)false);
+
+	bool status = obj->GetMoveProcess();
+	return value(machine->get_engine()->get_real_type(), (bool)status);
+}
 gstd::value StgStageScript::Func_ObjMove_GetX(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -3328,6 +3360,19 @@ gstd::value StgStageScript::Func_ObjShot_SetEraseShot(gstd::script_machine* mach
 
 	bool bErase = argv[1].as_boolean();
 	obj->SetEraseShot(bErase);
+
+	return value();
+}
+gstd::value StgStageScript::Func_ObjShot_SetEraseShotType(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	int id = (int)argv[0].as_real();
+	StgShotObject* obj = dynamic_cast<StgShotObject*>(script->GetObjectPointer(id));
+	if (obj == NULL)
+		return value();
+
+	int bErase = argv[1].as_real();
+	obj->SetEraseShotTypeTo(bErase);
 
 	return value();
 }

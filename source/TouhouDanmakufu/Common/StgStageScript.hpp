@@ -283,6 +283,8 @@ public:
 	static gstd::value Func_ObjMove_AddPatternB1(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjMove_AddPatternB2(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjMove_AddPatternB3(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ObjMove_ProcessMovement(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ObjMove_GetProcessMovement(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjMove_GetX(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjMove_GetY(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjMove_GetSpeed(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -321,6 +323,7 @@ public:
 	static gstd::value Func_ObjShot_SetDamage(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetPenetration(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetEraseShot(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ObjShot_SetEraseShotType(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetSpellFactor(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_ToItem(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_AddShotA1(gstd::script_machine* machine, int argc, gstd::value const* argv);

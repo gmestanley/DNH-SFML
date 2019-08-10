@@ -41,10 +41,15 @@ public:
 	ref_count_ptr<StgMovePattern>::unsync GetPattern() { return pattern_; }
 	void SetPattern(ref_count_ptr<StgMovePattern>::unsync pattern) { pattern_ = pattern; }
 	void AddPattern(int frameDelay, ref_count_ptr<StgMovePattern>::unsync pattern);
+	
+	bool GetMoveProcess() { return processMove_; }
+	void SetMoveProcess(bool proc) { processMove_ = proc; }
+	
 
 protected:
 	double posX_;
 	double posY_;
+	bool processMove_;
 	ref_count_ptr<StgMovePattern>::unsync pattern_;
 
 	int framePattern_;

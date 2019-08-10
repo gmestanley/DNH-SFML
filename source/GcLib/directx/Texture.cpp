@@ -352,10 +352,17 @@ bool TextureManager::_CreateFromFile(std::wstring path)
 		D3DFORMAT pixelFormat = D3DFMT_A8R8G8B8;
 
 		ref_count_ptr<TextureData> data(new TextureData());
+		
+		DirectGraphics* graphics = DirectGraphics::GetBase();
+		UINT renderType = graphics->GetDirectXRenderMethod();
+		
+		if(renderType != D3DX_DEFAULT && renderType != D3DX_DEFAULT_NONPOW2){
+			renderType = D3DX_DEFAULT;
+		}
 
 		HRESULT hr = D3DXCreateTextureFromFileInMemoryEx(DirectGraphics::GetBase()->GetDevice(),
 			buf.GetPointer(), size,
-			D3DX_DEFAULT, D3DX_DEFAULT,
+			renderType, renderType,
 			//info.Width, info.Height,
 			0,
 			0,
@@ -578,10 +585,17 @@ void TextureManager::CallFromLoadThread(ref_count_ptr<FileManager::LoadThreadEve
 				colorKey = 0;
 
 			D3DFORMAT pixelFormat = D3DFMT_A8R8G8B8;
+			
+			DirectGraphics* graphics = DirectGraphics::GetBase();
+			UINT renderType = graphics->GetDirectXRenderMethod();
+			
+			if(renderType != D3DX_DEFAULT && renderType != D3DX_DEFAULT_NONPOW2){
+				renderType = D3DX_DEFAULT;
+			}
 
 			HRESULT hr = D3DXCreateTextureFromFileInMemoryEx(DirectGraphics::GetBase()->GetDevice(),
 				buf.GetPointer(), size,
-				D3DX_DEFAULT, D3DX_DEFAULT,
+				renderType, renderType,
 				0,
 				0,
 				pixelFormat,

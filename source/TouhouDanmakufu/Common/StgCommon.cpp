@@ -10,12 +10,17 @@ StgMoveObject::StgMoveObject(StgStageController* stageController)
 	posY_ = 0;
 	framePattern_ = 0;
 	stageController_ = stageController;
+	processMove_ = true;
 }
 StgMoveObject::~StgMoveObject()
 {
 }
 void StgMoveObject::_Move()
 {
+
+	if(!processMove_)
+		return;
+		
 	if (pattern_ == NULL)
 		return;
 

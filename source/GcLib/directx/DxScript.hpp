@@ -657,6 +657,7 @@ public:
 	virtual void RenderObject() { objManager_->RenderObject(); }
 
 	void AddMeshResource(std::wstring name, gstd::ref_count_ptr<DxMesh> mesh) { mapMesh_[name] = mesh; }
+	
 
 	//Dx関数：システム系
 	static gstd::value Func_InstallFont(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -680,6 +681,7 @@ public:
 	//Dx関数：描画系
 	static gstd::value Func_GetScreenWidth(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetScreenHeight(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_SetTextureRenderMethod(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_LoadTexture(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_LoadTextureInLoadThread(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_RemoveTexture(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -934,6 +936,7 @@ protected:
 
 	void _ClearResource();
 	gstd::ref_count_ptr<Texture> _GetTexture(std::wstring name);
+	
 };
 
 } // namespace directx

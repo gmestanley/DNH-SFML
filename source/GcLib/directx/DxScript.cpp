@@ -8,6 +8,7 @@
 using namespace gstd;
 using namespace directx;
 
+
 /**********************************************************
 //DxScriptObjectBase
 **********************************************************/
@@ -21,6 +22,7 @@ DxScriptObjectBase::DxScriptObjectBase()
 	idObject_ = DxScript::ID_INVALID;
 	idScript_ = ScriptClientBase::ID_SCRIPT_FREE;
 	typeObject_ = DxScript::OBJ_INVALID;
+	
 }
 DxScriptObjectBase::~DxScriptObjectBase()
 {
@@ -1197,6 +1199,7 @@ function const dxFunction[] = {
 	//Dx関数：描画系
 	{ "GetScreenWidth", DxScript::Func_GetScreenWidth, 0 },
 	{ "GetScreenHeight", DxScript::Func_GetScreenHeight, 0 },
+	{ "SetTextureRenderMethod", DxScript::Func_SetTextureRenderMethod, 1 },
 	{ "LoadTexture", DxScript::Func_LoadTexture, 1 },
 	{ "LoadTextureInLoadThread", DxScript::Func_LoadTextureInLoadThread, 1 },
 	{ "RemoveTexture", DxScript::Func_RemoveTexture, 1 },
@@ -1492,7 +1495,7 @@ function const dxFunction[] = {
 
 	{ "ENDIAN_LITTLE", constant<ByteOrder::ENDIAN_LITTLE>::func, 0 },
 	{ "ENDIAN_BIG", constant<ByteOrder::ENDIAN_BIG>::func, 0 },
-
+	
 	//DirectInput
 	{ "KEY_FREE", constant<KEY_FREE>::func, 0 },
 	{ "KEY_PUSH", constant<KEY_PUSH>::func, 0 },
@@ -1627,6 +1630,13 @@ function const dxFunction[] = {
 	{ "KEY_POWER", constant<DIK_POWER>::func, 0 },
 	{ "KEY_SLEEP", constant<DIK_SLEEP>::func, 0 },
 
+	//DirectX Constants
+
+	{ "D3DX_DEFAULT", constant<D3DX_DEFAULT>::func, 0 },
+	{ "D3DX_DEFAULT_NONPOW2", constant<D3DX_DEFAULT_NONPOW2>::func, 0 },
+	{ "D3DX_FROM_FILE", constant<D3DX_FROM_FILE>::func, 0 },
+	
+	
 };
 
 DxScript::DxScript()
@@ -1841,6 +1851,14 @@ gstd::value DxScript::Func_GetScreenHeight(gstd::script_machine* machine, int ar
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	int res = graphics->GetScreenHeight();
 	return value(machine->get_engine()->get_real_type(), (long double)res);
+}
+value DxScript::Func_SetTextureRenderMethod(script_machine* machine, int argc, value const* argv)
+{	
+	DirectGraphics* graphics = DirectGraphics::GetBase();
+	int newvalue = (int)(argv[0].as_real());
+	graphics->SetDirectXRenderMethod(newvalue);
+	
+	return value();
 }
 value DxScript::Func_LoadTexture(script_machine* machine, int argc, value const* argv)
 {
