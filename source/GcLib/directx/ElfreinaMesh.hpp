@@ -59,7 +59,7 @@ public:
 public:
 	Bone(){};
 	virtual ~Bone(){};
-	int GetParentIndex() { return indexParent_; }
+	int GetParentIndex() const { return indexParent_; }
 	std::vector<int>& GetChildIndex() { return indexChild_; }
 	D3DXMATRIX& GetOffsetMatrix() { return matOffset_; }
 	D3DXMATRIX& GetInitPostureMatrix() { return matInitPosture_; }
@@ -157,16 +157,16 @@ public:
 	ElfreinaMesh() {}
 	virtual ~ElfreinaMesh() {}
 	virtual bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader);
-	virtual bool CreateFromFileInLoadThread(std::wstring path);
+	virtual bool CreateFromFileInLoadThread(const std::wstring& path);
 	virtual std::wstring GetPath();
 	virtual void Render();
 	virtual void Render(std::wstring nameAnime, int time);
 
 	gstd::ref_count_ptr<RenderBlocks> CreateRenderBlocks();
-	gstd::ref_count_ptr<RenderBlocks> CreateRenderBlocks(std::wstring nameAnime, double time);
+	gstd::ref_count_ptr<RenderBlocks> CreateRenderBlocks(const std::wstring& nameAnime, double time);
 
-	gstd::ref_count_ptr<Matrices> CreateAnimationMatrix(std::wstring nameAnime, double time);
-	virtual D3DXMATRIX GetAnimationMatrix(std::wstring nameAnime, double time, std::wstring nameBone);
+	gstd::ref_count_ptr<Matrices> CreateAnimationMatrix(const std::wstring& nameAnime, double time);
+	virtual D3DXMATRIX GetAnimationMatrix(const std::wstring& nameAnime, double time, const std::wstring& nameBone);
 
 protected:
 	double _CalcFrameToTime(double time, gstd::ref_count_ptr<ElfreinaMeshData::AnimationData> anime);

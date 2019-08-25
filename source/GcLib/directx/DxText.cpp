@@ -689,21 +689,21 @@ bool DxTextScanner::HasNext()
 {
 	return pointer_ != buffer_.end() && *pointer_ != L'\0' && token_.GetType() != DxTextToken::TK_EOF;
 }
-void DxTextScanner::CheckType(DxTextToken& tok, int type)
+void DxTextScanner::CheckType(const DxTextToken& tok, int type)
 {
 	if (tok.type_ != type) {
 		std::wstring str = StringUtility::Format(L"CheckType error[%s]:", tok.element_.c_str());
 		_RaiseError(str);
 	}
 }
-void DxTextScanner::CheckIdentifer(DxTextToken& tok, std::wstring id)
+void DxTextScanner::CheckIdentifer(const DxTextToken& tok, const std::wstring& id)
 {
 	if (tok.type_ != DxTextToken::TK_ID || tok.GetIdentifier() != id) {
 		std::wstring str = StringUtility::Format(L"CheckID error[%s]:", tok.element_.c_str());
 		_RaiseError(str);
 	}
 }
-int DxTextScanner::GetCurrentLine()
+int DxTextScanner::GetCurrentLine() const
 {
 	return line_;
 }
@@ -722,7 +722,7 @@ int DxTextScanner::SearchCurrentLine()
 	}
 	return line;
 }
-std::vector<wchar_t>::iterator DxTextScanner::GetCurrentPointer()
+std::vector<wchar_t>::iterator DxTextScanner::GetCurrentPointer() const
 {
 	return pointer_;
 }
@@ -730,7 +730,7 @@ void DxTextScanner::SetCurrentPointer(std::vector<wchar_t>::iterator pos)
 {
 	pointer_ = pos;
 }
-int DxTextScanner::GetCurrentPosition()
+int DxTextScanner::GetCurrentPosition() const
 {
 	if (buffer_.size() == 0)
 		return 0;
@@ -739,7 +739,7 @@ int DxTextScanner::GetCurrentPosition()
 }
 
 //DxTextToken
-std::wstring& DxTextToken::GetIdentifier()
+std::wstring DxTextToken::GetIdentifier() const
 {
 	if (type_ != TK_ID) {
 		throw gstd::wexception(L"DxTextToken::GetIdentifier:データのタイプが違います");
@@ -883,10 +883,9 @@ void DxTextRenderObject::AddRenderObject(gstd::ref_count_ptr<Sprite2D> obj)
 }
 void DxTextRenderObject::AddRenderObject(gstd::ref_count_ptr<DxTextRenderObject> obj, POINT bias)
 {
-	std::list<ObjectData>::iterator itr = obj->listData_.begin();
-	for (; itr != obj->listData_.end(); itr++) {
-		(*itr).bias = bias;
-		listData_.push_back(*itr);
+	for (auto& objectData : obj->listData_) {
+		objectData.bias = bias;
+		listData_.push_back(objectData);
 	}
 }
 
@@ -909,7 +908,7 @@ bool DxTextRenderer::Initialize()
 	thisBase_ = this;
 	return true;
 }
-SIZE DxTextRenderer::_GetTextSize(HDC hDC, wchar_t* pText)
+SIZE DxTextRenderer::_GetTextSize(HDC hDC, const wchar_t* pText)
 {
 	//文字コード
 	int charCount = 1;
@@ -920,7 +919,7 @@ SIZE DxTextRenderer::_GetTextSize(HDC hDC, wchar_t* pText)
 	::GetTextExtentPoint32(hDC, pText, charCount, &size);
 	return size;
 }
-ref_count_ptr<DxTextLine> DxTextRenderer::_GetTextInfoSub(std::wstring text, DxText* dxText, DxTextInfo* textInfo, ref_count_ptr<DxTextLine> textLine, HDC& hDC, int& totalWidth, int& totalHeight)
+ref_count_ptr<DxTextLine> DxTextRenderer::_GetTextInfoSub(const std::wstring& text, const DxText* dxText, DxTextInfo* textInfo, ref_count_ptr<DxTextLine> textLine, HDC& hDC, int& totalWidth, int& totalHeight)
 {
 	DxFont& dxFont = dxText->GetFont();
 	int sidePitch = dxText->GetSidePitch();
@@ -932,8 +931,8 @@ ref_count_ptr<DxTextLine> DxTextRenderer::_GetTextInfoSub(std::wstring text, DxT
 
 	const std::wstring strFirstForbid = L"」、。";
 
-	wchar_t* pText = const_cast<wchar_t*>(text.data());
-	wchar_t* eText = const_cast<wchar_t*>(text.data() + text.size());
+	const wchar_t* pText = text.data();
+	const wchar_t* eText = text.data() + text.size();
 	while (true) {
 		if (*pText == L'\0' || pText >= eText)
 			break;
@@ -945,7 +944,7 @@ ref_count_ptr<DxTextLine> DxTextRenderer::_GetTextInfoSub(std::wstring text, DxT
 		//禁則処理
 		SIZE sizeNext;
 		ZeroMemory(&sizeNext, sizeof(SIZE));
-		wchar_t* pNextChar = pText + charCount;
+		const wchar_t* pNextChar = pText + charCount;
 		if (pNextChar < eText) {
 			//次の文字
 			std::wstring strNext = L"";
@@ -986,7 +985,7 @@ gstd::ref_count_ptr<DxTextInfo> DxTextRenderer::GetTextInfo(DxText* dxText)
 {
 	SetFont(dxText->dxFont_.GetLogFont());
 	DxTextInfo* res = new DxTextInfo();
-	std::wstring& text = dxText->GetText();
+	const std::wstring& text = dxText->GetText();
 	DxFont& dxFont = dxText->GetFont();
 	int linePitch = dxText->GetLinePitch();
 	int widthMax = dxText->GetMaxWidth();
@@ -1069,7 +1068,7 @@ gstd::ref_count_ptr<DxTextInfo> DxTextRenderer::GetTextInfo(DxText* dxText)
 
 					int linePos = res->GetLineCount();
 					int codeCount = textLine->GetTextCodes().size();
-					std::wstring text = tag->GetText();
+					const std::wstring text = tag->GetText();
 					ref_count_ptr<DxTextLine> textLineRuby = textLine;
 					textLine = _GetTextInfoSub(text, dxText, res, textLine, hDC, totalWidth, totalHeight);
 
@@ -1556,11 +1555,11 @@ void DxTextStepper::NextSkip()
 	while (HasNext())
 		_Next();
 }
-bool DxTextStepper::HasNext()
+bool DxTextStepper::HasNext() const
 {
 	return posNext_ < source_.size();
 }
-void DxTextStepper::SetSource(std::wstring text)
+void DxTextStepper::SetSource(const std::wstring& text)
 {
 	posNext_ = 0;
 	source_ = text;

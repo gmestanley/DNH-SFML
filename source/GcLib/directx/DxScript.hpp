@@ -28,23 +28,23 @@ public:
 	virtual void Render() = 0;
 	virtual void SetRenderState() = 0;
 
-	int GetObjectID() { return idObject_; }
-	int GetObjectType() { return typeObject_; }
-	_int64 GetScriptID() { return idScript_; }
-	bool IsDeleted() { return bDeleted_; }
-	bool IsActive() { return bActive_; }
+	int GetObjectID() const { return idObject_; }
+	int GetObjectType() const { return typeObject_; }
+	_int64 GetScriptID() const { return idScript_; }
+	bool IsDeleted() const { return bDeleted_; }
+	bool IsActive() const { return bActive_; }
 	void SetActive(bool bActive) { bActive_ = bActive; }
-	bool IsVisible() { return bVisible_; }
+	bool IsVisible() const { return bVisible_; }
 
-	double GetRenderPriority() { return priRender_; }
-	int GetRenderPriorityI();
+	double GetRenderPriority() const { return priRender_; }
+	int GetRenderPriorityI() const;
 	void SetRenderPriority(double pri) { priRender_ = pri; }
 	void SetRenderPriorityI(int pri);
 
-	bool IsObjectValueExists(std::wstring key) { return mapObjectValue_.find(key) != mapObjectValue_.end(); }
-	gstd::value GetObjectValue(std::wstring key) { return mapObjectValue_[key]; }
-	void SetObjectValue(std::wstring key, gstd::value val) { mapObjectValue_[key] = val; }
-	void DeleteObjectValue(std::wstring key) { mapObjectValue_.erase(key); }
+	bool IsObjectValueExists(const std::wstring& key) const { return mapObjectValue_.find(key) != mapObjectValue_.end(); }
+	gstd::value GetObjectValue(const std::wstring& key) { return mapObjectValue_[key]; }
+	void SetObjectValue(const std::wstring& key, const gstd::value& val) { mapObjectValue_[key] = val; }
+	void DeleteObjectValue(const std::wstring& key) { mapObjectValue_.erase(key); }
 
 protected:
 	int idObject_;
@@ -79,15 +79,15 @@ public:
 	virtual void SetColor(int r, int g, int b) = 0;
 	virtual void SetAlpha(int alpha) = 0;
 
-	D3DXVECTOR3 GetPosition() { return position_; }
-	D3DXVECTOR3 GetAngle() { return angle_; }
-	D3DXVECTOR3 GetScale() { return scale_; }
+	D3DXVECTOR3 GetPosition() const { return position_; }
+	D3DXVECTOR3 GetAngle() const { return angle_; }
+	D3DXVECTOR3 GetScale() const { return scale_; }
 	void SetPosition(D3DXVECTOR3 pos) { position_ = pos; }
 	void SetAngle(D3DXVECTOR3 angle) { angle_ = angle; }
 	void SetScale(D3DXVECTOR3 scale) { scale_ = scale; }
 
-	int GetBlendType() { return typeBlend_; }
-	void SetRelativeObject(int id, std::wstring bone)
+	int GetBlendType() const { return typeBlend_; }
+	void SetRelativeObject(int id, const std::wstring& bone)
 	{
 		idRelative_ = id;
 		nameRelativeBone_ = bone;
@@ -139,11 +139,11 @@ public:
 	DxScriptPrimitiveObject();
 	void SetPrimitiveType(D3DPRIMITIVETYPE type);
 	void SetVertexCount(int count);
-	int GetVertexCount();
+	int GetVertexCount() const;
 	gstd::ref_count_ptr<Texture> GetTexture();
 	virtual void SetTexture(gstd::ref_count_ptr<Texture> texture);
 
-	virtual bool IsValidVertexIndex(int index) = 0;
+	virtual bool IsValidVertexIndex(int index) const = 0;
 	virtual void SetVertexPosition(int index, float x, float y, float z) = 0;
 	virtual void SetVertexUV(int index, float u, float v) = 0;
 	virtual void SetVertexAlpha(int index, int alpha) = 0;
@@ -166,7 +166,9 @@ public:
 	virtual void Render();
 	virtual void SetRenderState();
 	RenderObjectTLX* GetObjectPointer() { return (RenderObjectTLX*)objRender_.GetPointer(); }
-	virtual bool IsValidVertexIndex(int index);
+	const RenderObjectTLX* GetObjectPointer() const { return (RenderObjectTLX*)objRender_.GetPointer(); }
+
+	virtual bool IsValidVertexIndex(int index) const;
 	virtual void SetColor(int r, int g, int b);
 	virtual void SetAlpha(int alpha);
 	virtual void SetVertexPosition(int index, float x, float y, float z);
@@ -211,7 +213,9 @@ public:
 	virtual void Render();
 	virtual void SetRenderState();
 	RenderObjectLX* GetObjectPointer() { return (RenderObjectLX*)objRender_.GetPointer(); }
-	virtual bool IsValidVertexIndex(int index);
+	const RenderObjectLX* GetObjectPointer() const { return (RenderObjectLX*)objRender_.GetPointer(); }
+
+	virtual bool IsValidVertexIndex(int index) const;
 	virtual void SetColor(int r, int g, int b);
 	virtual void SetAlpha(int alpha);
 	virtual void SetVertexPosition(int index, float x, float y, float z);
@@ -239,8 +243,9 @@ public:
 	virtual void Render();
 	virtual void SetRenderState();
 	TrajectoryObject3D* GetObjectPointer() { return (TrajectoryObject3D*)objRender_.GetPointer(); }
+	const TrajectoryObject3D* GetObjectPointer() const { return (TrajectoryObject3D*)objRender_.GetPointer(); }
 
-	virtual bool IsValidVertexIndex(int index) { return false; }
+	virtual bool IsValidVertexIndex(int index) const { return false; }
 	virtual void SetColor(int r, int g, int b);
 	virtual void SetAlpha(int alpha){};
 	virtual void SetVertexPosition(int index, float x, float y, float z){};
@@ -264,8 +269,8 @@ public:
 	virtual void SetAlpha(int alpha);
 	void SetMesh(gstd::ref_count_ptr<DxMesh> mesh) { mesh_ = mesh; }
 	gstd::ref_count_ptr<DxMesh> GetMesh() { return mesh_; }
-	int GetAnimeFrame() { return time_; }
-	std::wstring GetAnimeName() { return anime_; }
+	int GetAnimeFrame() const { return time_; }
+	std::wstring GetAnimeName() const { return anime_; }
 
 	virtual void SetX(float x)
 	{
@@ -334,7 +339,7 @@ public:
 	virtual void Render();
 	virtual void SetRenderState();
 
-	void SetText(std::wstring text)
+	void SetText(const std::wstring& text)
 	{
 		text_.SetText(text);
 		bChange_ = true;
@@ -344,7 +349,7 @@ public:
 	int GetTotalWidth();
 	int GetTotalHeight();
 
-	void SetFontType(std::wstring type)
+	void SetFontType(const std::wstring& type)
 	{
 		text_.SetFontType(type.c_str());
 		bChange_ = true;
@@ -478,8 +483,8 @@ public:
 	virtual void Render() {}
 	virtual void SetRenderState() {}
 
-	virtual bool OpenR(std::wstring path);
-	virtual bool OpenW(std::wstring path);
+	virtual bool OpenR(const std::wstring& path);
+	virtual bool OpenW(const std::wstring& path);
 	virtual bool Store() = 0;
 	virtual void Close();
 
@@ -494,11 +499,11 @@ class DxTextFileObject : public DxFileObject {
 public:
 	DxTextFileObject();
 	virtual ~DxTextFileObject();
-	virtual bool OpenR(std::wstring path);
-	virtual bool OpenW(std::wstring path);
+	virtual bool OpenR(const std::wstring& path);
+	virtual bool OpenW(const std::wstring& path);
 	virtual bool Store();
-	int GetLineCount() { return listLine_.size(); }
-	std::string GetLine(int line);
+	int GetLineCount() const { return listLine_.size(); }
+	std::string GetLine(int line) const;
 
 	void AddLine(std::string line) { listLine_.push_back(line); }
 	void ClearLine() { listLine_.clear(); }
@@ -514,18 +519,18 @@ class DxBinaryFileObject : public DxFileObject {
 public:
 	DxBinaryFileObject();
 	virtual ~DxBinaryFileObject();
-	virtual bool OpenR(std::wstring path);
-	virtual bool OpenW(std::wstring path);
+	virtual bool OpenR(const std::wstring& path);
+	virtual bool OpenW(const std::wstring& path);
 	virtual bool Store();
 
 	gstd::ref_count_ptr<gstd::ByteBuffer> GetBuffer() { return buffer_; }
 	bool IsReadableSize(int size);
 
-	unsigned int GetCodePage() { return codePage_; }
+	unsigned int GetCodePage() const { return codePage_; }
 	void SetCodePage(unsigned int page) { codePage_ = page; }
 
 	void SetByteOrder(int order) { byteOrder_ = order; }
-	int GetByteOrder() { return byteOrder_; }
+	int GetByteOrder() const { return byteOrder_; }
 
 protected:
 	int byteOrder_;
@@ -534,8 +539,8 @@ protected:
 };
 
 /**********************************************************
-	//DxScriptObjectManager
-	**********************************************************/
+//DxScriptObjectManager
+**********************************************************/
 class DxScriptObjectManager {
 	friend DxScriptObjectBase;
 
@@ -549,15 +554,15 @@ public:
 public:
 	DxScriptObjectManager();
 	virtual ~DxScriptObjectManager();
-	int GetMaxObject() { return obj_.size(); }
+	int GetMaxObject() const { return obj_.size(); }
 	void SetMaxObject(int max);
-	int GetAliveObjectCount() { return obj_.size() - listUnusedIndex_.size(); }
-	int GetRenderBucketCapacity() { return objRender_.size(); }
+	int GetAliveObjectCount() const { return obj_.size() - listUnusedIndex_.size(); }
+	int GetRenderBucketCapacity() const { return objRender_.size(); }
 	void SetRenderBucketCapacity(int capacity);
 	virtual int AddObject(gstd::ref_count_ptr<DxScriptObjectBase>::unsync obj, bool bActivate = true);
 	void AddObject(int id, gstd::ref_count_ptr<DxScriptObjectBase>::unsync obj, bool bActivate = true);
 	void ActivateObject(int id, bool bActivate);
-	gstd::ref_count_ptr<DxScriptObjectBase>::unsync GetObject(int id) { return obj_[id]; }
+	gstd::ref_count_ptr<DxScriptObjectBase>::unsync GetObject(int id) const { return obj_[id]; }
 	std::vector<int> GetValidObjectIdentifier();
 	DxScriptObjectBase* GetObjectPointer(int id);
 	virtual void DeleteObject(int id);
@@ -576,15 +581,15 @@ public:
 	void ResetShader(double min, double max);
 	gstd::ref_count_ptr<Shader> GetShader(int index);
 
-	void ReserveSound(gstd::ref_count_ptr<SoundPlayer> player, SoundPlayer::PlayStyle& style);
+	void ReserveSound(gstd::ref_count_ptr<SoundPlayer> player, const SoundPlayer::PlayStyle& style);
 	void DeleteReservedSound(gstd::ref_count_ptr<SoundPlayer> player);
 	void SetFogParam(bool bEnable, D3DCOLOR fogColor, float start, float end);
-	_int64 GetTotalObjectCreateCount() { return totalObjectCreateCount_; }
+	_int64 GetTotalObjectCreateCount() const { return totalObjectCreateCount_; }
 
-	bool IsFogEneble() { return bFogEnable_; }
-	D3DCOLOR GetFogColor() { return fogColor_; }
-	float GetFogStart() { return fogStart_; }
-	float GetFogEnd() { return fogEnd_; }
+	bool IsFogEneble() const { return bFogEnable_; }
+	D3DCOLOR GetFogColor() const { return fogColor_; }
+	float GetFogStart() const { return fogStart_; }
+	float GetFogEnd() const { return fogEnd_; }
 
 protected:
 	_int64 totalObjectCreateCount_;
@@ -656,7 +661,7 @@ public:
 	virtual void WorkObject() { objManager_->WorkObject(); }
 	virtual void RenderObject() { objManager_->RenderObject(); }
 
-	void AddMeshResource(std::wstring name, gstd::ref_count_ptr<DxMesh> mesh) { mapMesh_[name] = mesh; }
+	void AddMeshResource(const std::wstring& name, gstd::ref_count_ptr<DxMesh> mesh) { mapMesh_[name] = mesh; }
 
 	//Dx関数：システム系
 	static gstd::value Func_InstallFont(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -933,7 +938,7 @@ protected:
 	std::map<std::wstring, gstd::ref_count_ptr<DxMesh>> mapMesh_;
 
 	void _ClearResource();
-	gstd::ref_count_ptr<Texture> _GetTexture(std::wstring name);
+	gstd::ref_count_ptr<Texture> _GetTexture(const std::wstring& name);
 };
 
 } // namespace directx

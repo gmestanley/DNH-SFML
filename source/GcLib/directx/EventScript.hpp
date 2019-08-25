@@ -32,10 +32,10 @@ public:
 	EventScriptSource();
 	virtual ~EventScriptSource();
 
-	int GetCodeCount() { return code_.size(); }
+	int GetCodeCount() const { return code_.size(); }
 	void AddCode(gstd::ref_count_ptr<EventScriptCode> code);
 	gstd::ref_count_ptr<EventScriptCode> GetCode(int index) { return code_[index]; }
-	gstd::ref_count_ptr<EventScriptBlock_Main> GetEventBlock(std::string name);
+	gstd::ref_count_ptr<EventScriptBlock_Main> GetEventBlock(const std::string& name);
 
 protected:
 	std::vector<gstd::ref_count_ptr<EventScriptCode>> code_;
@@ -85,21 +85,21 @@ public:
 
 public:
 	EventScriptToken() { type_ = TK_UNKNOWN; }
-	EventScriptToken(Type type, std::string element)
+	EventScriptToken(Type type, const std::string& element)
 	{
 		type_ = type;
 		element_ = element;
 	}
 
 	virtual ~EventScriptToken() {}
-	Type GetType() { return type_; }
+	Type GetType() const { return type_; }
 	std::string& GetElement() { return element_; }
 
-	int GetInteger();
-	double GetReal();
-	bool GetBoolean();
-	std::string GetString();
-	std::string& GetIdentifier();
+	int GetInteger() const;
+	double GetReal() const;
+	bool GetBoolean() const;
+	std::string GetString() const;
+	std::string GetIdentifier() const;
 
 protected:
 	Type type_;
@@ -117,23 +117,23 @@ public:
 	const static std::string TAG_FONT;
 
 public:
-	EventScriptScanner(char* str, int size);
-	EventScriptScanner(std::string str);
-	EventScriptScanner(std::vector<char>& buf);
+	EventScriptScanner(const char* str, int size);
+	EventScriptScanner(const std::string& str);
+	EventScriptScanner(const std::vector<char>& buf);
 	virtual ~EventScriptScanner();
 
 	EventScriptToken& GetToken(); //現在のトークンを取得
 	EventScriptToken& Next();
 	bool HasNext();
-	void CheckType(EventScriptToken& tok, int type);
-	void CheckIdentifer(EventScriptToken& tok, std::string id);
-	int GetCurrentLine();
+	void CheckType(const EventScriptToken& tok, int type);
+	void CheckIdentifer(const EventScriptToken& tok, const std::string& id);
+	int GetCurrentLine() const;
 	int SearchCurrentLine();
 
-	std::vector<char>::iterator GetCurrentPointer();
+	std::vector<char>::iterator GetCurrentPointer() const;
 	void SetCurrentPointer(std::vector<char>::iterator pos);
 	void SetPointerBegin() { pointer_ = buffer_.begin(); }
-	int GetCurrentPosition();
+	int GetCurrentPosition() const;
 	void SetTagScanEnable(bool bEnable) { bTagScan_ = bEnable; }
 
 protected:
@@ -146,7 +146,7 @@ protected:
 	char _NextChar(); //ポインタを進めて次の文字を調べる
 	virtual void _SkipComment(); //コメントをとばす
 	virtual void _SkipSpace(); //空白をとばす
-	virtual void _RaiseError(std::wstring str); //例外を投げます
+	virtual void _RaiseError(const std::wstring& str); //例外を投げます
 	bool _IsTextStartSign();
 	bool _IsTextScan();
 };
@@ -159,7 +159,7 @@ public:
 	EventScriptCompiler();
 	virtual ~EventScriptCompiler();
 
-	void SetPath(std::wstring path) { path_ = path; }
+	void SetPath(const std::wstring& path) { path_ = path; }
 	gstd::ref_count_ptr<EventScriptSource> Compile();
 
 private:
@@ -196,14 +196,14 @@ public:
 		posReturn_ = POS_NULL;
 	}
 	virtual ~EventScriptBlock() {}
-	int GetStartPosition() { return posStart_; }
+	int GetStartPosition() const { return posStart_; }
 	void SetStartPosition(int pos) { posStart_ = pos; }
-	int GetEndPosition() { return posEnd_; }
+	int GetEndPosition() const { return posEnd_; }
 	void SetEndPosition(int pos) { posEnd_ = pos; }
-	int GetReturnPosition() { return posReturn_; }
+	int GetReturnPosition() const { return posReturn_; }
 	void SetReturnPosition(int pos) { posReturn_ = pos; }
-	bool IsInner() { return bInner_; }
-	virtual bool IsGlobal() { return false; }
+	bool IsInner() const { return bInner_; }
+	virtual bool IsGlobal() const { return false; }
 
 protected:
 	bool bInner_;
@@ -218,9 +218,9 @@ class EventScriptBlock_Main : public EventScriptBlock {
 public:
 	EventScriptBlock_Main() { bInner_ = false; }
 	virtual ~EventScriptBlock_Main() {}
-	std::string GetName() { return name_; }
-	void SetName(std::string name) { name_ = name; }
-	bool IsGlobal() { return name_ == BLOCK_GLOBAL; }
+	std::string GetName() const { return name_; }
+	void SetName(const std::string& name) { name_ = name; }
+	bool IsGlobal() const { return name_ == BLOCK_GLOBAL; }
 
 private:
 	std::string name_;
@@ -291,10 +291,10 @@ public:
 	EventScriptCode();
 	virtual ~EventScriptCode();
 
-	int GetType() { return type_; }
-	int GetLine() { return line_; }
+	int GetType() const { return type_; }
+	int GetLine() const { return line_; }
 	void SetLine(int line) { line_ = line; }
-	virtual std::string GetCodeText() { return ""; }
+	virtual std::string GetCodeText() const { return ""; }
 
 protected:
 	int type_;
@@ -304,9 +304,9 @@ protected:
 class EventScriptCode_Text : public EventScriptCode {
 public:
 	EventScriptCode_Text();
-	std::string GetText() { return text_; }
-	std::string GetCodeText() { return GetText(); }
-	void SetText(std::string text) { text_ = text; }
+	std::string GetText() const { return text_; }
+	std::string GetCodeText() const { return GetText(); }
+	void SetText(const std::string& text) { text_ = text; }
 
 protected:
 	std::string text_;
@@ -314,7 +314,7 @@ protected:
 class EventScriptCode_NextLine : public EventScriptCode {
 public:
 	EventScriptCode_NextLine();
-	std::string GetCodeText();
+	std::string GetCodeText() const;
 };
 class EventScriptCode_WaitClick : public EventScriptCode {
 public:
@@ -327,9 +327,9 @@ public:
 class EventScriptCode_WaitTime : public EventScriptCode {
 public:
 	EventScriptCode_WaitTime();
-	std::string GetTime() { return time_; }
-	void SetTime(std::string time) { time_ = time; }
-	bool IsSkipEnable() { return bSkipEnable_; }
+	std::string GetTime() const { return time_; }
+	void SetTime(const std::string& time) { time_ = time; }
+	bool IsSkipEnable() const { return bSkipEnable_; }
 	void SetSkipEnable(bool bEnable) { bSkipEnable_ = bEnable; }
 
 private:
@@ -344,7 +344,7 @@ class EventScriptCode_Name : public EventScriptCode {
 public:
 	EventScriptCode_Name();
 	std::string& GetName() { return name_; }
-	void SetName(std::string name) { name_ = name; }
+	void SetName(const std::string& name) { name_ = name; }
 
 private:
 	std::string name_;
@@ -359,13 +359,13 @@ public:
 
 public:
 	EventScriptCode_Transition();
-	int GetTransType() { return typeTrans_; }
+	int GetTransType() const { return typeTrans_; }
 	void SetTransType(int type) { typeTrans_ = type; }
-	std::string GetFrame() { return frame_; }
+	std::string GetFrame() const { return frame_; }
 	void SetFrame(std::string frame) { frame_ = frame; }
-	std::string GetPath() { return path_; }
+	std::string GetPath() const { return path_; }
 	void SetPath(std::string path) { path_ = path; }
-	std::string GetMethod() { return method_; }
+	std::string GetMethod() const { return method_; }
 	void SetMethod(std::string method) { method_ = method; }
 
 protected:
@@ -377,7 +377,7 @@ protected:
 class EventScriptCode_VisibleText : public EventScriptCode {
 public:
 	EventScriptCode_VisibleText();
-	bool IsVisible() { return bVisible_; }
+	bool IsVisible() const { return bVisible_; }
 	void SetVisible(bool bVisible) { bVisible_ = bVisible; }
 
 private:
@@ -387,9 +387,9 @@ class EventScriptCode_Var : public EventScriptCode {
 public:
 	EventScriptCode_Var();
 	std::string& GetName() { return name_; }
-	void SetName(std::string name) { name_ = name; }
+	void SetName(const std::string& name) { name_ = name; }
 	std::string& GetValue() { return value_; }
-	void SetValue(std::string value) { value_ = value; }
+	void SetValue(const std::string& value) { value_ = value; }
 
 private:
 	std::string name_;
@@ -399,9 +399,9 @@ class EventScriptCode_Eval : public EventScriptCode {
 public:
 	EventScriptCode_Eval();
 	std::string& GetName() { return name_; }
-	void SetName(std::string name) { name_ = name; }
+	void SetName(const std::string& name) { name_ = name; }
 	std::string& GetValue() { return value_; }
-	void SetValue(std::string value) { value_ = value; }
+	void SetValue(const std::string& value) { value_ = value; }
 
 private:
 	std::string name_;
@@ -411,10 +411,10 @@ class EventScriptCode_SysVal : public EventScriptCode {
 public:
 	EventScriptCode_SysVal();
 	std::string& GetName() { return name_; }
-	void SetName(std::string name) { name_ = name; }
+	void SetName(const std::string& name) { name_ = name; }
 	std::string& GetValue() { return value_; }
-	void SetValue(std::string value) { value_ = value; }
-	bool IsGlobal() { return bGlobal_; }
+	void SetValue(const std::string& value) { value_ = value; }
+	bool IsGlobal() const { return bGlobal_; }
 	void SetGlobal(bool b) { bGlobal_ = b; }
 
 private:
@@ -426,7 +426,7 @@ class EventScriptCode_Output : public EventScriptCode {
 public:
 	EventScriptCode_Output();
 	std::string& GetValue() { return value_; }
-	void SetValue(std::string value) { value_ = value; }
+	void SetValue(const std::string& value) { value_ = value; }
 
 private:
 	std::string value_;
@@ -439,24 +439,24 @@ public:
 
 public:
 	EventScriptCode_Image();
-	std::string GetObjectIdentifier() { return idObject_; }
-	void SetObjectIdentifier(std::string id) { idObject_ = id; }
-	std::string GetPath() { return path_; }
-	void SetPath(std::string path) { path_ = path; }
-	int GetLayer() { return layer_; }
+	std::string GetObjectIdentifier() const { return idObject_; }
+	void SetObjectIdentifier(const std::string& id) { idObject_ = id; }
+	std::string GetPath() const { return path_; }
+	void SetPath(const std::string& path) { path_ = path; }
+	int GetLayer() const { return layer_; }
 	void SetLayer(int layer) { layer_ = layer; }
-	std::string GetPriority() { return pri_; }
-	void SetPriority(std::string pri) { pri_ = pri; }
-	std::string GetVisible() { return bVisible_; }
-	void SetVisible(std::string bVisible) { bVisible_ = bVisible_; }
-	std::string GetLeftDestPoint() { return posDestLeft_; }
-	void SetLeftDestPoint(std::string left) { posDestLeft_ = left; }
-	std::string GetTopDestPoint() { return posDestTop_; }
-	void SetTopDestPoint(std::string top) { posDestTop_ = top; }
-	std::string GetTransition() { return bTransition_; }
-	void SetTransition(std::string bTrans) { bTransition_ = bTrans; }
-	std::string GetWaitEnd() { return bWaitEnd_; }
-	void SetWaitEnd(std::string bWaitEnd) { bWaitEnd_ = bWaitEnd; }
+	std::string GetPriority() const { return pri_; }
+	void SetPriority(const std::string& pri) { pri_ = pri; }
+	std::string GetVisible() const { return bVisible_; }
+	void SetVisible(const std::string& bVisible) { bVisible_ = bVisible_; }
+	std::string GetLeftDestPoint() const { return posDestLeft_; }
+	void SetLeftDestPoint(const std::string& left) { posDestLeft_ = left; }
+	std::string GetTopDestPoint() const { return posDestTop_; }
+	void SetTopDestPoint(const std::string& top) { posDestTop_ = top; }
+	std::string GetTransition() const { return bTransition_; }
+	void SetTransition(const std::string& bTrans) { bTransition_ = bTrans; }
+	std::string GetWaitEnd() const { return bWaitEnd_; }
+	void SetWaitEnd(const std::string& bWaitEnd) { bWaitEnd_ = bWaitEnd; }
 
 protected:
 	std::string idObject_;
@@ -472,10 +472,10 @@ protected:
 class EventScriptCode_Sound : public EventScriptCode {
 public:
 	EventScriptCode_Sound();
-	int GetSoundType() { return typeSound_; }
+	int GetSoundType() const { return typeSound_; }
 	void SetSoundType(int type) { typeSound_ = type; }
-	std::string GetPath() { return path_; }
-	void SetPath(std::string path) { path_ = path; }
+	std::string GetPath() const { return path_; }
+	void SetPath(const std::string& path) { path_ = path; }
 
 private:
 	int typeSound_;
@@ -484,9 +484,9 @@ private:
 class EventScriptCode_If : public EventScriptCode, public EventScriptBlock {
 public:
 	EventScriptCode_If();
-	std::string GetParameter() { return param_; }
-	void SetParameter(std::string param) { param_ = param; }
-	int GetNextElsePosition() { return posNextElse_; }
+	std::string GetParameter() const { return param_; }
+	void SetParameter(const std::string& param) { param_ = param; }
+	int GetNextElsePosition() const { return posNextElse_; }
 	void SetNextElsePosition(int pos) { posNextElse_ = pos; }
 
 protected:
@@ -498,13 +498,13 @@ class EventScriptCode_Jump : public EventScriptCode {
 public:
 	EventScriptCode_Jump();
 
-	bool IsGoSub() { return bGoSub_; }
+	bool IsGoSub() const { return bGoSub_; }
 	void SetGosub(bool b) { bGoSub_ = b; }
 
-	std::string GetPath() { return path_; }
-	void SetPath(std::string path) { path_ = path; }
-	std::string GetName() { return name_; }
-	void SetName(std::string name) { name_ = name; }
+	std::string GetPath() const { return path_; }
+	void SetPath(const std::string& path) { path_ = path; }
+	std::string GetName() const { return name_; }
+	void SetName(const std::string& name) { name_ = name; }
 
 protected:
 	bool bGoSub_;
@@ -515,27 +515,27 @@ protected:
 class EventScriptCode_Script : public EventScriptCode {
 public:
 	EventScriptCode_Script();
-	std::string GetPath() { return path_; }
-	void SetPath(std::string path) { path_ = path; }
-	std::string GetMethod() { return method_; }
-	void SetMethod(std::string method) { method_ = method; }
-	std::string GetWaitEnd() { return bWaitEnd_; }
-	void SetWaitEnd(std::string bWait) { bWaitEnd_ = bWait; }
-	std::string GetTargetId() { return targetId_; }
-	void SetTargetId(std::string target) { targetId_ = target; }
-	std::string GetCode() { return code_; }
-	void SetCode(std::string code) { code_ = code; }
-	std::string GetId() { return id_; }
-	void SetId(std::string id) { id_ = id; }
-	std::vector<std::string> GetArgumentList() { return arg_; }
-	void SetArgument(int index, std::string arg)
+	std::string GetPath() const { return path_; }
+	void SetPath(const std::string& path) { path_ = path; }
+	std::string GetMethod() const { return method_; }
+	void SetMethod(const std::string& method) { method_ = method; }
+	std::string GetWaitEnd() const { return bWaitEnd_; }
+	void SetWaitEnd(const std::string& bWait) { bWaitEnd_ = bWait; }
+	std::string GetTargetId() const { return targetId_; }
+	void SetTargetId(const std::string& target) { targetId_ = target; }
+	std::string GetCode() const { return code_; }
+	void SetCode(const std::string& code) { code_ = code; }
+	std::string GetId() const { return id_; }
+	void SetId(const std::string& id) { id_ = id; }
+	std::vector<std::string> GetArgumentList() const { return arg_; }
+	void SetArgument(int index, const std::string& arg)
 	{
 		if (index >= arg_.size())
 			arg_.resize(index + 1);
 		arg_[index] = arg;
 	}
 
-	bool IsEndScript() { return bEndScript_; }
+	bool IsEndScript() const { return bEndScript_; }
 	void SetEndScript(bool bEnd) { bEndScript_ = bEnd; }
 
 private:
@@ -552,8 +552,8 @@ private:
 class EventScriptCode_End : public EventScriptCode {
 public:
 	EventScriptCode_End();
-	std::string GetArgument() { return arg_; }
-	void SetArgument(std::string arg) { arg_ = arg; }
+	std::string GetArgument() const { return arg_; }
+	void SetArgument(const std::string& arg) { arg_ = arg; }
 
 protected:
 	std::string arg_;
@@ -562,8 +562,8 @@ protected:
 class EventScriptCode_Battle : public EventScriptCode {
 public:
 	EventScriptCode_Battle();
-	std::string GetPath() { return path_; }
-	void SetPath(std::string path) { path_ = path; }
+	std::string GetPath() const { return path_; }
+	void SetPath(const std::string& path) { path_ = path; }
 
 protected:
 	std::string path_;
@@ -577,17 +577,17 @@ public:
 	EventScriptCodeExecuter(EventEngine* engine);
 	virtual ~EventScriptCodeExecuter();
 	virtual void Execute() = 0;
-	bool IsEnd() { return bEnd_; }
+	bool IsEnd() const { return bEnd_; }
 
 protected:
 	EventEngine* engine_;
 	bool bEnd_;
 
-	int _GetElementInteger(std::string value);
-	double _GetElementReal(std::string value);
-	bool _GetElementBoolean(std::string value);
-	std::string _GetElementString(std::string value);
-	bool _IsValieElement(std::string value);
+	int _GetElementInteger(const std::string& value);
+	double _GetElementReal(const std::string& value);
+	bool _GetElementBoolean(const std::string& value);
+	std::string _GetElementString(const std::string& value);
+	bool _IsValieElement(const std::string& value);
 };
 
 class EventScriptCodeExecuter_WaitClick : public EventScriptCodeExecuter {
@@ -695,7 +695,7 @@ public:
 	gstd::ref_count_ptr<DxButton> GetSaveButton() { return btnSave_; }
 	gstd::ref_count_ptr<DxButton> GetLoadButton() { return btnLoad_; }
 
-	bool IsTextVisible() { return bVisibleText_; }
+	bool IsTextVisible() const { return bVisibleText_; }
 	void SetTextVisible(bool bVisible) { bVisibleText_ = bVisible; }
 
 	void Read(gstd::RecordBuffer& record);
@@ -759,8 +759,8 @@ public:
 	void Work();
 	void Render();
 	virtual void RenderText();
-	std::wstring GetText() { return text_->GetText(); }
-	void SetText(std::wstring text) { text_->SetText(text); }
+	std::wstring GetText() const { return text_->GetText(); }
+	void SetText(const std::wstring& text) { text_->SetText(text); }
 
 private:
 	gstd::ref_count_ptr<DxText> text_;
@@ -804,9 +804,9 @@ class EventLogText {
 public:
 	EventLogText(EventEngine* engine);
 	virtual ~EventLogText();
-	void Add(std::string text, std::string name);
+	void Add(std::string text);
 
-	int GetInfoCount() { return listInfo_.size(); }
+	int GetInfoCount() const { return listInfo_.size(); }
 	gstd::ref_count_ptr<DxTextInfo> GetTextInfo(int pos) { return listInfo_[pos]; }
 
 private:
@@ -828,8 +828,8 @@ public:
 public:
 	EventValue() { type_ = TYPE_UNKNOWN; }
 	virtual ~EventValue(){};
-	int GetType() { return type_; }
-	double GetReal()
+	int GetType() const { return type_; }
+	double GetReal() const
 	{
 		double res = valueReal_;
 		if (IsBoolean())
@@ -838,7 +838,7 @@ public:
 			res = atof(valueString_.c_str());
 		return res;
 	}
-	bool GetBoolean()
+	bool GetBoolean() const
 	{
 		bool res = valueBoolean_;
 		if (IsReal())
@@ -847,7 +847,7 @@ public:
 			res = (valueString_ == "true" ? true : false);
 		return res;
 	}
-	std::string GetString()
+	std::string GetString() const
 	{
 		std::string res = valueString_;
 		if (IsReal())
@@ -856,9 +856,9 @@ public:
 			res = (valueBoolean_ ? "true" : "false");
 		return res;
 	}
-	bool IsReal() { return type_ == TYPE_REAL; }
-	bool IsBoolean() { return type_ == TYPE_BOOLEAN; }
-	bool IsString() { return type_ == TYPE_STRING; }
+	bool IsReal() const { return type_ == TYPE_REAL; }
+	bool IsBoolean() const { return type_ == TYPE_BOOLEAN; }
+	bool IsString() const { return type_ == TYPE_STRING; }
 
 	void SetReal(double v)
 	{
@@ -870,15 +870,15 @@ public:
 		type_ = TYPE_BOOLEAN;
 		valueBoolean_ = v;
 	}
-	void SetString(std::string str)
+	void SetString(const std::string& str)
 	{
 		type_ = TYPE_STRING;
 		valueString_ = str;
 	}
 
 	gstd::TextParser::Result ConvertToTextParserResult();
-	void Copy(gstd::TextParser::Result& val);
-	void Copy(EventValue& val);
+	void Copy(const gstd::TextParser::Result& val);
+	void Copy(const EventValue& val);
 
 	void Read(gstd::RecordBuffer& record);
 	void Write(gstd::RecordBuffer& record);
@@ -900,22 +900,22 @@ public:
 	void SetBlock(gstd::ref_count_ptr<EventScriptBlock> block);
 	gstd::ref_count_ptr<EventScriptSource> GetActiveSource() { return sourceActive_; }
 
-	int GetCurrentPosition() { return posCode_; }
+	int GetCurrentPosition() const { return posCode_; }
 	void SetCurrentPosition(int pos) { posCode_ = pos; }
 	gstd::ref_count_ptr<EventScriptCode> NextCode();
 	gstd::ref_count_ptr<EventScriptCode> GetCurrentCode();
 	bool HasNextCode();
 	void SetEnd() { bEnd_ = true; }
-	bool IsEnd() { return bEnd_; }
-	gstd::ref_count_ptr<EventValue> GetValue(std::string key);
-	void AddValue(std::string key, gstd::ref_count_ptr<EventValue> val);
-	void SetValue(std::string key, gstd::ref_count_ptr<EventValue> val);
+	bool IsEnd() const { return bEnd_; }
+	gstd::ref_count_ptr<EventValue> GetValue(const std::string& key);
+	void AddValue(const std::string& key, gstd::ref_count_ptr<EventValue> val);
+	void SetValue(const std::string& key, gstd::ref_count_ptr<EventValue> val);
 
-	int GetReturnPosition() { return posReturn_; }
+	int GetReturnPosition() const { return posReturn_; }
 	void SetReturnPosition(int pos) { posReturn_ = pos; }
 	bool IsInnerBlock();
 
-	bool IsAutoGlobal() { return bAutoGlobal_; }
+	bool IsAutoGlobal() const { return bAutoGlobal_; }
 	void SetAutoGlobal(bool bAuto) { bAutoGlobal_ = bAuto; }
 
 	//保存
@@ -935,10 +935,10 @@ protected:
 class EventValueParser : public gstd::TextParser {
 public:
 	EventValueParser(EventEngine* engine);
-	gstd::ref_count_ptr<EventValue> GetEventValue(std::string text);
+	gstd::ref_count_ptr<EventValue> GetEventValue(const std::string& text);
 protected:
 	EventEngine* engine_;
-	virtual Result _ParseIdentifer(std::vector<char>::iterator pos);
+	virtual Result _ParseIdentifer(std::vector<char>::iterator);
 	std::vector<std::string> _GetFuctionArgument();
 
 };
@@ -957,8 +957,8 @@ public:
 	EventImage();
 	virtual ~EventImage();
 	void Render(int layer);
-	int GetForegroundLayerIndex();
-	int GetBackgroundLayerIndex();
+	int GetForegroundLayerIndex() const;
+	int GetBackgroundLayerIndex() const;
 	void SwapForeBackLayerIndex();
 	gstd::ref_count_ptr<DxScriptObjectManager> GetObjectManager(int layer) { return objManager_[layer]; }
 
@@ -977,8 +977,8 @@ public:
 	void Work();
 
 	void SetNextEnable(bool bEnable) { bNextEnable_ = bEnable; }
-	bool IsNext();
-	bool IsSkip();
+	bool IsNext() const;
+	bool IsSkip() const;
 
 protected:
 	EventEngine* engine_;
@@ -996,7 +996,7 @@ public:
 	EventSound();
 	virtual ~EventSound();
 
-	void Play(int type, std::string path);
+	void Play(int type, const std::string& path);
 	void Delete(int type);
 
 	void Read(gstd::RecordBuffer& record);
@@ -1023,9 +1023,9 @@ public:
 
 	virtual void Work();
 	virtual void Render();
-	void SetSource(std::wstring path);
+	void SetSource(const std::wstring& path);
 
-	gstd::ref_count_ptr<EventScriptSource> GetSource(std::wstring path);
+	gstd::ref_count_ptr<EventScriptSource> GetSource(const std::wstring& path);
 	std::wstring GetSourcePath(gstd::ref_count_ptr<EventScriptSource> source);
 	virtual bool IsEnd();
 
@@ -1042,16 +1042,16 @@ public:
 
 	gstd::ref_count_ptr<gstd::ScriptEngineCache> GetScriptEngineCache() { return cacheScriptEngine_; }
 
-	bool IsCriticalFrame() { return bCriticalFrame_; }
+	bool IsCriticalFrame() const { return bCriticalFrame_; }
 
 	void SetState(int state);
-	int GetState() { return state_; }
+	int GetState() const { return state_; }
 	virtual void CheckStateChenge();
 
 	bool IsSaveEnable();
-	bool Load(std::wstring path);
+	bool Load(const std::wstring& path);
 	bool Load(gstd::RecordBuffer& record);
-	bool Save(std::wstring path);
+	bool Save(const std::wstring& path);
 	void Read(gstd::RecordBuffer& record);
 	void Write(gstd::RecordBuffer& record);
 
@@ -1083,7 +1083,7 @@ protected:
 	virtual int _RunCode(gstd::ref_count_ptr<EventFrame> frameActive, gstd::ref_count_ptr<EventScriptCode> code) { return RUN_RETURN_NONE; }
 	virtual void _RunScript();
 	virtual void _WorkWindow();
-	gstd::ref_count_ptr<EventScriptSource> _GetSource(std::wstring path);
+	gstd::ref_count_ptr<EventScriptSource> _GetSource(const std::wstring& path);
 };
 
 /**********************************************************
@@ -1094,21 +1094,21 @@ public:
 	DxScriptForEvent(EventEngine* engine);
 	~DxScriptForEvent();
 	void Clear();
-	virtual bool SetSourceFromFile(std::wstring path);
-	virtual void SetSource(std::string source);
+	virtual bool SetSourceFromFile(const std::wstring& path);
+	virtual void SetSource(const std::string& source);
 	virtual int AddObject(gstd::ref_count_ptr<DxScriptObjectBase>::unsync obj);
 	virtual void DeleteObject(int id);
 
-	std::string GetMethod() { return method_; }
-	void SetMethod(std::string method) { method_ = method; }
+	std::string GetMethod() const { return method_; }
+	void SetMethod(const std::string& method) { method_ = method; }
 
 	void EndScript() { bScriptEnd_ = true; }
-	bool IsScriptEnd() { return bScriptEnd_; }
+	bool IsScriptEnd() const { return bScriptEnd_; }
 
 	void SetTargetId(int target) { targetId_ = target; }
-	std::string GetScriptId() { return scriptId_; }
-	void SetScriptId(std::string id) { scriptId_ = id; }
-	std::string GetCode() { return code_; }
+	std::string GetScriptId() const { return scriptId_; }
+	void SetScriptId(const std::string& id) { scriptId_ = id; }
+	std::string GetCode() const { return code_; }
 
 	void AddArgumentValue(gstd::ref_count_ptr<EventValue> arg);
 

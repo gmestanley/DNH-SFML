@@ -28,8 +28,8 @@ public:
 public:
 	TextureData();
 	virtual ~TextureData();
-	std::wstring GetName() { return name_; }
-	D3DXIMAGE_INFO GetImageInfo() { return infoImage_; }
+	std::wstring GetName() const { return name_; }
+	D3DXIMAGE_INFO GetImageInfo() const { return infoImage_; }
 
 protected:
 	int type_;
@@ -50,7 +50,7 @@ class Texture : public gstd::FileManager::LoadObject {
 
 public:
 	Texture();
-	Texture(Texture* texture);
+	Texture(const Texture* texture);
 	virtual ~Texture();
 	void Release();
 
@@ -64,13 +64,14 @@ public:
 	IDirect3DSurface9* GetD3DSurface();
 	IDirect3DSurface9* GetD3DZBuffer();
 
-	int GetWidth();
-	int GetHeight();
+	int GetWidth() const;
+	int GetHeight() const;
 	bool IsLoad() { return data_ != NULL && data_->bLoad_; }
 
 protected:
 	gstd::ref_count_ptr<TextureData> data_;
 	TextureData* _GetTextureData() { return data_.GetPointer(); }
+	const TextureData* _GetTextureData() const { return data_.GetPointer(); }
 };
 
 /**********************************************************

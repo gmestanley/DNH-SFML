@@ -96,7 +96,7 @@ public:
 	MetasequoiaMesh() {}
 	virtual ~MetasequoiaMesh() {}
 	virtual bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader);
-	virtual bool CreateFromFileInLoadThread(std::wstring path);
+	virtual bool CreateFromFileInLoadThread(const std::wstring& path);
 	virtual std::wstring GetPath();
 	virtual void Render();
 

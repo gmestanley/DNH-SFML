@@ -6,7 +6,7 @@ using namespace directx;
 /**********************************************************
 //ColorAccess
 **********************************************************/
-int ColorAccess::GetColorA(D3DCOLOR& color)
+inline int ColorAccess::GetColorA(const D3DCOLOR& color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_ALPHA);
 }
@@ -18,7 +18,7 @@ D3DCOLOR& ColorAccess::SetColorA(D3DCOLOR& color, int alpha)
 		alpha = 0;
 	return gstd::BitAccess::SetByte(color, BIT_ALPHA, (unsigned char)alpha);
 }
-int ColorAccess::GetColorR(D3DCOLOR color)
+inline int ColorAccess::GetColorR(const D3DCOLOR color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_RED);
 }
@@ -30,7 +30,7 @@ D3DCOLOR& ColorAccess::SetColorR(D3DCOLOR& color, int red)
 		red = 0;
 	return gstd::BitAccess::SetByte(color, BIT_RED, (unsigned char)red);
 }
-int ColorAccess::GetColorG(D3DCOLOR& color)
+inline int ColorAccess::GetColorG(const D3DCOLOR& color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_GREEN);
 }
@@ -42,7 +42,7 @@ D3DCOLOR& ColorAccess::SetColorG(D3DCOLOR& color, int green)
 		green = 0;
 	return gstd::BitAccess::SetByte(color, BIT_GREEN, (unsigned char)green);
 }
-int ColorAccess::GetColorB(D3DCOLOR& color)
+inline int ColorAccess::GetColorB(const D3DCOLOR& color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_BLUE);
 }
@@ -154,7 +154,7 @@ D3DCOLOR& ColorAccess::SetColorHSV(D3DCOLOR& color, int hue, int saturation, int
 /**********************************************************
 //DxMath
 **********************************************************/
-D3DXVECTOR4 DxMath::VectMatMulti(D3DXVECTOR4 v, D3DMATRIX& mat)
+D3DXVECTOR4 DxMath::VectMatMulti(D3DXVECTOR4 v, const D3DMATRIX& mat)
 {
 	float x, y, z;
 

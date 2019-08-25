@@ -27,10 +27,9 @@ DxScriptObjectBase::~DxScriptObjectBase()
 	if (manager_ != NULL && idObject_ != DxScript::ID_INVALID)
 		manager_->listUnusedIndex_.push_back(idObject_);
 }
-int DxScriptObjectBase::GetRenderPriorityI()
+int DxScriptObjectBase::GetRenderPriorityI() const
 {
-	int res = (int)(priRender_ * (manager_->GetRenderBucketCapacity() - 1) + 0.5);
-	return res;
+	return (int)(priRender_ * (manager_->GetRenderBucketCapacity() - 1) + 0.5);
 }
 
 /**********************************************************
@@ -71,7 +70,7 @@ void DxScriptPrimitiveObject::SetVertexCount(int count)
 {
 	objRender_->SetVertexCount(count);
 }
-int DxScriptPrimitiveObject::GetVertexCount()
+int DxScriptPrimitiveObject::GetVertexCount() const
 {
 	return objRender_->GetVertexCount();
 }
@@ -133,9 +132,9 @@ void DxScriptPrimitiveObject2D::SetRenderState()
 	graphics->SetBlendMode(typeBlend_);
 	graphics->SetCullingMode(D3DCULL_NONE);
 }
-bool DxScriptPrimitiveObject2D::IsValidVertexIndex(int index)
+bool DxScriptPrimitiveObject2D::IsValidVertexIndex(int index) const
 {
-	RenderObjectTLX* obj = GetObjectPointer();
+	const RenderObjectTLX* obj = GetObjectPointer();
 	int count = obj->GetVertexCount();
 	return index >= 0 && index < count;
 }
@@ -339,9 +338,9 @@ void DxScriptPrimitiveObject3D::SetRenderState()
 	graphics->SetBlendMode(typeBlend_);
 	graphics->SetCullingMode(modeCulling_);
 }
-bool DxScriptPrimitiveObject3D::IsValidVertexIndex(int index)
+bool DxScriptPrimitiveObject3D::IsValidVertexIndex(int index) const
 {
-	RenderObjectLX* obj = GetObjectPointer();
+	const RenderObjectLX* obj = GetObjectPointer();
 	int count = obj->GetVertexCount();
 	return index >= 0 && index < count;
 }
@@ -698,7 +697,7 @@ DxFileObject::DxFileObject()
 DxFileObject::~DxFileObject()
 {
 }
-bool DxFileObject::OpenR(std::wstring path)
+bool DxFileObject::OpenR(const std::wstring& path)
 {
 	file_ = new File(path);
 	bool res = file_->Open();
@@ -706,22 +705,22 @@ bool DxFileObject::OpenR(std::wstring path)
 		file_ = NULL;
 	return res;
 }
-bool DxFileObject::OpenW(std::wstring path)
+bool DxFileObject::OpenW(const std::wstring& path)
 {
-	path = PathProperty::Canonicalize(path);
-	path = PathProperty::ReplaceYenToSlash(path);
+	auto formattedPath = PathProperty::Canonicalize(path);
+	formattedPath = PathProperty::ReplaceYenToSlash(formattedPath);
 
-	std::wstring dir = PathProperty::GetFileDirectory(path);
+	std::wstring dir = PathProperty::GetFileDirectory(formattedPath);
 	File fDir(dir);
 	bool bDir = fDir.CreateDirectory();
 	if (!bDir)
 		return false;
 
-	std::wstring dirModule = PathProperty::GetFileDirectory(path);
+	std::wstring dirModule = PathProperty::GetFileDirectory(formattedPath);
 	if (dir.find(dirModule) == std::wstring::npos)
 		return false;
 
-	file_ = new File(path);
+	file_ = new File(formattedPath);
 	bool res = file_->Create();
 	if (!res)
 		file_ = NULL;
@@ -744,7 +743,7 @@ DxTextFileObject::DxTextFileObject()
 DxTextFileObject::~DxTextFileObject()
 {
 }
-bool DxTextFileObject::OpenR(std::wstring path)
+bool DxTextFileObject::OpenR(const std::wstring& path)
 {
 	listLine_.clear();
 	bool res = DxFileObject::OpenR(path);
@@ -771,8 +770,8 @@ bool DxTextFileObject::OpenR(std::wstring path)
 			text_ = text;
 			pos_ = 0;
 		}
-		int GetPosition() { return pos_; }
-		char GetCurrentCharactor() { return (*text_)[pos_]; }
+		int GetPosition() const { return pos_; }
+		char GetCurrentCharactor() const { return (*text_)[pos_]; }
 		void Advance()
 		{
 			pos_++;
@@ -814,10 +813,9 @@ bool DxTextFileObject::OpenR(std::wstring path)
 	}
 	return true;
 }
-bool DxTextFileObject::OpenW(std::wstring path)
+bool DxTextFileObject::OpenW(const std::wstring& path)
 {
-	bool res = DxFileObject::OpenW(path);
-	return res;
+	return DxFileObject::OpenW(path);
 }
 bool DxTextFileObject::Store()
 {
@@ -834,7 +832,7 @@ bool DxTextFileObject::Store()
 	}
 	return true;
 }
-std::string DxTextFileObject::GetLine(int line)
+std::string DxTextFileObject::GetLine(int line) const
 {
 	line--; //行数は1開始
 	if (line >= listLine_.size())
@@ -856,7 +854,7 @@ DxBinaryFileObject::DxBinaryFileObject()
 DxBinaryFileObject::~DxBinaryFileObject()
 {
 }
-bool DxBinaryFileObject::OpenR(std::wstring path)
+bool DxBinaryFileObject::OpenR(const std::wstring& path)
 {
 	bool res = DxFileObject::OpenR(path);
 	if (!res)
@@ -870,7 +868,7 @@ bool DxBinaryFileObject::OpenR(std::wstring path)
 
 	return true;
 }
-bool DxBinaryFileObject::OpenW(std::wstring path)
+bool DxBinaryFileObject::OpenW(const std::wstring& path)
 {
 	return false;
 }
@@ -1149,7 +1147,7 @@ void DxScriptObjectManager::ResetShader(double min, double max)
 	SetShader(NULL, min, max);
 }
 
-void DxScriptObjectManager::ReserveSound(ref_count_ptr<SoundPlayer> player, SoundPlayer::PlayStyle& style)
+void DxScriptObjectManager::ReserveSound(ref_count_ptr<SoundPlayer> player, const SoundPlayer::PlayStyle& style)
 {
 	ref_count_ptr<SoundInfo> info = new SoundInfo();
 	info->player_ = player;
@@ -1655,7 +1653,7 @@ int DxScript::AddObject(gstd::ref_count_ptr<DxScriptObjectBase>::unsync obj, boo
 	obj->idScript_ = idScript_;
 	return objManager_->AddObject(obj, bActivate);
 }
-gstd::ref_count_ptr<Texture> DxScript::_GetTexture(std::wstring name)
+gstd::ref_count_ptr<Texture> DxScript::_GetTexture(const std::wstring& name)
 {
 	gstd::ref_count_ptr<Texture> res;
 	if (mapTexture_.find(name) != mapTexture_.end()) {

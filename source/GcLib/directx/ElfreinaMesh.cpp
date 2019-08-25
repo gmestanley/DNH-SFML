@@ -872,7 +872,7 @@ bool ElfreinaMesh::CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> re
 	}
 	return res;
 }
-bool ElfreinaMesh::CreateFromFileInLoadThread(std::wstring path)
+bool ElfreinaMesh::CreateFromFileInLoadThread(const std::wstring& path)
 {
 	return DxMesh::CreateFromFileInLoadThread(path, MESH_ELFREINA);
 }
@@ -938,7 +938,7 @@ gstd::ref_count_ptr<RenderBlocks> ElfreinaMesh::CreateRenderBlocks()
 	}
 	return res;
 }
-gstd::ref_count_ptr<RenderBlocks> ElfreinaMesh::CreateRenderBlocks(std::wstring nameAnime, double time)
+gstd::ref_count_ptr<RenderBlocks> ElfreinaMesh::CreateRenderBlocks(const std::wstring& nameAnime, double time)
 {
 	if (data_ == NULL)
 		return NULL;
@@ -970,7 +970,7 @@ double ElfreinaMesh::_CalcFrameToTime(double time, gstd::ref_count_ptr<ElfreinaM
 	}
 	return time;
 }
-gstd::ref_count_ptr<Matrices> ElfreinaMesh::CreateAnimationMatrix(std::wstring nameAnime, double time)
+gstd::ref_count_ptr<Matrices> ElfreinaMesh::CreateAnimationMatrix(const std::wstring& nameAnime, double time)
 {
 	if (data_ == NULL)
 		return NULL;
@@ -988,7 +988,7 @@ gstd::ref_count_ptr<Matrices> ElfreinaMesh::CreateAnimationMatrix(std::wstring n
 	return matrix;
 }
 
-D3DXMATRIX ElfreinaMesh::GetAnimationMatrix(std::wstring nameAnime, double time, std::wstring nameBone)
+D3DXMATRIX ElfreinaMesh::GetAnimationMatrix(const std::wstring& nameAnime, double time, const std::wstring& nameBone)
 {
 	D3DXMATRIX res;
 	ElfreinaMeshData* data = (ElfreinaMeshData*)data_.GetPointer();

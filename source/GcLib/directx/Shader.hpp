@@ -23,7 +23,7 @@ class ShaderData {
 public:
 	ShaderData();
 	virtual ~ShaderData();
-	std::wstring GetName() { return name_; }
+	std::wstring GetName() const { return name_; }
 
 private:
 	ShaderManager* manager_;
@@ -53,19 +53,19 @@ public:
 	void ReleaseDxResource();
 	void RestoreDxResource();
 
-	virtual bool IsDataExists(std::wstring name);
-	gstd::ref_count_ptr<ShaderData> GetShaderData(std::wstring name);
-	gstd::ref_count_ptr<Shader> CreateFromFile(std::wstring path); //読み込みます。ShaderDataは保持しますが、Shaderは保持しません。
-	gstd::ref_count_ptr<Shader> CreateFromText(std::string source); //読み込みます。ShaderDataは保持しますが、Shaderは保持しません。
-	gstd::ref_count_ptr<Shader> CreateFromFileInLoadThread(std::wstring path);
+	virtual bool IsDataExists(const std::wstring& name);
+	gstd::ref_count_ptr<ShaderData> GetShaderData(const std::wstring& name);
+	gstd::ref_count_ptr<Shader> CreateFromFile(const std::wstring& path); //読み込みます。ShaderDataは保持しますが、Shaderは保持しません。
+	gstd::ref_count_ptr<Shader> CreateFromText(const std::string& source); //読み込みます。ShaderDataは保持しますが、Shaderは保持しません。
+	gstd::ref_count_ptr<Shader> CreateFromFileInLoadThread(const std::wstring& path);
 	virtual void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event);
 
-	void AddShader(std::wstring name, gstd::ref_count_ptr<Shader> shader);
-	void DeleteShader(std::wstring name);
-	gstd::ref_count_ptr<Shader> GetShader(std::wstring name);
+	void AddShader(const std::wstring& name, gstd::ref_count_ptr<Shader> shader);
+	void DeleteShader(const std::wstring& name);
+	gstd::ref_count_ptr<Shader> GetShader(const std::wstring& name);
 	gstd::ref_count_ptr<Shader> GetDefaultSkinnedMeshShader();
 
-	void CheckExecutingShaderZero();
+	void CheckExecutingShaderZero() const;
 	std::wstring GetLastError();
 
 protected:
@@ -76,12 +76,12 @@ protected:
 	std::list<Shader*> listExecuteShader_;
 	std::wstring lastError_;
 
-	void _ReleaseShaderData(std::wstring name);
-	bool _CreateFromFile(std::wstring path);
-	bool _CreateFromText(std::string& source);
+	void _ReleaseShaderData(const std::wstring& name);
+	bool _CreateFromFile(const std::wstring& path);
+	bool _CreateFromText(const std::string& source);
 	void _BeginShader(Shader* shader, int pass);
 	void _EndShader(Shader* shader);
-	static std::wstring _GetTextSourceID(std::string& source);
+	static std::wstring _GetTextSourceID(const std::string& source);
 
 private:
 	static ShaderManager* thisBase_;
@@ -106,7 +106,7 @@ public:
 	ShaderParameter();
 	virtual ~ShaderParameter();
 
-	int GetType() { return type_; }
+	int GetType() const { return type_; }
 	void SetMatrix(D3DXMATRIX& matrix);
 	D3DXMATRIX GetMatrix();
 	void SetMatrixArray(std::vector<D3DXMATRIX>& matrix);
@@ -117,7 +117,7 @@ public:
 	float GetFloat();
 	void SetFloatArray(std::vector<float>& values);
 	std::vector<float> GetFloatArray();
-	void SetTexture(gstd::ref_count_ptr<Texture> texture);
+	void SetTexture(const gstd::ref_count_ptr<Texture> texture);
 	gstd::ref_count_ptr<Texture> GetTexture();
 
 private:
@@ -134,7 +134,7 @@ class Shader {
 
 public:
 	Shader();
-	Shader(Shader* shader);
+	Shader(const Shader* shader);
 	virtual ~Shader();
 	void Release();
 
@@ -145,17 +145,17 @@ public:
 	void ReleaseDxResource();
 	void RestoreDxResource();
 
-	bool CreateFromFile(std::wstring path);
-	bool CreateFromText(std::string& source);
-	bool IsLoad() { return data_ != NULL && data_->bLoad_; }
+	bool CreateFromFile(const std::wstring& path);
+	bool CreateFromText(const std::string& source);
+	bool IsLoad() const { return data_ != NULL && data_->bLoad_; }
 
-	bool SetTechnique(std::string name);
-	bool SetMatrix(std::string name, D3DXMATRIX& matrix);
-	bool SetMatrixArray(std::string name, std::vector<D3DXMATRIX>& matrix);
-	bool SetVector(std::string name, D3DXVECTOR4& vector);
-	bool SetFloat(std::string name, float value);
-	bool SetFloatArray(std::string name, std::vector<float>& values);
-	bool SetTexture(std::string name, gstd::ref_count_ptr<Texture> texture);
+	bool SetTechnique(const std::string& name);
+	bool SetMatrix(const std::string& name, D3DXMATRIX& matrix);
+	bool SetMatrixArray(const std::string& name, std::vector<D3DXMATRIX>& matrix);
+	bool SetVector(const std::string& name, D3DXVECTOR4& vector);
+	bool SetFloat(const std::string& name, float value);
+	bool SetFloatArray(const std::string& name, std::vector<float>& values);
+	bool SetTexture(const std::string& name, gstd::ref_count_ptr<Texture> texture);
 
 protected:
 	gstd::ref_count_ptr<ShaderData> data_;
@@ -168,7 +168,7 @@ protected:
 	std::map<std::string, gstd::ref_count_ptr<ShaderParameter>> mapParam_;
 
 	ShaderData* _GetShaderData() { return data_.GetPointer(); }
-	gstd::ref_count_ptr<ShaderParameter> _GetParameter(std::string name, bool bCreate);
+	gstd::ref_count_ptr<ShaderParameter> _GetParameter(const std::string& name, bool bCreate);
 
 	int _Begin();
 	void _End();

@@ -161,7 +161,7 @@ int ScriptManager::GetAllScriptThreadCount()
 	}
 	return res;
 }
-void ScriptManager::TerminateScriptAll(std::wstring message)
+void ScriptManager::TerminateScriptAll(const std::wstring& message)
 {
 	{
 		Lock lock(lock_);
@@ -171,7 +171,7 @@ void ScriptManager::TerminateScriptAll(std::wstring message)
 		}
 	}
 }
-_int64 ScriptManager::_LoadScript(std::wstring path, ref_count_ptr<ManagedScript> script)
+_int64 ScriptManager::_LoadScript(const std::wstring& path, ref_count_ptr<ManagedScript> script)
 {
 	_int64 res = 0;
 
@@ -190,7 +190,7 @@ _int64 ScriptManager::_LoadScript(std::wstring path, ref_count_ptr<ManagedScript
 
 	return res;
 }
-_int64 ScriptManager::LoadScript(std::wstring path, ref_count_ptr<ManagedScript> script)
+_int64 ScriptManager::LoadScript(const std::wstring& path, ref_count_ptr<ManagedScript> script)
 {
 	_int64 res = 0;
 	{
@@ -200,13 +200,13 @@ _int64 ScriptManager::LoadScript(std::wstring path, ref_count_ptr<ManagedScript>
 	}
 	return res;
 }
-_int64 ScriptManager::LoadScript(std::wstring path, int type)
+_int64 ScriptManager::LoadScript(const std::wstring& path, int type)
 {
 	ref_count_ptr<ManagedScript> script = Create(type);
 	_int64 res = LoadScript(path, script);
 	return res;
 }
-_int64 ScriptManager::LoadScriptInThread(std::wstring path, ref_count_ptr<ManagedScript> script)
+_int64 ScriptManager::LoadScriptInThread(const std::wstring& path, ref_count_ptr<ManagedScript> script)
 {
 	_int64 res = 0;
 	{
@@ -220,7 +220,7 @@ _int64 ScriptManager::LoadScriptInThread(std::wstring path, ref_count_ptr<Manage
 	}
 	return res;
 }
-_int64 ScriptManager::LoadScriptInThread(std::wstring path, int type)
+_int64 ScriptManager::LoadScriptInThread(const std::wstring& path, int type)
 {
 	ref_count_ptr<ManagedScript> script = Create(type);
 	_int64 res = LoadScriptInThread(path, script);
@@ -242,7 +242,7 @@ void ScriptManager::CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::Lo
 		SetError(e.what());
 	}
 }
-void ScriptManager::RequestEventAll(int type, std::vector<gstd::value>& listValue)
+void ScriptManager::RequestEventAll(int type, const std::vector<gstd::value>& listValue)
 {
 	{
 		std::list<ref_count_ptr<ManagedScript>>::iterator itrScript = listScriptRun_.begin();
@@ -331,7 +331,7 @@ void ManagedScript::SetScriptManager(ScriptManager* manager)
 	mainThreadID_ = scriptManager_->GetMainThreadID();
 	idScript_ = scriptManager_->IssueScriptID();
 }
-gstd::value ManagedScript::RequestEvent(int type, std::vector<gstd::value>& listValue)
+gstd::value ManagedScript::RequestEvent(int type, const std::vector<gstd::value>& listValue)
 {
 	gstd::value res;
 	std::string event = "Event";

@@ -462,21 +462,19 @@ RECT DxWindow::GetAbsoluteWindowRect()
 	}
 	return res;
 }
-bool DxWindow::IsWindowExists(int id)
+bool DxWindow::IsWindowExists(int id) const
 {
 	if (bWindowDelete_)
 		return false;
 	bool res = false;
 	if (GetID() == id)
 		return true;
-	std::list<ref_count_ptr<DxWindow>>::iterator itr;
-	;
-	for (itr = listWindowChild_.begin(); itr != listWindowChild_.end(); itr++) {
-		if ((*itr) == NULL)
+	for (const auto& windowChild : listWindowChild_) {
+		if (windowChild == NULL)
 			continue;
-		if ((*itr)->IsWindowDelete())
+		if (windowChild->IsWindowDelete())
 			continue;
-		res |= (*itr)->IsWindowExists(id);
+		res |= windowChild->IsWindowExists(id);
 		if (res)
 			break;
 	}

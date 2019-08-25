@@ -16,13 +16,13 @@ public:
 		BIT_GREEN = 8,
 		BIT_BLUE = 0,
 	};
-	static int GetColorA(D3DCOLOR& color);
+	static int GetColorA(const D3DCOLOR& color);
 	static D3DCOLOR& SetColorA(D3DCOLOR& color, int alpha);
-	static int GetColorR(D3DCOLOR color);
+	static int GetColorR(const D3DCOLOR color);
 	static D3DCOLOR& SetColorR(D3DCOLOR& color, int red);
-	static int GetColorG(D3DCOLOR& color);
+	static int GetColorG(const D3DCOLOR& color);
 	static D3DCOLOR& SetColorG(D3DCOLOR& color, int green);
-	static int GetColorB(D3DCOLOR& color);
+	static int GetColorB(const D3DCOLOR& color);
 	static D3DCOLOR& SetColorB(D3DCOLOR& color, int blue);
 
 	static D3DCOLORVALUE SetColor(D3DCOLORVALUE value, D3DCOLOR color);
@@ -50,11 +50,11 @@ public:
 		r_ = r;
 	}
 	virtual ~DxCircle() {}
-	double GetX() { return x_; }
+	double GetX() const { return x_; }
 	void SetX(float x) { x_ = x; }
-	double GetY() { return y_; }
+	double GetY() const { return y_; }
 	void SetY(float y) { y_ = y; }
-	double GetR() { return r_; }
+	double GetR() const { return r_; }
 	void SetR(float r) { r_ = r; }
 
 private:
@@ -83,11 +83,11 @@ public:
 		width_ = width;
 	}
 	virtual ~DxWidthLine() {}
-	double GetX1() { return posX1_; }
-	double GetY1() { return posY1_; }
-	double GetX2() { return posX2_; }
-	double GetY2() { return posY2_; }
-	double GetWidth() { return width_; }
+	double GetX1() const { return posX1_; }
+	double GetY1() const { return posY1_; }
+	double GetX2() const { return posX2_; }
+	double GetY2() const { return posY2_; }
+	double GetWidth() const { return width_; }
 
 private:
 	double posX1_;
@@ -182,7 +182,7 @@ public:
 	}
 
 	//ベクトルと行列の積
-	static D3DXVECTOR4 VectMatMulti(D3DXVECTOR4 v, D3DMATRIX& mat);
+	static D3DXVECTOR4 VectMatMulti(D3DXVECTOR4 v, const D3DMATRIX& mat);
 
 	//衝突判定：点－多角形
 	static bool IsIntersected(D3DXVECTOR2& pos, std::vector<D3DXVECTOR2>& list);

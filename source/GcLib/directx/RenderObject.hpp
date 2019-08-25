@@ -45,7 +45,7 @@ struct VERTEX_TLX {
 struct VERTEX_L {
 	//ライティング済み
 	VERTEX_L() {}
-	VERTEX_L(const D3DXVECTOR3& pos, const D3DCOLOR& col)
+	VERTEX_L(D3DXVECTOR3 pos, D3DCOLOR col)
 		: position(pos)
 		, diffuse_color(col)
 	{
@@ -58,7 +58,7 @@ struct VERTEX_L {
 struct VERTEX_LX {
 	//ライティング済み、テクスチャ有り
 	VERTEX_LX() {}
-	VERTEX_LX(D3DXVECTOR3& pos, D3DCOLOR& diffcol, D3DXVECTOR2 tex)
+	VERTEX_LX(D3DXVECTOR3 pos, D3DCOLOR diffcol, D3DXVECTOR2 tex)
 		: position(pos)
 		, diffuse_color(diffcol)
 		, texcoord(tex)
@@ -86,7 +86,7 @@ struct VERTEX_N {
 struct VERTEX_NX {
 	//未ライティング、テクスチャ有り
 	VERTEX_NX() {}
-	VERTEX_NX(D3DXVECTOR3& pos, D3DXVECTOR3& n, D3DXVECTOR2& tc)
+	VERTEX_NX(D3DXVECTOR3 pos, D3DXVECTOR3 n, D3DXVECTOR2 tc)
 		: position(pos)
 		, normal(n)
 		, texcoord(tc)
@@ -116,7 +116,7 @@ struct VERTEX_NXG {
 struct VERTEX_B1NX {
 	//未ライティング、テクスチャ有り、頂点ブレンド1
 	VERTEX_B1NX() {}
-	VERTEX_B1NX(D3DXVECTOR3& pos, DWORD bi, D3DXVECTOR3& n, D3DXVECTOR2& tc)
+	VERTEX_B1NX(D3DXVECTOR3 pos, DWORD bi, D3DXVECTOR3 n, D3DXVECTOR2 tc)
 		: position(pos)
 		, normal(n)
 		, texcoord(tc)
@@ -133,7 +133,7 @@ struct VERTEX_B1NX {
 struct VERTEX_B2NX {
 	//未ライティング、テクスチャ有り、頂点ブレンド2
 	VERTEX_B2NX() {}
-	VERTEX_B2NX(D3DXVECTOR3& pos, float rate, BYTE index1, BYTE index2, D3DXVECTOR3& n, D3DXVECTOR2& tc)
+	VERTEX_B2NX(D3DXVECTOR3 pos, float rate, BYTE index1, BYTE index2, D3DXVECTOR3 n, D3DXVECTOR2 tc)
 		: position(pos)
 		, normal(n)
 		, texcoord(tc)
@@ -153,7 +153,7 @@ struct VERTEX_B2NX {
 struct VERTEX_B4NX {
 	//未ライティング、テクスチャ有り、頂点ブレンド4
 	VERTEX_B4NX() {}
-	VERTEX_B4NX(D3DXVECTOR3& pos, float rate[3], BYTE index[4], D3DXVECTOR3& n, D3DXVECTOR2& tc)
+	VERTEX_B4NX(D3DXVECTOR3 pos, float rate[3], BYTE index[4], D3DXVECTOR3 n, D3DXVECTOR2 tc)
 		: position(pos)
 		, normal(n)
 		, texcoord(tc)
@@ -186,7 +186,7 @@ public:
 	virtual void Render();
 
 	virtual void CalculateZValue() = 0;
-	float GetZValue() { return posSortKey_; }
+	float GetZValue() const { return posSortKey_; }
 	void SetZValue(float pos) { posSortKey_ = pos; }
 	virtual bool IsTranslucent() = 0; //Zソート対象に使用
 
@@ -226,8 +226,6 @@ protected:
 //順に描画する
 **********************************************************/
 class RenderManager {
-	class ComparatorRenderBlockTranslucent;
-
 public:
 	RenderManager();
 	virtual ~RenderManager();
@@ -238,14 +236,6 @@ public:
 protected:
 	std::list<gstd::ref_count_ptr<RenderBlock>> listBlockOpaque_;
 	std::list<gstd::ref_count_ptr<RenderBlock>> listBlockTranslucent_;
-};
-
-class RenderManager::ComparatorRenderBlockTranslucent {
-public:
-	bool operator()(gstd::ref_count_ptr<RenderBlock> l, gstd::ref_count_ptr<RenderBlock> r)
-	{
-		return l->GetZValue() > r->GetZValue();
-	}
 };
 
 /**********************************************************
@@ -291,7 +281,7 @@ public:
 			D3DXMatrixIdentity(&matrix_[iMat]);
 		}
 	}
-	int GetSize() { return matrix_.size(); }
+	int GetSize() const { return matrix_.size(); }
 	void SetMatrix(int index, D3DXMATRIX& mat) { matrix_[index] = mat; }
 	D3DXMATRIX& GetMatrix(int index) { return matrix_[index]; }
 
@@ -313,7 +303,7 @@ public:
 	virtual void Render() = 0;
 	virtual void InitializeVertexBuffer() {}
 	virtual void CalculateWeightCenter() {}
-	D3DXVECTOR3 GetWeightCenter() { return posWeightCenter_; }
+	D3DXVECTOR3 GetWeightCenter() const { return posWeightCenter_; }
 	gstd::ref_count_ptr<Texture> GetTexture(int pos = 0) { return texture_[pos]; }
 
 	void SetRalativeMatrix(D3DXMATRIX mat) { matRelative_ = mat; }
@@ -325,12 +315,12 @@ public:
 		vertex_.SetSize(count * strideVertexStreamZero_);
 		ZeroMemory(vertex_.GetPointer(), vertex_.GetSize());
 	}
-	virtual int GetVertexCount() { return vertex_.GetSize() / strideVertexStreamZero_; }
-	void SetVertexIndicies(std::vector<short>& indecies) { vertexIndices_ = indecies; }
+	virtual int GetVertexCount() const { return vertex_.GetSize() / strideVertexStreamZero_; }
+	void SetVertexIndicies(const std::vector<short>& indices) { vertexIndices_ = indices; }
 	gstd::ByteBuffer* GetVertexPointer() { return &vertex_; }
 
 	//描画用設定
-	void SetPosition(D3DXVECTOR3& pos) { position_ = pos; }
+	void SetPosition(const D3DXVECTOR3& pos) { position_ = pos; }
 	void SetPosition(float x, float y, float z)
 	{
 		position_.x = x;
@@ -340,24 +330,24 @@ public:
 	void SetX(float x) { position_.x = x; }
 	void SetY(float y) { position_.y = y; }
 	void SetZ(float z) { position_.z = z; }
-	void SetAngle(D3DXVECTOR3& angle) { angle_ = angle; }
+	void SetAngle(const D3DXVECTOR3& angle) { angle_ = angle; }
 	void SetAngleXYZ(float angx = 0.0f, float angy = 0.0f, float angz = 0.0f)
 	{
 		angle_.x = angx;
 		angle_.y = angy;
 		angle_.z = angz;
 	}
-	void SetScale(D3DXVECTOR3& scale) { scale_ = scale; }
+	void SetScale(const D3DXVECTOR3& scale) { scale_ = scale; }
 	void SetScaleXYZ(float sx = 1.0f, float sy = 1.0f, float sz = 1.0f)
 	{
 		scale_.x = sx;
 		scale_.y = sy;
 		scale_.z = sz;
 	}
-	void SetTexture(Texture* texture, int stage = 0); //テクスチャ設定
+	void SetTexture(const Texture* texture, int stage = 0); //テクスチャ設定
 	void SetTexture(gstd::ref_count_ptr<Texture> texture, int stage = 0); //テクスチャ設定
 
-	bool IsCoordinate2D() { return bCoordinate2D_; }
+	bool IsCoordinate2D() const { return bCoordinate2D_; }
 	void SetCoordinate2D(bool b) { bCoordinate2D_ = b; }
 
 	gstd::ref_count_ptr<Shader> GetShader() { return shader_; }
@@ -389,7 +379,7 @@ protected:
 	virtual void _RestoreVertexBuffer();
 	virtual void _CreateVertexDeclaration() {}
 
-	int _GetPrimitiveCount();
+	int _GetPrimitiveCount() const;
 	void _SetTextureStageCount(int count)
 	{
 		texture_.resize(count);
@@ -414,7 +404,7 @@ public:
 
 	//頂点設定
 	VERTEX_TLX* GetVertex(int index);
-	void SetVertex(int index, VERTEX_TLX& vertex);
+	void SetVertex(int index, const VERTEX_TLX& vertex);
 	void SetVertexPosition(int index, float x, float y, float z = 1.0f, float w = 1.0f);
 	void SetVertexUV(int index, float u, float v);
 	void SetVertexColor(int index, D3DCOLOR color);
@@ -425,7 +415,7 @@ public:
 	void SetAlpha(int alpha);
 
 	//カメラ
-	bool IsPermitCamera() { return bPermitCamera_; }
+	bool IsPermitCamera() const { return bPermitCamera_; }
 	void SetPermitCamera(bool bPermit) { bPermitCamera_ = bPermit; }
 
 protected:
@@ -475,7 +465,7 @@ public:
 
 	//頂点設定
 	VERTEX_NX* GetVertex(int index);
-	void SetVertex(int index, VERTEX_NX& vertex);
+	void SetVertex(int index, const VERTEX_NX& vertex);
 	void SetVertexPosition(int index, float x, float y, float z);
 	void SetVertexUV(int index, float u, float v);
 	void SetVertexNormal(int index, float x, float y, float z);
@@ -524,7 +514,7 @@ class RenderObjectBNXBlock : public RenderBlock {
 public:
 	void SetMatrix(gstd::ref_count_ptr<Matrices> matrix) { matrix_ = matrix; }
 	void SetColor(D3DCOLOR color) { color_ = color; }
-	bool IsTranslucent() { return ColorAccess::GetColorA(color_) != 255; }
+	bool IsTranslucent() const { return ColorAccess::GetColorA(color_) != 255; }
 
 protected:
 	gstd::ref_count_ptr<Matrices> matrix_;
@@ -578,7 +568,7 @@ public:
 
 	//頂点設定
 	VERTEX_B4NX* GetVertex(int index);
-	void SetVertex(int index, VERTEX_B4NX& vertex);
+	void SetVertex(int index, const VERTEX_B4NX& vertex);
 	void SetVertexPosition(int index, float x, float y, float z);
 	void SetVertexUV(int index, float u, float v);
 	void SetVertexBlend(int index, int pos, BYTE indexBlend, float rate);
@@ -603,11 +593,11 @@ class Sprite2D : public RenderObjectTLX {
 public:
 	Sprite2D();
 	~Sprite2D();
-	void Copy(Sprite2D* src);
-	void SetSourceRect(RECT_D& rcSrc);
-	void SetDestinationRect(RECT_D& rcDest);
+	void Copy(const Sprite2D* src);
+	void SetSourceRect(const RECT_D& rcSrc);
+	void SetDestinationRect(const RECT_D& rcDest);
 	void SetDestinationCenter();
-	void SetVertex(RECT_D& rcSrc, RECT_D& rcDest, D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255));
+	void SetVertex(const RECT_D& rcSrc, const RECT_D& rcDest, D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255));
 
 	RECT_D GetDestinationRect();
 };
@@ -619,7 +609,7 @@ public:
 class SpriteList2D : public RenderObjectTLX {
 public:
 	SpriteList2D();
-	virtual int GetVertexCount();
+	virtual int GetVertexCount() const;
 	virtual void Render();
 	void ClearVertexCount()
 	{
@@ -627,10 +617,10 @@ public:
 		bCloseVertexList_ = false;
 	}
 	void AddVertex();
-	void SetSourceRect(RECT_D& rcSrc) { rcSrc_ = rcSrc; }
-	void SetDestinationRect(RECT_D& rcDest) { rcDest_ = rcDest; }
+	void SetSourceRect(const RECT_D& rcSrc) { rcSrc_ = rcSrc; }
+	void SetDestinationRect(const RECT_D& rcDest) { rcDest_ = rcDest; }
 	void SetDestinationCenter();
-	D3DCOLOR GetColor() { return color_; }
+	D3DCOLOR GetColor() const { return color_; }
 	void SetColor(D3DCOLOR color) { color_ = color; }
 	void CloseVertex();
 
@@ -651,11 +641,11 @@ class Sprite3D : public RenderObjectLX {
 public:
 	Sprite3D();
 	~Sprite3D();
-	void SetSourceRect(RECT_D& rcSrc);
-	void SetDestinationRect(RECT_D& rcDest);
-	void SetVertex(RECT_D& rcSrc, RECT_D& rcDest, D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255));
-	void SetSourceDestRect(RECT_D& rcSrc);
-	void SetVertex(RECT_D& rcSrc, D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255));
+	void SetSourceRect(const RECT_D& rcSrc);
+	void SetDestinationRect(const RECT_D& rcDest);
+	void SetVertex(const RECT_D& rcSrc, const RECT_D& rcDest, D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255));
+	void SetSourceDestRect(const RECT_D& rcSrc);
+	void SetVertex(const RECT_D& rcSrc, D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255));
 	void SetBillboardEnable(bool bEnable) { bBillboard_ = bEnable; }
 
 protected:
@@ -731,14 +721,14 @@ public:
 	DxMesh();
 	virtual ~DxMesh();
 	virtual void Release();
-	bool CreateFromFile(std::wstring path);
+	bool CreateFromFile(const std::wstring& _path);
 	virtual bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader) = 0;
-	virtual bool CreateFromFileInLoadThread(std::wstring path, int type);
-	virtual bool CreateFromFileInLoadThread(std::wstring path) = 0;
+	virtual bool CreateFromFileInLoadThread(const std::wstring& path, int type);
+	virtual bool CreateFromFileInLoadThread(const std::wstring& path) = 0;
 	virtual std::wstring GetPath() = 0;
 
 	virtual void Render() = 0;
-	virtual void Render(std::wstring nameAnime, int time) { Render(); }
+	virtual void Render(const std::wstring& nameAnime, int time) { Render(); }
 	void SetPosition(D3DXVECTOR3 pos) { position_ = pos; }
 	void SetPosition(float x, float y, float z)
 	{
@@ -768,11 +758,11 @@ public:
 	void SetColorRGB(D3DCOLOR color);
 	void SetAlpha(int alpha);
 
-	bool IsCoordinate2D() { return bCoordinate2D_; }
+	bool IsCoordinate2D() const { return bCoordinate2D_; }
 	void SetCoordinate2D(bool b) { bCoordinate2D_ = b; }
 
 	gstd::ref_count_ptr<RenderBlocks> CreateRenderBlocks() { return NULL; }
-	virtual D3DXMATRIX GetAnimationMatrix(std::wstring nameAnime, double time, std::wstring nameBone)
+	virtual D3DXMATRIX GetAnimationMatrix(const std::wstring& nameAnime, double time, const std::wstring& nameBone)
 	{
 		D3DXMATRIX mat;
 		D3DXMatrixIdentity(&mat);
@@ -790,7 +780,7 @@ protected:
 	gstd::ref_count_ptr<Shader> shader_;
 
 	gstd::ref_count_ptr<DxMeshData> data_;
-	gstd::ref_count_ptr<DxMeshData> _GetFromManager(std::wstring name);
+	gstd::ref_count_ptr<DxMeshData> _GetFromManager(const std::wstring& name);
 	void _AddManager(std::wstring name, gstd::ref_count_ptr<DxMeshData> data);
 };
 
@@ -811,11 +801,11 @@ public:
 	gstd::CriticalSection& GetLock() { return lock_; }
 
 	virtual void Clear();
-	virtual void Add(std::wstring name, gstd::ref_count_ptr<DxMesh> mesh); //参照を保持します
-	virtual void Release(std::wstring name); //保持している参照を解放します
-	virtual bool IsDataExists(std::wstring name);
+	virtual void Add(const std::wstring& name, gstd::ref_count_ptr<DxMesh> mesh); //参照を保持します
+	virtual void Release(const std::wstring& name); //保持している参照を解放します
+	virtual bool IsDataExists(const std::wstring& name);
 
-	gstd::ref_count_ptr<DxMesh> CreateFromFileInLoadThread(std::wstring path, int type);
+	gstd::ref_count_ptr<DxMesh> CreateFromFileInLoadThread(const std::wstring& path, int type);
 	virtual void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event);
 
 	void SetInfoPanel(gstd::ref_count_ptr<DxMeshInfoPanel> panel) { panelInfo_ = panel; }
@@ -826,9 +816,9 @@ protected:
 	std::map<std::wstring, gstd::ref_count_ptr<DxMeshData>> mapMeshData_;
 	gstd::ref_count_ptr<DxMeshInfoPanel> panelInfo_;
 
-	void _AddMeshData(std::wstring name, gstd::ref_count_ptr<DxMeshData> data);
-	gstd::ref_count_ptr<DxMeshData> _GetMeshData(std::wstring name);
-	void _ReleaseMeshData(std::wstring name);
+	void _AddMeshData(const std::wstring& name, gstd::ref_count_ptr<DxMeshData> data);
+	gstd::ref_count_ptr<DxMeshData> _GetMeshData(const std::wstring& name);
+	void _ReleaseMeshData(const std::wstring& name);
 
 private:
 	static DxMeshManager* thisBase_;

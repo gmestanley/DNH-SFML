@@ -60,7 +60,7 @@ void RenderManager::Render()
 	for (itrTrans = listBlockTranslucent_.begin(); itrTrans != listBlockTranslucent_.end(); itrTrans++) {
 		(*itrTrans)->CalculateZValue();
 	}
-	SortUtility::CombSort(listBlockTranslucent_.begin(), listBlockTranslucent_.end(), ComparatorRenderBlockTranslucent());
+	listBlockTranslucent_.sort([](auto l, auto r) { return l->GetZValue() > r->GetZValue(); });
 	for (itrTrans = listBlockTranslucent_.begin(); itrTrans != listBlockTranslucent_.end(); itrTrans++) {
 		(*itrTrans)->Render();
 	}
@@ -80,11 +80,8 @@ void RenderManager::AddBlock(gstd::ref_count_ptr<RenderBlock> block)
 }
 void RenderManager::AddBlock(gstd::ref_count_ptr<RenderBlocks> blocks)
 {
-	std::list<gstd::ref_count_ptr<RenderBlock>>& listBlock = blocks->GetList();
-	int size = listBlock.size();
-	std::list<gstd::ref_count_ptr<RenderBlock>>::iterator itr;
-	for (itr = listBlock.begin(); itr != listBlock.end(); itr++) {
-		AddBlock(*itr);
+	for (const auto& block : blocks->GetList()) {
+		AddBlock(block);
 	}
 }
 
@@ -201,7 +198,7 @@ void RenderObject::_RestoreVertexBuffer()
 {
 	InitializeVertexBuffer();
 }
-int RenderObject::_GetPrimitiveCount()
+int RenderObject::_GetPrimitiveCount() const
 {
 	int res = 0;
 	int count = GetVertexCount();
@@ -327,7 +324,7 @@ void RenderObject::_SetCoordinate2dDeviceMatrix()
 	device->SetTransform(D3DTS_VIEW, &viewMat);
 	device->SetTransform(D3DTS_PROJECTION, &persMat);
 }
-void RenderObject::SetTexture(Texture* texture, int stage)
+void RenderObject::SetTexture(const Texture* texture, int stage)
 {
 	if (texture == NULL)
 		texture_[stage] = NULL;
@@ -495,7 +492,7 @@ VERTEX_TLX* RenderObjectTLX::GetVertex(int index)
 		return NULL;
 	return (VERTEX_TLX*)vertex_.GetPointer(pos);
 }
-void RenderObjectTLX::SetVertex(int index, VERTEX_TLX& vertex)
+void RenderObjectTLX::SetVertex(int index, const VERTEX_TLX& vertex)
 {
 	int pos = index * strideVertexStreamZero_;
 	if (pos >= vertex_.GetSize())
@@ -542,7 +539,7 @@ void RenderObjectTLX::SetVertexAlpha(int index, int alpha)
 	if (vertex == NULL)
 		return;
 	D3DCOLOR& color = vertex->diffuse_color;
-	color = ColorAccess::SetColorA(color, alpha);
+	ColorAccess::SetColorA(color, alpha);
 }
 void RenderObjectTLX::SetVertexColorRGB(int index, int r, int g, int b)
 {
@@ -550,9 +547,9 @@ void RenderObjectTLX::SetVertexColorRGB(int index, int r, int g, int b)
 	if (vertex == NULL)
 		return;
 	D3DCOLOR& color = vertex->diffuse_color;
-	color = ColorAccess::SetColorR(color, r);
-	color = ColorAccess::SetColorG(color, g);
-	color = ColorAccess::SetColorB(color, b);
+	ColorAccess::SetColorR(color, r);
+	ColorAccess::SetColorG(color, g);
+	ColorAccess::SetColorB(color, b);
 }
 void RenderObjectTLX::SetColorRGB(D3DCOLOR color)
 {
@@ -680,7 +677,7 @@ void RenderObjectLX::SetVertexAlpha(int index, int alpha)
 	if (vertex == NULL)
 		return;
 	D3DCOLOR& color = vertex->diffuse_color;
-	color = ColorAccess::SetColorA(color, alpha);
+	ColorAccess::SetColorA(color, alpha);
 }
 void RenderObjectLX::SetVertexColorRGB(int index, int r, int g, int b)
 {
@@ -688,9 +685,9 @@ void RenderObjectLX::SetVertexColorRGB(int index, int r, int g, int b)
 	if (vertex == NULL)
 		return;
 	D3DCOLOR& color = vertex->diffuse_color;
-	color = ColorAccess::SetColorR(color, r);
-	color = ColorAccess::SetColorG(color, g);
-	color = ColorAccess::SetColorB(color, b);
+	ColorAccess::SetColorR(color, r);
+	ColorAccess::SetColorG(color, g);
+	ColorAccess::SetColorB(color, b);
 }
 void RenderObjectLX::SetColorRGB(D3DCOLOR color)
 {
@@ -781,7 +778,7 @@ VERTEX_NX* RenderObjectNX::GetVertex(int index)
 		return NULL;
 	return (VERTEX_NX*)vertex_.GetPointer(pos);
 }
-void RenderObjectNX::SetVertex(int index, VERTEX_NX& vertex)
+void RenderObjectNX::SetVertex(int index, const VERTEX_NX& vertex)
 {
 	int pos = index * strideVertexStreamZero_;
 	if (pos >= vertex_.GetSize())
@@ -1201,7 +1198,7 @@ VERTEX_B4NX* RenderObjectB4NX::GetVertex(int index)
 		return NULL;
 	return (VERTEX_B4NX*)vertex_.GetPointer(pos);
 }
-void RenderObjectB4NX::SetVertex(int index, VERTEX_B4NX& vertex)
+void RenderObjectB4NX::SetVertex(int index, const VERTEX_B4NX& vertex)
 {
 	int pos = index * strideVertexStreamZero_;
 	if (pos >= vertex_.GetSize())
@@ -1272,7 +1269,7 @@ Sprite2D::Sprite2D()
 Sprite2D::~Sprite2D()
 {
 }
-void Sprite2D::Copy(Sprite2D* src)
+void Sprite2D::Copy(const Sprite2D* src)
 {
 	typePrimitive_ = src->typePrimitive_;
 	strideVertexStreamZero_ = src->strideVertexStreamZero_;
@@ -1289,13 +1286,13 @@ void Sprite2D::Copy(Sprite2D* src)
 	scale_ = src->scale_;
 	matRelative_ = src->matRelative_;
 }
-void Sprite2D::SetSourceRect(RECT_D& rcSrc)
+void Sprite2D::SetSourceRect(const RECT_D& rcSrc)
 {
 	ref_count_ptr<Texture>& texture = texture_[0];
 	if (texture == NULL)
 		return;
-	int width = texture->GetWidth();
-	int height = texture->GetHeight();
+	const int width = texture->GetWidth();
+	const int height = texture->GetHeight();
 
 	//テクスチャUV
 	SetVertexUV(0, (float)rcSrc.left / (float)width, (float)rcSrc.top / (float)height);
@@ -1303,7 +1300,7 @@ void Sprite2D::SetSourceRect(RECT_D& rcSrc)
 	SetVertexUV(2, (float)rcSrc.left / (float)width, (float)rcSrc.bottom / (float)height);
 	SetVertexUV(3, (float)rcSrc.right / (float)width, (float)rcSrc.bottom / (float)height);
 }
-void Sprite2D::SetDestinationRect(RECT_D& rcDest)
+void Sprite2D::SetDestinationRect(const RECT_D& rcDest)
 {
 	//頂点位置
 	SetVertexPosition(0, rcDest.left, rcDest.top);
@@ -1316,11 +1313,11 @@ void Sprite2D::SetDestinationCenter()
 	ref_count_ptr<Texture>& texture = texture_[0];
 	if (texture == NULL || GetVertexCount() < 4)
 		return;
-	int width = texture->GetWidth();
-	int height = texture->GetHeight();
+	const int width = texture->GetWidth();
+	const int height = texture->GetHeight();
 
-	VERTEX_TLX* vertLT = GetVertex(0); //左上
-	VERTEX_TLX* vertRB = GetVertex(3); //右下
+	const VERTEX_TLX* vertLT = GetVertex(0); //左上
+	const VERTEX_TLX* vertRB = GetVertex(3); //右下
 
 	int vWidth = vertRB->texcoord.x * width - vertLT->texcoord.x * width;
 	int vHeight = vertRB->texcoord.y * height - vertLT->texcoord.y * height;
@@ -1328,7 +1325,7 @@ void Sprite2D::SetDestinationCenter()
 
 	SetDestinationRect(rcDest);
 }
-void Sprite2D::SetVertex(RECT_D& rcSrc, RECT_D& rcDest, D3DCOLOR color)
+void Sprite2D::SetVertex(const RECT_D& rcSrc, const RECT_D& rcDest, D3DCOLOR color)
 {
 	SetSourceRect(rcSrc);
 	SetDestinationRect(rcDest);
@@ -1446,7 +1443,7 @@ void SpriteList2D::Render()
 		EndShader();
 	}
 }
-int SpriteList2D::GetVertexCount()
+int SpriteList2D::GetVertexCount() const
 {
 	int res = countRenderVertex_;
 	res = min(countRenderVertex_, vertex_.GetSize() / strideVertexStreamZero_);
@@ -1623,7 +1620,7 @@ D3DXMATRIX Sprite3D::_CreateWorldTransformMaxtrix()
 	}
 	return mat;
 }
-void Sprite3D::SetSourceRect(RECT_D& rcSrc)
+void Sprite3D::SetSourceRect(const RECT_D& rcSrc)
 {
 	ref_count_ptr<Texture>& texture = texture_[0];
 	if (texture == NULL)
@@ -1637,7 +1634,7 @@ void Sprite3D::SetSourceRect(RECT_D& rcSrc)
 	SetVertexUV(2, (float)rcSrc.right / (float)width, (float)rcSrc.top / (float)height);
 	SetVertexUV(3, (float)rcSrc.right / (float)width, (float)rcSrc.bottom / (float)height);
 }
-void Sprite3D::SetDestinationRect(RECT_D& rcDest)
+void Sprite3D::SetDestinationRect(const RECT_D& rcDest)
 {
 	//頂点位置
 	SetVertexPosition(0, rcDest.left, rcDest.top, 0);
@@ -1645,7 +1642,7 @@ void Sprite3D::SetDestinationRect(RECT_D& rcDest)
 	SetVertexPosition(2, rcDest.right, rcDest.top, 0);
 	SetVertexPosition(3, rcDest.right, rcDest.bottom, 0);
 }
-void Sprite3D::SetVertex(RECT_D& rcSrc, RECT_D& rcDest, D3DCOLOR color)
+void Sprite3D::SetVertex(const RECT_D& rcSrc, const RECT_D& rcDest, D3DCOLOR color)
 {
 	SetSourceRect(rcSrc);
 	SetDestinationRect(rcDest);
@@ -1655,7 +1652,7 @@ void Sprite3D::SetVertex(RECT_D& rcSrc, RECT_D& rcDest, D3DCOLOR color)
 	SetAlpha(ColorAccess::GetColorA(color));
 }
 
-void Sprite3D::SetSourceDestRect(RECT_D& rcSrc)
+void Sprite3D::SetSourceDestRect(const RECT_D& rcSrc)
 {
 	int width = rcSrc.right - rcSrc.left;
 	int height = rcSrc.bottom - rcSrc.top;
@@ -1665,7 +1662,7 @@ void Sprite3D::SetSourceDestRect(RECT_D& rcSrc)
 	SetSourceRect(rcSrc);
 	SetDestinationRect(rcDest);
 }
-void Sprite3D::SetVertex(RECT_D& rcSrc, D3DCOLOR color)
+void Sprite3D::SetVertex(const RECT_D& rcSrc, D3DCOLOR color)
 {
 	SetSourceDestRect(rcSrc);
 
@@ -1695,14 +1692,12 @@ D3DXMATRIX TrajectoryObject3D::_CreateWorldTransformMaxtrix()
 }
 void TrajectoryObject3D::Work()
 {
-	std::list<Data>::iterator itr;
-	for (itr = listData_.begin(); itr != listData_.end();) {
-		Data& data = (*itr);
-		data.alpha -= diffAlpha_;
-		if (data.alpha < 0)
-			itr = listData_.erase(itr);
+	for (auto data = listData_.begin(); data != listData_.end();) {
+		data->alpha -= diffAlpha_;
+		if (data->alpha < 0)
+			data = listData_.erase(data);
 		else
-			itr++;
+			++data;
 	}
 }
 void TrajectoryObject3D::Render()
@@ -1813,7 +1808,7 @@ DxMesh::~DxMesh()
 {
 	Release();
 }
-gstd::ref_count_ptr<DxMeshData> DxMesh::_GetFromManager(std::wstring name)
+gstd::ref_count_ptr<DxMeshData> DxMesh::_GetFromManager(const std::wstring& name)
 {
 	return DxMeshManager::GetBase()->_GetMeshData(name);
 }
@@ -1838,23 +1833,22 @@ void DxMesh::Release()
 		}
 	}
 }
-bool DxMesh::CreateFromFile(std::wstring path)
+bool DxMesh::CreateFromFile(const std::wstring& _path)
 {
+	std::wstring path = PathProperty::GetUnique(_path);
+	ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
 	try {
-		path = PathProperty::GetUnique(path);
-		ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
 		if (reader == NULL)
 			throw gstd::wexception(L"ファイルが見つかりません");
-		return CreateFromFileReader(reader);
 	} catch (gstd::wexception& e) {
 		std::wstring str = StringUtility::Format(L"DxMesh：メッシュ読み込み失敗[%s]\n\t%s", path.c_str(), e.what());
 		Logger::WriteTop(str);
+		return false;
 	}
-	return false;
+	return CreateFromFileReader(reader);
 }
-bool DxMesh::CreateFromFileInLoadThread(std::wstring path, int type)
+bool DxMesh::CreateFromFileInLoadThread(const std::wstring& path, int type)
 {
-	bool res = false;
 	{
 		Lock lock(DxMeshManager::GetBase()->GetLock());
 		if (data_ != NULL)
@@ -1864,10 +1858,9 @@ bool DxMesh::CreateFromFileInLoadThread(std::wstring path, int type)
 		if (mesh != NULL) {
 			data_ = mesh->data_;
 		}
-		res = data_ != NULL;
-	}
 
-	return res;
+	}
+	return data_ != NULL;
 }
 void DxMesh::SetColorRGB(D3DCOLOR color)
 {
@@ -1912,7 +1905,7 @@ void DxMeshManager::Clear()
 	}
 }
 
-void DxMeshManager::_AddMeshData(std::wstring name, gstd::ref_count_ptr<DxMeshData> data)
+void DxMeshManager::_AddMeshData(const std::wstring& name, gstd::ref_count_ptr<DxMeshData> data)
 {
 	{
 		Lock lock(lock_);
@@ -1921,7 +1914,7 @@ void DxMeshManager::_AddMeshData(std::wstring name, gstd::ref_count_ptr<DxMeshDa
 		}
 	}
 }
-gstd::ref_count_ptr<DxMeshData> DxMeshManager::_GetMeshData(std::wstring name)
+gstd::ref_count_ptr<DxMeshData> DxMeshManager::_GetMeshData(const std::wstring& name)
 {
 	gstd::ref_count_ptr<DxMeshData> res = NULL;
 	{
@@ -1932,7 +1925,7 @@ gstd::ref_count_ptr<DxMeshData> DxMeshManager::_GetMeshData(std::wstring name)
 	}
 	return res;
 }
-void DxMeshManager::_ReleaseMeshData(std::wstring name)
+void DxMeshManager::_ReleaseMeshData(const std::wstring& name)
 {
 	{
 		Lock lock(lock_);
@@ -1942,7 +1935,7 @@ void DxMeshManager::_ReleaseMeshData(std::wstring name)
 		}
 	}
 }
-void DxMeshManager::Add(std::wstring name, gstd::ref_count_ptr<DxMesh> mesh)
+void DxMeshManager::Add(const std::wstring& name, gstd::ref_count_ptr<DxMesh> mesh)
 {
 	{
 		Lock lock(lock_);
@@ -1952,14 +1945,14 @@ void DxMeshManager::Add(std::wstring name, gstd::ref_count_ptr<DxMesh> mesh)
 		}
 	}
 }
-void DxMeshManager::Release(std::wstring name)
+void DxMeshManager::Release(const std::wstring& name)
 {
 	{
 		Lock lock(lock_);
 		mapMesh_.erase(name);
 	}
 }
-bool DxMeshManager::IsDataExists(std::wstring name)
+bool DxMeshManager::IsDataExists(const std::wstring& name)
 {
 	bool res = false;
 	{
@@ -1968,7 +1961,7 @@ bool DxMeshManager::IsDataExists(std::wstring name)
 	}
 	return res;
 }
-gstd::ref_count_ptr<DxMesh> DxMeshManager::CreateFromFileInLoadThread(std::wstring path, int type)
+gstd::ref_count_ptr<DxMesh> DxMeshManager::CreateFromFileInLoadThread(const std::wstring& path, int type)
 {
 	gstd::ref_count_ptr<DxMesh> res;
 	{
@@ -2082,12 +2075,11 @@ void DxMeshInfoPanel::Update(DxMeshManager* manager)
 		return;
 	std::set<std::wstring> setKey;
 	std::map<std::wstring, gstd::ref_count_ptr<DxMeshData>>& mapData = manager->mapMeshData_;
-	std::map<std::wstring, gstd::ref_count_ptr<DxMeshData>>::iterator itrMap;
 	{
 		Lock lock(manager->GetLock());
-		for (itrMap = mapData.begin(); itrMap != mapData.end(); itrMap++) {
-			std::wstring name = itrMap->first;
-			DxMeshData* data = (itrMap->second).GetPointer();
+		for (const auto& itrMap : mapData) {
+			std::wstring name = itrMap.first;
+			const DxMeshData* data = (itrMap.second).GetPointer();
 
 			int address = (int)data;
 			std::wstring key = StringUtility::Format(L"%08x", address);
@@ -2097,7 +2089,7 @@ void DxMeshInfoPanel::Update(DxMeshManager* manager)
 				wndListView_.SetText(index, ROW_ADDRESS, key);
 			}
 
-			int countRef = (itrMap->second).GetReferenceCount();
+			int countRef = (itrMap.second).GetReferenceCount();
 
 			wndListView_.SetText(index, ROW_NAME, PathProperty::GetFileName(name));
 			wndListView_.SetText(index, ROW_FULLNAME, name);

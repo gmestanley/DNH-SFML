@@ -371,7 +371,7 @@ bool MetasequoiaMesh::CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader>
 	}
 	return res;
 }
-bool MetasequoiaMesh::CreateFromFileInLoadThread(std::wstring path)
+bool MetasequoiaMesh::CreateFromFileInLoadThread(const std::wstring& path)
 {
 	return DxMesh::CreateFromFileInLoadThread(path, MESH_METASEQUOIA);
 }

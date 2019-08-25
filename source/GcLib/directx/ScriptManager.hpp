@@ -23,10 +23,10 @@ public:
 	virtual void Work(int targetType);
 	virtual void Render();
 
-	virtual void SetError(std::wstring error) { error_ = error; }
-	virtual bool IsError() { return error_ != L""; }
+	virtual void SetError(const std::wstring& error) { error_ = error; }
+	virtual bool IsError() const { return error_ != L""; }
 
-	int GetMainThreadID() { return mainThreadID_; }
+	int GetMainThreadID() const { return mainThreadID_; }
 	_int64 IssueScriptID()
 	{
 		{
@@ -41,23 +41,25 @@ public:
 	void CloseScript(_int64 id);
 	void CloseScriptOnType(int type);
 	bool IsCloseScript(_int64 id);
-	int IsHasCloseScliptWork() { return bHasCloseScriptWork_; }
+	int IsHasCloseScliptWork() const { return bHasCloseScriptWork_; }
 	int GetAllScriptThreadCount();
-	void TerminateScriptAll(std::wstring message);
+	void TerminateScriptAll(const std::wstring& message);
 
-	_int64 LoadScript(std::wstring path, gstd::ref_count_ptr<ManagedScript> script);
-	_int64 LoadScript(std::wstring path, int type);
-	_int64 LoadScriptInThread(std::wstring path, gstd::ref_count_ptr<ManagedScript> script);
-	_int64 LoadScriptInThread(std::wstring path, int type);
+	_int64 LoadScript(const std::wstring& path, gstd::ref_count_ptr<ManagedScript> script);
+	_int64 LoadScript(const std::wstring& path, int type);
+	_int64 LoadScriptInThread(const std::wstring& path, gstd::ref_count_ptr<ManagedScript> script);
+	_int64 LoadScriptInThread(const std::wstring& path, int type);
 	virtual void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event);
 
 	virtual gstd::ref_count_ptr<ManagedScript> Create(int type) = 0;
-	virtual void RequestEventAll(int type, std::vector<gstd::value>& listValue = std::vector<gstd::value>());
+	virtual void RequestEventAll(int type, const std::vector<gstd::value>& listValue = std::vector<gstd::value>());
 	gstd::value GetScriptResult(_int64 idScript);
 	void AddRelativeScriptManager(gstd::ref_count_weak_ptr<ScriptManager> manager) { listRelativeManager_.push_back(manager); }
 	static void AddRelativeScriptManagerMutual(gstd::ref_count_weak_ptr<ScriptManager> manager1, gstd::ref_count_weak_ptr<ScriptManager> manager2);
 
 protected:
+	_int64 _LoadScript(const std::wstring& path, gstd::ref_count_ptr<ManagedScript> script);
+
 	gstd::CriticalSection lock_;
 	static _int64 idScript_;
 	bool bHasCloseScriptWork_;
@@ -69,8 +71,6 @@ protected:
 	std::list<gstd::ref_count_weak_ptr<ScriptManager>> listRelativeManager_;
 
 	int mainThreadID_;
-
-	_int64 _LoadScript(std::wstring path, gstd::ref_count_ptr<ManagedScript> script);
 };
 
 /**********************************************************
@@ -95,14 +95,14 @@ public:
 	virtual void SetScriptParameter(gstd::ref_count_ptr<ManagedScriptParameter> param) { scriptParam_ = param; }
 	gstd::ref_count_ptr<ManagedScriptParameter> GetScriptParameter() { return scriptParam_; }
 
-	int GetScriptType() { return typeScript_; }
-	bool IsLoad() { return bLoad_; }
-	bool IsEndScript() { return bEndScript_; }
+	int GetScriptType() const { return typeScript_; }
+	bool IsLoad() const { return bLoad_; }
+	bool IsEndScript() const { return bEndScript_; }
 	void SetEndScript() { bEndScript_ = true; }
-	bool IsAutoDeleteObject() { return bAutoDeleteObject_; }
+	bool IsAutoDeleteObject() const { return bAutoDeleteObject_; }
 	void SetAutoDeleteObject(bool bEneble) { bAutoDeleteObject_ = bEneble; }
 
-	gstd::value RequestEvent(int type, std::vector<gstd::value>& listValue = std::vector<gstd::value>());
+	gstd::value RequestEvent(int type, const std::vector<gstd::value>& listValue = std::vector<gstd::value>());
 
 	//制御共通関数：共通データ
 	static gstd::value Func_SaveCommonDataAreaA1(gstd::script_machine* machine, int argc, gstd::value const* argv);

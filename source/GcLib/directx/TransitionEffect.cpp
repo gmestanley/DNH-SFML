@@ -34,10 +34,9 @@ void TransitionEffect_FadeOut::Render()
 	graphics->SetZWriteEnalbe(false);
 	sprite_->Render();
 }
-bool TransitionEffect_FadeOut::IsEnd()
+bool TransitionEffect_FadeOut::IsEnd() const
 {
-	bool res = (alpha_ <= 0);
-	return res;
+	return alpha_ <= 0;
 }
 void TransitionEffect_FadeOut::Initialize(int frame, gstd::ref_count_ptr<Texture> texture)
 {

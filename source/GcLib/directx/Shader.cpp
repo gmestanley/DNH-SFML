@@ -79,7 +79,7 @@ void ShaderManager::Clear()
 		mapShaderData_.clear();
 	}
 }
-void ShaderManager::_ReleaseShaderData(std::wstring name)
+void ShaderManager::_ReleaseShaderData(const std::wstring& name)
 {
 	{
 		Lock lock(lock_);
@@ -90,14 +90,14 @@ void ShaderManager::_ReleaseShaderData(std::wstring name)
 		}
 	}
 }
-bool ShaderManager::_CreateFromFile(std::wstring path)
+bool ShaderManager::_CreateFromFile(const std::wstring& _Path)
 {
 	lastError_ = L"";
-	if (IsDataExists(path)) {
+	if (IsDataExists(_Path)) {
 		return true;
 	}
 
-	path = PathProperty::GetUnique(path);
+	std::wstring path = PathProperty::GetUnique(_Path);
 	ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
 	if (reader == NULL || !reader->Open()) {
 		std::wstring log = StringUtility::Format(L"Shader読み込み失敗(Shader Load Failed)：\r\n%s", path.c_str());
@@ -150,7 +150,7 @@ bool ShaderManager::_CreateFromFile(std::wstring path)
 	}
 	return res;
 }
-bool ShaderManager::_CreateFromText(std::string& source)
+bool ShaderManager::_CreateFromText(const std::string& source)
 {
 	lastError_ = L"";
 	std::wstring id = _GetTextSourceID(source);
@@ -194,7 +194,7 @@ bool ShaderManager::_CreateFromText(std::string& source)
 	}
 	return res;
 }
-std::wstring ShaderManager::_GetTextSourceID(std::string& source)
+std::wstring ShaderManager::_GetTextSourceID(const std::string& source)
 {
 	std::wstring res = StringUtility::ConvertMultiToWide(source);
 	res = StringUtility::Slice(res, 64);
@@ -272,7 +272,7 @@ void ShaderManager::RestoreDxResource()
 	}
 }
 
-bool ShaderManager::IsDataExists(std::wstring name)
+bool ShaderManager::IsDataExists(const std::wstring& name)
 {
 	bool res = false;
 	{
@@ -281,7 +281,7 @@ bool ShaderManager::IsDataExists(std::wstring name)
 	}
 	return res;
 }
-gstd::ref_count_ptr<ShaderData> ShaderManager::GetShaderData(std::wstring name)
+gstd::ref_count_ptr<ShaderData> ShaderManager::GetShaderData(const std::wstring& name)
 {
 	gstd::ref_count_ptr<ShaderData> res;
 	{
@@ -293,9 +293,9 @@ gstd::ref_count_ptr<ShaderData> ShaderManager::GetShaderData(std::wstring name)
 	}
 	return res;
 }
-gstd::ref_count_ptr<Shader> ShaderManager::CreateFromFile(std::wstring path)
+gstd::ref_count_ptr<Shader> ShaderManager::CreateFromFile(const std::wstring& _Path)
 {
-	path = PathProperty::GetUnique(path);
+	std::wstring path = PathProperty::GetUnique(_Path);
 	gstd::ref_count_ptr<Shader> res;
 	{
 		Lock lock(lock_);
@@ -312,7 +312,7 @@ gstd::ref_count_ptr<Shader> ShaderManager::CreateFromFile(std::wstring path)
 	}
 	return res;
 }
-gstd::ref_count_ptr<Shader> ShaderManager::CreateFromText(std::string source)
+gstd::ref_count_ptr<Shader> ShaderManager::CreateFromText(const std::string& source)
 {
 	gstd::ref_count_ptr<Shader> res;
 	{
@@ -331,7 +331,7 @@ gstd::ref_count_ptr<Shader> ShaderManager::CreateFromText(std::string source)
 	}
 	return res;
 }
-gstd::ref_count_ptr<Shader> ShaderManager::CreateFromFileInLoadThread(std::wstring path)
+gstd::ref_count_ptr<Shader> ShaderManager::CreateFromFileInLoadThread(const std::wstring& path)
 {
 	return false;
 }
@@ -339,21 +339,21 @@ void ShaderManager::CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::Lo
 {
 }
 
-void ShaderManager::AddShader(std::wstring name, gstd::ref_count_ptr<Shader> shader)
+void ShaderManager::AddShader(const std::wstring& name, gstd::ref_count_ptr<Shader> shader)
 {
 	{
 		Lock lock(lock_);
 		mapShader_[name] = shader;
 	}
 }
-void ShaderManager::DeleteShader(std::wstring name)
+void ShaderManager::DeleteShader(const std::wstring& name)
 {
 	{
 		Lock lock(lock_);
 		mapShader_.erase(name);
 	}
 }
-gstd::ref_count_ptr<Shader> ShaderManager::GetShader(std::wstring name)
+gstd::ref_count_ptr<Shader> ShaderManager::GetShader(const std::wstring& name)
 {
 	gstd::ref_count_ptr<Shader> res;
 	{
@@ -370,7 +370,7 @@ gstd::ref_count_ptr<Shader> ShaderManager::GetDefaultSkinnedMeshShader()
 	gstd::ref_count_ptr<Shader> res = GetShader(NAME_DEFAULT_SKINNED_MESH);
 	return res;
 }
-void ShaderManager::CheckExecutingShaderZero()
+void ShaderManager::CheckExecutingShaderZero() const
 {
 	if (listExecuteShader_.size() > 0)
 		throw gstd::wexception(L"CheckExecutingShaderZero");
@@ -412,21 +412,18 @@ void ShaderParameter::SetMatrixArray(std::vector<D3DXMATRIX>& listMatrix)
 {
 	type_ = TYPE_MATRIX_ARRAY;
 	value_->Seek(0);
-	for (int iMatrix = 0; iMatrix < listMatrix.size(); iMatrix++) {
-		int size = sizeof(D3DMATRIX);
-		D3DXMATRIX& matrix = listMatrix[iMatrix];
-		value_->Write(&matrix.m, size);
+	for (auto& matrix : listMatrix) {
+		value_->Write(&matrix.m, sizeof(D3DMATRIX));
 	}
 }
 std::vector<D3DXMATRIX> ShaderParameter::GetMatrixArray()
 {
-	std::vector<D3DXMATRIX> res;
 	int count = value_->GetSize() / sizeof(D3DMATRIX);
-	res.resize(count);
+	std::vector<D3DXMATRIX> res(count);
 
 	value_->Seek(0);
-	for (int iMatrix = 0; iMatrix < res.size(); iMatrix++) {
-		value_->Read(&res[iMatrix].m, sizeof(D3DMATRIX));
+	for (auto& matrix : res) {
+		value_->Read(&matrix.m, sizeof(D3DMATRIX));
 	}
 
 	return res;
@@ -472,7 +469,7 @@ std::vector<float> ShaderParameter::GetFloatArray()
 	value_->Read(&res[0], value_->GetSize());
 	return res;
 }
-void ShaderParameter::SetTexture(gstd::ref_count_ptr<Texture> texture)
+void ShaderParameter::SetTexture(const gstd::ref_count_ptr<Texture> texture)
 {
 	type_ = TYPE_TEXTURE;
 	texture_ = texture;
@@ -492,7 +489,7 @@ Shader::Shader()
 	// pVertexShader_ = NULL;
 	// pPixelShader_ = NULL;
 }
-Shader::Shader(Shader* shader)
+Shader::Shader(const Shader* shader)
 {
 	{
 		Lock lock(ShaderManager::GetBase()->GetLock());
@@ -558,9 +555,9 @@ void Shader::RestoreDxResource()
 		return;
 	effect->OnResetDevice();
 }
-bool Shader::CreateFromFile(std::wstring path)
+bool Shader::CreateFromFile(const std::wstring& _Path)
 {
-	path = PathProperty::GetUnique(path);
+	std::wstring path = PathProperty::GetUnique(_Path);
 
 	bool res = false;
 	{
@@ -577,7 +574,7 @@ bool Shader::CreateFromFile(std::wstring path)
 
 	return res;
 }
-bool Shader::CreateFromText(std::string& source)
+bool Shader::CreateFromText(const std::string& source)
 {
 	bool res = false;
 	{
@@ -706,7 +703,7 @@ bool Shader::_SetupParameter()
 	}
 	return true;
 }
-gstd::ref_count_ptr<ShaderParameter> Shader::_GetParameter(std::string name, bool bCreate)
+gstd::ref_count_ptr<ShaderParameter> Shader::_GetParameter(const std::string& name, bool bCreate)
 {
 	bool bFind = mapParam_.find(name) != mapParam_.end();
 	if (!bFind && !bCreate)
@@ -722,7 +719,7 @@ gstd::ref_count_ptr<ShaderParameter> Shader::_GetParameter(std::string name, boo
 
 	return res;
 }
-bool Shader::SetTechnique(std::string name)
+bool Shader::SetTechnique(const std::string& name)
 {
 	// ID3DXEffect* effect = GetEffect();
 	// if (effect == NULL)
@@ -732,7 +729,7 @@ bool Shader::SetTechnique(std::string name)
 	technique_ = name;
 	return true;
 }
-bool Shader::SetMatrix(std::string name, D3DXMATRIX& matrix)
+bool Shader::SetMatrix(const std::string& name, D3DXMATRIX& matrix)
 {
 	// ID3DXEffect* effect = GetEffect();
 	// if (effect == NULL)
@@ -744,7 +741,7 @@ bool Shader::SetMatrix(std::string name, D3DXMATRIX& matrix)
 
 	return true;
 }
-bool Shader::SetMatrixArray(std::string name, std::vector<D3DXMATRIX>& matrix)
+bool Shader::SetMatrixArray(const std::string& name, std::vector<D3DXMATRIX>& matrix)
 {
 	// ID3DXEffect* effect = GetEffect();
 	// if (effect == NULL)
@@ -756,7 +753,7 @@ bool Shader::SetMatrixArray(std::string name, std::vector<D3DXMATRIX>& matrix)
 
 	return true;
 }
-bool Shader::SetVector(std::string name, D3DXVECTOR4& vector)
+bool Shader::SetVector(const std::string& name, D3DXVECTOR4& vector)
 {
 	// ID3DXEffect* effect = GetEffect();
 	// if (effect == NULL)
@@ -767,7 +764,7 @@ bool Shader::SetVector(std::string name, D3DXVECTOR4& vector)
 	param->SetVector(vector);
 	return true;
 }
-bool Shader::SetFloat(std::string name, float value)
+bool Shader::SetFloat(const std::string& name, float value)
 {
 	//ID3DXEffect* effect = GetEffect();
 	//if (effect == NULL)
@@ -778,13 +775,13 @@ bool Shader::SetFloat(std::string name, float value)
 	param->SetFloat(value);
 	return true;
 }
-bool Shader::SetFloatArray(std::string name, std::vector<float>& values)
+bool Shader::SetFloatArray(const std::string& name, std::vector<float>& values)
 {
 	gstd::ref_count_ptr<ShaderParameter> param = _GetParameter(name, true);
 	param->SetFloatArray(values);
 	return true;
 }
-bool Shader::SetTexture(std::string name, gstd::ref_count_ptr<Texture> texture)
+bool Shader::SetTexture(const std::string& name, gstd::ref_count_ptr<Texture> texture)
 {
 	gstd::ref_count_ptr<ShaderParameter> param = _GetParameter(name, true);
 	param->SetTexture(texture);

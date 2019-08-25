@@ -34,7 +34,7 @@ TextureData::~TextureData()
 Texture::Texture()
 {
 }
-Texture::Texture(Texture* texture)
+Texture::Texture(const Texture* texture)
 {
 	{
 		Lock lock(TextureManager::GetBase()->GetLock());
@@ -198,23 +198,23 @@ IDirect3DSurface9* Texture::GetD3DZBuffer()
 	}
 	return res;
 }
-int Texture::GetWidth()
+int Texture::GetWidth() const
 {
 	int res = 0;
 	{
 		Lock lock(TextureManager::GetBase()->GetLock());
-		TextureData* data = _GetTextureData();
+		const TextureData* data = _GetTextureData();
 		if (data != NULL)
 			res = data->infoImage_.Width;
 	}
 	return res;
 }
-int Texture::GetHeight()
+int Texture::GetHeight() const
 {
 	int res = 0;
 	{
 		Lock lock(TextureManager::GetBase()->GetLock());
-		TextureData* data = _GetTextureData();
+		const TextureData* data = _GetTextureData();
 		if (data != NULL)
 			res = data->infoImage_.Height;
 	}
