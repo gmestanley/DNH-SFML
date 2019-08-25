@@ -11,9 +11,9 @@ namespace gstd {
 class wexception {
 public:
 	wexception() {}
-	wexception(std::wstring msg) { message_ = msg; }
-	std::wstring GetMessage() { return message_; }
-	const wchar_t* what() { return message_.c_str(); }
+	wexception(const std::wstring& msg) { message_ = msg; }
+	std::wstring GetMessage() const { return message_; }
+	const wchar_t* what() const { return message_.c_str(); }
 
 protected:
 	std::wstring message_;
@@ -61,41 +61,41 @@ public:
 //StringUtility
 class StringUtility {
 public:
-	static std::string ConvertWideToMulti(std::wstring const& wstr, int codeMulti = 932);
-	static std::wstring ConvertMultiToWide(std::string const& str, int codeMulti = 932);
-	static std::string ConvertUtf8ToMulti(std::vector<char>& text);
-	static std::wstring ConvertUtf8ToWide(std::vector<char>& text);
+	static std::string ConvertWideToMulti(const std::wstring& wstr, int codeMulti = 932);
+	static std::wstring ConvertMultiToWide(const std::string& str, int codeMulti = 932);
+	static std::string ConvertUtf8ToMulti(const std::vector<char>& text);
+	static std::wstring ConvertUtf8ToWide(const std::vector<char>& text);
 
 	//----------------------------------------------------------------
-	static std::vector<std::string> Split(std::string str, std::string delim);
-	static void Split(std::string str, std::string delim, std::vector<std::string>& res);
-	static std::string Format(char* str, ...);
+	static std::vector<std::string> Split(const std::string& str, const std::string& delim);
+	static void Split(const std::string& str, const std::string& delim, std::vector<std::string>& res);
+	static std::string Format(const char* str, ...);
 
-	static int CountCharacter(std::string& str, char c);
-	static int CountCharacter(std::vector<char>& str, char c);
-	static int ToInteger(std::string const& s);
-	static double ToDouble(std::string const& s);
-	static std::string Replace(std::string& source, std::string pattern, std::string placement);
-	static std::string ReplaceAll(std::string& source, std::string pattern, std::string placement, int replaceCount = INT_MAX, int start = 0, int end = 0);
-	static std::string Slice(std::string const& s, int length);
+	static int CountCharacter(const std::string& str, char c);
+	static int CountCharacter(const std::vector<char>& str, char c);
+	static int ToInteger(const std::string& s);
+	static double ToDouble(const std::string& s);
+	static std::string Replace(const std::string& source, const std::string pattern, const std::string placement);
+	static std::string ReplaceAll(const std::string& source, const std::string pattern, const std::string placement, int replaceCount = INT_MAX, int start = 0, int end = 0);
+	static std::string Slice(const std::string& s, int length);
 	static std::string Trim(const std::string& str);
 
 	//----------------------------------------------------------------
 	//std::wstring.sizeは文字数を返す。バイト数ではない。
 	static std::vector<std::wstring> Split(std::wstring str, std::wstring delim);
 	static void Split(std::wstring str, std::wstring delim, std::vector<std::wstring>& res);
-	static std::wstring Format(wchar_t* str, ...);
-	static std::wstring FormatToWide(char* str, ...);
+	static std::wstring Format(const wchar_t* str, ...);
+	static std::wstring FormatToWide(const char* str, ...);
 
-	static int CountCharacter(std::wstring& str, wchar_t c);
-	static int ToInteger(std::wstring const& s);
-	static double ToDouble(std::wstring const& s);
-	static std::wstring Replace(std::wstring& source, std::wstring pattern, std::wstring placement);
-	static std::wstring ReplaceAll(std::wstring& source, std::wstring pattern, std::wstring placement, int replaceCount = INT_MAX, int start = 0, int end = 0);
-	static std::wstring Slice(std::wstring const& s, int length);
+	static int CountCharacter(const std::wstring& str, wchar_t c);
+	static int ToInteger(const std::wstring& s);
+	static double ToDouble(const std::wstring& s);
+	static std::wstring Replace(const std::wstring& source, const std::wstring pattern, const std::wstring placement);
+	static std::wstring ReplaceAll(const std::wstring& source, const std::wstring pattern, const std::wstring placement, int replaceCount = INT_MAX, int start = 0, int end = 0);
+	static std::wstring Slice(const std::wstring& s, int length);
 	static std::wstring Trim(const std::wstring& str);
-	static int CountAsciiSizeCharacter(std::wstring& str);
-	static int GetByteSize(std::wstring& str);
+	static int CountAsciiSizeCharacter(const std::wstring& str);
+	static int GetByteSize(const std::wstring& str);
 };
 
 //================================================================
@@ -113,9 +113,9 @@ public:
 	static std::wstring GetLastErrorMessage(DWORD error);
 	static std::wstring GetLastErrorMessage();
 	static std::wstring GetErrorMessage(int type);
-	static std::wstring GetFileNotFoundErrorMessage(std::wstring path);
-	static std::wstring GetParseErrorMessage(int line, std::wstring what);
-	static std::wstring GetParseErrorMessage(std::wstring path, int line, std::wstring what);
+	static std::wstring GetFileNotFoundErrorMessage(const std::wstring& path);
+	static std::wstring GetParseErrorMessage(int line, const std::wstring& what);
+	static std::wstring GetParseErrorMessage(const std::wstring& path, int line, const std::wstring& what);
 };
 
 //================================================================
@@ -123,8 +123,8 @@ public:
 const double PAI = 3.14159265358979323846;
 class Math {
 public:
-	inline static double DegreeToRadian(double angle) { return angle * PAI / 180; }
-	inline static double RadianToDegree(double angle) { return angle * 180 / PAI; }
+	static double DegreeToRadian(double angle) { return angle * PAI / 180; }
+	static double RadianToDegree(double angle) { return angle * 180 / PAI; }
 
 	static void InitializeFPU();
 
@@ -145,46 +145,10 @@ public:
 };
 
 //================================================================
-//Sort
-class SortUtility {
-public:
-	template <class BidirectionalIterator, class Predicate>
-	static void CombSort(BidirectionalIterator first,
-		BidirectionalIterator last,
-		Predicate pr)
-	{
-		int gap = static_cast<int>(std::distance(first, last));
-		if (gap < 1)
-			return;
-
-		BidirectionalIterator first2 = last;
-		bool swapped = false;
-		do {
-			int newgap = (gap * 10 + 3) / 13;
-			if (newgap < 1)
-				newgap = 1;
-			if (newgap == 9 || newgap == 10)
-				newgap = 11;
-			std::advance(first2, newgap - gap);
-			gap = newgap;
-			swapped = false;
-			for (BidirectionalIterator target1 = first, target2 = first2;
-				 target2 != last;
-				 ++target1, ++target2) {
-				if (pr(*target2, *target1)) {
-					std::iter_swap(target1, target2);
-					swapped = true;
-				}
-			}
-		} while ((gap > 1) || swapped);
-	}
-};
-
-//================================================================
 //PathProperty
 class PathProperty {
 public:
-	static std::wstring GetFileDirectory(std::wstring path)
+	static std::wstring GetFileDirectory(const std::wstring& path)
 	{
 		wchar_t pDrive[_MAX_PATH];
 		wchar_t pDir[_MAX_PATH];
@@ -192,7 +156,7 @@ public:
 		return std::wstring(pDrive) + std::wstring(pDir);
 	}
 
-	static std::wstring GetDirectoryName(std::wstring path)
+	static std::wstring GetDirectoryName(const std::wstring& path)
 	{
 		//ディレクトリ名を返す
 		std::wstring dir = GetFileDirectory(path);
@@ -201,7 +165,7 @@ public:
 		return strs[strs.size() - 1];
 	}
 
-	static std::wstring GetFileName(std::wstring path)
+	static std::wstring GetFileName(const std::wstring& path)
 	{
 		wchar_t pFileName[_MAX_PATH];
 		wchar_t pExt[_MAX_PATH];
@@ -209,21 +173,21 @@ public:
 		return std::wstring(pFileName) + std::wstring(pExt);
 	}
 
-	static std::wstring GetDriveName(std::wstring path)
+	static std::wstring GetDriveName(const std::wstring& path)
 	{
 		wchar_t pDrive[_MAX_PATH];
 		_wsplitpath(path.c_str(), pDrive, NULL, NULL, NULL);
 		return std::wstring(pDrive);
 	}
 
-	static std::wstring GetFileNameWithoutExtension(std::wstring path)
+	static std::wstring GetFileNameWithoutExtension(const std::wstring& path)
 	{
 		wchar_t pFileName[_MAX_PATH];
 		_wsplitpath(path.c_str(), NULL, NULL, pFileName, NULL);
 		return std::wstring(pFileName);
 	}
 
-	static std::wstring GetFileExtension(std::wstring path)
+	static std::wstring GetFileExtension(const std::wstring& path)
 	{
 		wchar_t pExt[_MAX_PATH];
 		_wsplitpath(path.c_str(), NULL, NULL, NULL, pExt);
@@ -245,7 +209,7 @@ public:
 		GetModuleFileName(NULL, modulePath, sizeof(modulePath) - 1); //実行ファイルパス取得
 		return GetFileDirectory(std::wstring(modulePath));
 	}
-	static std::wstring GetDirectoryWithoutModuleDirectory(std::wstring path)
+	static std::wstring GetDirectoryWithoutModuleDirectory(const std::wstring& path)
 	{	//パスから実行ファイルディレクトリを除いたディレクトリを返す
 		std::wstring res = GetFileDirectory(path);
 		std::wstring dirModule = GetModuleDirectory();
@@ -254,20 +218,19 @@ public:
 		}
 		return res;
 	}
-	static std::wstring GetPathWithoutModuleDirectory(std::wstring path)
+	static std::wstring GetPathWithoutModuleDirectory(const std::wstring& path)
 	{	//パスから実行ファイルディレクトリを取り除く
 		std::wstring dirModule = GetModuleDirectory();
 		dirModule = ReplaceYenToSlash(dirModule);
-		path = Canonicalize(path);
-		path = ReplaceYenToSlash(path);
+		std::wstring res = Canonicalize(path);
+		res = ReplaceYenToSlash(res);
 
-		std::wstring res = path;
 		if (res.find(dirModule) != std::wstring::npos) {
 			res = res.substr(dirModule.size());
 		}
 		return res;
 	}
-	static std::wstring GetRelativeDirectory(std::wstring from, std::wstring to)
+	static std::wstring GetRelativeDirectory(const std::wstring& from, const std::wstring& to)
 	{
 		wchar_t path[_MAX_PATH];
 		BOOL b = PathRelativePathTo(path, from.c_str(), FILE_ATTRIBUTE_DIRECTORY, to.c_str(), FILE_ATTRIBUTE_DIRECTORY);
@@ -278,19 +241,19 @@ public:
 		}
 		return res;
 	}
-	static std::wstring ReplaceYenToSlash(std::wstring path)
+	static std::wstring ReplaceYenToSlash(const std::wstring& path)
 	{
 		std::wstring res = StringUtility::ReplaceAll(path, L"\\", L"/");
 		return res;
 	}
-	static std::wstring Canonicalize(std::wstring srcPath)
+	static std::wstring Canonicalize(const std::wstring& srcPath)
 	{
 		wchar_t destPath[_MAX_PATH];
 		PathCanonicalize(destPath, srcPath.c_str());
 		std::wstring res(destPath);
 		return res;
 	}
-	static std::wstring GetUnique(std::wstring srcPath)
+	static std::wstring GetUnique(const std::wstring& srcPath)
 	{
 		std::wstring res = StringUtility::ReplaceAll(srcPath, L"/", L"\\");
 		res = Canonicalize(res);
@@ -304,7 +267,7 @@ public:
 class BitAccess {
 public:
 	template <typename T>
-	static bool GetBit(T value, int bit)
+	static bool GetBit(const T& value, int bit)
 	{
 		T mask = (T)1 << bit;
 		return (value & mask) != 0;
@@ -319,7 +282,7 @@ public:
 		return value;
 	}
 	template <typename T>
-	static unsigned char GetByte(T value, int bit)
+	static unsigned char GetByte(const T& value, int bit)
 	{
 		return (unsigned char)(value >> bit);
 	}
@@ -448,7 +411,7 @@ public:
 		posStart_ = 0;
 		posEnd_ = 0;
 	}
-	Token(Type type, std::wstring& element, int start, int end)
+	Token(Type type, const std::wstring& element, int start, int end)
 	{
 		type_ = type;
 		element_ = element;
@@ -457,21 +420,22 @@ public:
 	}
 	virtual ~Token(){};
 
-	Type GetType() { return type_; }
-	std::wstring& GetElement() { return element_; }
-	std::string GetElementA();
+	Type GetType() const { return type_; }
+	std::wstring GetElement() const { return element_; }
+	std::string GetElementA() const;
 
-	int GetStartPointer() { return posStart_; }
-	int GetEndPointer() { return posEnd_; }
+	std::wstring GetString() const;
+	std::string GetStringA() const;
 
-	int GetInteger();
-	double GetReal();
-	bool GetBoolean();
-	std::wstring GetString();
-	std::wstring& GetIdentifier();
+	std::wstring GetIdentifier() const;
+	std::string GetIdentifierA() const;
 
-	std::string GetStringA();
-	std::string GetIdentifierA();
+	int GetStartPointer() const { return posStart_; }
+	int GetEndPointer() const { return posEnd_; }
+
+	int GetInteger() const;
+	double GetReal() const;
+	bool GetBoolean() const;
 
 protected:
 	Type type_;
@@ -487,28 +451,28 @@ public:
 	};
 
 public:
-	Scanner(char* str, int size);
-	Scanner(std::string str);
-	Scanner(std::wstring wstr);
-	Scanner(std::vector<char>& buf);
+	Scanner(const char* str, int size);
+	Scanner(const std::string& str);
+	Scanner(const std::wstring& wstr);
+	Scanner(const std::vector<char>& buf);
 	virtual ~Scanner();
 
 	void SetPermitSignNumber(bool bEnable) { bPermitSignNumber_ = bEnable; }
-	int GetEncoding() { return typeEncoding_; }
+	int GetEncoding() const { return typeEncoding_; }
 
 	Token& GetToken(); //現在のトークンを取得
 	Token& Next();
-	bool HasNext();
-	void CheckType(Token& tok, Token::Type type);
-	void CheckIdentifer(Token& tok, std::wstring id);
-	int GetCurrentLine();
+	bool HasNext() const;
+	void CheckType(const Token& tok, Token::Type type) const;
+	void CheckIdentifer(const Token& tok, const std::wstring& id) const;
+	int GetCurrentLine() const;
 
-	int GetCurrentPointer();
+	int GetCurrentPointer() const;
 	void SetCurrentPointer(int pos);
 	void SetPointerBegin();
-	std::wstring GetString(int start, int end);
+	std::wstring GetString(int start, int end) const;
 
-	bool CompareMemory(int start, int end, const char* data);
+	bool CompareMemory(int start, int end, const char* data) const;
 
 protected:
 	int typeEncoding_;
@@ -519,12 +483,12 @@ protected:
 	bool bPermitSignNumber_;
 	std::list<Token> listDebugToken_;
 
-	wchar_t _CurrentChar();
+	wchar_t _CurrentChar() const;
 	wchar_t _NextChar(); //ポインタを進めて次の文字を調べる
 
 	virtual void _SkipComment(); //コメントをとばす
 	virtual void _SkipSpace(); //空白をとばす
-	virtual void _RaiseError(std::wstring str); //例外を投げます
+	virtual void _RaiseError(const std::wstring& str) const; //例外を投げます
 };
 
 //================================================================
@@ -551,8 +515,8 @@ public:
 
 	public:
 		virtual ~Result(){};
-		int GetType() { return type_; }
-		double GetReal()
+		int GetType() const { return type_; }
+		double GetReal() const
 		{
 			double res = valueReal_;
 			if (IsBoolean())
@@ -566,7 +530,7 @@ public:
 			type_ = TYPE_REAL;
 			valueReal_ = value;
 		}
-		bool GetBoolean()
+		bool GetBoolean() const
 		{
 			bool res = valueBoolean_;
 			if (IsReal())
@@ -580,7 +544,7 @@ public:
 			type_ = TYPE_BOOLEAN;
 			valueBoolean_ = value;
 		}
-		std::wstring GetString()
+		std::wstring GetString() const
 		{
 			std::wstring res = valueString_;
 			if (IsReal())
@@ -589,29 +553,29 @@ public:
 				res = (valueBoolean_ ? L"true" : L"false");
 			return res;
 		}
-		void SetString(std::wstring value)
+		void SetString(const std::wstring& value)
 		{
 			type_ = TYPE_STRING;
 			valueString_ = value;
 		}
-		bool IsReal() { return type_ == TYPE_REAL; }
-		bool IsBoolean() { return type_ == TYPE_BOOLEAN; }
-		bool IsString() { return type_ == TYPE_STRING; }
+		bool IsReal() const { return type_ == TYPE_REAL; }
+		bool IsBoolean() const { return type_ == TYPE_BOOLEAN; }
+		bool IsString() const { return type_ == TYPE_STRING; }
 	};
 
 public:
 	TextParser();
-	TextParser(std::string source);
+	TextParser(const std::string& source);
 	virtual ~TextParser();
 
-	void SetSource(std::string source);
+	void SetSource(const std::string& source);
 	Result GetResult();
 	double GetReal();
 
 protected:
 	gstd::ref_count_ptr<Scanner> scan_;
 
-	void _RaiseError(std::wstring message);
+	void _RaiseError(const std::wstring& message);
 	Result _ParseComparison(int pos);
 	Result _ParseSum(int pos);
 	Result _ParseProduct(int pos);
@@ -629,7 +593,7 @@ public:
 	void CreateFontIndirect(LOGFONT& fontInfo);
 	void Clear();
 	HFONT GetHandle() { return hFont_; }
-	LOGFONT GetInfo() { return info_; }
+	LOGFONT GetInfo() const { return info_; }
 
 public:
 	const static wchar_t* GOTHIC;
@@ -660,7 +624,7 @@ public:
 		return res;
 	}
 
-	int GetUsedPoolObjectCount()
+	int GetUsedPoolObjectCount() const
 	{
 		int res = 0;
 		for (int i = 0; i < listUsedPool_.size(); i++) {
@@ -669,7 +633,7 @@ public:
 		return res;
 	}
 
-	int GetCachePoolObjectCount()
+	int GetCachePoolObjectCount() const
 	{
 		int res = 0;
 		for (int i = 0; i < listCachePool_.size(); i++) {

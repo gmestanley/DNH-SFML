@@ -19,10 +19,10 @@ public:
 	virtual ~Logger();
 	virtual bool Initialize() { return true; }
 	void AddLogger(ref_count_ptr<Logger> logger) { listLogger_.push_back(logger); }
-	virtual void Write(std::wstring str);
+	virtual void Write(const std::wstring& str);
 
 	static void SetTop(Logger* logger) { top_ = logger; }
-	static void WriteTop(std::wstring str)
+	static void WriteTop(const std::wstring& str)
 	{
 		if (top_ != NULL)
 			top_->Write(str);
@@ -32,8 +32,8 @@ protected:
 	static Logger* top_;
 	gstd::CriticalSection lock_;
 	std::list<ref_count_ptr<Logger>> listLogger_; //子のロガ
-	virtual void _WriteChild(SYSTEMTIME& time, std::wstring str);
-	virtual void _Write(SYSTEMTIME& time, std::wstring str) = 0;
+	virtual void _WriteChild(const SYSTEMTIME& time, const std::wstring& str);
+	virtual void _Write(const SYSTEMTIME& time, const std::wstring& str) = 0;
 };
 
 /**********************************************************
@@ -45,8 +45,8 @@ public:
 	~FileLogger();
 	void Clear();
 	bool Initialize(bool bEnable = true);
-	bool Initialize(std::wstring path, bool bEnable = true);
-	bool SetPath(std::wstring path);
+	bool Initialize(std::wstring& path, bool bEnable = true);
+	bool SetPath(const std::wstring& path);
 	void SetMaxFileSize(int size) { sizeMax_ = size; }
 
 protected:
@@ -54,7 +54,7 @@ protected:
 	std::wstring path_;
 	std::wstring path2_;
 	int sizeMax_;
-	virtual void _Write(SYSTEMTIME& systemTime, std::wstring str);
+	virtual void _Write(const SYSTEMTIME& systemTime, const std::wstring& str);
 	void _CreateFile(File& file);
 };
 
@@ -90,10 +90,10 @@ public:
 	bool Initialize(bool bEnable = true);
 	void SaveState();
 	void LoadState();
-	void SetInfo(int row, std::wstring textInfo, std::wstring textData);
-	bool AddPanel(ref_count_ptr<Panel> panel, std::wstring name);
+	void SetInfo(int row, const std::wstring& textInfo, const std::wstring& textData);
+	bool AddPanel(ref_count_ptr<Panel> panel, const std::wstring& name);
 
-	void ShowLogWindow();
+	void ShowLogWindow() const;
 	static void InsertOpenCommandInSystemMenu(HWND hWnd);
 
 protected:
@@ -113,7 +113,7 @@ protected:
 
 	void _Run();
 	void _CreateWindow();
-	virtual void _Write(SYSTEMTIME& systemTime, std::wstring str);
+	virtual void _Write(const SYSTEMTIME& systemTime, const std::wstring& str);
 	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 class WindowLogger::WindowThread : public gstd::Thread, public gstd::InnerClass<WindowLogger> {
@@ -138,7 +138,7 @@ public:
 	LogPanel();
 	~LogPanel();
 	virtual void LocateParts();
-	void AddText(std::wstring text);
+	void AddText(const std::wstring& text);
 
 protected:
 	virtual bool _AddedLogger(HWND hTab);
@@ -152,7 +152,7 @@ public:
 	InfoPanel();
 	~InfoPanel();
 	virtual void LocateParts();
-	void SetInfo(int row, std::wstring textInfo, std::wstring textData);
+	void SetInfo(int row, const std::wstring& textInfo, const std::wstring& textData);
 
 protected:
 	virtual bool _AddedLogger(HWND hTab);

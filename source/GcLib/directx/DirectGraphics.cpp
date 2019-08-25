@@ -575,15 +575,15 @@ void DirectGraphics::ResetViewPort()
 {
 	SetViewPort(0, 0, GetScreenWidth(), GetScreenHeight());
 }
-int DirectGraphics::GetScreenWidth()
+int DirectGraphics::GetScreenWidth() const
 {
 	return config_.GetScreenWidth();
 }
-int DirectGraphics::GetScreenHeight()
+int DirectGraphics::GetScreenHeight() const
 {
 	return config_.GetScreenHeight();
 }
-double DirectGraphics::GetScreenWidthRatio()
+double DirectGraphics::GetScreenWidthRatio() const
 {
 	RECT rect;
 	::GetWindowRect(hAttachedWindow_, &rect);
@@ -597,7 +597,7 @@ double DirectGraphics::GetScreenWidthRatio()
 
 	return widthWindow / widthView;
 }
-double DirectGraphics::GetScreenHeightRatio()
+double DirectGraphics::GetScreenHeightRatio() const
 {
 	RECT rect;
 	::GetWindowRect(hAttachedWindow_, &rect);
@@ -611,7 +611,7 @@ double DirectGraphics::GetScreenHeightRatio()
 
 	return heightWindow / heightView;
 }
-POINT DirectGraphics::GetMousePosition()
+POINT DirectGraphics::GetMousePosition() const
 {
 	POINT res = { 0, 0 };
 	GetCursorPos(&res);
@@ -628,7 +628,7 @@ POINT DirectGraphics::GetMousePosition()
 
 	return res;
 }
-void DirectGraphics::SaveBackSurfaceToFile(std::wstring path)
+void DirectGraphics::SaveBackSurfaceToFile(const std::wstring& path)
 {
 	RECT rect = { 0, 0, config_.GetScreenWidth(), config_.GetScreenHeight() };
 	LPDIRECT3DSURFACE9 pBackSurface = NULL;
@@ -637,7 +637,7 @@ void DirectGraphics::SaveBackSurfaceToFile(std::wstring path)
 		pBackSurface, NULL, &rect);
 	pBackSurface->Release();
 }
-bool DirectGraphics::IsPixelShaderSupported(int major, int minor)
+bool DirectGraphics::IsPixelShaderSupported(int major, int minor) const
 {
 	D3DCAPS9 caps;
 	pDevice_->GetDeviceCaps(&caps);
@@ -977,7 +977,7 @@ void DxCamera::Reset()
 	clipFar_ = 2000;
 }
 
-D3DXVECTOR3 DxCamera::GetCameraPosition()
+D3DXVECTOR3 DxCamera::GetCameraPosition() const
 {
 	D3DXVECTOR3 res;
 	res.x = pos_.x + (float)(radius_ * cos(D3DXToRadian(angleElevation_)) * cos(D3DXToRadian(angleAzimuth_)));

@@ -47,7 +47,7 @@ void Thread::Stop()
 	if (status_ == RUN)
 		status_ = REQUEST_STOP;
 }
-bool Thread::IsStop()
+bool Thread::IsStop() const
 {
 	return hThread_ == NULL || status_ == STOP;
 }

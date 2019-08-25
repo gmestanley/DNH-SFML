@@ -15,7 +15,7 @@ ScriptEngineData::ScriptEngineData()
 ScriptEngineData::~ScriptEngineData()
 {
 }
-void ScriptEngineData::SetSource(std::vector<char>& source)
+void ScriptEngineData::SetSource(const std::vector<char>& source)
 {
 	encoding_ = Encoding::SHIFT_JIS;
 	if (Encoding::IsUtf16Le(&source[0], source.size())) {
@@ -37,17 +37,17 @@ void ScriptEngineCache::Clear()
 {
 	cache_.clear();
 }
-void ScriptEngineCache::AddCache(std::wstring name, ref_count_ptr<ScriptEngineData> data)
+void ScriptEngineCache::AddCache(const std::wstring& name, ref_count_ptr<ScriptEngineData> data)
 {
 	cache_[name] = data;
 }
-ref_count_ptr<ScriptEngineData> ScriptEngineCache::GetCache(std::wstring name)
+ref_count_ptr<ScriptEngineData> ScriptEngineCache::GetCache(const std::wstring& name)
 {
 	if (!IsExists(name))
 		return NULL;
 	return cache_[name];
 }
-bool ScriptEngineCache::IsExists(std::wstring name)
+bool ScriptEngineCache::IsExists(const std::wstring& name) const
 {
 	return cache_.find(name) != cache_.end();
 }
@@ -160,7 +160,7 @@ void ScriptClientBase::_AddFunction(const function* f, int count)
 	memcpy(&func_[funcPos], f, sizeof(function) * count);
 }
 
-void ScriptClientBase::_RaiseError(int line, std::wstring message)
+void ScriptClientBase::_RaiseError(int line, const std::wstring& message)
 {
 	bError_ = true;
 	std::wstring errorPos = _GetErrorLineSource(line);
@@ -194,10 +194,9 @@ std::wstring ScriptClientBase::_GetErrorLineSource(int line)
 	if (line == 0)
 		return L"";
 	int encoding = engine_->GetEncoding();
-	std::vector<char>& source = engine_->GetSource();
-	char* pbuf = (char*)&source[0];
-	char* sbuf = pbuf;
-	char* ebuf = sbuf + source.size();
+	const std::vector<char>& source = engine_->GetSource();
+	const char* pbuf = (const char*)&source[0];
+	const char* ebuf = pbuf + source.size();
 
 	int tLine = 1;
 	int rLine = line;
@@ -222,19 +221,19 @@ std::wstring ScriptClientBase::_GetErrorLineSource(int line)
 		}
 	}
 
-	const int countMax = 256;
 	int count = 0;
-	sbuf = pbuf;
+	const int countMax = 256;
+	const char* sbuf = pbuf;
 	while (pbuf < ebuf && count < countMax) {
 		pbuf++;
 		count++;
 	}
 
-	int size = max(count - 1, 0);
+	const int size = max(count - 1, 0);
 	std::wstring res;
 	if (encoding == Encoding::UTF16LE) {
-		wchar_t* wbufS = (wchar_t*)sbuf;
-		wchar_t* wbufE = wbufS + size;
+		const wchar_t* wbufS = (const wchar_t*)sbuf;
+		const wchar_t* wbufE = wbufS + size;
 		res = std::wstring(wbufS, wbufE);
 	} else {
 		std::string sStr = std::string(sbuf, sbuf + size);
@@ -497,15 +496,15 @@ bool ScriptClientBase::_CreateEngine()
 		delete machine_;
 	machine_ = NULL;
 
-	std::vector<char>& source = engine_->GetSource();
+	const std::vector<char>& source = engine_->GetSource();
 
 	ref_count_ptr<script_engine> engine = new script_engine(&typeManagerDefault_, source, func_.size(), &func_[0]);
 	engine_->SetEngine(engine);
 	return true;
 }
-bool ScriptClientBase::SetSourceFromFile(std::wstring path)
+bool ScriptClientBase::SetSourceFromFile(const std::wstring& p_path)
 {
-	path = PathProperty::GetUnique(path);
+	std::wstring path = PathProperty::GetUnique(p_path);
 	if (cache_ != NULL && cache_->IsExists(path)) {
 		engine_ = cache_->GetCache(path);
 		return true;
@@ -526,14 +525,14 @@ bool ScriptClientBase::SetSourceFromFile(std::wstring path)
 	this->SetSource(source);
 	return true;
 }
-void ScriptClientBase::SetSource(std::string source)
+void ScriptClientBase::SetSource(const std::string& source)
 {
 	std::vector<char> vect;
 	vect.resize(source.size());
 	memcpy(&vect[0], &source[0], source.size());
 	this->SetSource(vect);
 }
-void ScriptClientBase::SetSource(std::vector<char>& source)
+void ScriptClientBase::SetSource(const std::vector<char>& source)
 {
 	engine_->SetSource(source);
 	gstd::ref_count_ptr<ScriptFileLineMap> mapLine = engine_->GetScriptFileLineMap();
@@ -577,7 +576,7 @@ bool ScriptClientBase::Run()
 	return true;
 }
 
-bool ScriptClientBase::Run(std::string target)
+bool ScriptClientBase::Run(const std::string& target)
 {
 	if (bError_)
 		return false;
@@ -596,13 +595,13 @@ bool ScriptClientBase::Run(std::string target)
 	}
 	return true;
 }
-bool ScriptClientBase::IsEventExists(std::string name)
+bool ScriptClientBase::IsEventExists(const std::string& name) const
 {
 	if (bError_)
 		return false;
 	return machine_->has_event(name);
 }
-int ScriptClientBase::GetThreadCount()
+int ScriptClientBase::GetThreadCount() const
 {
 	if (machine_ == NULL)
 		return 0;
@@ -628,20 +627,17 @@ value ScriptClientBase::CreateBooleanValue(bool b)
 	value res(typeManager->get_boolean_type(), b);
 	return res;
 }
-value ScriptClientBase::CreateStringValue(std::string s)
+value ScriptClientBase::CreateStringValue(const std::string& s)
 {
-	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
-	std::wstring wstr = to_wide(s);
-	value res(typeManager->get_string_type(), wstr);
-	return res;
+	return CreateStringValue(to_wide(s));
 }
-value ScriptClientBase::CreateStringValue(std::wstring s)
+value ScriptClientBase::CreateStringValue(const std::wstring& s)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), s);
 	return res;
 }
-value ScriptClientBase::CreateRealArrayValue(std::vector<long double>& list)
+value ScriptClientBase::CreateRealArrayValue(const std::vector<long double>& list)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), std::wstring());
@@ -652,7 +648,7 @@ value ScriptClientBase::CreateRealArrayValue(std::vector<long double>& list)
 
 	return res;
 }
-value ScriptClientBase::CreateStringArrayValue(std::vector<std::string>& list)
+value ScriptClientBase::CreateStringArrayValue(const std::vector<std::string>& list)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), std::wstring());
@@ -663,7 +659,7 @@ value ScriptClientBase::CreateStringArrayValue(std::vector<std::string>& list)
 
 	return res;
 }
-value ScriptClientBase::CreateStringArrayValue(std::vector<std::wstring>& list)
+value ScriptClientBase::CreateStringArrayValue(const std::vector<std::wstring>& list)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), std::wstring());
@@ -674,7 +670,7 @@ value ScriptClientBase::CreateStringArrayValue(std::vector<std::wstring>& list)
 
 	return res;
 }
-value ScriptClientBase::CreateValueArrayValue(std::vector<value>& list)
+value ScriptClientBase::CreateValueArrayValue(const std::vector<value>& list)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), std::wstring());
@@ -684,7 +680,7 @@ value ScriptClientBase::CreateValueArrayValue(std::vector<value>& list)
 	}
 	return res;
 }
-bool ScriptClientBase::IsRealValue(value& v)
+bool ScriptClientBase::IsRealValue(const value& v)
 {
 	if (bError_)
 		return false;
@@ -694,7 +690,7 @@ bool ScriptClientBase::IsRealValue(value& v)
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	return v.get_type() == typeManager->get_real_type();
 }
-bool ScriptClientBase::IsBooleanValue(value& v)
+bool ScriptClientBase::IsBooleanValue(const value& v)
 {
 	if (bError_)
 		return false;
@@ -704,7 +700,7 @@ bool ScriptClientBase::IsBooleanValue(value& v)
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	return v.get_type() == typeManager->get_boolean_type();
 }
-bool ScriptClientBase::IsStringValue(value& v)
+bool ScriptClientBase::IsStringValue(const value& v)
 {
 	if (bError_)
 		return false;
@@ -714,7 +710,7 @@ bool ScriptClientBase::IsStringValue(value& v)
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	return v.get_type() == typeManager->get_string_type();
 }
-bool ScriptClientBase::IsRealArrayValue(value& v)
+bool ScriptClientBase::IsRealArrayValue(const value& v)
 {
 	if (bError_)
 		return false;
@@ -735,15 +731,15 @@ void ScriptClientBase::CheckRunInMainThread()
 		machine_->raise_error(error);
 	}
 }
-std::wstring ScriptClientBase::_ExtendPath(std::wstring path)
+std::wstring ScriptClientBase::_ExtendPath(const std::wstring& path)
 {
 	int line = machine_->get_current_line();
 	std::wstring pathScript = GetEngine()->GetScriptFileLineMap()->GetPath(line);
 
-	path = StringUtility::ReplaceAll(path, L"\\", L"/");
-	path = StringUtility::ReplaceAll(path, L"./", pathScript);
+	std::wstring newPath = StringUtility::ReplaceAll(path, L"\\", L"/");
+	newPath = StringUtility::ReplaceAll(newPath, L"./", pathScript);
 
-	return path;
+	return newPath;
 }
 
 //共通関数：スクリプト引数結果
@@ -1296,10 +1292,10 @@ void ScriptFileLineMap::AddEntry(std::wstring path, int lineAdd, int lineCount)
 		entry.lineEnd_ += lineCount - 1;
 	}
 }
-ScriptFileLineMap::Entry ScriptFileLineMap::GetEntry(int line)
+ScriptFileLineMap::Entry ScriptFileLineMap::GetEntry(int line) const
 {
 	Entry res;
-	std::list<Entry>::iterator itrInsert;
+	std::list<Entry>::const_iterator itrInsert;
 	for (itrInsert = listEntry_.begin(); itrInsert != listEntry_.end(); itrInsert++) {
 		res = *itrInsert;
 		if (line >= res.lineStart_ && line <= res.lineEnd_)
@@ -1307,10 +1303,9 @@ ScriptFileLineMap::Entry ScriptFileLineMap::GetEntry(int line)
 	}
 	return res;
 }
-std::wstring ScriptFileLineMap::GetPath(int line)
+std::wstring ScriptFileLineMap::GetPath(int line) const
 {
-	Entry entry = GetEntry(line);
-	return entry.path_;
+	return GetEntry(line).path_;
 }
 
 /**********************************************************
@@ -1328,30 +1323,30 @@ void ScriptCommonDataManager::Clear()
 {
 	mapData_.clear();
 }
-bool ScriptCommonDataManager::IsExists(std::string name)
+bool ScriptCommonDataManager::IsExists(const std::string& name)
 {
 	return mapData_.find(name) != mapData_.end();
 }
-void ScriptCommonDataManager::CreateArea(std::string name)
+void ScriptCommonDataManager::CreateArea(const std::string& name)
 {
 	if (IsExists(name))
 		return;
 	mapData_[name] = new ScriptCommonData();
 }
-void ScriptCommonDataManager::CopyArea(std::string nameDest, std::string nameSrc)
+void ScriptCommonDataManager::CopyArea(const std::string& nameDest, const std::string& nameSrc)
 {
 	gstd::ref_count_ptr<ScriptCommonData> dataSrc = mapData_[nameSrc];
 	gstd::ref_count_ptr<ScriptCommonData> dataDest = new ScriptCommonData();
 	dataDest->Copy(dataSrc);
 	mapData_[nameDest] = dataDest;
 }
-gstd::ref_count_ptr<ScriptCommonData> ScriptCommonDataManager::GetData(std::string name)
+gstd::ref_count_ptr<ScriptCommonData> ScriptCommonDataManager::GetData(const std::string& name)
 {
 	if (!IsExists(name))
 		return NULL;
 	return mapData_[name];
 }
-void ScriptCommonDataManager::SetData(std::string name, gstd::ref_count_ptr<ScriptCommonData> commonData)
+void ScriptCommonDataManager::SetData(const std::string& name, gstd::ref_count_ptr<ScriptCommonData> commonData)
 {
 	mapData_[name] = commonData;
 }
@@ -1378,21 +1373,21 @@ void ScriptCommonData::Clear()
 {
 	mapValue_.clear();
 }
-bool ScriptCommonData::IsExists(std::string name)
+bool ScriptCommonData::IsExists(const std::string& name)
 {
 	return mapValue_.find(name) != mapValue_.end();
 }
-gstd::value ScriptCommonData::GetValue(std::string name)
+gstd::value ScriptCommonData::GetValue(const std::string& name)
 {
 	if (!IsExists(name))
 		return value();
 	return mapValue_[name];
 }
-void ScriptCommonData::SetValue(std::string name, gstd::value v)
+void ScriptCommonData::SetValue(const std::string& name, const gstd::value& val)
 {
-	mapValue_[name] = v;
+	mapValue_[name] = val;
 }
-void ScriptCommonData::DeleteValue(std::string name)
+void ScriptCommonData::DeleteValue(const std::string& name)
 {
 	mapValue_.erase(name);
 }

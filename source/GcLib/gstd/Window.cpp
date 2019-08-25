@@ -338,13 +338,13 @@ void WEditBox::Create(HWND hWndParent, WEditBox::Style& style)
 	this->Attach(hWnd_);
 	::SendMessage(hWnd_, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), MAKELPARAM(FALSE, 0));
 }
-void WEditBox::SetText(std::wstring text)
+void WEditBox::SetText(const std::wstring& text)
 {
 	if (text == GetText())
 		return;
 	::SetWindowText(hWnd_, text.c_str());
 }
-std::wstring WEditBox::GetText()
+std::wstring WEditBox::GetText() const
 {
 	if (GetTextLength() == 0)
 		return L"";
@@ -355,7 +355,7 @@ std::wstring WEditBox::GetText()
 	::GetWindowText(hWnd_, &res[0], count);
 	return res;
 }
-int WEditBox::GetTextLength()
+int WEditBox::GetTextLength() const
 {
 	return ::GetWindowTextLength(hWnd_);
 }
@@ -502,7 +502,7 @@ void WListView::Clear()
 {
 	ListView_DeleteAllItems(hWnd_);
 }
-void WListView::AddColumn(int cx, int sub, DWORD fmt, std::wstring text)
+void WListView::AddColumn(int cx, int sub, DWORD fmt, const std::wstring& text)
 {
 	LV_COLUMN lvcol;
 	lvcol.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -512,14 +512,14 @@ void WListView::AddColumn(int cx, int sub, DWORD fmt, std::wstring text)
 	lvcol.iSubItem = sub;
 	ListView_InsertColumn(hWnd_, sub, &lvcol);
 }
-void WListView::SetColumnText(int cx, std::wstring text)
+void WListView::SetColumnText(int cx, const std::wstring& text)
 {
 	LV_COLUMN lvcol;
 	ListView_GetColumn(hWnd_, cx, &lvcol);
 	lvcol.pszText = (wchar_t*)text.c_str();
 	ListView_SetColumn(hWnd_, cx, &lvcol);
 }
-void WListView::AddRow(std::wstring text)
+void WListView::AddRow(const std::wstring& text)
 {
 	LVITEM item;
 	item.mask = LVIF_TEXT | LVIF_PARAM;
@@ -529,7 +529,7 @@ void WListView::AddRow(std::wstring text)
 	item.lParam = ListView_GetItemCount(hWnd_);
 	ListView_InsertItem(hWnd_, &item);
 }
-void WListView::SetText(int row, int column, std::wstring text)
+void WListView::SetText(int row, int column, const std::wstring& text)
 {
 	std::wstring pre = GetText(row, column);
 	if (pre == text)
@@ -569,7 +569,7 @@ std::wstring WListView::GetText(int row, int column)
 	res = buf;
 	return res;
 }
-bool WListView::IsExistsInColumn(std::wstring value, int column)
+bool WListView::IsExistsInColumn(const std::wstring& value, int column)
 {
 	int count = ListView_GetItemCount(hWnd_);
 	for (int iRow = 0; iRow <= count; iRow++) {
@@ -579,7 +579,7 @@ bool WListView::IsExistsInColumn(std::wstring value, int column)
 	}
 	return false;
 }
-int WListView::GetIndexInColumn(std::wstring value, int column)
+int WListView::GetIndexInColumn(const std::wstring& value, int column)
 {
 	int res = -1;
 	if (column == 0) {
@@ -626,7 +626,7 @@ WTreeView::~WTreeView()
 {
 	this->Clear();
 }
-void WTreeView::Create(HWND hWndParent, Style& style)
+void WTreeView::Create(HWND hWndParent, const Style& style)
 {
 	//TVS_HASLINES | TVS_HASBUTTONS | TVS_LINESATROOT
 	HINSTANCE hInst = (HINSTANCE)::GetWindowLong(hWndParent, GWL_HINSTANCE);

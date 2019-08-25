@@ -40,13 +40,13 @@ public:
 	virtual bool Initialize(HWND hWnd);
 
 	virtual void Update(); //キーをセットする
-	int GetKeyState(int key);
-	int GetMouseState(int button);
-	int GetPadState(int padNo, int button);
+	int GetKeyState(int key) const;
+	int GetMouseState(int button) const;
+	int GetPadState(int padNo, int button) const;
 
-	int GetMouseMoveX() { return stateMouse_.lX; } //マウスの移動量を取得X
-	int GetMouseMoveY() { return stateMouse_.lY; } //マウスの移動量を取得Y
-	int GetMouseMoveZ() { return stateMouse_.lZ; } //マウスの移動量を取得Z
+	int GetMouseMoveX() const { return stateMouse_.lX; } //マウスの移動量を取得X
+	int GetMouseMoveY() const { return stateMouse_.lY; } //マウスの移動量を取得Y
+	int GetMouseMoveZ() const { return stateMouse_.lZ; } //マウスの移動量を取得Z
 	POINT GetMousePosition();
 
 	void ResetInputState();
@@ -54,7 +54,7 @@ public:
 	void ResetKeyState();
 	void ResetPadState();
 
-	int GetPadDeviceCount() { return bufPad_.size(); }
+	int GetPadDeviceCount() const { return bufPad_.size(); }
 	DIDEVICEINSTANCE GetPadDeviceInformation(int padIndex);
 
 protected:
@@ -99,14 +99,14 @@ class VirtualKey {
 public:
 	VirtualKey(int keyboard, int padIndex, int padButton);
 	virtual ~VirtualKey();
-	int GetKeyState() { return state_; }
+	int GetKeyState() const { return state_; }
 	void SetKeyState(int state) { state_ = state; }
 
-	int GetKeyCode() { return keyboard_; }
+	int GetKeyCode() const { return keyboard_; }
 	void SetKeyCode(int code) { keyboard_ = code; }
-	int GetPadIndex() { return padIndex_; }
+	int GetPadIndex() const { return padIndex_; }
 	void SetPadIndex(int index) { padIndex_ = index; }
-	int GetPadButton() { return padButton_; }
+	int GetPadButton() const { return padButton_; }
 	void SetPadButton(int button) { padButton_ = button; }
 
 private:
@@ -150,7 +150,7 @@ public:
 	virtual ~KeyReplayManager();
 	void SetManageState(int state) { state_ = state; }
 	void AddTarget(int key);
-	bool IsTargetKeyCode(int key);
+	bool IsTargetKeyCode(int key) const;
 
 	void Update();
 	void ReadRecord(gstd::RecordBuffer& record);

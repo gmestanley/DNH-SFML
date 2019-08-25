@@ -22,7 +22,7 @@ public:
 
 	bool Attach(HWND hWnd); //セット
 	bool Detach(); //解除
-	int GetWindowId() { return idWindow_; }
+	int GetWindowId() const { return idWindow_; }
 
 	virtual void SetBounds(int x, int y, int width, int height) { ::MoveWindow(hWnd_, x, y, width, height, TRUE); }
 	RECT GetClientRect()
@@ -95,7 +95,7 @@ public:
 		styleEx_ = 0;
 	}
 	virtual ~Style() {}
-	DWORD GetStyle() { return style_; }
+	DWORD GetStyle() const { return style_; }
 	DWORD SetStyle(DWORD style)
 	{
 		style_ |= style;
@@ -107,7 +107,7 @@ public:
 		return style_;
 	}
 
-	DWORD GetStyleEx() { return styleEx_; }
+	DWORD GetStyleEx() const { return styleEx_; }
 	DWORD SetStyleEx(DWORD style)
 	{
 		styleEx_ |= style;
@@ -204,9 +204,9 @@ public:
 
 public:
 	void Create(HWND hWndParent, WEditBox::Style& style);
-	void SetText(std::wstring text);
-	std::wstring GetText();
-	int GetTextLength();
+	void SetText(const std::wstring& text);
+	std::wstring GetText() const;
+	int GetTextLength() const;
 	int GetMaxTextLength() { return ::SendMessage(hWnd_, EM_GETLIMITTEXT, 0, 0); }
 	void SetMaxTextLength(int length) { ::SendMessage(hWnd_, EM_SETLIMITTEXT, (WPARAM)length, 0); }
 };
@@ -269,16 +269,16 @@ public:
 public:
 	void Create(HWND hWndParent, Style& style);
 	void Clear();
-	void AddColumn(int cx, int sub, DWORD fmt, std::wstring text);
-	void AddColumn(int cx, int sub, std::wstring text) { AddColumn(cx, sub, LVCFMT_LEFT, text); }
-	void SetColumnText(int cx, std::wstring text);
-	void AddRow(std::wstring text);
-	void SetText(int row, int column, std::wstring text);
+	void AddColumn(int cx, int sub, DWORD fmt, const std::wstring& text);
+	void AddColumn(int cx, int sub, const std::wstring& text) { AddColumn(cx, sub, LVCFMT_LEFT, text); }
+	void SetColumnText(int cx, const std::wstring& text);
+	void AddRow(const std::wstring& text);
+	void SetText(int row, int column, const std::wstring& text);
 	void DeleteRow(int row);
 	int GetRowCount();
 	std::wstring GetText(int row, int column);
-	bool IsExistsInColumn(std::wstring value, int column);
-	int GetIndexInColumn(std::wstring value, int column);
+	bool IsExistsInColumn(const std::wstring& value, int column);
+	int GetIndexInColumn(const std::wstring& value, int column);
 	void SetSelectedRow(int index);
 	int GetSelectedRow();
 	void ClearSelection();
@@ -286,7 +286,7 @@ public:
 class WListView::Style : public WindowBase::Style {
 public:
 	Style() { styleListViewEx_ = 0; }
-	DWORD GetListViewStyleEx() { return styleListViewEx_; }
+	DWORD GetListViewStyleEx() const { return styleListViewEx_; }
 	DWORD SetListViewStyleEx(DWORD style)
 	{
 		styleListViewEx_ |= style;
@@ -316,7 +316,7 @@ public:
 public:
 	WTreeView();
 	~WTreeView();
-	void Create(HWND hWndParent, Style& style);
+	void Create(HWND hWndParent, const Style& style);
 	void Clear()
 	{
 		itemRoot_ = NULL;
@@ -377,7 +377,7 @@ public:
 		ShowPage();
 	}
 	ref_count_ptr<WPanel> GetPanel(int page) { return vectPanel_[page]; }
-	int GetPageCount() { return vectPanel_.size(); }
+	int GetPageCount() const { return vectPanel_.size(); }
 	virtual void LocateParts();
 
 protected:
@@ -413,9 +413,9 @@ public:
 	~WSplitter();
 	void Create(HWND hWndParent, SplitType type);
 	void SetRatioX(float ratio) { ratioX_ = ratio; }
-	float GetRatioX() { return ratioX_; }
+	float GetRatioX() const { return ratioX_; }
 	void SetRatioY(float ratio) { ratioY_ = ratio; }
-	float GetRatioY() { return ratioY_; }
+	float GetRatioY() const { return ratioY_; }
 
 protected:
 	SplitType type_;

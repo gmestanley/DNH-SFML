@@ -66,10 +66,10 @@ public:
 	IDirectSound8* GetDirectSound() { return pDirectSound_; }
 	gstd::CriticalSection& GetLock() { return lock_; }
 
-	gstd::ref_count_ptr<SoundPlayer> GetPlayer(std::wstring path, bool bCreateAlways = false);
+	gstd::ref_count_ptr<SoundPlayer> GetPlayer(const std::wstring& path, bool bCreateAlways = false);
 	gstd::ref_count_ptr<SoundDivision> CreateSoundDivision(int index);
 	gstd::ref_count_ptr<SoundDivision> GetSoundDivision(int index);
-	gstd::ref_count_ptr<SoundInfo> GetSoundInfo(std::wstring path);
+	gstd::ref_count_ptr<SoundInfo> GetSoundInfo(const std::wstring& path);
 
 	void SetInfoPanel(gstd::ref_count_ptr<SoundInfoPanel> panel)
 	{
@@ -77,7 +77,7 @@ public:
 		panelInfo_ = panel;
 	}
 
-	bool AddSoundInfoFromFile(std::wstring path);
+	bool AddSoundInfoFromFile(const std::wstring& path);
 	std::vector<gstd::ref_count_ptr<SoundInfo>> GetSoundInfoList();
 	void SetFadeDeleteAll();
 
@@ -91,7 +91,7 @@ protected:
 	std::map<std::wstring, gstd::ref_count_ptr<SoundInfo>> mapInfo_;
 	gstd::ref_count_ptr<SoundInfoPanel> panelInfo_;
 
-	gstd::ref_count_ptr<SoundPlayer> _GetPlayer(std::wstring path);
+	gstd::ref_count_ptr<SoundPlayer> _GetPlayer(const std::wstring& path);
 
 private:
 	static DirectSoundManager* thisBase_;
@@ -157,7 +157,7 @@ public:
 	SoundDivision();
 	virtual ~SoundDivision();
 	void SetVolumeRate(double rate) { rateVolume_ = rate; }
-	double GetVolumeRate() { return rateVolume_; }
+	double GetVolumeRate() const { return rateVolume_; }
 
 protected:
 	double rateVolume_; //音量割合(0-100)
@@ -176,10 +176,10 @@ public:
 		timeLoopEnd_ = 0;
 	}
 	virtual ~SoundInfo(){};
-	std::wstring GetName() { return name_; }
-	std::wstring GetTitle() { return title_; }
-	double GetLoopStartTime() { return timeLoopStart_; }
-	double GetLoopEndTime() { return timeLoopEnd_; }
+	std::wstring GetName() const { return name_; }
+	std::wstring GetTitle() const { return title_; }
+	double GetLoopStartTime() const { return timeLoopStart_; }
+	double GetLoopEndTime() const { return timeLoopEnd_; }
 
 private:
 	std::wstring name_;
@@ -204,7 +204,7 @@ public:
 public:
 	SoundPlayer();
 	virtual ~SoundPlayer();
-	std::wstring GetPath() { return path_; }
+	std::wstring GetPath() const { return path_; }
 	gstd::CriticalSection& GetLock() { return lock_; }
 	virtual void Restore() { pDirectSoundBuffer_->Restore(); }
 	void SetSoundDivision(gstd::ref_count_ptr<SoundDivision> div);
@@ -213,7 +213,7 @@ public:
 	virtual bool Play();
 	virtual bool Play(PlayStyle& style);
 	virtual bool Stop();
-	virtual bool IsPlaying();
+	virtual bool IsPlaying() const;
 	virtual bool Seek(double time) = 0;
 	virtual bool SetVolumeRate(double rateVolume);
 	bool SetPanRate(double ratePan);
@@ -223,7 +223,7 @@ public:
 	void SetAutoDelete(bool bAuto = true) { bAutoDelete_ = bAuto; }
 	double GetFadeVolumeRate();
 	void Delete() { bDelete_ = true; }
-	WAVEFORMATEX GetWaveFormat() { return formatWave_; }
+	WAVEFORMATEX GetWaveFormat() const { return formatWave_; }
 
 protected:
 	DirectSoundManager* manager_;
@@ -254,14 +254,14 @@ public:
 	PlayStyle();
 	virtual ~PlayStyle();
 	void SetLoopEnable(bool bLoop) { bLoop_ = bLoop; }
-	bool IsLoopEnable() { return bLoop_; }
+	bool IsLoopEnable() const { return bLoop_; }
 	void SetLoopStartTime(double time) { timeLoopStart_ = time; }
-	double GetLoopStartTime() { return timeLoopStart_; }
+	double GetLoopStartTime() const { return timeLoopStart_; }
 	void SetLoopEndTime(double time) { timeLoopEnd_ = time; }
-	double GetLoopEndTime() { return timeLoopEnd_; }
+	double GetLoopEndTime() const { return timeLoopEnd_; }
 	void SetStartTime(double time) { timeStart_ = time; }
-	double GetStartTime() { return timeStart_; }
-	bool IsRestart() { return bRestart_; }
+	double GetStartTime() const { return timeStart_; }
+	bool IsRestart() const { return bRestart_; }
 	void SetRestart(bool b) { bRestart_ = b; }
 
 private:
@@ -287,7 +287,7 @@ protected:
 	bool bStreaming_;
 	bool bRequestStop_; //ループ完了時のフラグ。すぐ停止すると最後のバッファが再生されないため。
 
-	void _CreateSoundEvent(WAVEFORMATEX& formatWave);
+	void _CreateSoundEvent(const WAVEFORMATEX& formatWave);
 	virtual void _CopyStream(int indexCopy);
 	virtual void _CopyBuffer(LPVOID pMem, DWORD dwSize) = 0;
 	void _RequestStop() { bRequestStop_ = true; }
@@ -298,7 +298,7 @@ public:
 
 	virtual bool Play(PlayStyle& style);
 	virtual bool Stop();
-	virtual bool IsPlaying();
+	virtual bool IsPlaying() const;
 
 };
 class SoundStreamingPlayer::StreamingThread : public gstd::Thread, public gstd::InnerClass<SoundStreamingPlayer> {
@@ -319,7 +319,7 @@ public:
 
 	virtual bool Play(PlayStyle& style);
 	virtual bool Stop();
-	virtual bool IsPlaying();
+	virtual bool IsPlaying() const;
 	virtual bool Seek(double time);
 
 protected:

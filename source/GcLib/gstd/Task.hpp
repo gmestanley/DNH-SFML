@@ -39,12 +39,12 @@ public:
 	virtual void Call() = 0;
 
 	ref_count_ptr<TaskBase> GetTask() { return task_; }
-	int GetID() { return id_; }
-	bool IsEnable() { return bEnable_; }
+	int GetID() const { return id_; }
+	bool IsEnable() const { return bEnable_; }
 
-	int GetDelay() { return delay_; }
+	int GetDelay() const { return delay_; }
 	void SetDelay(int delay) { delay_ = delay; }
-	bool IsDelay() { return delay_ > 0; }
+	bool IsDelay() const { return delay_ > 0; }
 
 	virtual std::wstring GetInfoAsString();
 };
@@ -89,8 +89,8 @@ class TaskBase : public IStringInfo {
 public:
 	TaskBase();
 	virtual ~TaskBase();
-	int GetTaskID() { return idTask_; }
-	_int64 GetTaskIndex() { return indexTask_; }
+	int GetTaskID() const { return idTask_; }
+	_int64 GetTaskIndex() const { return indexTask_; }
 
 protected:
 	_int64 indexTask_; //TaskManagerによってつけられる一意のインデックス
@@ -129,7 +129,7 @@ public:
 	void RemoveFunction(TaskBase* task); //タスク機能削除
 	void RemoveFunction(TaskBase* task, int divFunc, int idFunc); //タスク機能削除
 	void RemoveFunction(const std::type_info& info); //タスク機能削除
-	function_map GetFunctionMap() { return mapFunc_; }
+	function_map GetFunctionMap() const { return mapFunc_; }
 
 	void SetFunctionEnable(bool bEnable); //全タスク機能の状態を切り替える
 	void SetFunctionEnable(bool bEnable, int divFunc); //タスク機能の状態を切り替える

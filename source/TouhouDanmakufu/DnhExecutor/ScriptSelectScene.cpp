@@ -491,7 +491,7 @@ void ScriptSelectScene::AddMenuItem(std::list<ref_count_ptr<ScriptSelectSceneMen
 }
 
 //ScriptSelectSceneMenuItem
-ScriptSelectSceneMenuItem::ScriptSelectSceneMenuItem(int type, std::wstring path, ref_count_ptr<ScriptInformation> info)
+ScriptSelectSceneMenuItem::ScriptSelectSceneMenuItem(int type, const std::wstring& path, ref_count_ptr<ScriptInformation> info)
 {
 	type_ = type;
 	path_ = PathProperty::ReplaceYenToSlash(path);
@@ -514,7 +514,7 @@ ScriptSelectModel::~ScriptSelectModel()
 
 
 //ScriptSelectFileModel
-ScriptSelectFileModel::ScriptSelectFileModel(int type, std::wstring dir)
+ScriptSelectFileModel::ScriptSelectFileModel(int type, const std::wstring& dir)
 {
 	type_ = type;
 	dir_ = dir;
@@ -534,7 +534,7 @@ void ScriptSelectFileModel::_Run()
 	}
 	bCreated_= true;
 }
-void ScriptSelectFileModel::_SearchScript(std::wstring dir)
+void ScriptSelectFileModel::_SearchScript(const std::wstring& dir)
 {
 	WIN32_FIND_DATA data;
 	HANDLE hFind;
@@ -585,7 +585,7 @@ void ScriptSelectFileModel::_SearchScript(std::wstring dir)
 	}while(FindNextFile(hFind,&data));
 	FindClose(hFind);
 }
-void ScriptSelectFileModel::_CreateMenuItem(std::wstring path)
+void ScriptSelectFileModel::_CreateMenuItem(const std::wstring& path)
 {
 	std::vector<ref_count_ptr<ScriptInformation> >listInfo =
 		ScriptInformation::CreateScriptInformationList(path, true);
@@ -856,7 +856,7 @@ PlayerSelectScene::PlayerSelectScene(ref_count_ptr<ScriptInformation> info)
 		AddMenuItem(new PlayerSelectMenuItem(listPlayer_[iMenu]));
 	}
 
-	std::vector<ref_count_ptr<ScriptInformation> > listLastPlayerSelect = systemInfo->GetLastPlayerSelectedList();
+	const std::vector<ref_count_ptr<ScriptInformation>>& listLastPlayerSelect = systemInfo->GetLastPlayerSelectedList();
 	bool bSameList = false;
 	if(listPlayer_.size() == listLastPlayerSelect.size())
 	{

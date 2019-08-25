@@ -142,7 +142,7 @@ void StaticFpsController::Wait()
 	countSkip_ %= (rateSkip + 1);
 	bCriticalFrame_ = false;
 }
-bool StaticFpsController::IsSkip()
+bool StaticFpsController::IsSkip() const
 {
 	int rateSkip = rateSkip_;
 	if (bFastMode_)
@@ -158,16 +158,16 @@ void StaticFpsController::SetSkipRate(int value)
 	rateSkip_ = value;
 	countSkip_ = 0;
 }
-float StaticFpsController::GetCurrentFps()
+float StaticFpsController::GetCurrentFps() const
 {
 	float fps = fpsCurrent_ / (rateSkip_ + 1);
 	return fps;
 }
-float StaticFpsController::GetCurrentWorkFps()
+float StaticFpsController::GetCurrentWorkFps() const
 {
 	return fpsCurrent_;
 }
-float StaticFpsController::GetCurrentRenderFps()
+float StaticFpsController::GetCurrentRenderFps() const
 {
 	float fps = fpsCurrent_ / (rateSkip_ + 1);
 	return fps;
@@ -269,7 +269,7 @@ void AutoSkipFpsController::Wait()
 		timeCurrentFpsUpdate_ = _GetTime();
 	}
 }
-bool AutoSkipFpsController::IsSkip()
+bool AutoSkipFpsController::IsSkip() const
 {
 	return countSkip_ > 0;
 }

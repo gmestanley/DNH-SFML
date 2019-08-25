@@ -32,7 +32,7 @@ using ::wcstombs;
 
 using namespace gstd;
 
-std::string gstd::to_mbcs(std::wstring const& s)
+std::string gstd::to_mbcs(const std::wstring& s)
 {
 	std::string result = StringUtility::ConvertWideToMulti(s);
 	// int len = std::wcstombs(NULL, s.c_str(), s.size());
@@ -45,7 +45,7 @@ std::string gstd::to_mbcs(std::wstring const& s)
 	return result;
 }
 
-std::wstring gstd::to_wide(std::string const& s)
+std::wstring gstd::to_wide(const std::string& s)
 {
 	std::wstring result = StringUtility::ConvertMultiToWide(s);
 	// int len = std::mbstowcs(NULL, s.c_str(), s.size());
@@ -69,34 +69,34 @@ long double fmodl2(long double i, long double j)
 
 /* value */
 
-value::value(type_data* t, std::wstring v)
+value::value(type_data* type, const std::wstring& val)
 {
 	data = new body();
 	data->ref_count = 1;
-	data->type = t;
-	for (unsigned i = 0; i < v.size(); ++i)
-		data->array_value.push_back(value(t->get_element(), v[i]));
+	data->type = type;
+	for (unsigned i = 0; i < val.size(); ++i)
+		data->array_value.push_back(value(type->get_element(), val[i]));
 }
 
-void value::append(type_data* t, value const& x)
+void value::append(type_data* type, const value& val)
 {
 	unique();
-	data->type = t;
-	data->array_value.push_back(x);
+	data->type = type;
+	data->array_value.push_back(val);
 }
 
-void value::concatenate(value const& x)
+void value::concatenate(const value& val)
 {
 	unique();
 	unsigned l = data->array_value.length;
-	unsigned r = x.data->array_value.length;
+	unsigned r = val.data->array_value.length;
 	unsigned t = l + r;
 	if (l == 0)
-		data->type = x.data->type;
+		data->type = val.data->type;
 	while (data->array_value.capacity < t)
 		data->array_value.expand();
 	for (unsigned i = 0; i < r; ++i)
-		data->array_value[l + i] = x.data->array_value.at[i];
+		data->array_value[l + i] = val.data->array_value.at[i];
 	data->array_value.length = t;
 }
 
@@ -218,7 +218,7 @@ unsigned value::length_as_array() const
 	return data->array_value.size();
 }
 
-value const& value::index_as_array(unsigned i) const
+const value& value::index_as_array(unsigned i) const
 {
 	assert(data != NULL && data->type->get_kind() == type_data::tk_array);
 	assert(i < data->array_value.length);
@@ -238,7 +238,7 @@ type_data* value::get_type() const
 	return data->type;
 }
 
-void value::overwrite(value const& source)
+void value::overwrite(const value& source)
 {
 	assert(data != NULL);
 	if (data == source.data)
@@ -258,7 +258,7 @@ void value::overwrite(value const& source)
 
 class parser_error : public gstd::wexception {
 public:
-	parser_error(std::wstring const& the_message)
+	parser_error(const std::wstring& the_message)
 		: gstd::wexception(the_message)
 	{
 	}
@@ -343,7 +343,7 @@ public:
 	std::wstring string_value;
 	int line;
 
-	scanner(char const* source, char const* end)
+	scanner(const char* source, const char* end)
 		: current(source)
 		, line(1)
 	{
@@ -359,7 +359,7 @@ public:
 		advance();
 	}
 
-	scanner(scanner const& source)
+	scanner(const scanner& source)
 		: encoding(source.encoding)
 		, current(source.current)
 		, endPoint(source.endPoint)
@@ -372,19 +372,19 @@ public:
 	void skip();
 	void advance();
 
-	void AddLog(wchar_t* data);
+	void AddLog(const wchar_t* data);
 
 private:
 	int encoding;
-	char const* current;
-	char const* endPoint;
+	const char* current;
+	const char* endPoint;
 
-	inline wchar_t current_char();
-	inline wchar_t index_from_current_char(int index);
+	inline wchar_t current_char() const;
+	inline wchar_t index_from_current_char(int index) const;
 	inline wchar_t next_char();
 };
 
-wchar_t scanner::current_char()
+wchar_t scanner::current_char() const
 {
 	wchar_t res = L'\0';
 	if (encoding == Encoding::UTF16LE) {
@@ -394,7 +394,7 @@ wchar_t scanner::current_char()
 	}
 	return res;
 }
-wchar_t scanner::index_from_current_char(int index)
+wchar_t scanner::index_from_current_char(int index) const
 {
 	wchar_t res = L'\0';
 	if (encoding == Encoding::UTF16LE) {
@@ -458,7 +458,7 @@ void scanner::skip()
 	}
 }
 
-void scanner::AddLog(wchar_t* data)
+void scanner::AddLog(const wchar_t* data)
 {
 	wchar_t* pStart = (wchar_t*)current;
 	wchar_t* pEnd = (wchar_t*)(current + min(16, endPoint - current));
@@ -813,7 +813,7 @@ void scanner::advance()
 
 /* operations */
 
-value add(script_machine* machine, int argc, value const* argv)
+value add(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 2);
 	if (argv[0].get_type()->get_kind() == type_data::tk_array) {
@@ -843,7 +843,7 @@ value add(script_machine* machine, int argc, value const* argv)
 		return value(machine->get_engine()->get_real_type(), argv[0].as_real() + argv[1].as_real());
 }
 
-value subtract(script_machine* machine, int argc, value const* argv)
+value subtract(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 2);
 	if (argv[0].get_type()->get_kind() == type_data::tk_array) {
@@ -876,7 +876,7 @@ value subtract(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value multiply(script_machine* machine, int argc, value const* argv)
+value multiply(script_machine* machine, int argc, const value* argv)
 {
 	return value(machine->get_engine()->get_real_type(), argv[0].as_real() * argv[1].as_real());
 }
@@ -884,7 +884,7 @@ value multiply(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value divide(script_machine* machine, int argc, value const* argv)
+value divide(script_machine* machine, int argc, const value* argv)
 {
 	return value(machine->get_engine()->get_real_type(), argv[0].as_real() / argv[1].as_real());
 }
@@ -892,7 +892,7 @@ value divide(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value remainder(script_machine* machine, int argc, value const* argv)
+value remainder(script_machine* machine, int argc, const value* argv)
 {
 	long double x = argv[0].as_real();
 	long double y = argv[1].as_real();
@@ -902,7 +902,7 @@ value remainder(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value modc(script_machine* machine, int argc, value const* argv)
+value modc(script_machine* machine, int argc, const value* argv)
 {
 	long double x = argv[0].as_real();
 	long double y = argv[1].as_real();
@@ -912,7 +912,7 @@ value modc(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value negative(script_machine* machine, int argc, value const* argv)
+value negative(script_machine* machine, int argc, const value* argv)
 {
 	return value(machine->get_engine()->get_real_type(), -argv[0].as_real());
 }
@@ -920,7 +920,7 @@ value negative(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value power(script_machine* machine, int argc, value const* argv)
+value power(script_machine* machine, int argc, const value* argv)
 {
 	return value(machine->get_engine()->get_real_type(), std::powl(argv[0].as_real(), argv[1].as_real()));
 }
@@ -928,7 +928,7 @@ value power(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value compare(script_machine* machine, int argc, value const* argv)
+value compare(script_machine* machine, int argc, const value* argv)
 {
 	if (argv[0].get_type() == argv[1].get_type()) {
 		int r = 0;
@@ -984,7 +984,7 @@ value compare(script_machine* machine, int argc, value const* argv)
 	}
 }
 
-value predecessor(script_machine* machine, int argc, value const* argv)
+value predecessor(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 1);
 	assert(argv[0].has_data());
@@ -1007,7 +1007,7 @@ value predecessor(script_machine* machine, int argc, value const* argv)
 	}
 }
 
-value successor(script_machine* machine, int argc, value const* argv)
+value successor(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 1);
 	assert(argv[0].has_data());
@@ -1035,7 +1035,7 @@ value successor(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value true_(script_machine* machine, int argc, value const* argv)
+value true_(script_machine* machine, int argc, const value* argv)
 {
 	return value(machine->get_engine()->get_boolean_type(), true);
 }
@@ -1043,7 +1043,7 @@ value true_(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value false_(script_machine* machine, int argc, value const* argv)
+value false_(script_machine* machine, int argc, const value* argv)
 {
 	return value(machine->get_engine()->get_boolean_type(), false);
 }
@@ -1051,18 +1051,18 @@ value false_(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value not_(script_machine* machine, int argc, value const* argv)
+value not_(script_machine* machine, int argc, const value* argv)
 {
 	return value(machine->get_engine()->get_boolean_type(), !argv[0].as_boolean());
 }
 
-value length(script_machine* machine, int argc, value const* argv)
+value length(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 1);
 	return value(machine->get_engine()->get_real_type(), static_cast<long double>(argv[0].length_as_array()));
 }
 
-value index(script_machine* machine, int argc, value const* argv)
+value index(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 2);
 
@@ -1092,11 +1092,11 @@ value index(script_machine* machine, int argc, value const* argv)
 		return value();
 	}
 
-	value const& result = argv[0].index_as_array(index);
+	const value& result = argv[0].index_as_array(index);
 	return result;
 }
 
-value index_writable(script_machine* machine, int argc, value const* argv)
+value index_writable(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 2);
 
@@ -1126,12 +1126,12 @@ value index_writable(script_machine* machine, int argc, value const* argv)
 		return value();
 	}
 
-	value const& result = argv[0].index_as_array(index);
+	const value& result = argv[0].index_as_array(index);
 	result.unique();
 	return result;
 }
 
-value slice(script_machine* machine, int argc, value const* argv)
+value slice(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 3);
 
@@ -1180,7 +1180,7 @@ value slice(script_machine* machine, int argc, value const* argv)
 	return result;
 }
 
-value erase(script_machine* machine, int argc, value const* argv)
+value erase(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 2);
 
@@ -1225,7 +1225,7 @@ value erase(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value append(script_machine* machine, int argc, value const* argv)
+value append(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 2);
 
@@ -1253,7 +1253,7 @@ value append(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value concatenate(script_machine* machine, int argc, value const* argv)
+value concatenate(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 2);
 
@@ -1281,7 +1281,7 @@ value concatenate(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value round(script_machine* machine, int argc, value const* argv)
+value round(script_machine* machine, int argc, const value* argv)
 {
 	long double r = std::floorl(argv[0].as_real() + 0.5);
 	return value(machine->get_engine()->get_real_type(), r);
@@ -1290,7 +1290,7 @@ value round(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value truncate(script_machine* machine, int argc, value const* argv)
+value truncate(script_machine* machine, int argc, const value* argv)
 {
 	long double r = argv[0].as_real();
 	r = (r > 0) ? std::floorl(r) : std::ceill(r);
@@ -1300,7 +1300,7 @@ value truncate(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value ceil(script_machine* machine, int argc, value const* argv)
+value ceil(script_machine* machine, int argc, const value* argv)
 {
 	return value(machine->get_engine()->get_real_type(), std::ceill(argv[0].as_real()));
 }
@@ -1308,7 +1308,7 @@ value ceil(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value floor(script_machine* machine, int argc, value const* argv)
+value floor(script_machine* machine, int argc, const value* argv)
 {
 	return value(machine->get_engine()->get_real_type(), std::floorl(argv[0].as_real()));
 }
@@ -1316,7 +1316,7 @@ value floor(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value absolute(script_machine* machine, int argc, value const* argv)
+value absolute(script_machine* machine, int argc, const value* argv)
 {
 	long double r = std::fabsl(argv[0].as_real());
 	return value(machine->get_engine()->get_real_type(), r);
@@ -1325,7 +1325,7 @@ value absolute(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value pi(script_machine* machine, int argc, value const* argv)
+value pi(script_machine* machine, int argc, const value* argv)
 {
 	return value(machine->get_engine()->get_real_type(), (long double)3.14159265358979323846);
 }
@@ -1333,7 +1333,7 @@ value pi(script_machine* machine, int argc, value const* argv)
 #ifdef __BORLANDC__
 #pragma argsused
 #endif
-value assert_(script_machine* machine, int argc, value const* argv)
+value assert_(script_machine* machine, int argc, const value* argv)
 {
 	assert(argc == 2);
 	if (!argv[0].as_boolean()) {
@@ -1342,7 +1342,7 @@ value assert_(script_machine* machine, int argc, value const* argv)
 	return value();
 }
 
-function const operations[] = {
+const function operations[] = {
 	{ "true", true_, 0 },
 	{ "false", false_, 0 },
 	{ "pi", pi, 0 },
@@ -1401,7 +1401,7 @@ public:
 	int error_line;
 	std::map<std::string, script_engine::block*> events;
 
-	parser(script_engine* e, scanner* s, int funcc, function const* funcv);
+	parser(script_engine* e, scanner* s, int funcc, const function* funcv);
 
 	virtual ~parser()
 	{
@@ -1419,19 +1419,19 @@ public:
 	int parse_arguments(script_engine::block* block);
 	void parse_statements(script_engine::block* block);
 	void parse_inline_block(script_engine::block* block, script_engine::block_kind kind);
-	void parse_block(script_engine::block* block, std::vector<std::string> const* args, bool adding_result);
+	void parse_block(script_engine::block* block, const std::vector<std::string>* args, bool adding_result);
 
 private:
-	void register_function(function const& func);
-	symbol* search(std::string const& name);
+	void register_function(const function& func);
+	symbol* search(const std::string& name);
 	symbol* search_result();
-	void scan_current_scope(int level, std::vector<std::string> const* args, bool adding_result);
-	void write_operation(script_engine::block* block, char const* name, int clauses);
+	void scan_current_scope(int level, const std::vector<std::string>* args, bool adding_result);
+	void write_operation(script_engine::block* block, const char* name, int clauses);
 
 	typedef script_engine::code code;
 };
 
-parser::parser(script_engine* e, scanner* s, int funcc, function const* funcv)
+parser::parser(script_engine* e, scanner* s, int funcc, const function* funcv)
 	: engine(e)
 	, lex(s)
 	, frame()
@@ -1461,7 +1461,7 @@ parser::parser(script_engine* e, scanner* s, int funcc, function const* funcv)
 	}
 }
 
-void parser::register_function(function const& func)
+void parser::register_function(const function& func)
 {
 	symbol s;
 	s.level = 0;
@@ -1473,7 +1473,7 @@ void parser::register_function(function const& func)
 	frame[0][func.name] = s;
 }
 
-parser::symbol* parser::search(std::string const& name)
+parser::symbol* parser::search(const std::string& name)
 {
 	for (int i = frame.size() - 1; i >= 0; --i) {
 		if (frame[i].find(name) != frame[i].end())
@@ -1493,7 +1493,7 @@ parser::symbol* parser::search_result()
 	return NULL;
 }
 
-void parser::scan_current_scope(int level, std::vector<std::string> const* args, bool adding_result)
+void parser::scan_current_scope(int level, const std::vector<std::string>* args, bool adding_result)
 {
 	//先読みして識別子を登録する
 	scanner lex2(*lex);
@@ -1607,7 +1607,7 @@ void parser::scan_current_scope(int level, std::vector<std::string> const* args,
 	}
 }
 
-void parser::write_operation(script_engine::block* block, char const* name, int clauses)
+void parser::write_operation(script_engine::block* block, const char* name, int clauses)
 {
 	symbol* s = search(name);
 	assert(s != NULL);
@@ -1784,7 +1784,7 @@ void parser::parse_product(script_engine::block* block)
 {
 	parse_prefix(block);
 	while (lex->next == tk_asterisk || lex->next == tk_slash || lex->next == tk_percent) {
-		char const* name = (lex->next == tk_asterisk) ? "multiply" : (lex->next == tk_slash) ? "divide" : "remainder";
+		const char* name = (lex->next == tk_asterisk) ? "multiply" : (lex->next == tk_slash) ? "divide" : "remainder";
 		lex->advance();
 		parse_prefix(block);
 		write_operation(block, name, 2);
@@ -1795,7 +1795,7 @@ void parser::parse_sum(script_engine::block* block)
 {
 	parse_product(block);
 	while (lex->next == tk_tilde || lex->next == tk_plus || lex->next == tk_minus) {
-		char const* name = (lex->next == tk_tilde) ? "concatenate" : (lex->next == tk_plus) ? "add" : "subtract";
+		const char* name = (lex->next == tk_tilde) ? "concatenate" : (lex->next == tk_plus) ? "add" : "subtract";
 		lex->advance();
 		parse_product(block);
 		write_operation(block, name, 2);
@@ -1943,7 +1943,7 @@ void parser::parse_statements(script_engine::block* block)
 			case tk_divide_assign:
 			case tk_remainder_assign:
 			case tk_power_assign: {
-				char const* f;
+				const char* f;
 				switch (lex->next) {
 				case tk_add_assign:
 					f = "add";
@@ -1976,7 +1976,7 @@ void parser::parse_statements(script_engine::block* block)
 
 			case tk_inc:
 			case tk_dec: {
-				char const* f = (lex->next == tk_inc) ? "successor" : "predecessor";
+				const char* f = (lex->next == tk_inc) ? "successor" : "predecessor";
 				lex->advance();
 
 				block->codes.push_back(code(lex->line, script_engine::pc_push_variable, s->level, s->variable));
@@ -2341,7 +2341,7 @@ void parser::parse_inline_block(script_engine::block* block, script_engine::bloc
 	block->codes.push_back(code(lex->line, script_engine::pc_call, b, 0));
 }
 
-void parser::parse_block(script_engine::block* block, std::vector<std::string> const* args, bool adding_result)
+void parser::parse_block(script_engine::block* block, const std::vector<std::string>* args, bool adding_result)
 {
 	if (lex->next != tk_open_cur) {
 		std::wstring error;
@@ -2396,7 +2396,7 @@ type_data* script_type_manager::get_array_type(type_data* element)
 
 /* script_engine */
 
-script_engine::script_engine(script_type_manager* a_type_manager, std::string const& source, int funcc, function const* funcv)
+script_engine::script_engine(script_type_manager* a_type_manager, const std::string& source, int funcc, const function* funcv)
 	: type_manager(a_type_manager)
 {
 	main_block = new_block(0, bk_normal);
@@ -2412,7 +2412,7 @@ script_engine::script_engine(script_type_manager* a_type_manager, std::string co
 	error_line = p.error_line;
 }
 
-script_engine::script_engine(script_type_manager* a_type_manager, std::vector<char> const& source, int funcc, function const* funcv)
+script_engine::script_engine(script_type_manager* a_type_manager, const std::vector<char>& source, int funcc, const function* funcv)
 	: type_manager(a_type_manager)
 {
 	main_block = new_block(0, bk_normal);
@@ -2553,7 +2553,7 @@ void script_machine::resume()
 	}
 }
 
-void script_machine::call(std::string event_name)
+void script_machine::call(const std::string& event_name)
 {
 	if (bTerminate)
 		return;
@@ -2582,13 +2582,13 @@ void script_machine::call(std::string event_name)
 	}
 }
 
-bool script_machine::has_event(std::string event_name)
+bool script_machine::has_event(const std::string& event_name) const
 {
 	assert(!error);
 	return engine->events.find(event_name) != engine->events.end();
 }
 
-int script_machine::get_current_line()
+int script_machine::get_current_line() const
 {
 	environment* current = threads.at[current_thread_index];
 	script_engine::code* c = &(current->sub->codes.at[current->ip]);

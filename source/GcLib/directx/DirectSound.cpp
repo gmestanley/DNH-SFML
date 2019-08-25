@@ -105,7 +105,7 @@ void DirectSoundManager::Clear()
 	} catch (...) {
 	}
 }
-gstd::ref_count_ptr<SoundPlayer> DirectSoundManager::GetPlayer(std::wstring path, bool bCreateAlways)
+gstd::ref_count_ptr<SoundPlayer> DirectSoundManager::GetPlayer(const std::wstring& path, bool bCreateAlways)
 {
 	gstd::ref_count_ptr<SoundPlayer> res;
 	try {
@@ -123,26 +123,23 @@ gstd::ref_count_ptr<SoundPlayer> DirectSoundManager::GetPlayer(std::wstring path
 
 	return res;
 }
-gstd::ref_count_ptr<SoundPlayer> DirectSoundManager::_GetPlayer(std::wstring path)
+gstd::ref_count_ptr<SoundPlayer> DirectSoundManager::_GetPlayer(const std::wstring& path)
 {
 	if (mapPlayer_.find(path) == mapPlayer_.end())
 		return NULL;
 
 	gstd::ref_count_ptr<SoundPlayer> res = NULL;
 
-	std::map<std::wstring, std::list<gstd::ref_count_ptr<SoundPlayer>>>::iterator itrNameMap;
-	for (itrNameMap = mapPlayer_.begin(); itrNameMap != mapPlayer_.end(); itrNameMap++) {
-		std::list<gstd::ref_count_ptr<SoundPlayer>>& listPlayer = itrNameMap->second;
-		std::list<gstd::ref_count_ptr<SoundPlayer>>::iterator itrPlayer;
-		for (itrPlayer = listPlayer.begin(); itrPlayer != listPlayer.end(); itrPlayer++) {
-			SoundPlayer* player = (*itrPlayer).GetPointer();
+	for (auto& itrNameMap : mapPlayer_) {
+		for (auto& itrPlayer : itrNameMap.second) {
+			SoundPlayer* player = itrPlayer.GetPointer();
 			if (player == NULL)
 				continue;
 			if (player->bDelete_)
 				continue;
 			if (player->GetPath() != path)
 				continue;
-			res = *itrPlayer;
+			res = itrPlayer;
 			break;
 		}
 	}
@@ -230,8 +227,9 @@ gstd::ref_count_ptr<SoundPlayer> DirectSoundManager::_CreatePlayer(std::wstring 
 }
 gstd::ref_count_ptr<SoundDivision> DirectSoundManager::CreateSoundDivision(int index)
 {
-	if (mapDivision_.find(index) != mapDivision_.end())
-		return mapDivision_[index];
+	auto it = mapDivision_.find(index);
+	if (it != mapDivision_.end())
+		return it->second;
 
 	ref_count_ptr<SoundDivision> division = new SoundDivision();
 	mapDivision_[index] = division;
@@ -239,18 +237,20 @@ gstd::ref_count_ptr<SoundDivision> DirectSoundManager::CreateSoundDivision(int i
 }
 gstd::ref_count_ptr<SoundDivision> DirectSoundManager::GetSoundDivision(int index)
 {
-	if (mapDivision_.find(index) == mapDivision_.end())
-		return NULL;
-	return mapDivision_[index];
+	auto it = mapDivision_.find(index);
+	if (it != mapDivision_.end())
+		return it->second;
+	return nullptr;
 }
-gstd::ref_count_ptr<SoundInfo> DirectSoundManager::GetSoundInfo(std::wstring path)
+gstd::ref_count_ptr<SoundInfo> DirectSoundManager::GetSoundInfo(const std::wstring& path)
 {
 	std::wstring name = PathProperty::GetFileName(path);
-	if (mapInfo_.find(name) == mapInfo_.end())
-		return NULL;
-	return mapInfo_[name];
+	auto it = mapInfo_.find(name);
+	if (it != mapInfo_.end())
+		return it->second;
+	return nullptr;
 }
-bool DirectSoundManager::AddSoundInfoFromFile(std::wstring path)
+bool DirectSoundManager::AddSoundInfoFromFile(const std::wstring& path)
 {
 	bool res = false;
 	FileManager* fileManager = FileManager::GetBase();
@@ -324,7 +324,7 @@ bool DirectSoundManager::AddSoundInfoFromFile(std::wstring path)
 		}
 
 		res = true;
-	} catch (gstd::wexception e) {
+	} catch (gstd::wexception& e) {
 		int line = scanner.GetCurrentLine();
 		std::wstring log = StringUtility::Format(L"音声情報読み込み失敗:path[%s] line[%d] msg[%s]",
 			path.c_str(), line, e.what());
@@ -336,10 +336,8 @@ bool DirectSoundManager::AddSoundInfoFromFile(std::wstring path)
 std::vector<gstd::ref_count_ptr<SoundInfo>> DirectSoundManager::GetSoundInfoList()
 {
 	std::vector<gstd::ref_count_ptr<SoundInfo>> res;
-	std::map<std::wstring, ref_count_ptr<SoundInfo>>::iterator itrNameMap;
-	for (itrNameMap = mapInfo_.begin(); itrNameMap != mapInfo_.end(); itrNameMap++) {
-		gstd::ref_count_ptr<SoundInfo> info = itrNameMap->second;
-		res.push_back(info);
+	for (const auto& soundInfo : mapInfo_) {
+		res.push_back(soundInfo.second);
 	}
 	return res;
 }
@@ -347,12 +345,9 @@ void DirectSoundManager::SetFadeDeleteAll()
 {
 	try {
 		Lock lock(lock_);
-		std::map<std::wstring, std::list<gstd::ref_count_ptr<SoundPlayer>>>::iterator itrNameMap;
-		for (itrNameMap = mapPlayer_.begin(); itrNameMap != mapPlayer_.end(); itrNameMap++) {
-			std::list<gstd::ref_count_ptr<SoundPlayer>>& listPlayer = itrNameMap->second;
-			std::list<gstd::ref_count_ptr<SoundPlayer>>::iterator itrPlayer;
-			for (itrPlayer = listPlayer.begin(); itrPlayer != listPlayer.end(); itrPlayer++) {
-				SoundPlayer* player = (*itrPlayer).GetPointer();
+		for (auto& itrNameMap : mapPlayer_) {
+			for (auto& itrPlayer : itrNameMap.second) {
+				SoundPlayer* player = itrPlayer.GetPointer();
 				if (player == NULL)
 					continue;
 				player->SetFadeDelete(SoundPlayer::FADE_DEFAULT);
@@ -626,7 +621,7 @@ bool SoundPlayer::Stop()
 {
 	return false;
 }
-bool SoundPlayer::IsPlaying()
+bool SoundPlayer::IsPlaying() const
 {
 	return false;
 }
@@ -762,7 +757,7 @@ SoundStreamingPlayer::~SoundStreamingPlayer()
 		pDirectSoundNotify_->Release();
 	delete thread_;
 }
-void SoundStreamingPlayer::_CreateSoundEvent(WAVEFORMATEX& formatWave)
+void SoundStreamingPlayer::_CreateSoundEvent(const WAVEFORMATEX& formatWave)
 {
 	sizeCopy_ = formatWave.nAvgBytesPerSec;
 	HRESULT hrNotify = pDirectSoundBuffer_->QueryInterface(IID_IDirectSoundNotify, (LPVOID*)&pDirectSoundNotify_);
@@ -868,7 +863,7 @@ bool SoundStreamingPlayer::Stop()
 	}
 	return true;
 }
-bool SoundStreamingPlayer::IsPlaying()
+bool SoundStreamingPlayer::IsPlaying() const
 {
 	return thread_->GetStatus() == Thread::RUN;
 }
@@ -1020,12 +1015,11 @@ bool SoundPlayerWave::Stop()
 	}
 	return true;
 }
-bool SoundPlayerWave::IsPlaying()
+bool SoundPlayerWave::IsPlaying() const
 {
 	DWORD status = 0;
 	pDirectSoundBuffer_->GetStatus(&status);
-	bool res = (status & DSBSTATUS_PLAYING) > 0;
-	return res;
+	return (status & DSBSTATUS_PLAYING) > 0;
 }
 bool SoundPlayerWave::Seek(double time)
 {

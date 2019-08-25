@@ -14,7 +14,7 @@ ByteBuffer::ByteBuffer()
 	data_ = NULL;
 	Clear();
 }
-ByteBuffer::ByteBuffer(ByteBuffer& buffer)
+ByteBuffer::ByteBuffer(const ByteBuffer& buffer)
 {
 	data_ = NULL;
 	Clear();
@@ -26,7 +26,7 @@ ByteBuffer::~ByteBuffer()
 	if (data_ != NULL)
 		delete[] data_;
 }
-int ByteBuffer::_GetReservedSize()
+int ByteBuffer::_GetReservedSize() const
 {
 	return reserve_;
 }
@@ -48,7 +48,7 @@ void ByteBuffer::_Resize(int size)
 	reserve_ = size;
 	size_ = size;
 }
-void ByteBuffer::Copy(ByteBuffer& src)
+void ByteBuffer::Copy(const ByteBuffer& src)
 {
 	if (data_ != NULL && src.reserve_ != reserve_) {
 		delete[] data_;
@@ -84,7 +84,7 @@ void ByteBuffer::SetSize(int size)
 {
 	_Resize(size);
 }
-DWORD ByteBuffer::Write(LPVOID buf, DWORD size)
+DWORD ByteBuffer::Write(const LPVOID buf, DWORD size)
 {
 	if (offset_ + size > reserve_) {
 		int sizeNew = (offset_ + size) * 2;
@@ -140,7 +140,7 @@ File::File()
 	hFile_ = NULL;
 	path_ = L"";
 }
-File::File(std::wstring path)
+File::File(const std::wstring& path)
 {
 	hFile_ = NULL;
 	path_ = path;
@@ -185,7 +185,7 @@ bool File::IsExists()
 	bool res = IsExists(path_);
 	return res;
 }
-bool File::IsExists(std::wstring path)
+bool File::IsExists(const std::wstring& path)
 {
 	bool res = PathFileExists(path.c_str()) == TRUE;
 	return res;
@@ -259,20 +259,19 @@ DWORD File::Read(LPVOID buf, DWORD size)
 	::ReadFile(hFile_, buf, size, &res, NULL);
 	return res;
 }
-DWORD File::Write(LPVOID buf, DWORD size)
+DWORD File::Write(const LPVOID buf, DWORD size)
 {
 	DWORD res = 0;
 	::WriteFile(hFile_, buf, size, &res, NULL);
 	return res;
 }
-bool File::IsEqualsPath(std::wstring path1, std::wstring path2)
+bool File::IsEqualsPath(const std::wstring& _Path_first, const std::wstring& _Path_second)
 {
-	path1 = PathProperty::GetUnique(path1);
-	path2 = PathProperty::GetUnique(path2);
-	bool res = (wcscmp(path1.c_str(), path2.c_str()) == 0);
-	return res;
+	auto path_first = PathProperty::GetUnique(_Path_first);
+	auto path_second = PathProperty::GetUnique(_Path_second);
+	return wcscmp(path_first.c_str(), path_second.c_str()) == 0;
 }
-std::vector<std::wstring> File::GetFilePathList(std::wstring dir)
+std::vector<std::wstring> File::GetFilePathList(const std::wstring& dir)
 {
 	std::vector<std::wstring> res;
 
@@ -303,7 +302,7 @@ std::vector<std::wstring> File::GetFilePathList(std::wstring dir)
 
 	return res;
 }
-std::vector<std::wstring> File::GetDirectoryPathList(std::wstring dir)
+std::vector<std::wstring> File::GetDirectoryPathList(const std::wstring& dir)
 {
 	std::vector<std::wstring> res;
 
@@ -344,7 +343,7 @@ ArchiveFileEntry::ArchiveFileEntry()
 ArchiveFileEntry::~ArchiveFileEntry()
 {
 }
-int ArchiveFileEntry::_GetEntryRecordSize()
+int ArchiveFileEntry::_GetEntryRecordSize() const
 {
 	int res = 0;
 
@@ -390,12 +389,12 @@ FileArchiver::FileArchiver()
 FileArchiver::~FileArchiver()
 {
 }
-bool FileArchiver::CreateArchiveFile(std::wstring path)
+bool FileArchiver::CreateArchiveFile(const std::wstring& path)
 {
 	bool res = true;
 	File fileArchive(path);
 	if (!fileArchive.Create())
-		throw gstd::wexception(StringUtility::Format(L"ファイル作成失敗[%s]", path.c_str()).c_str());
+		throw gstd::wexception(StringUtility::Format(L"ファイル作成失敗[%s]", path.c_str()));
 
 	fileArchive.Write((char*)&HEADER_ARCHIVEFILE[0], HEADER_ARCHIVEFILE.size());
 	fileArchive.WriteInteger(listEntry_.size());
@@ -574,7 +573,7 @@ std::set<std::wstring> ArchiveFile::GetKeyList()
 	}
 	return res;
 }
-std::vector<ref_count_ptr<ArchiveFileEntry>> ArchiveFile::GetEntryList(std::wstring name)
+std::vector<ref_count_ptr<ArchiveFileEntry>> ArchiveFile::GetEntryList(const std::wstring& name)
 {
 	std::vector<ref_count_ptr<ArchiveFileEntry>> res;
 	if (!IsExists(name))
@@ -590,7 +589,7 @@ std::vector<ref_count_ptr<ArchiveFileEntry>> ArchiveFile::GetEntryList(std::wstr
 
 	return res;
 }
-bool ArchiveFile::IsExists(std::wstring name)
+bool ArchiveFile::IsExists(const std::wstring& name) const
 {
 	return mapEntry_.find(name) != mapEntry_.end();
 }
@@ -671,7 +670,7 @@ void FileManager::EndLoadThread()
 		threadLoad_ = NULL;
 	}
 }
-bool FileManager::AddArchiveFile(std::wstring path)
+bool FileManager::AddArchiveFile(const std::wstring& path)
 {
 	if (mapArchiveFile_.find(path) != mapArchiveFile_.end())
 		return true;
@@ -706,15 +705,14 @@ bool FileManager::AddArchiveFile(std::wstring path)
 	mapArchiveFile_[path] = file;
 	return true;
 }
-bool FileManager::RemoveArchiveFile(std::wstring path)
+bool FileManager::RemoveArchiveFile(const std::wstring& path)
 {
 	mapArchiveFile_.erase(path);
 	return true;
 }
-ref_count_ptr<FileReader> FileManager::GetFileReader(std::wstring path)
+ref_count_ptr<FileReader> FileManager::GetFileReader(const std::wstring& orgPath)
 {
-	std::wstring orgPath = path;
-	path = PathProperty::GetUnique(path);
+	std::wstring path = PathProperty::GetUnique(orgPath);
 
 	ref_count_ptr<FileReader> res = NULL;
 	ref_count_ptr<File> fileRaw = new File(path);
@@ -896,7 +894,7 @@ bool FileManager::LoadThread::IsThreadLoadComplete()
 	}
 	return res;
 }
-bool FileManager::LoadThread::IsThreadLoadExists(std::wstring path)
+bool FileManager::LoadThread::IsThreadLoadExists(const std::wstring&)
 {
 	bool res = false;
 	{
@@ -1103,7 +1101,7 @@ RecordEntry::RecordEntry()
 RecordEntry::~RecordEntry()
 {
 }
-int RecordEntry::_GetEntryRecordSize()
+int RecordEntry::_GetEntryRecordSize() const
 {
 	int res = 0;
 	res += sizeof(char);
@@ -1147,18 +1145,18 @@ void RecordBuffer::Clear()
 {
 	mapEntry_.clear();
 }
-ref_count_ptr<RecordEntry> RecordBuffer::GetEntry(std::string key)
+ref_count_ptr<RecordEntry> RecordBuffer::GetEntry(const std::string& key)
 {
 	return IsExists(key) ? mapEntry_[key] : NULL;
 }
-bool RecordBuffer::IsExists(std::string key)
+bool RecordBuffer::IsExists(const std::string& key) const
 {
 	return mapEntry_.find(key) != mapEntry_.end();
 }
-std::vector<std::string> RecordBuffer::GetKeyList()
+std::vector<std::string> RecordBuffer::GetKeyList() const
 {
 	std::vector<std::string> res;
-	std::map<std::string, ref_count_ptr<RecordEntry>>::iterator itr;
+	std::map<std::string, ref_count_ptr<RecordEntry>>::const_iterator itr;
 	for (itr = mapEntry_.begin(); itr != mapEntry_.end(); itr++) {
 		std::string key = itr->first;
 		res.push_back(key);
@@ -1189,7 +1187,7 @@ void RecordBuffer::Read(Reader& reader)
 		mapEntry_[key] = entry;
 	}
 }
-bool RecordBuffer::WriteToFile(std::wstring path, std::string header)
+bool RecordBuffer::WriteToFile(const std::wstring& path, const std::string& header)
 {
 	File file(path);
 	if (!file.Create())
@@ -1201,7 +1199,7 @@ bool RecordBuffer::WriteToFile(std::wstring path, std::string header)
 
 	return true;
 }
-bool RecordBuffer::ReadFromFile(std::wstring path, std::string header)
+bool RecordBuffer::ReadFromFile(const std::wstring& path, const std::string& header)
 {
 	File file(path);
 	if (!file.Open())
@@ -1218,20 +1216,20 @@ bool RecordBuffer::ReadFromFile(std::wstring path, std::string header)
 
 	return true;
 }
-int RecordBuffer::GetEntryType(std::string key)
+int RecordBuffer::GetEntryType(const std::string& key)
 {
 	if (!IsExists(key))
 		return RecordEntry::TYPE_NOENTRY;
 	return mapEntry_[key]->GetType();
 }
-int RecordBuffer::GetEntrySize(std::string key)
+int RecordBuffer::GetEntrySize(const std::string& key)
 {
 	if (!IsExists(key))
 		return 0;
 	ByteBuffer& buffer = mapEntry_[key]->GetBufferRef();
 	return buffer.GetSize();
 }
-bool RecordBuffer::GetRecord(std::string key, LPVOID buf, DWORD size)
+bool RecordBuffer::GetRecord(const std::string& key, LPVOID buf, DWORD size)
 {
 	if (!IsExists(key))
 		return false;
@@ -1240,31 +1238,31 @@ bool RecordBuffer::GetRecord(std::string key, LPVOID buf, DWORD size)
 	buffer.Read(buf, size);
 	return true;
 }
-bool RecordBuffer::GetRecordAsBoolean(std::string key)
+bool RecordBuffer::GetRecordAsBoolean(const std::string& key)
 {
 	bool res = 0;
 	GetRecord(key, res);
 	return res;
 }
-int RecordBuffer::GetRecordAsInteger(std::string key)
+int RecordBuffer::GetRecordAsInteger(const std::string& key)
 {
 	int res = 0;
 	GetRecord(key, res);
 	return res;
 }
-float RecordBuffer::GetRecordAsFloat(std::string key)
+float RecordBuffer::GetRecordAsFloat(const std::string& key)
 {
 	float res = 0;
 	GetRecord(key, res);
 	return res;
 }
-double RecordBuffer::GetRecordAsDouble(std::string key)
+double RecordBuffer::GetRecordAsDouble(const std::string& key)
 {
 	double res = 0;
 	GetRecord(key, res);
 	return res;
 }
-std::string RecordBuffer::GetRecordAsStringA(std::string key)
+std::string RecordBuffer::GetRecordAsStringA(const std::string& key)
 {
 	if (!IsExists(key))
 		return "";
@@ -1285,7 +1283,7 @@ std::string RecordBuffer::GetRecordAsStringA(std::string key)
 	}
 	return res;
 }
-std::wstring RecordBuffer::GetRecordAsStringW(std::string key)
+std::wstring RecordBuffer::GetRecordAsStringW(const std::string& key)
 {
 	if (!IsExists(key))
 		return L"";
@@ -1307,7 +1305,7 @@ std::wstring RecordBuffer::GetRecordAsStringW(std::string key)
 	}
 	return res;
 }
-bool RecordBuffer::GetRecordAsRecordBuffer(std::string key, RecordBuffer& record)
+bool RecordBuffer::GetRecordAsRecordBuffer(const std::string& key, RecordBuffer& record)
 {
 	if (!IsExists(key))
 		return false;
@@ -1316,7 +1314,7 @@ bool RecordBuffer::GetRecordAsRecordBuffer(std::string key, RecordBuffer& record
 	record.Read(buffer);
 	return true;
 }
-void RecordBuffer::SetRecord(int type, std::string key, LPVOID buf, DWORD size)
+void RecordBuffer::SetRecord(int type, const std::string& key, LPVOID buf, DWORD size)
 {
 	ref_count_ptr<RecordEntry> entry = new RecordEntry();
 	entry->SetType((char)type);
@@ -1326,7 +1324,7 @@ void RecordBuffer::SetRecord(int type, std::string key, LPVOID buf, DWORD size)
 	buffer.Write(buf, size);
 	mapEntry_[key] = entry;
 }
-void RecordBuffer::SetRecordAsRecordBuffer(std::string key, RecordBuffer& record)
+void RecordBuffer::SetRecordAsRecordBuffer(const std::string& key, RecordBuffer& record)
 {
 	ref_count_ptr<RecordEntry> entry = new RecordEntry();
 	entry->SetType((char)RecordEntry::TYPE_RECORD);
@@ -1431,24 +1429,24 @@ bool PropertyFile::Load(std::wstring path)
 	}
 	return res;
 }
-bool PropertyFile::HasProperty(std::wstring key)
+bool PropertyFile::HasProperty(const std::wstring& key) const
 {
 	return mapEntry_.find(key) != mapEntry_.end();
 }
-std::wstring PropertyFile::GetString(std::wstring key, std::wstring def)
+std::wstring PropertyFile::GetString(const std::wstring& key, const std::wstring& def)
 {
 	if (!HasProperty(key))
 		return def;
 	return mapEntry_[key];
 }
-int PropertyFile::GetInteger(std::wstring key, int def)
+int PropertyFile::GetInteger(const std::wstring& key, int def)
 {
 	if (!HasProperty(key))
 		return def;
 	std::wstring strValue = mapEntry_[key];
 	return StringUtility::ToInteger(strValue);
 }
-double PropertyFile::GetReal(std::wstring key, double def)
+double PropertyFile::GetReal(const std::wstring& key, double def)
 {
 	if (!HasProperty(key))
 		return def;
@@ -1543,18 +1541,18 @@ void SystemValueManager::ClearRecordBuffer(std::string key)
 		return;
 	mapRecord_[key]->Clear();
 }
-bool SystemValueManager::IsExists(std::string key)
+bool SystemValueManager::IsExists(const std::string& key) const
 {
 	return mapRecord_.find(key) != mapRecord_.end();
 }
-bool SystemValueManager::IsExists(std::string keyRecord, std::string keyValue)
+bool SystemValueManager::IsExists(const std::string& keyRecord, const std::string& keyValue)
 {
 	if (!IsExists(keyRecord))
 		return false;
 	gstd::ref_count_ptr<RecordBuffer> record = GetRecordBuffer(keyRecord);
 	return record->IsExists(keyValue);
 }
-gstd::ref_count_ptr<RecordBuffer> SystemValueManager::GetRecordBuffer(std::string key)
+gstd::ref_count_ptr<RecordBuffer> SystemValueManager::GetRecordBuffer(const std::string& key)
 {
 	return IsExists(key) ? mapRecord_[key] : NULL;
 }

@@ -20,16 +20,16 @@ public:
 	FpsController();
 	virtual ~FpsController();
 	virtual void SetFps(int fps) { fps_ = fps; }
-	virtual int GetFps() { return fps_; }
+	virtual int GetFps() const { return fps_; }
 	virtual void SetTimerEnable(bool b) { bUseTimer_ = b; }
 
 	virtual void Wait() = 0;
-	virtual bool IsSkip() { return false; }
+	virtual bool IsSkip() const { return false; }
 	virtual void SetCriticalFrame() { bCriticalFrame_ = true; }
-	virtual float GetCurrentFps() = 0;
-	virtual float GetCurrentWorkFps() { return GetCurrentFps(); }
-	virtual float GetCurrentRenderFps() { return GetCurrentFps(); }
-	bool IsFastMode() { return bFastMode_; }
+	virtual float GetCurrentFps() const = 0;
+	virtual float GetCurrentWorkFps() const { return GetCurrentFps(); }
+	virtual float GetCurrentRenderFps() const { return GetCurrentFps(); }
+	bool IsFastMode() const { return bFastMode_; }
 	void SetFastMode(bool b) { bFastMode_ = b; }
 
 	void AddFpsControlObject(ref_count_weak_ptr<FpsControlObject> obj);
@@ -57,7 +57,7 @@ public:
 	~StaticFpsController();
 
 	virtual void Wait();
-	virtual bool IsSkip();
+	virtual bool IsSkip() const;
 	virtual void SetCriticalFrame()
 	{
 		bCriticalFrame_ = true;
@@ -66,9 +66,9 @@ public:
 	}
 
 	void SetSkipRate(int value);
-	virtual float GetCurrentFps();
-	virtual float GetCurrentWorkFps();
-	virtual float GetCurrentRenderFps();
+	virtual float GetCurrentFps() const;
+	virtual float GetCurrentWorkFps() const;
+	virtual float GetCurrentRenderFps() const;
 
 protected:
 	float fpsCurrent_; //現在のFPS
@@ -94,7 +94,7 @@ public:
 	~AutoSkipFpsController();
 
 	virtual void Wait();
-	virtual bool IsSkip();
+	virtual bool IsSkip() const;
 	virtual void SetCriticalFrame()
 	{
 		bCriticalFrame_ = true;
@@ -102,9 +102,9 @@ public:
 		countSkip_ = 0;
 	}
 
-	virtual float GetCurrentFps() { return GetCurrentWorkFps(); }
-	float GetCurrentWorkFps() { return fpsCurrentWork_; };
-	float GetCurrentRenderFps() { return fpsCurrentRender_; };
+	virtual float GetCurrentFps() const { return GetCurrentWorkFps(); }
+	float GetCurrentWorkFps() const { return fpsCurrentWork_; };
+	float GetCurrentRenderFps() const { return fpsCurrentRender_; };
 
 protected:
 	float fpsCurrentWork_; //実際のfps

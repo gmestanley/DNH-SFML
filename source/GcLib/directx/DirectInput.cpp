@@ -382,19 +382,19 @@ void DirectInput::Update()
 			bufPad_[iPad][iButton + 4] = _GetPadButton(iPad, iButton, bufPad_[iPad][iButton + 4]);
 	}
 }
-int DirectInput::GetKeyState(int key)
+int DirectInput::GetKeyState(int key) const
 {
 	if (key < 0 || key >= MAX_KEY)
 		return KEY_FREE;
 	return bufKey_[key];
 }
-int DirectInput::GetMouseState(int button)
+int DirectInput::GetMouseState(int button) const
 {
 	if (button < 0 || button >= MAX_MOUSE_BUTTON)
 		return KEY_FREE;
 	return bufMouse_[button];
 }
-int DirectInput::GetPadState(int padNo, int button)
+int DirectInput::GetPadState(int padNo, int button) const
 {
 	int res = KEY_FREE;
 	if (padNo < bufPad_.size())
@@ -603,10 +603,10 @@ void KeyReplayManager::Update()
 	}
 	frame_++;
 }
-bool KeyReplayManager::IsTargetKeyCode(int key)
+bool KeyReplayManager::IsTargetKeyCode(int key) const
 {
 	bool res = false;
-	std::list<int>::iterator itrTarget = listTarget_.begin();
+	std::list<int>::const_iterator itrTarget = listTarget_.begin();
 	for (; itrTarget != listTarget_.end(); itrTarget++) {
 		int idKey = *itrTarget;
 		gstd::ref_count_ptr<VirtualKey> vKey = input_->GetVirtualKey(idKey);

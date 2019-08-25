@@ -34,8 +34,8 @@
 //-------- 汎用
 namespace gstd {
 
-std::string to_mbcs(std::wstring const& s);
-std::wstring to_wide(std::string const& s);
+std::string to_mbcs(const std::wstring& s);
+std::wstring to_wide(const std::string& s);
 
 template <typename T>
 class lightweight_vector {
@@ -51,7 +51,7 @@ public:
 	{
 	}
 
-	lightweight_vector(lightweight_vector const& source);
+	lightweight_vector(const lightweight_vector& source);
 
 	~lightweight_vector()
 	{
@@ -60,11 +60,11 @@ public:
 		}
 	}
 
-	lightweight_vector& operator=(lightweight_vector const& source);
+	lightweight_vector& operator=(const lightweight_vector& source);
 
 	void expand();
 
-	void push_back(T const& value)
+	void push_back(const T& value)
 	{
 		if (length == capacity)
 			expand();
@@ -105,7 +105,7 @@ public:
 		return at[i];
 	}
 
-	T const& operator[](unsigned i) const
+	const T & operator[](unsigned i) const
 	{
 		return at[i];
 	}
@@ -121,11 +121,11 @@ public:
 	}
 
 	void erase(T* pos);
-	void insert(T* pos, T const& value);
+	void insert(T* pos, const T & value);
 };
 
 template <typename T>
-lightweight_vector<T>::lightweight_vector(lightweight_vector const& source)
+lightweight_vector<T>::lightweight_vector(const lightweight_vector & source)
 {
 	length = source.length;
 	capacity = source.capacity;
@@ -139,7 +139,7 @@ lightweight_vector<T>::lightweight_vector(lightweight_vector const& source)
 }
 
 template <typename T>
-lightweight_vector<T>& lightweight_vector<T>::operator=(lightweight_vector<T> const& source)
+lightweight_vector<T>& lightweight_vector<T>::operator=(const lightweight_vector<T> & source)
 {
 	if (at != NULL)
 		delete[] at;
@@ -182,7 +182,7 @@ void lightweight_vector<T>::erase(T* pos)
 }
 
 template <typename T>
-void lightweight_vector<T>::insert(T* pos, T const& value)
+void lightweight_vector<T>::insert(T* pos, const T& value)
 {
 	if (length == capacity) {
 		unsigned pos_index = pos - at;
@@ -221,55 +221,50 @@ public:
 
 	//デストラクタはデフォルトに任せる
 
-	type_kind get_kind()
-	{
-		return kind;
-	}
-
-	type_data* get_element()
-	{
-		return element;
-	}
+	type_kind get_kind() const { return kind; }
+	type_data* get_element() const { return element; }
 
 private:
 	type_kind kind;
 	type_data* element;
 
-	type_data& operator=(type_data const& source);
+	type_data& operator=(const type_data& source);
 };
 
 class value {
 public:
 	value()
-		: data(NULL) {}
+		: data(NULL)
+	{
+	}
 
-	value(type_data* t, long double v)
+	value(type_data* type, long double val)
 	{
 		data = new body();
 		data->ref_count = 1;
-		data->type = t;
-		data->real_value = v;
+		data->type = type;
+		data->real_value = val;
 	}
 
-	value(type_data* t, wchar_t v)
+	value(type_data* type, wchar_t val)
 	{
 		data = new body();
 		data->ref_count = 1;
-		data->type = t;
-		data->char_value = v;
+		data->type = type;
+		data->char_value = val;
 	}
 
-	value(type_data* t, bool v)
+	value(type_data* type, bool val)
 	{
 		data = new body();
 		data->ref_count = 1;
-		data->type = t;
-		data->boolean_value = v;
+		data->type = type;
+		data->boolean_value = val;
 	}
 
-	value(type_data* t, std::wstring v);
+	value(type_data* type, const std::wstring& val);
 
-	value(value const& source)
+	value(const value& source)
 	{
 		data = source.data;
 		if (data != NULL)
@@ -281,7 +276,7 @@ public:
 		release();
 	}
 
-	value& operator=(value const& source)
+	value& operator=(const value& source)
 	{
 		if (source.data != NULL) {
 			++(source.data->ref_count);
@@ -296,29 +291,29 @@ public:
 		return data != NULL;
 	}
 
-	void set(type_data* t, long double v)
+	void set(type_data* type, long double val)
 	{
 		unique();
-		data->type = t;
-		data->real_value = v;
+		data->type = type;
+		data->real_value = val;
 	}
 
-	void set(type_data* t, bool v)
+	void set(type_data* type, bool val)
 	{
 		unique();
-		data->type = t;
-		data->boolean_value = v;
+		data->type = type;
+		data->boolean_value = val;
 	}
 
-	void append(type_data* t, value const& x);
-	void concatenate(value const& x);
+	void append(type_data* type, const value& val);
+	void concatenate(const value& val);
 
 	long double as_real() const;
 	wchar_t as_char() const;
 	bool as_boolean() const;
 	std::wstring as_string() const;
 	unsigned length_as_array() const;
-	value const& index_as_array(unsigned i) const;
+	const value& index_as_array(unsigned i) const;
 	value& index_as_array(unsigned i);
 	type_data* get_type() const;
 
@@ -335,7 +330,7 @@ public:
 		}
 	}
 
-	void overwrite(value const& source); //危険！外から呼ぶな
+	void overwrite(const value& source); //危険！外から呼ぶな
 
 private:
 	inline void release()
@@ -365,10 +360,10 @@ private:
 class script_engine;
 class script_machine;
 
-typedef value (*callback)(script_machine* machine, int argc, value const* argv);
+typedef value (*callback)(script_machine* machine, int argc, const value* argv);
 
 struct function {
-	char const* name;
+	const char* name;
 	callback func;
 	unsigned arguments;
 };
@@ -400,8 +395,8 @@ public:
 	type_data* get_array_type(type_data* element);
 
 private:
-	script_type_manager(script_type_manager const&);
-	script_type_manager& operator=(script_type_manager const& source);
+	script_type_manager(const script_type_manager&);
+	script_type_manager& operator=(const script_type_manager& source);
 
 	std::list<type_data> types; //中身のポインタを使うのでアドレスが変わらないようにlist
 	type_data* real_type;
@@ -412,65 +407,31 @@ private:
 
 class script_engine {
 public:
-	script_engine(script_type_manager* a_type_manager, std::string const& source, int funcc, function const* funcv);
-	script_engine(script_type_manager* a_type_manager, std::vector<char> const& source, int funcc, function const* funcv);
+	script_engine(script_type_manager* a_type_manager, const std::string& source, int funcc, const function* funcv);
+	script_engine(script_type_manager* a_type_manager, const std::vector<char>& source, int funcc, const function* funcv);
 	virtual ~script_engine();
 
 	void* data; //クライアント用空間
 
-	bool get_error()
-	{
-		return error;
-	}
-
-	std::wstring& get_error_message()
-	{
-		return error_message;
-	}
-
-	int get_error_line()
-	{
-		return error_line;
-	}
-
-	script_type_manager* get_type_manager()
-	{
-		return type_manager;
-	}
+	bool get_error() const { return error; }
+	std::wstring& get_error_message() { return error_message; }
+	int get_error_line() const { return error_line; }
+	script_type_manager* get_type_manager() { return type_manager; }
 
 	//compatibility
-	type_data* get_real_type()
-	{
-		return type_manager->get_real_type();
-	}
-
-	type_data* get_char_type()
-	{
-		return type_manager->get_char_type();
-	}
-
-	type_data* get_boolean_type()
-	{
-		return type_manager->get_boolean_type();
-	}
-
-	type_data* get_array_type(type_data* element)
-	{
-		return type_manager->get_array_type(element);
-	}
-
-	type_data* get_string_type()
-	{
-		return type_manager->get_string_type();
-	}
+	type_data* get_real_type() { return type_manager->get_real_type(); }
+	type_data* get_char_type() { return type_manager->get_char_type(); }
+	type_data* get_boolean_type() { return type_manager->get_boolean_type(); }
+	type_data* get_array_type(type_data* element) { return type_manager->get_array_type(element); }
+	type_data* get_string_type() { return type_manager->get_string_type(); }
 
 #ifndef _MSC_VER
 private:
 #endif
 
 	//コピー、代入演算子の自動生成を無効に
-	script_engine(script_engine const& source);
-	script_engine& operator=(script_engine const& source);
+	script_engine(const script_engine& source);
+	script_engine& operator=(const script_engine& source);
 
 	//エラー
 	bool error;
@@ -571,7 +532,7 @@ private:
 		{
 		}
 
-		code(int the_line, command_kind the_command, value const& the_data)
+		code(int the_line, command_kind the_command, const value& the_data)
 			: line(the_line)
 			, command(the_command)
 			, data(the_data)
@@ -632,7 +593,7 @@ public:
 	void* data; //クライアント用空間
 
 	void run();
-	void call(std::string event_name);
+	void call(const std::string& event_name);
 	void resume();
 
 	void stop()
@@ -641,38 +602,19 @@ public:
 		stopped = true;
 	}
 
-	bool get_stopped()
-	{
-		return stopped;
-	}
+	bool get_stopped() const { return stopped; }
+	bool get_resuming() const { return resuming; }
+	bool get_error() const { return error; }
+	std::wstring& get_error_message() { return error_message; }
+	int get_error_line() const { return error_line; }
 
-	bool get_resuming()
-	{
-		return resuming;
-	}
-
-	bool get_error()
-	{
-		return error;
-	}
-
-	std::wstring& get_error_message()
-	{
-		return error_message;
-	}
-
-	int get_error_line()
-	{
-		return error_line;
-	}
-
-	void raise_error(std::wstring const& message)
+	void raise_error(const std::wstring& message)
 	{
 		error = true;
 		error_message = message;
 		finished = true;
 	}
-	void terminate(std::wstring const& message)
+	void terminate(const std::wstring& message)
 	{
 		bTerminate = true;
 		error = true;
@@ -680,21 +622,18 @@ public:
 		finished = true;
 	}
 
-	script_engine* get_engine()
-	{
-		return engine;
-	}
+	script_engine* get_engine() { return engine; }
 
-	bool has_event(std::string event_name);
+	bool has_event(const std::string& event_name) const;
 
-	int get_current_line();
+	int get_current_line() const;
 
-	int get_thread_count() { return threads.size(); }
+	int get_thread_count() const { return threads.size(); }
 
 private:
 	script_machine();
-	script_machine(script_machine const& source);
-	script_machine& operator=(script_machine const& source);
+	script_machine(const script_machine& source);
+	script_machine& operator=(const script_machine& source);
 
 	script_engine* engine;
 
@@ -748,7 +687,7 @@ private:
 template <int num>
 class constant {
 public:
-	static value func(script_machine* machine, int argc, value const* argv)
+	static value func(script_machine* machine, int argc, const value* argv)
 	{
 		return value(machine->get_engine()->get_real_type(), (long double)num);
 	}
