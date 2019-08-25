@@ -245,7 +245,7 @@ void StgShotManager::SetDeleteEventEnableByType(int type, bool bEnable)
 		listDeleteEventEnable_.reset(bit);
 	}
 }
-bool StgShotManager::IsDeleteEventEnable(int bit)
+bool StgShotManager::IsDeleteEventEnable(int bit) const
 {
 	bool res = listDeleteEventEnable_[bit];
 	return res;
@@ -632,7 +632,7 @@ StgShotRenderer::StgShotRenderer()
 	countRenderVertex_ = 0;
 	SetVertexCount(256 * 256);
 }
-int StgShotRenderer::GetVertexCount()
+int StgShotRenderer::GetVertexCount() const
 {
 	int res = countRenderVertex_;
 	res = min(countRenderVertex_, vertex_.GetSize() / strideVertexStreamZero_);
@@ -1169,11 +1169,10 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgNormalShotObject::G
 	return res;
 }
 
-void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX& matO)
+void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX mat)
 {
 	if (!IsVisible())
 		return;
-	D3DXMATRIX mat = matO;
 
 	StgShotData* shotData = _GetShotData();
 	if (shotData == NULL)
@@ -1591,11 +1590,10 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgLooseLaserObject::G
 	return res;
 }
 
-void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX& matO)
+void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 {
 	if (!IsVisible())
 		return;
-	D3DXMATRIX mat = matO;
 
 	StgShotData* shotData = _GetShotData();
 	if (shotData == NULL)
@@ -1876,11 +1874,10 @@ void StgStraightLaserObject::_AddReservedShot(ref_count_ptr<StgShotObject>::unsy
 	obj->Activate();
 	objectManager->ActivateObject(obj->GetObjectID(), true);
 }
-void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX& matO)
+void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 {
 	if (!IsVisible())
 		return;
-	D3DXMATRIX mat = matO;
 	StgShotData* shotData = _GetShotData();
 	if (shotData == NULL)
 		return;
@@ -2195,7 +2192,7 @@ double StgShotObject::cssn(double s, double ang)
 }
 
 //Extremely special thanks to Natashi for making this not awful
-void StgCurveLaserObject::RenderOnShotManager(D3DXMATRIX& mat)
+void StgCurveLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 { //original: (D3DXMATRIX mat)
 	if (!IsVisible())
 		return;

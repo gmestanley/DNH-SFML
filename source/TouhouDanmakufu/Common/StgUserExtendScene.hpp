@@ -22,7 +22,7 @@ public:
 
 protected:
 	void _InitializeTransitionTexture();
-	void _InitializeScript(std::wstring path, int type);
+	void _InitializeScript(const std::wstring& path, int type);
 	void _CallScriptMainLoop();
 	void _CallScriptFinalize();
 	void _AddRelativeManager();
@@ -45,7 +45,7 @@ public:
 
 	void CallScriptFinalizeAll();
 	gstd::value GetResultValue();
-	bool IsRealValue(gstd::value val);
+	bool IsRealValue(const gstd::value& val);
 
 protected:
 	StgSystemController* systemController_;

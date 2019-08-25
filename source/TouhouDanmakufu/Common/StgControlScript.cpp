@@ -29,7 +29,7 @@ void StgControlScriptInformation::LoadFreePlayerList()
 	//ソート
 	std::sort(listFreePlayer_.begin(), listFreePlayer_.end(), ScriptInformation::PlayerListSort());
 }
-void StgControlScriptInformation::LoadReplayInformation(std::wstring pathMainScript)
+void StgControlScriptInformation::LoadReplayInformation(const std::wstring& pathMainScript)
 {
 	replayManager_->UpdateInformationList(pathMainScript);
 }
@@ -502,7 +502,7 @@ gstd::value StgControlScript::Func_GetScriptPathList(gstd::script_machine* machi
 
 		//明らかに関係なさそうな拡張子は除外
 		std::wstring ext = PathProperty::GetFileExtension(path);
-		if (ScriptInformation::IsExcludeExtention(ext))
+		if (ScriptInformation::IsExcludeExtension(ext))
 			continue;
 
 		path = PathProperty::GetUnique(path);

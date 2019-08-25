@@ -35,7 +35,7 @@ public:
 
 class TitleSceneMenuItem : public TextLightUpMenuItem {
 public:
-	TitleSceneMenuItem(std::wstring text, std::wstring description, int x, int y);
+	TitleSceneMenuItem(const std::wstring& text, const std::wstring& description, int x, int y);
 	virtual ~TitleSceneMenuItem();
 	void Work();
 	void Render();

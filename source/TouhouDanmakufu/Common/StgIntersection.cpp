@@ -209,7 +209,7 @@ bool StgIntersectionManager::IsIntersected(ref_count_ptr<StgIntersectionTarget>:
 	}
 	return res;
 }
-bool StgIntersectionManager::IsIntersected(DxCircle& circle, DxWidthLine& line)
+bool StgIntersectionManager::IsIntersected(const DxCircle& circle, const DxWidthLine& line)
 {
 	//先端もしくは終端が円内にあるかを調べる
 	{
@@ -268,7 +268,7 @@ bool StgIntersectionManager::IsIntersected(DxCircle& circle, DxWidthLine& line)
 	bool res = e < r;
 	return res;
 }
-bool StgIntersectionManager::IsIntersected(DxWidthLine& line1, DxWidthLine& line2)
+bool StgIntersectionManager::IsIntersected(const DxWidthLine& line1, const DxWidthLine& line2)
 {
 	return false;
 }

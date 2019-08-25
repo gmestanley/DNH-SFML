@@ -186,7 +186,7 @@ bool StgEnemyBossSceneObject::_NextStep()
 		ref_count_ptr<StgEnemyBossObject>::unsync obj = listEnemy[iEnemy];
 		obj->SetLife(listLife[iEnemy]);
 		if (oldActiveData != NULL) {
-			std::vector<ref_count_ptr<StgEnemyBossObject>::unsync> listOldEnemyObject = oldActiveData->GetEnemyObjectList();
+			const std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& listOldEnemyObject = oldActiveData->GetEnemyObjectList();
 			if (iEnemy < listOldEnemyObject.size()) {
 				ref_count_ptr<StgEnemyBossObject>::unsync objOld = listOldEnemyObject[iEnemy];
 				obj->SetPositionX(objOld->GetPositionX());
@@ -210,7 +210,7 @@ void StgEnemyBossSceneObject::Work()
 	if (activeData_->IsReadyNext()) {
 		//次ステップ遷移可能
 		bool bEnemyExists = false;
-		std::vector<ref_count_ptr<StgEnemyBossObject>::unsync> listEnemy = activeData_->GetEnemyObjectList();
+		const std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& listEnemy = activeData_->GetEnemyObjectList();
 		for (int iEnemy = 0; iEnemy < listEnemy.size(); iEnemy++) {
 			ref_count_ptr<StgEnemyBossObject>::unsync obj = listEnemy[iEnemy];
 			bEnemyExists |= (!obj->IsDeleted());
@@ -248,7 +248,7 @@ void StgEnemyBossSceneObject::Work()
 
 		if (bZeroTimer || bEndLastSpell) {
 			//タイマー0なら敵のライフを0にする
-			std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& listEnemy = activeData_->GetEnemyObjectList();
+			const std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& listEnemy = activeData_->GetEnemyObjectList();
 			for (int iEnemy = 0; iEnemy < listEnemy.size(); iEnemy++) {
 				ref_count_ptr<StgEnemyBossObject>::unsync obj = listEnemy[iEnemy];
 				obj->SetLife(0);
@@ -263,7 +263,7 @@ void StgEnemyBossSceneObject::Work()
 
 		//次シーンへの遷移フラグ設定
 		bool bReadyNext = true;
-		std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& listEnemy = activeData_->GetEnemyObjectList();
+		const std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& listEnemy = activeData_->GetEnemyObjectList();
 		for (int iEnemy = 0; iEnemy < listEnemy.size(); iEnemy++) {
 			ref_count_ptr<StgEnemyBossObject>::unsync obj = listEnemy[iEnemy];
 			if (obj->GetLife() > 0)
@@ -399,19 +399,19 @@ void StgEnemyBossSceneObject::LoadAllScriptInThread()
 	}
 	bLoad_ = true;
 }
-int StgEnemyBossSceneObject::GetRemainStepCount()
+int StgEnemyBossSceneObject::GetRemainStepCount() const
 {
 	int res = listData_.size() - dataStep_ - 1;
 	res = max(res, 0);
 	return res;
 }
-int StgEnemyBossSceneObject::GetActiveStepLifeCount()
+int StgEnemyBossSceneObject::GetActiveStepLifeCount() const
 {
 	if (dataStep_ >= listData_.size())
 		return 0;
 	return listData_[dataStep_].size();
 }
-double StgEnemyBossSceneObject::GetActiveStepTotalMaxLife()
+double StgEnemyBossSceneObject::GetActiveStepTotalMaxLife() const
 {
 	if (dataStep_ >= listData_.size())
 		return 0;
@@ -425,7 +425,7 @@ double StgEnemyBossSceneObject::GetActiveStepTotalMaxLife()
 	}
 	return res;
 }
-double StgEnemyBossSceneObject::GetActiveStepTotalLife()
+double StgEnemyBossSceneObject::GetActiveStepTotalLife() const
 {
 	if (dataStep_ >= listData_.size())
 		return 0;
@@ -436,7 +436,7 @@ double StgEnemyBossSceneObject::GetActiveStepTotalLife()
 	}
 	return res;
 }
-double StgEnemyBossSceneObject::GetActiveStepLife(int index)
+double StgEnemyBossSceneObject::GetActiveStepLife(int index) const
 {
 	if (dataStep_ >= listData_.size())
 		return 0;
@@ -446,7 +446,7 @@ double StgEnemyBossSceneObject::GetActiveStepLife(int index)
 	double res = 0;
 	ref_count_ptr<StgEnemyBossSceneData>::unsync data = listData_[dataStep_][index];
 	if (index == dataIndex_) {
-		std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& listEnemyObject = data->GetEnemyObjectList();
+		const std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& listEnemyObject = data->GetEnemyObjectList();
 		for (int iEnemy = 0; iEnemy < listEnemyObject.size(); iEnemy++) {
 			ref_count_ptr<StgEnemyBossObject>::unsync obj = listEnemyObject[iEnemy];
 			res += obj->GetLife();
@@ -458,7 +458,7 @@ double StgEnemyBossSceneObject::GetActiveStepLife(int index)
 	}
 	return res;
 }
-std::vector<double> StgEnemyBossSceneObject::GetActiveStepLifeRateList()
+std::vector<double> StgEnemyBossSceneObject::GetActiveStepLifeRateList() const
 {
 	std::vector<double> res;
 	int count = GetActiveStepLifeCount();
@@ -516,7 +516,7 @@ int StgEnemyBossSceneData::GetEnemyBossIdInCreate()
 
 	return obj->GetObjectID();
 }
-_int64 StgEnemyBossSceneData::GetCurrentSpellScore()
+_int64 StgEnemyBossSceneData::GetCurrentSpellScore() const
 {
 	_int64 res = scoreSpell_;
 	if (!bDurable_) {

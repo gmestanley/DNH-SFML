@@ -298,7 +298,7 @@ ref_count_ptr<StgPlayerObject>::unsync StgPlayerObject::GetOwnObject()
 {
 	return ref_count_ptr<StgPlayerObject>::unsync::DownCast(stageController_->GetMainRenderObject(idObject_));
 }
-bool StgPlayerObject::IsPermitShot()
+bool StgPlayerObject::IsPermitShot() const
 {
 	//以下のとき不可
 	//・会話中

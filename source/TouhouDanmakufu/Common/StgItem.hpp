@@ -19,23 +19,23 @@ public:
 	void Render(int targetPriority);
 
 	void AddItem(ref_count_ptr<StgItemObject>::unsync obj) { listObj_.push_back(obj); }
-	int GetItemCount() { return listObj_.size(); }
+	int GetItemCount() const { return listObj_.size(); }
 
 	SpriteList2D* GetItemRenderer() { return listSpriteItem_.GetPointer(); }
 	SpriteList2D* GetDigitRenderer() { return listSpriteDigit_.GetPointer(); }
 	std::vector<bool> GetValidRenderPriorityList();
 
 	StgItemDataList* GetItemDataList() { return listItemData_.GetPointer(); }
-	bool LoadItemData(std::wstring path, bool bReload = false);
+	bool LoadItemData(const std::wstring& path, bool bReload = false);
 
 	ref_count_ptr<StgItemObject>::unsync CreateItem(int type);
 
 	void CollectItemsAll();
 	void CollectItemsByType(int type);
-	void CollectItemsInCircle(DxCircle circle);
+	void CollectItemsInCircle(const DxCircle& circle);
 	void CancelCollectItems();
 
-	bool IsDefaultBonusItemEnable() { return bDefaultBonusItemEnable_; }
+	bool IsDefaultBonusItemEnable() const { return bDefaultBonusItemEnable_; }
 	void SetDefaultBonusItemEnable(bool bEnable) { bDefaultBonusItemEnable_ = bEnable; }
 
 private:
@@ -68,14 +68,14 @@ public:
 	StgItemDataList();
 	virtual ~StgItemDataList();
 
-	int GetTextureCount() { return listTexture_.size(); }
+	int GetTextureCount() const { return listTexture_.size(); }
 	ref_count_ptr<Texture> GetTexture(int index) { return listTexture_[index]; }
-	ref_count_ptr<StgItemRenderer>::unsync GetRenderer(int index, int typeRender) { return listRenderer_[typeRender][index]; }
+	ref_count_ptr<StgItemRenderer>::unsync GetRenderer(int index, int typeRender) const { return listRenderer_[typeRender][index]; }
 	std::vector<ref_count_ptr<StgItemRenderer>::unsync>* GetRendererList(int typeRender) { return &listRenderer_[typeRender]; }
 
-	ref_count_ptr<StgItemData>::unsync GetData(int id) { return (id >= 0 && id < listData_.size()) ? listData_[id] : NULL; }
+	ref_count_ptr<StgItemData>::unsync GetData(int id) const { return (id >= 0 && id < listData_.size()) ? listData_[id] : NULL; }
 
-	bool AddItemDataList(std::wstring path, bool bReload);
+	bool AddItemDataList(const std::wstring& path, bool bReload);
 
 private:
 	void _ScanItem(std::vector<ref_count_ptr<StgItemData>::unsync>& listData, Scanner& scanner);
@@ -102,12 +102,12 @@ public:
 	StgItemData(StgItemDataList* listItemData);
 	virtual ~StgItemData();
 
-	int GetTextureIndex() { return indexTexture_; }
-	int GetItemType() { return typeItem_; }
-	int GetRenderType() { return typeRender_; }
+	int GetTextureIndex() const { return indexTexture_; }
+	int GetItemType() const { return typeItem_; }
+	int GetRenderType() const { return typeRender_; }
 	RECT GetRect(int frame);
-	RECT GetOut() { return rcOut_; }
-	int GetAlpha() { return alpha_; }
+	RECT GetOut() const { return rcOut_; }
+	int GetAlpha() const { return alpha_; }
 
 	ref_count_ptr<Texture> GetTexture();
 	StgItemRenderer* GetRenderer();
@@ -133,10 +133,10 @@ private:
 class StgItemRenderer : public RenderObjectTLX {
 public:
 	StgItemRenderer();
-	virtual int GetVertexCount();
+	virtual int GetVertexCount() const;
 	virtual void Render();
-	void AddVertex(VERTEX_TLX& vertex);
-	void AddSquareVertex(VERTEX_TLX* listVertex);
+	void AddVertex(const VERTEX_TLX& vertex);
+	void AddSquareVertex(const VERTEX_TLX* listVertex);
 
 private:
 	int countRenderVertex_;
@@ -187,26 +187,26 @@ public:
 	virtual void SetAlpha(int alpha);
 	void SetToPosition(POINT pos);
 
-	_int64 GetScore() { return score_; }
+	_int64 GetScore() const { return score_; }
 	void SetScore(_int64 score) { score_ = score; }
-	bool IsMoveToPlayer() { return bMoveToPlayer_; }
+	bool IsMoveToPlayer() const { return bMoveToPlayer_; }
 	void SetMoveToPlayer(bool b) { bMoveToPlayer_ = b; }
-	bool IsPermitMoveToPlayer() { return bPermitMoveToPlayer_; }
+	bool IsPermitMoveToPlayer() const { return bPermitMoveToPlayer_; }
 	void SetPermitMoveToPlayer(bool bPermit) { bPermitMoveToPlayer_ = bPermit; }
 	void SetChangeItemScore(bool b) { bChangeItemScore_ = b; }
 
 	int GetMoveType();
 	void SetMoveType(int type);
 
-	int GetItemType() { return typeItem_; }
+	int GetItemType() const { return typeItem_; }
 	void SetItemType(int type) { typeItem_ = type; }
 	StgStageController* GetStageController() { return stageController_; }
 
 protected:
 	void _DeleteInAutoClip();
 	void _CreateScoreItem();
-	void _NotifyEventToPlayerScript(std::vector<long double>& listValue);
-	void _NotifyEventToItemScript(std::vector<long double>& listValue);
+	void _NotifyEventToPlayerScript(const std::vector<long double>& listValue);
+	void _NotifyEventToItemScript(const std::vector<long double>& listValue);
 
 	StgStageController* stageController_;
 	int typeItem_;
@@ -295,11 +295,11 @@ public:
 	StgMovePattern_Item(StgMoveObject* target);
 	virtual void Move();
 	int GetType() { return TYPE_OTHER; }
-	virtual double GetSpeed() { return 0; }
-	virtual double GetDirectionAngle() { return 0; }
+	virtual double GetSpeed() const { return 0; }
+	virtual double GetDirectionAngle() const { return 0; }
 	void SetToPosition(POINT pos) { posTo_ = pos; }
 
-	int GetItemMoveType() { return typeMove_; }
+	int GetItemMoveType() const { return typeMove_; }
 	void SetItemMoveType(int type) { typeMove_ = type; }
 
 protected:

@@ -49,11 +49,11 @@ public:
 	void DeleteInCircle(int typeDelete, int typeTo, int typeOnwer, int cx, int cy, double radius);
 	std::vector<int> GetShotIdInCircle(int typeOnwer, int cx, int cy, int radius);
 	int GetShotCount(int typeOnwer);
-	int GetShotCountAll() { return listObj_.size(); }
+	int GetShotCountAll() const { return listObj_.size(); }
 	std::vector<bool> GetValidRenderPriorityList();
 
 	void SetDeleteEventEnableByType(int type, bool bEnable);
-	bool IsDeleteEventEnable(int bit);
+	bool IsDeleteEventEnable(int bit) const;
 
 protected:
 	StgStageController* stageController_;
@@ -83,12 +83,12 @@ public:
 	StgShotDataList();
 	virtual ~StgShotDataList();
 
-	int GetTextureCount() { return listTexture_.size(); }
+	int GetTextureCount() const { return listTexture_.size(); }
 	ref_count_ptr<Texture> GetTexture(int index) { return listTexture_[index]; }
-	ref_count_ptr<StgShotRenderer>::unsync GetRenderer(int index, int typeRender) { return listRenderer_[typeRender][index]; }
+	ref_count_ptr<StgShotRenderer>::unsync GetRenderer(int index, int typeRender) const { return listRenderer_[typeRender][index]; }
 	std::vector<ref_count_ptr<StgShotRenderer>::unsync>* GetRendererList(int typeRender) { return &listRenderer_[typeRender]; }
 
-	ref_count_ptr<StgShotData>::unsync GetData(int id) { return (id >= 0 && id < listData_.size()) ? listData_[id] : NULL; }
+	ref_count_ptr<StgShotData>::unsync GetData(int id) const { return (id >= 0 && id < listData_.size()) ? listData_[id] : NULL; }
 
 	bool AddShotDataList(std::wstring path, bool bReload);
 
@@ -116,17 +116,17 @@ public:
 	StgShotData(StgShotDataList* listShotData);
 	virtual ~StgShotData();
 
-	int GetTextureIndex() { return indexTexture_; }
-	int GetRenderType() { return typeRender_; }
-	int GetDelayRenderType() { return typeDelayRender_; }
+	int GetTextureIndex() const { return indexTexture_; }
+	int GetRenderType() const { return typeRender_; }
+	int GetDelayRenderType() const { return typeDelayRender_; }
 	RECT GetRect(int frame);
-	RECT GetDelayRect() { return rcDelay_; }
-	int GetAlpha() { return alpha_; }
-	D3DCOLOR GetDelayColor() { return colorDelay_; }
+	RECT GetDelayRect() const { return rcDelay_; }
+	int GetAlpha() const { return alpha_; }
+	D3DCOLOR GetDelayColor() const { return colorDelay_; }
 	std::vector<DxCircle>* GetIntersectionCircleList() { return &listCol_; }
-	double GetAngularVelocityMin() { return angularVelocityMin_; }
-	double GetAngularVelocityMax() { return angularVelocityMax_; }
-	bool IsFixedAngle() { return bFixedAngle_; }
+	double GetAngularVelocityMin() const { return angularVelocityMin_; }
+	double GetAngularVelocityMax() const { return angularVelocityMax_; }
+	bool IsFixedAngle() const { return bFixedAngle_; }
 
 	ref_count_ptr<Texture> GetTexture();
 	StgShotRenderer* GetRenderer();
@@ -159,7 +159,7 @@ private:
 class StgShotRenderer : public RenderObjectTLX {
 public:
 	StgShotRenderer();
-	virtual int GetVertexCount();
+	virtual int GetVertexCount() const;
 	virtual void Render();
 	void AddVertex(VERTEX_TLX& vertex);
 	void AddSquareVertex(VERTEX_TLX* listVertex);
@@ -194,7 +194,7 @@ public:
 	virtual void Work();
 	virtual void Render() {} //一括で描画するためオブジェクト管理での描画はしない
 	virtual void Activate() {}
-	virtual void RenderOnShotManager(D3DXMATRIX& mat) {}
+	virtual void RenderOnShotManager(D3DXMATRIX mat) {}
 	double cssn(double s, double ang);
 	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
 	virtual void ClearShotObject() { ClearIntersectionRelativeTarget(); }
@@ -215,31 +215,31 @@ public:
 	virtual void SetRenderState() {}
 
 	ref_count_ptr<StgShotObject>::unsync GetOwnObject();
-	int GetShotDataID() { return idShotData_; }
+	int GetShotDataID() const { return idShotData_; }
 	virtual void SetShotDataID(int id) { idShotData_ = id; }
-	int GetOwnerType() { return typeOwner_; }
+	int GetOwnerType() const { return typeOwner_; }
 	void SetOwnerType(int type) { typeOwner_ = type; }
 
-	bool IsValidGraze() { return frameGrazeInvalid_ <= 0; }
-	int GetDelay() { return delay_; }
+	bool IsValidGraze() const { return frameGrazeInvalid_ <= 0; }
+	int GetDelay() const { return delay_; }
 	void SetDelay(int delay) { delay_ = delay; }
-	int GetSourceBlendType() { return typeSourceBrend_; }
+	int GetSourceBlendType() const { return typeSourceBrend_; }
 	void SetSourceBlendType(int type) { typeSourceBrend_ = type; }
-	double GetLife() { return life_; }
+	double GetLife() const { return life_; }
 	void SetLife(double life) { life_ = life; }
-	double GetDamage() { return damage_; }
+	double GetDamage() const { return damage_; }
 	void SetDamage(double damage) { damage_ = damage; }
 	virtual void SetFadeDelete()
 	{
 		if (frameFadeDelete_ < 0)
 			frameFadeDelete_ = FRAME_FADEDELETE;
 	}
-	bool IsAutoDelete() { return bAutoDelete_; }
+	bool IsAutoDelete() const { return bAutoDelete_; }
 	void SetAutoDelete(bool b) { bAutoDelete_ = b; }
 	void SetAutoDeleteFrame(int frame) { frameAutoDelete_ = frame; }
-	bool IsEraseShot() { return bEraseShot_; }
+	bool IsEraseShot() const { return bEraseShot_; }
 	void SetEraseShot(bool bErase) { bEraseShot_ = bErase; }
-	bool IsSpellFactor() { return bSpellFactor_; }
+	bool IsSpellFactor() const { return bSpellFactor_; }
 	void SetSpellFactor(bool bSpell) { bSpellFactor_ = bSpell; }
 	void SetUserIntersectionMode(bool b) { bUserIntersectionMode_ = b; }
 	void SetIntersectionEnable(bool b) { bIntersectionEnable_ = b; }
@@ -299,9 +299,9 @@ public:
 		angle_ = 0;
 	}
 	virtual ~ReserveShotListData() {}
-	int GetShotID() { return idShot_; }
-	double GetRadius() { return radius_; }
-	double GetAngle() { return angle_; }
+	int GetShotID() const { return idShot_; }
+	double GetRadius() const { return radius_; }
+	double GetAngle() const { return angle_; }
 
 private:
 	int idShot_; //対象ID
@@ -341,7 +341,7 @@ public:
 	StgNormalShotObject(StgStageController* stageController);
 	virtual ~StgNormalShotObject();
 	virtual void Work();
-	virtual void RenderOnShotManager(D3DXMATRIX& mat);
+	virtual void RenderOnShotManager(D3DXMATRIX mat);
 	virtual void ClearShotObject();
 	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
 
@@ -364,11 +364,11 @@ public:
 	virtual void ClearShotObject();
 	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
 
-	int GetLength() { return length_; }
+	int GetLength() const { return length_; }
 	void SetLength(int length);
-	int GetRenderWidth() { return widthRender_; }
+	int GetRenderWidth() const { return widthRender_; }
 	void SetRenderWidth(int width);
-	int GetIntersectionWidth() { return widthIntersection_; }
+	int GetIntersectionWidth() const { return widthIntersection_; }
 	void SetIntersectionWidth(int width) { widthIntersection_ = width; }
 	void SetInvalidLength(int start, int end)
 	{
@@ -396,7 +396,7 @@ class StgLooseLaserObject : public StgLaserObject {
 public:
 	StgLooseLaserObject(StgStageController* stageController);
 	virtual void Work();
-	virtual void RenderOnShotManager(D3DXMATRIX& mat);
+	virtual void RenderOnShotManager(D3DXMATRIX mat);
 
 	virtual void RegistIntersectionTarget();
 	virtual std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList();
@@ -427,11 +427,11 @@ class StgStraightLaserObject : public StgLaserObject {
 public:
 	StgStraightLaserObject(StgStageController* stageController);
 	virtual void Work();
-	virtual void RenderOnShotManager(D3DXMATRIX& mat);
+	virtual void RenderOnShotManager(D3DXMATRIX mat);
 	virtual void RegistIntersectionTarget();
 	virtual std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList();
 
-	double GetLaserAngle() { return angLaser_; }
+	double GetLaserAngle() const { return angLaser_; }
 	void SetLaserAngle(double angle) { angLaser_ = angle; }
 	void SetFadeDelete()
 	{
@@ -464,7 +464,7 @@ protected:
 public:
 	StgCurveLaserObject(StgStageController* stageController);
 	virtual void Work();
-	virtual void RenderOnShotManager(D3DXMATRIX& mat);
+	virtual void RenderOnShotManager(D3DXMATRIX mat);
 	virtual void RegistIntersectionTarget();
 	virtual std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList();
 	void SetTipDecrement(double dec) { tipDecrement_ = dec; }

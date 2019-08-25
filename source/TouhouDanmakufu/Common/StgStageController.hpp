@@ -78,15 +78,15 @@ public:
 public:
 	StgStageInformation();
 	virtual ~StgStageInformation();
-	bool IsEnd() { return bEndStg_; }
+	bool IsEnd() const { return bEndStg_; }
 	void SetEnd() { bEndStg_ = true; }
-	bool IsPause() { return bPause_; }
+	bool IsPause() const { return bPause_; }
 	void SetPause(bool bPause) { bPause_ = bPause; }
-	bool IsReplay() { return bReplay_; }
+	bool IsReplay() const { return bReplay_; }
 	void SetReplay(bool bReplay) { bReplay_ = bReplay; }
-	int GetCurrentFrame() { return frame_; }
+	int GetCurrentFrame() const { return frame_; }
 	void AdvanceFrame() { frame_++; }
-	int GetStageIndex() { return stageIndex_; }
+	int GetStageIndex() const { return stageIndex_; }
 	void SetStageIndex(int index) { stageIndex_ = index; }
 
 	ref_count_ptr<ScriptInformation> GetMainScriptInformation() { return infoMainScript_; }
@@ -98,37 +98,37 @@ public:
 	ref_count_ptr<ReplayInformation::StageData> GetReplayData() { return replayStageData_; }
 	void SetReplayData(ref_count_ptr<ReplayInformation::StageData> data) { replayStageData_ = data; }
 
-	RECT GetStgFrameRect() { return rcStgFrame_; }
+	RECT GetStgFrameRect() const { return rcStgFrame_; }
 	void SetStgFrameRect(RECT rect, bool bUpdateFocusResetValue = true);
-	int GetStgFrameMinPriority() { return priMinStgFrame_; }
+	int GetStgFrameMinPriority() const { return priMinStgFrame_; }
 	void SetStgFrameMinPriority(int pri) { priMinStgFrame_ = pri; }
-	int GetStgFrameMaxPriority() { return priMaxStgFrame_; }
+	int GetStgFrameMaxPriority() const { return priMaxStgFrame_; }
 	void SetStgFrameMaxPriority(int pri) { priMaxStgFrame_ = pri; }
-	int GetShotObjectPriority() { return priShotObject_; }
+	int GetShotObjectPriority() const { return priShotObject_; }
 	void SetShotObjectPriority(int pri) { priShotObject_ = pri; }
-	int GetItemObjectPriority() { return priItemObject_; }
+	int GetItemObjectPriority() const { return priItemObject_; }
 	void SetItemObjectPriority(int pri) { priItemObject_ = pri; }
-	int GetCameraFocusPermitPriority() { return priCameraFocusPermit_; }
+	int GetCameraFocusPermitPriority() const { return priCameraFocusPermit_; }
 	void SetCameraFocusPermitPriority(int pri) { priCameraFocusPermit_ = pri; }
-	RECT GetShotAutoDeleteClip() { return rcShotAutoDeleteClip_; }
+	RECT GetShotAutoDeleteClip() const { return rcShotAutoDeleteClip_; }
 	void SetShotAutoDeleteClip(RECT rect) { rcShotAutoDeleteClip_ = rect; }
 
 	ref_count_ptr<MersenneTwister> GetMersenneTwister() { return rand_; }
 	void SetMersenneTwisterSeed(int seed) { rand_->Initialize(seed); }
-	_int64 GetScore() { return score_; }
+	_int64 GetScore() const { return score_; }
 	void SetScore(_int64 score) { score_ = score; }
 	void AddScore(_int64 inc) { score_ += inc; }
-	_int64 GetGraze() { return graze_; }
+	_int64 GetGraze() const { return graze_; }
 	void SetGraze(_int64 graze) { graze_ = graze; }
 	void AddGraze(_int64 inc) { graze_ += inc; }
-	_int64 GetPoint() { return point_; }
+	_int64 GetPoint() const { return point_; }
 	void SetPoint(_int64 point) { point_ = point; }
 	void AddPoint(_int64 inc) { point_ += inc; }
 
-	int GetResult() { return result_; }
+	int GetResult() const { return result_; }
 	void SetResult(int result) { result_ = result; }
 
-	int GetStageStartTime() { return timeStart_; }
+	int GetStageStartTime() const { return timeStart_; }
 	void SetStageStartTime(int time) { timeStart_ = time; }
 
 private:
@@ -219,7 +219,7 @@ class PseudoSlowInformation::SlowData {
 public:
 	SlowData() { fps_ = STANDARD_FPS; }
 	virtual ~SlowData() {}
-	int GetFps() { return fps_; }
+	int GetFps() const { return fps_; }
 	void SetFps(int fps) { fps_ = fps; }
 
 private:

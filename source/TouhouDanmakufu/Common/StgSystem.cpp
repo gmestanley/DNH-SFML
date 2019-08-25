@@ -726,12 +726,10 @@ StgSystemInformation::StgSystemInformation()
 StgSystemInformation::~StgSystemInformation()
 {
 }
-std::wstring StgSystemInformation::GetErrorMessage()
+std::wstring StgSystemInformation::GetErrorMessage() const
 {
 	std::wstring res = L"";
-	std::list<std::wstring>::iterator itr = listError_.begin();
-	for (; itr != listError_.end(); itr++) {
-		std::wstring str = (*itr);
+	for (const auto& str : listError_) {
 		if (str == L"Retry")
 			continue;
 		res += str + L"\r\n" + L"\r\n";

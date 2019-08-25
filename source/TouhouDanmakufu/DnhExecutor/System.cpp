@@ -50,7 +50,7 @@ void SystemController::ClearTaskWithoutSystem()
 	ETaskManager* taskManager = ETaskManager::GetInstance();
 	taskManager->RemoveTaskWithoutTypeInfo(listInfo);
 }
-void SystemController::ShowErrorDialog(std::wstring msg)
+void SystemController::ShowErrorDialog(const std::wstring& msg)
 {
 	HWND hParent = EDirectGraphics::GetInstance()->GetAttachedWindowHandle();
 	ErrorDialog dialog(hParent);

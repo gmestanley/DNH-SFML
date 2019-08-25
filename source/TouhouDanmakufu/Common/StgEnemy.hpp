@@ -17,7 +17,7 @@ public:
 	void RegistIntersectionTarget();
 
 	void AddEnemy(ref_count_ptr<StgEnemyObject>::unsync obj) { listObj_.push_back(obj); }
-	int GetEnemyCount() { return listObj_.size(); }
+	int GetEnemyCount() const { return listObj_.size(); }
 
 	void SetBossSceneObject(ref_count_ptr<StgEnemyBossSceneObject>::unsync obj);
 	ref_count_ptr<StgEnemyBossSceneObject>::unsync GetBossSceneObject();
@@ -55,7 +55,7 @@ public:
 	}
 
 	ref_count_ptr<StgEnemyObject>::unsync GetOwnObject();
-	double GetLife() { return life_; }
+	double GetLife() const { return life_; }
 	void SetLife(double life) { life_ = life; }
 	void AddLife(double inc)
 	{
@@ -67,9 +67,9 @@ public:
 		rateDamageShot_ = rateShot;
 		rateDamageSpell_ = rateSpell;
 	}
-	double GetShotDamageRate() { return rateDamageShot_; }
-	double GetSpellDamageRate() { return rateDamageSpell_; }
-	int GetIntersectedPlayerShotCount() { return intersectedPlayerShotCount_; }
+	double GetShotDamageRate() const { return rateDamageShot_; }
+	double GetSpellDamageRate() const { return rateDamageSpell_; }
+	int GetIntersectedPlayerShotCount() const { return intersectedPlayerShotCount_; }
 
 protected:
 	virtual void _Move();
@@ -107,17 +107,17 @@ public:
 	virtual void SetRenderState() {} //何もしない
 
 	void AddData(int step, ref_count_ptr<StgEnemyBossSceneData>::unsync data);
-	ref_count_ptr<StgEnemyBossSceneData>::unsync GetActiveData() { return activeData_; }
+	ref_count_ptr<StgEnemyBossSceneData>::unsync GetActiveData() const { return activeData_; }
 	void LoadAllScriptInThread();
 
-	int GetRemainStepCount();
-	int GetActiveStepLifeCount();
-	double GetActiveStepTotalMaxLife();
-	double GetActiveStepTotalLife();
-	double GetActiveStepLife(int index);
-	std::vector<double> GetActiveStepLifeRateList();
-	int GetDataStep() { return dataStep_; }
-	int GetDataIndex() { return dataIndex_; }
+	int GetRemainStepCount() const;
+	int GetActiveStepLifeCount() const;
+	double GetActiveStepTotalMaxLife() const;
+	double GetActiveStepTotalLife() const;
+	double GetActiveStepLife(int index) const;
+	std::vector<double> GetActiveStepLifeRateList() const;
+	int GetDataStep() const { return dataStep_; }
+	int GetDataIndex() const { return dataIndex_; }
 
 	void AddPlayerShootDownCount();
 	void AddPlayerSpellCount();
@@ -138,40 +138,40 @@ class StgEnemyBossSceneData {
 public:
 	StgEnemyBossSceneData();
 	virtual ~StgEnemyBossSceneData() {}
-	std::wstring GetPath() { return path_; }
-	void SetPath(std::wstring path) { path_ = path; }
-	_int64 GetScriptID() { return isScript_; }
+	std::wstring GetPath() const { return path_; }
+	void SetPath(const std::wstring& path) { path_ = path; }
+	_int64 GetScriptID() const { return isScript_; }
 	void SetScriptID(_int64 id) { isScript_ = id; }
 	std::vector<double>& GetLifeList() { return listLife_; }
-	void SetLifeList(std::vector<double>& list) { listLife_ = list; }
+	void SetLifeList(const std::vector<double>& list) { listLife_ = list; }
 	std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& GetEnemyObjectList() { return listEnemyObject_; }
-	void SetEnemyObjectList(std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& list) { listEnemyObject_ = list; }
+	void SetEnemyObjectList(const std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& list) { listEnemyObject_ = list; }
 	int GetEnemyBossIdInCreate();
-	bool IsReadyNext() { return bReadyNext_; }
+	bool IsReadyNext() const { return bReadyNext_; }
 	void SetReadyNext() { bReadyNext_ = true; }
 
-	_int64 GetCurrentSpellScore();
-	_int64 GetSpellScore() { return scoreSpell_; }
+	_int64 GetCurrentSpellScore() const;
+	_int64 GetSpellScore() const { return scoreSpell_; }
 	void SetSpellScore(_int64 score) { scoreSpell_ = score; }
-	int GetSpellTimer() { return timerSpell_; }
+	int GetSpellTimer() const { return timerSpell_; }
 	void SetSpellTimer(int timer) { timerSpell_ = timer; }
-	int GetOriginalSpellTimer() { return timerSpellOrg_; }
+	int GetOriginalSpellTimer() const { return timerSpellOrg_; }
 	void SetOriginalSpellTimer(int timer)
 	{
 		timerSpellOrg_ = timer;
 		timerSpell_ = timer;
 	}
-	bool IsSpellCard() { return bSpell_; }
+	bool IsSpellCard() const { return bSpell_; }
 	void SetSpellCard(bool b) { bSpell_ = b; }
-	bool IsLastSpell() { return bLastSpell_; }
+	bool IsLastSpell() const { return bLastSpell_; }
 	void SetLastSpell(bool b) { bLastSpell_ = b; }
-	bool IsDurable() { return bDurable_; }
+	bool IsDurable() const { return bDurable_; }
 	void SetDurable(bool b) { bDurable_ = b; }
 
 	void AddPlayerShootDownCount() { countPlayerShootDown_++; }
-	int GetPlayerShootDownCount() { return countPlayerShootDown_; }
+	int GetPlayerShootDownCount() const { return countPlayerShootDown_; }
 	void AddPlayerSpellCount() { countPlayerSpell_++; }
-	int GetPlayerSpellCount() { return countPlayerSpell_; }
+	int GetPlayerSpellCount() const { return countPlayerSpell_; }
 
 private:
 	std::wstring path_;

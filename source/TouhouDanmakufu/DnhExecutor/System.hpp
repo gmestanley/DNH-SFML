@@ -23,7 +23,7 @@ public:
 	TransitionManager* GetTransitionManager() { return transitionManager_.GetPointer(); }
 	SystemInformation* GetSystemInformation() { return infoSystem_.GetPointer(); }
 
-	void ShowErrorDialog(std::wstring msg);
+	void ShowErrorDialog(const std::wstring& msg);
 
 private:
 	SystemController();
@@ -91,18 +91,18 @@ public:
 	SystemInformation();
 	virtual ~SystemInformation();
 
-	int GetLastTitleSelectedIndex() { return lastTitleSelectedIndex_; }
+	int GetLastTitleSelectedIndex() const { return lastTitleSelectedIndex_; }
 	void SetLastTitleSelectedIndex(int index) { lastTitleSelectedIndex_ = index; }
-	std::wstring GetLastScriptSearchDirectory() { return dirLastScriptSearch_; }
-	void SetLastScriptSearchDirectory(std::wstring dir) { dirLastScriptSearch_ = dir; }
-	std::wstring GetLastSelectedScriptPath() { return pathLastSelectedScript_; }
-	void SetLastSelectedScriptPath(std::wstring path) { pathLastSelectedScript_ = path; }
-	int GetLastSelectScriptSceneType() { return lastSelectScriptSceneType_; }
+	std::wstring GetLastScriptSearchDirectory() const { return dirLastScriptSearch_; }
+	void SetLastScriptSearchDirectory(const std::wstring& dir) { dirLastScriptSearch_ = dir; }
+	std::wstring GetLastSelectedScriptPath() const { return pathLastSelectedScript_; }
+	void SetLastSelectedScriptPath(const std::wstring& path) { pathLastSelectedScript_ = path; }
+	int GetLastSelectScriptSceneType() const { return lastSelectScriptSceneType_; }
 	void SetLastSelectScriptSceneType(int type) { lastSelectScriptSceneType_ = type; }
 
-	int GetLastSelectedPlayerIndex() { return lastPlayerSelectIndex_; }
+	int GetLastSelectedPlayerIndex() const { return lastPlayerSelectIndex_; }
 	std::vector<ref_count_ptr<ScriptInformation>>& GetLastPlayerSelectedList() { return listLastPlayerSelect_; }
-	void SetLastSelectedPlayerIndex(int index, std::vector<ref_count_ptr<ScriptInformation>>& list)
+	void SetLastSelectedPlayerIndex(int index, const std::vector<ref_count_ptr<ScriptInformation>>& list)
 	{
 		lastPlayerSelectIndex_ = index;
 		listLastPlayerSelect_ = list;

@@ -176,7 +176,7 @@ std::vector<bool> StgItemManager::GetValidRenderPriorityList()
 	return res;
 }
 
-bool StgItemManager::LoadItemData(std::wstring path, bool bReload)
+bool StgItemManager::LoadItemData(const std::wstring& path, bool bReload)
 {
 	return listItemData_->AddItemDataList(path, bReload);
 }
@@ -215,7 +215,7 @@ void StgItemManager::CollectItemsByType(int type)
 {
 	listItemTypeToPlayer_.insert(type);
 }
-void StgItemManager::CollectItemsInCircle(DxCircle circle)
+void StgItemManager::CollectItemsInCircle(const DxCircle& circle)
 {
 	listCircleToPlayer_.push_back(circle);
 }
@@ -234,7 +234,7 @@ StgItemDataList::StgItemDataList()
 StgItemDataList::~StgItemDataList()
 {
 }
-bool StgItemDataList::AddItemDataList(std::wstring path, bool bReload)
+bool StgItemDataList::AddItemDataList(const std::wstring& path, bool bReload)
 {
 	if (!bReload && listReadPath_.find(path) != listReadPath_.end())
 		return true;
@@ -514,7 +514,7 @@ StgItemRenderer::StgItemRenderer()
 	countRenderVertex_ = 0;
 	SetVertexCount(256 * 256);
 }
-int StgItemRenderer::GetVertexCount()
+int StgItemRenderer::GetVertexCount() const
 {
 	int res = countRenderVertex_;
 	res = min(countRenderVertex_, vertex_.GetSize() / strideVertexStreamZero_);
@@ -536,12 +536,12 @@ void StgItemRenderer::Render()
 	//描画対象をクリアする
 	countRenderVertex_ = 0;
 }
-void StgItemRenderer::AddVertex(VERTEX_TLX& vertex)
+void StgItemRenderer::AddVertex(const VERTEX_TLX& vertex)
 {
 	SetVertex(countRenderVertex_, vertex);
 	countRenderVertex_++;
 }
-void StgItemRenderer::AddSquareVertex(VERTEX_TLX* listVertex)
+void StgItemRenderer::AddSquareVertex(const VERTEX_TLX* listVertex)
 {
 	AddVertex(listVertex[0]);
 	AddVertex(listVertex[2]);
@@ -725,7 +725,7 @@ void StgItemObject::_CreateScoreItem()
 	objectManager->AddObject(obj);
 	itemManager->AddItem(obj);
 }
-void StgItemObject::_NotifyEventToPlayerScript(std::vector<long double>& listValue)
+void StgItemObject::_NotifyEventToPlayerScript(const std::vector<long double>& listValue)
 {
 	//自機スクリプトへ通知
 	ref_count_ptr<StgPlayerObject>::unsync player = stageController_->GetPlayerObject();
@@ -737,7 +737,7 @@ void StgItemObject::_NotifyEventToPlayerScript(std::vector<long double>& listVal
 
 	scriptPlayer->RequestEvent(StgStageItemScript::EV_GET_ITEM, listScriptValue);
 }
-void StgItemObject::_NotifyEventToItemScript(std::vector<long double>& listValue)
+void StgItemObject::_NotifyEventToItemScript(const std::vector<long double>& listValue)
 {
 	//アイテムスクリプトへ通知
 	StgStageScriptManager* stageScriptManager = stageController_->GetScriptManagerP();

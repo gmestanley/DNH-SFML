@@ -34,8 +34,8 @@ public:
 	void CheckDeletedObject(std::string funcName);
 
 	static bool IsIntersected(ref_count_ptr<StgIntersectionTarget>::unsync& target1, ref_count_ptr<StgIntersectionTarget>::unsync& target2);
-	static bool IsIntersected(DxCircle& circle, DxWidthLine& line);
-	static bool IsIntersected(DxWidthLine& line1, DxWidthLine& line2);
+	static bool IsIntersected(const DxCircle& circle, const DxWidthLine& line);
+	static bool IsIntersected(const DxWidthLine& line1, const DxWidthLine& line2);
 
 private:
 	virtual void _ResetPoolObject(gstd::ref_count_ptr<StgIntersectionTarget>::unsync& obj);
@@ -96,7 +96,7 @@ public:
 	virtual ~StgIntersectionCheckList() {}
 
 	void Clear() { count_ = 0; }
-	int GetCheckCount() { return count_; }
+	int GetCheckCount() const { return count_; }
 	void Add(ref_count_ptr<StgIntersectionTarget>::unsync& targetA, ref_count_ptr<StgIntersectionTarget>::unsync& targetB)
 	{
 		if (listTargetA_.size() <= count_) {
@@ -141,13 +141,13 @@ public:
 		bIntersected_ = false;
 		intersectedCount_ = 0;
 	}
-	bool IsIntersected() { return bIntersected_; }
+	bool IsIntersected() const { return bIntersected_; }
 	void SetIntersected()
 	{
 		bIntersected_ = true;
 		intersectedCount_++;
 	}
-	int GetIntersectedCount() { return intersectedCount_; }
+	int GetIntersectedCount() const { return intersectedCount_; }
 	void ClearIntersectedIdList()
 	{
 		if (listIntersectedID_.size() > 0)
@@ -158,11 +158,11 @@ public:
 
 	void ClearIntersectionRelativeTarget();
 	void AddIntersectionRelativeTarget(ref_count_ptr<StgIntersectionTarget>::unsync target);
-	ref_count_ptr<StgIntersectionTarget>::unsync GetIntersectionRelativeTarget(int index) { return listRelativeTarget_[index]; }
+	ref_count_ptr<StgIntersectionTarget>::unsync GetIntersectionRelativeTarget(int index) const { return listRelativeTarget_[index]; }
 
 	void UpdateIntersectionRelativeTarget(int posX, int posY, double angle);
 	void RegistIntersectionRelativeTarget(StgIntersectionManager* manager);
-	int GetIntersectionRelativeTargetCount() { return listRelativeTarget_.size(); }
+	int GetIntersectionRelativeTargetCount() const { return listRelativeTarget_.size(); }
 	int GetDxScriptObjectID();
 
 	virtual std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList() { return std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>(); }
@@ -199,13 +199,13 @@ public:
 	virtual ~StgIntersectionTarget() {}
 	virtual RECT GetIntersectionSapceRect() = 0;
 
-	int GetTargetType() { return typeTarget_; }
+	int GetTargetType() const { return typeTarget_; }
 	void SetTargetType(int type) { typeTarget_ = type; }
-	int GetShape() { return shape_; }
-	ref_count_weak_ptr<StgIntersectionObject>::unsync GetObject() { return obj_; }
+	int GetShape() const { return shape_; }
+	ref_count_weak_ptr<StgIntersectionObject>::unsync GetObject() const { return obj_; }
 	void SetObject(ref_count_weak_ptr<StgIntersectionObject>::unsync obj) { obj_ = obj; }
 
-	int GetMortonNumber() { return mortonNo_; }
+	int GetMortonNumber() const { return mortonNo_; }
 	void SetMortonNumber(int no) { mortonNo_ = no; }
 	void ClearObjectIntersectedIdList();
 
@@ -247,7 +247,7 @@ public:
 	}
 
 	DxCircle& GetCircle() { return circle_; }
-	void SetCircle(DxCircle& circle) { circle_ = circle; }
+	void SetCircle(const DxCircle& circle) { circle_ = circle; }
 
 private:
 	DxCircle circle_;
@@ -314,9 +314,9 @@ private:
 **********************************************************/
 class StgIntersectionTargetPoint {
 public:
-	POINT& GetPoint() { return pos_; }
-	void SetPoint(POINT& pos) { pos_ = pos; }
-	int GetObjectID() { return idObject_; }
+	POINT GetPoint() { return pos_; }
+	void SetPoint(POINT pos) { pos_ = pos; }
+	int GetObjectID() const { return idObject_; }
 	void SetObjectID(int id) { idObject_ = id; }
 
 private:

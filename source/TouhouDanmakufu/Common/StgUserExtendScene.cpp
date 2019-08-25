@@ -20,7 +20,7 @@ void StgUserExtendScene::_InitializeTransitionTexture()
 	if (stageController != NULL)
 		stageController->RenderToTransitionTexture();
 }
-void StgUserExtendScene::_InitializeScript(std::wstring path, int type)
+void StgUserExtendScene::_InitializeScript(const std::wstring& path, int type)
 {
 	if (scriptManager_ == NULL)
 		return;
@@ -146,7 +146,7 @@ gstd::value StgUserExtendSceneScriptManager::GetResultValue()
 	}
 	return res;
 }
-bool StgUserExtendSceneScriptManager::IsRealValue(gstd::value val)
+bool StgUserExtendSceneScriptManager::IsRealValue(const gstd::value& val)
 {
 	if (listScriptRun_.size() == 0)
 		return false;

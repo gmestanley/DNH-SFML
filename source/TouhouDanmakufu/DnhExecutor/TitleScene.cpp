@@ -84,7 +84,7 @@ void TitleScene::Render()
 }
 
 //TitleSceneMenuItem
-TitleSceneMenuItem::TitleSceneMenuItem(std::wstring text, std::wstring description, int x, int y)
+TitleSceneMenuItem::TitleSceneMenuItem(const std::wstring& text, const std::wstring&, int x, int y)
 {
 	pos_.x = x;
 	pos_.y = y;

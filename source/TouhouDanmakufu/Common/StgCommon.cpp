@@ -250,15 +250,13 @@ void StgMovePattern_XY::Move()
 
 	frameWork_++;
 }
-double StgMovePattern_XY::GetSpeed()
+double StgMovePattern_XY::GetSpeed() const
 {
-	double res = pow(speedX_ * speedX_ + speedY_ * speedY_, 0.5);
-	return res;
+	return pow(speedX_ * speedX_ + speedY_ * speedY_, 0.5);
 }
-double StgMovePattern_XY::GetDirectionAngle()
+double StgMovePattern_XY::GetDirectionAngle() const
 {
-	double res = Math::RadianToDegree(atan2(speedY_, speedX_));
-	return res;
+	return Math::RadianToDegree(atan2(speedY_, speedX_));
 }
 
 //StgMovePattern_Line

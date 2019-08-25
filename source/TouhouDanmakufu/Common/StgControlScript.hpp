@@ -21,9 +21,9 @@ public:
 	StgControlScriptInformation();
 	virtual ~StgControlScriptInformation();
 	void LoadFreePlayerList();
-	std::vector<ref_count_ptr<ScriptInformation>>& GetFreePlayerList() { return listFreePlayer_; }
+	std::vector<ref_count_ptr<ScriptInformation>> GetFreePlayerList() { return listFreePlayer_; }
 
-	void LoadReplayInformation(std::wstring pathMainScript);
+	void LoadReplayInformation(const std::wstring& pathMainScript);
 	ref_count_ptr<ReplayInformationManager> GetReplayInformationManager() { return replayManager_; }
 
 private:

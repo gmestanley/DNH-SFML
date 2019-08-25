@@ -19,14 +19,14 @@ public:
 	StgPlayerInformation() {}
 	virtual ~StgPlayerInformation() {}
 
-	double GetLife() { return life_; }
+	double GetLife() const { return life_; }
 	void SetLife(double life) { life_ = life; }
-	double GetSpell() { return countBomb_; }
+	double GetSpell() const { return countBomb_; }
 	void SetSpell(double spell) { countBomb_ = spell; }
-	double GetPower() { return power_; }
+	double GetPower() const { return power_; }
 	void SetPower(double power) { power_ = power; }
 
-	int GetRebirthFrame() { return frameRebirth_; }
+	int GetRebirthFrame() const { return frameRebirth_; }
 	void SetRebirthFrame(int frame) { frameRebirth_ = frame; }
 
 private:
@@ -73,24 +73,24 @@ public:
 
 	StgStagePlayerScript* GetPlayerScript() { return script_; }
 	ref_count_ptr<StgPlayerObject>::unsync GetOwnObject();
-	double GetX() { return posX_; }
-	double GetY() { return posY_; }
-	double GetFastSpeed() { return speedFast_; }
+	double GetX() const { return posX_; }
+	double GetY() const { return posY_; }
+	double GetFastSpeed() const { return speedFast_; }
 	void SetFastSpeed(double speed) { speedFast_ = speed; }
-	double GetSlowSpeed() { return speedSlow_; }
+	double GetSlowSpeed() const { return speedSlow_; }
 	void SetSlowSpeed(double speed) { speedSlow_ = speed; }
 
-	RECT GetClip() { return rcClip_; }
+	RECT GetClip() const { return rcClip_; }
 	void SetClip(RECT rect) { rcClip_ = rect; }
 
-	int GetState() { return state_; }
-	int GetDownStateFrame() { return frameStateDown_; }
+	int GetState() const { return state_; }
+	int GetDownStateFrame() const { return frameStateDown_; }
 	void SetDownStateFrame(int frame) { frameStateDown_ = frame; }
 	int GetRebirthFrame() { return infoPlayer_->GetRebirthFrame(); }
 	void SetRebirthFrameMax(int frame) { frameRebirthMax_ = frame; }
 	void SetRebirthFrame(int frame) { infoPlayer_->SetRebirthFrame(frame); }
 	void SetRebirthLossFrame(int frame) { frameRebirthDiff_ = frame; }
-	double GetItemIntersectionRadius() { return itemCircle_; }
+	double GetItemIntersectionRadius() const { return itemCircle_; }
 	void SetItemIntersectionRadius(double r) { itemCircle_ = r; }
 	double GetLife() { return infoPlayer_->GetLife(); }
 	void SetLife(double life) { infoPlayer_->SetLife(life); }
@@ -98,12 +98,12 @@ public:
 	void SetSpell(double spell) { infoPlayer_->SetSpell(spell); }
 	double GetPower() { return infoPlayer_->GetPower(); }
 	void SetPower(double power) { infoPlayer_->SetPower(power); }
-	int GetInvincibilityFrame() { return frameInvincibility_; }
+	int GetInvincibilityFrame() const { return frameInvincibility_; }
 	void SetInvincibilityFrame(int frame) { frameInvincibility_ = frame; }
-	int GetAutoItemCollectY() { return yAutoItemCollect_; }
+	int GetAutoItemCollectY() const { return yAutoItemCollect_; }
 	void SetAutoItemCollectY(int y) { yAutoItemCollect_ = y; }
 
-	bool IsPermitShot();
+	bool IsPermitShot() const;
 	void SetForbidShot(bool bForbid) { bForbidShot_ = bForbid; }
 	bool IsPermitSpell();
 	void SetForbidSpell(bool bForbid) { bForbidSpell_ = bForbid; }
@@ -147,7 +147,7 @@ public:
 		typeTarget_ = TYPE_PLAYER;
 		bGraze_ = bGraze;
 	}
-	bool IsGraze() { return bGraze_; }
+	bool IsGraze() const { return bGraze_; }
 
 private:
 	bool bGraze_;
@@ -172,11 +172,11 @@ public:
 	virtual void Work();
 	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
 
-	double GetDamage() { return damage_; }
+	double GetDamage() const { return damage_; }
 	void SetDamage(double damage) { damage_ = damage; }
-	bool IsEraseShot() { return bEraseShot_; }
+	bool IsEraseShot() const { return bEraseShot_; }
 	void SetEraseShot(bool b) { bEraseShot_ = b; }
-	double GetLife() { return life_; }
+	double GetLife() const { return life_; }
 	void SetLife(double life) { life_ = life; }
 
 protected:
