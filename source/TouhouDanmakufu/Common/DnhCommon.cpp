@@ -8,7 +8,7 @@
 **********************************************************/
 const std::wstring ScriptInformation::DEFAULT = L"DEFAULT";
 
-ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(std::wstring pathScript, bool bNeedHeader)
+ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(const std::wstring& pathScript, bool bNeedHeader)
 {
 	ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(pathScript);
 	if (reader == NULL || !reader->Open()) {
@@ -24,7 +24,7 @@ ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(std:
 	ref_count_ptr<ScriptInformation> res = CreateScriptInformation(pathScript, L"", source, bNeedHeader);
 	return res;
 }
-ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(std::wstring pathScript, std::wstring pathArchive, std::string source, bool bNeedHeader)
+ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(const std::wstring& pathScript, const std::wstring& pathArchive, const std::string& source, bool bNeedHeader)
 {
 	ref_count_ptr<ScriptInformation> res = NULL;
 
@@ -143,7 +143,7 @@ ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(std:
 
 	return res;
 }
-bool ScriptInformation::IsExcludeExtention(std::wstring ext)
+bool ScriptInformation::IsExcludeExtension(const std::wstring& ext)
 {
 	bool res = false;
 	if (ext == L".dat" || ext == L".mid" || ext == L".wav" || ext == L".mp3" || ext == L".ogg" || ext == L".bmp" || ext == L".png" || ext == L"jpg" || ext == L".mqo" || ext == L".elem") {
@@ -205,7 +205,7 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::CreatePlayerScr
 	}
 	return res;
 }
-std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::CreateScriptInformationList(std::wstring path, bool bNeedHeader)
+std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::CreateScriptInformationList(const std::wstring& path, bool bNeedHeader)
 {
 	std::vector<ref_count_ptr<ScriptInformation>> res;
 	File file(path);
@@ -233,7 +233,7 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::CreateScriptInf
 			std::wstring tPath = dir + entry->GetDirectory() + entry->GetName();
 
 			std::wstring ext = PathProperty::GetFileExtension(tPath);
-			if (ScriptInformation::IsExcludeExtention(ext))
+			if (ScriptInformation::IsExcludeExtension(ext))
 				continue;
 
 			ref_count_ptr<gstd::ByteBuffer> buffer = ArchiveFile::CreateEntryBuffer(entry);
@@ -250,7 +250,7 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::CreateScriptInf
 
 		//明らかに関係なさそうな拡張子は除外
 		std::wstring ext = PathProperty::GetFileExtension(path);
-		if (ScriptInformation::IsExcludeExtention(ext))
+		if (ScriptInformation::IsExcludeExtension(ext))
 			return res;
 
 		file.SetFilePointerBegin();
@@ -266,7 +266,7 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::CreateScriptInf
 
 	return res;
 }
-std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::FindPlayerScriptInformationList(std::wstring dir)
+std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::FindPlayerScriptInformationList(const std::wstring& dir)
 {
 	std::vector<ref_count_ptr<ScriptInformation>> res;
 	WIN32_FIND_DATA data;
@@ -358,7 +358,7 @@ LRESULT ErrorDialog::_WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 	}
 	return _CallPreviousWindowProcedure(hWnd, uMsg, wParam, lParam);
 }
-bool ErrorDialog::ShowModal(std::wstring msg)
+bool ErrorDialog::ShowModal(const std::wstring& msg)
 {
 	HINSTANCE hInst = ::GetModuleHandle(NULL);
 	std::wstring wName = L"ErrorWindow";

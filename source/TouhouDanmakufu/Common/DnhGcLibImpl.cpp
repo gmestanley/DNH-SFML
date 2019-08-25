@@ -40,35 +40,35 @@ std::wstring EPathProperty::GetPlayerScriptRootDirectory()
 	std::wstring path = GetModuleDirectory() + L"script/player/";
 	return path;
 }
-std::wstring EPathProperty::GetReplaySaveDirectory(std::wstring scriptPath)
+std::wstring EPathProperty::GetReplaySaveDirectory(const std::wstring& scriptPath)
 {
 	std::wstring scriptName = PathProperty::GetFileNameWithoutExtension(scriptPath);
 	std::wstring dir = PathProperty::GetFileDirectory(scriptPath) + L"replay/";
 	return dir;
 }
-std::wstring EPathProperty::GetCommonDataPath(std::wstring scriptPath, std::wstring area)
+std::wstring EPathProperty::GetCommonDataPath(const std::wstring& scriptPath, const std::wstring& area)
 {
 	std::wstring dirSave = PathProperty::GetFileDirectory(scriptPath) + L"data/";
 	std::wstring nameMain = PathProperty::GetFileNameWithoutExtension(scriptPath);
 	std::wstring path = dirSave + nameMain + StringUtility::Format(L"_common_%s.dat", area.c_str());
 	return path;
 }
-std::wstring EPathProperty::ExtendRelativeToFull(std::wstring dir, std::wstring path)
+std::wstring EPathProperty::ExtendRelativeToFull(const std::wstring& dir, const std::wstring& path)
 {
-	path = StringUtility::ReplaceAll(path, L"\\", L"/");
-	if (path.size() >= 2) {
-		if (path[0] == L'.' && path[1] == L'/') {
-			path = path.substr(2);
-			path = dir + path;
+	std::wstring newPath = StringUtility::ReplaceAll(path, L"\\", L"/");
+	if (newPath.size() >= 2) {
+		if (newPath[0] == L'.' && newPath[1] == L'/') {
+			newPath = newPath.substr(2);
+			newPath = dir + newPath;
 		}
 	}
 
-	std::wstring drive = PathProperty::GetDriveName(path);
+	std::wstring drive = PathProperty::GetDriveName(newPath);
 	if (drive.size() == 0) {
-		path = GetModuleDirectory() + path;
+		newPath = GetModuleDirectory() + newPath;
 	}
 
-	return path;
+	return newPath;
 }
 
 /**********************************************************

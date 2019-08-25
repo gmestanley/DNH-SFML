@@ -164,15 +164,18 @@ public:
 
 	// *間接演算子
 	T& operator*() { return *info_.pPtr_; }
+	const T& operator*() const { return *info_.pPtr_; }
 
 	// ->メンバ選択演算子
 	T* operator->() { return info_.pPtr_; }
+	const T* operator->() const { return info_.pPtr_; }
 
 	// []配列参照演算子
 	T& operator[](int n) { return info_.pPtr_[n]; }
+	const T& operator[](int n) const { return info_.pPtr_[n]; }
 
 	// ==比較演算子
-	bool operator==(const T* p)
+	bool operator==(const T* p) const
 	{
 		return info_.pPtr_ == p;
 	}
@@ -187,7 +190,7 @@ public:
 	}
 
 	// !=比較演算子
-	bool operator!=(const T* p)
+	bool operator!=(const T* p) const
 	{
 		return info_.pPtr_ != p;
 	}
@@ -198,7 +201,7 @@ public:
 	template <class D>
 	bool operator!=(ref_count_ptr<D, SYNC>& p) const
 	{
-		return info_.pPtr_ != p.info_.pPtr_;
+		return info_.pPtr_ != p.GetPointer();
 	}
 
 	// ポインタの明示的な登録
@@ -220,16 +223,13 @@ public:
 	}
 
 	// ポインタの貸し出し
-	inline T* GetPointer() { return info_.pPtr_; }
+	T* GetPointer() { return info_.pPtr_; }
+	const T* GetPointer() const { return info_.pPtr_; }
 
 	// 参照カウンタへのポインタを取得
-	inline long* _GetReferenceCountPointer() { return info_.countRef_; } //この関数は外部からしようしないこと
-	inline long* _GetWeakCountPointer() { return info_.countWeak_; } //この関数は外部からしようしないこと
-	int GetReferenceCount()
-	{
-		int res = info_.countRef_ != NULL ? (int)*info_.countRef_ : 0;
-		return res;
-	}
+	long* _GetReferenceCountPointer() { return info_.countRef_; } //この関数は外部からしようしないこと
+	long* _GetWeakCountPointer() { return info_.countWeak_; } //この関数は外部からしようしないこと
+	int GetReferenceCount() const { return info_.countRef_ != NULL ? (int)*info_.countRef_ : 0; }
 
 	template <class T2>
 	static ref_count_ptr<T, SYNC> DownCast(ref_count_ptr<T2, SYNC>& src)
@@ -440,7 +440,7 @@ public:
 	T& operator[](int n) { return info_.pPtr_[n]; }
 
 	// ==比較演算子
-	bool operator==(const T* p)
+	bool operator==(const T* p) const
 	{
 		return IsExists() ? (info_.pPtr_ == p) : (NULL == p);
 	}
@@ -455,7 +455,7 @@ public:
 	}
 
 	// !=比較演算子
-	bool operator!=(const T* p)
+	bool operator!=(const T* p) const
 	{
 		return IsExists() ? (info_.pPtr_ != p) : (NULL != p);
 	}
@@ -470,17 +470,17 @@ public:
 	}
 
 	// ポインタの貸し出し
-	inline T* GetPointer() { return IsExists() ? info_.pPtr_ : NULL; }
+	T* GetPointer() { return IsExists() ? info_.pPtr_ : NULL; }
 
 	// 参照カウンタへのポインタを取得
-	inline long* _GetReferenceCountPointer() { return info_.countRef_; } //この関数は外部からしようしないこと
-	inline long* _GetWeakCountPointer() { return info_.countWeak_; } //この関数は外部からしようしないこと
-	int GetReferenceCount()
+	long* _GetReferenceCountPointer() { return info_.countRef_; } //この関数は外部からしようしないこと
+	long* _GetWeakCountPointer() { return info_.countWeak_; } //この関数は外部からしようしないこと
+	int GetReferenceCount() const
 	{
 		int res = info_.countRef_ != NULL ? (int)*info_.countRef_ : 0;
 		return res;
 	}
-	bool IsExists() { return info_.countRef_ != NULL ? (*info_.countRef_ > 0) : false; }
+	bool IsExists() const { return info_.countRef_ != NULL ? (*info_.countRef_ > 0) : false; }
 
 	template <class T2>
 	static ref_count_weak_ptr<T, SYNC> DownCast(ref_count_weak_ptr<T2, SYNC>& src)

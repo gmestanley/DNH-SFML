@@ -25,42 +25,42 @@ public:
 public:
 	ScriptInformation() {}
 	virtual ~ScriptInformation() {}
-	int GetType() { return type_; }
+	int GetType() const { return type_; }
 	void SetType(int type) { type_ = type; }
-	std::wstring GetArchivePath() { return pathArchive_; }
-	void SetArchivePath(std::wstring path) { pathArchive_ = path; }
-	std::wstring GetScriptPath() { return pathScript_; }
-	void SetScriptPath(std::wstring path) { pathScript_ = path; }
+	std::wstring GetArchivePath() const { return pathArchive_; }
+	void SetArchivePath(const std::wstring& path) { pathArchive_ = path; }
+	std::wstring GetScriptPath() const { return pathScript_; }
+	void SetScriptPath(const std::wstring& path) { pathScript_ = path; }
 
-	std::wstring GetID() { return id_; }
-	void SetID(std::wstring id) { id_ = id; }
-	std::wstring GetTitle() { return title_; }
-	void SetTitle(std::wstring title) { title_ = title; }
-	std::wstring GetText() { return text_; }
-	void SetText(std::wstring text) { text_ = text; }
-	std::wstring GetImagePath() { return pathImage_; }
-	void SetImagePath(std::wstring path) { pathImage_ = path; }
-	std::wstring GetSystemPath() { return pathSystem_; }
-	void SetSystemPath(std::wstring path) { pathSystem_ = path; }
-	std::wstring GetBackgroundPath() { return pathBackground_; }
-	void SetBackgroundPath(std::wstring path) { pathBackground_ = path; }
-	std::wstring GetBgmPath() { return pathBGM_; }
-	void SetBgmPath(std::wstring path) { pathBGM_ = path; }
-	std::vector<std::wstring> GetPlayerList() { return listPlayer_; }
-	void SetPlayerList(std::vector<std::wstring> list) { listPlayer_ = list; }
+	std::wstring GetID() const { return id_; }
+	void SetID(const std::wstring& id) { id_ = id; }
+	std::wstring GetTitle() const { return title_; }
+	void SetTitle(const std::wstring& title) { title_ = title; }
+	std::wstring GetText() const { return text_; }
+	void SetText(const std::wstring& text) { text_ = text; }
+	std::wstring GetImagePath() const { return pathImage_; }
+	void SetImagePath(const std::wstring& path) { pathImage_ = path; }
+	std::wstring GetSystemPath() const { return pathSystem_; }
+	void SetSystemPath(const std::wstring& path) { pathSystem_ = path; }
+	std::wstring GetBackgroundPath() const { return pathBackground_; }
+	void SetBackgroundPath(const std::wstring& path) { pathBackground_ = path; }
+	std::wstring GetBgmPath() const { return pathBGM_; }
+	void SetBgmPath(const std::wstring& path) { pathBGM_ = path; }
+	std::vector<std::wstring> GetPlayerList() const { return listPlayer_; }
+	void SetPlayerList(const std::vector<std::wstring>& list) { listPlayer_ = list; }
 
-	std::wstring GetReplayName() { return replayName_; }
-	void SetReplayName(std::wstring name) { replayName_ = name; }
+	std::wstring GetReplayName() const { return replayName_; }
+	void SetReplayName(const std::wstring& name) { replayName_ = name; }
 
 	std::vector<ref_count_ptr<ScriptInformation>> CreatePlayerScriptInformationList();
 
 public:
-	static ref_count_ptr<ScriptInformation> CreateScriptInformation(std::wstring pathScript, bool bNeedHeader = true);
-	static ref_count_ptr<ScriptInformation> CreateScriptInformation(std::wstring pathScript, std::wstring pathArchive, std::string source, bool bNeedHeader = true);
+	static ref_count_ptr<ScriptInformation> CreateScriptInformation(const std::wstring& pathScript, bool bNeedHeader = true);
+	static ref_count_ptr<ScriptInformation> CreateScriptInformation(const std::wstring& pathScript, const std::wstring& pathArchive, const std::string& source, bool bNeedHeader = true);
 
-	static std::vector<ref_count_ptr<ScriptInformation>> CreateScriptInformationList(std::wstring path, bool bNeedHeader = true);
-	static std::vector<ref_count_ptr<ScriptInformation>> FindPlayerScriptInformationList(std::wstring dir);
-	static bool IsExcludeExtention(std::wstring ext);
+	static std::vector<ref_count_ptr<ScriptInformation>> CreateScriptInformationList(const std::wstring& path, bool bNeedHeader = true);
+	static std::vector<ref_count_ptr<ScriptInformation>> FindPlayerScriptInformationList(const std::wstring& dir);
+	static bool IsExcludeExtension(const std::wstring& ext);
 
 private:
 	static std::wstring _GetString(Scanner& scanner);
@@ -85,7 +85,7 @@ private:
 
 class ScriptInformation::Sort {
 public:
-	BOOL operator()(const ref_count_ptr<ScriptInformation>& lf, const ref_count_ptr<ScriptInformation>& rf)
+	BOOL operator()(const ref_count_ptr<ScriptInformation>& lf, const ref_count_ptr<ScriptInformation>& rf) const
 	{
 		ref_count_ptr<ScriptInformation> lsp = lf;
 		ref_count_ptr<ScriptInformation> rsp = rf;
@@ -100,7 +100,7 @@ public:
 };
 
 struct ScriptInformation::PlayerListSort {
-	BOOL operator()(const ref_count_ptr<ScriptInformation>& lf, const ref_count_ptr<ScriptInformation>& rf)
+	BOOL operator()(const ref_count_ptr<ScriptInformation>& lf, const ref_count_ptr<ScriptInformation>& rf) const
 	{
 		ref_count_ptr<ScriptInformation> lsp = lf;
 		ref_count_ptr<ScriptInformation> rsp = rf;
@@ -118,10 +118,10 @@ struct ScriptInformation::PlayerListSort {
 class ErrorDialog : public ModalDialog {
 public:
 	ErrorDialog(HWND hParent);
-	bool ShowModal(std::wstring msg);
+	bool ShowModal(const std::wstring& msg);
 
 	static void SetParentWindowHandle(HWND hWndParent) { hWndParentStatic_ = hWndParent; }
-	static void ShowErrorDialog(std::wstring msg)
+	static void ShowErrorDialog(const std::wstring& msg)
 	{
 		ErrorDialog dialog(hWndParentStatic_);
 		dialog.ShowModal(msg);
@@ -163,28 +163,28 @@ public:
 	bool LoadConfigFile();
 	bool SaveConfigFile();
 
-	int GetScreenMode() { return modeScreen_; }
+	int GetScreenMode() const { return modeScreen_; }
 	void SetScreenMode(int mode) { modeScreen_ = mode; }
-	int GetWindowSize() { return sizeWindow_; }
+	int GetWindowSize() const { return sizeWindow_; }
 	void SetWindowSize(int size) { sizeWindow_ = size; }
-	int GetFpsType() { return fpsType_; }
+	int GetFpsType() const { return fpsType_; }
 	void SetFpsType(int type) { fpsType_ = type; }
 
 	int GetPadIndex() { return padIndex_; }
 	void SetPadIndex(int index) { padIndex_ = index; }
 	ref_count_ptr<VirtualKey> GetVirtualKey(int id);
 
-	bool IsLogWindow() { return bLogWindow_; }
+	bool IsLogWindow() const { return bLogWindow_; }
 	void SetLogWindow(bool b) { bLogWindow_ = b; }
-	bool IsLogFile() { return bLogFile_; }
+	bool IsLogFile() const { return bLogFile_; }
 	void SetLogFile(bool b) { bLogFile_ = b; }
-	bool IsMouseVisible() { return bMouseVisible_; }
+	bool IsMouseVisible() const { return bMouseVisible_; }
 	void SetMouseVisible(bool b) { bMouseVisible_ = b; }
 
-	std::wstring GetPackageScriptPath() { return pathPackageScript_; }
-	std::wstring GetWindowTitle() { return windowTitle_; }
-	int GetScreenWidth() { return screenWidth_; }
-	int GetScreenHeight() { return screenHeight_; }
+	std::wstring GetPackageScriptPath() const { return pathPackageScript_; }
+	std::wstring GetWindowTitle() const { return windowTitle_; }
+	int GetScreenWidth() const { return screenWidth_; }
+	int GetScreenHeight() const { return screenHeight_; }
 
 private:
 	int modeScreen_; //DirectGraphics::SCREENMODE_FULLSCREEN,SCREENMODE_WINDOW

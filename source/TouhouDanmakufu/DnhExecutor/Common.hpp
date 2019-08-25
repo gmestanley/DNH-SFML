@@ -35,16 +35,16 @@ public:
 	int GetSelectedItemIndex();
 	ref_count_ptr<MenuItem> GetSelectedMenuItem();
 
-	int GetCurrentPageItemCount();
-	int GetCurrentPageMaxX();
-	int GetCurrentPageMaxY();
+	int GetCurrentPageItemCount() const;
+	int GetCurrentPageMaxX() const;
+	int GetCurrentPageMaxY() const;
 
 protected:
 	int _GetCursorKeyState();
 	virtual void _MoveCursor();
 	virtual void _ChangePage(){};
 
-	bool _IsWaitedKeyFree() { return bWaitedKeyFree_; }
+	bool _IsWaitedKeyFree() const { return bWaitedKeyFree_; }
 
 	CriticalSection cs_;
 	bool bActive_;

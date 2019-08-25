@@ -1,8 +1,8 @@
 #ifndef __GSTD_MERSENNETWISTER__
 #define __GSTD_MERSENNETWISTER__
 
-#include"GstdConstant.hpp"
-#include<random>
+#include "GstdConstant.hpp"
+#include <random>
 namespace gstd {
 
 /**********************************************************
@@ -42,7 +42,7 @@ public:
 	void Initialize(unsigned long s);
 	void Initialize(unsigned long* init_key, int key_length);
 
-	int GetSeed() { return seed; }
+	int GetSeed() const { return seed; }
 	int SeedRNG();
 	long GetInt();
 	long GetInt(long min, long max);

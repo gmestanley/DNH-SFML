@@ -33,22 +33,22 @@ std::wstring ReplayInformation::GetDateAsString()
 
 	return res;
 }
-void ReplayInformation::SetUserData(std::string key, gstd::value val)
+void ReplayInformation::SetUserData(const std::string& key, const gstd::value& val)
 {
 	userData_->SetValue(key, val);
 }
-gstd::value ReplayInformation::GetUserData(std::string key)
+gstd::value ReplayInformation::GetUserData(const std::string& key)
 {
 	gstd::value res = userData_->GetValue(key);
 	return res;
 }
-bool ReplayInformation::IsUserDataExists(std::string key)
+bool ReplayInformation::IsUserDataExists(const std::string& key)
 {
 	bool res = userData_->IsExists(key);
 	return res;
 }
 
-bool ReplayInformation::SaveToFile(std::wstring scriptPath, int index)
+bool ReplayInformation::SaveToFile(const std::wstring& scriptPath, int index)
 {
 	std::wstring dir = EPathProperty::GetReplaySaveDirectory(scriptPath);
 	std::wstring scriptName = PathProperty::GetFileNameWithoutExtension(scriptPath);
@@ -90,7 +90,7 @@ bool ReplayInformation::SaveToFile(std::wstring scriptPath, int index)
 	rec.WriteToFile(path, "REPLAY");
 	return true;
 }
-ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(std::wstring scriptPath, std::wstring fileName)
+ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(const std::wstring& scriptPath, const std::wstring& fileName)
 {
 	std::wstring dir = EPathProperty::GetReplaySaveDirectory(scriptPath);
 	// std::string scriptName = PathProperty::GetFileNameWithoutExtension(scriptPath);
@@ -100,7 +100,7 @@ ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(std::wstring 
 	ref_count_ptr<ReplayInformation> res = CreateFromFile(path);
 	return res;
 }
-ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(std::wstring path)
+ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(const std::wstring& path)
 {
 	RecordBuffer rec;
 	if (!rec.ReadFromFile(path, "REPLAY"))
@@ -147,7 +147,7 @@ ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(std::wstring 
 }
 
 //ReplayInformation::StageData
-double ReplayInformation::StageData::GetFramePerSecondAvarage()
+double ReplayInformation::StageData::GetFramePerSecondAvarage() const
 {
 	double res = 0;
 	for (int iFrame = 0; iFrame < listFramePerSecond_.size(); iFrame++) {
@@ -158,17 +158,16 @@ double ReplayInformation::StageData::GetFramePerSecondAvarage()
 		res /= listFramePerSecond_.size();
 	return res;
 }
-std::set<std::string> ReplayInformation::StageData::GetCommonDataAreaList()
+std::set<std::string> ReplayInformation::StageData::GetCommonDataAreaList() const
 {
 	std::set<std::string> res;
-	std::map<std::string, ref_count_ptr<RecordBuffer>>::iterator itrCommonData;
-	for (itrCommonData = mapCommonData_.begin(); itrCommonData != mapCommonData_.end(); itrCommonData++) {
-		std::string key = itrCommonData->first;
+	for (const auto& commonData : mapCommonData_) {
+		const auto& key = commonData.first;
 		res.insert(key);
 	}
 	return res;
 }
-ref_count_ptr<ScriptCommonData> ReplayInformation::StageData::GetCommonData(std::string area)
+ref_count_ptr<ScriptCommonData> ReplayInformation::StageData::GetCommonData(const std::string& area)
 {
 	ref_count_ptr<ScriptCommonData> res = new ScriptCommonData();
 	if (mapCommonData_.find(area) != mapCommonData_.end()) {
@@ -177,7 +176,7 @@ ref_count_ptr<ScriptCommonData> ReplayInformation::StageData::GetCommonData(std:
 	}
 	return res;
 }
-void ReplayInformation::StageData::SetCommonData(std::string area, ref_count_ptr<ScriptCommonData> commonData)
+void ReplayInformation::StageData::SetCommonData(const std::string& area, ref_count_ptr<ScriptCommonData> commonData)
 {
 	ref_count_ptr<RecordBuffer> record = new RecordBuffer();
 	if (commonData != NULL)
@@ -270,7 +269,7 @@ ReplayInformationManager::ReplayInformationManager()
 ReplayInformationManager::~ReplayInformationManager()
 {
 }
-void ReplayInformationManager::UpdateInformationList(std::wstring pathScript)
+void ReplayInformationManager::UpdateInformationList(const std::wstring& pathScript)
 {
 	mapInfo_.clear();
 

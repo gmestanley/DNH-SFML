@@ -17,10 +17,10 @@ public:
 	static std::wstring GetStgDefaultScriptDirectory();
 	static std::wstring GetPlayerScriptRootDirectory();
 
-	static std::wstring GetReplaySaveDirectory(std::wstring scriptPath);
-	static std::wstring GetCommonDataPath(std::wstring scriptPath, std::wstring area);
+	static std::wstring GetReplaySaveDirectory(const std::wstring& scriptPath);
+	static std::wstring GetCommonDataPath(const std::wstring& scriptPath, const std::wstring& area);
 
-	static std::wstring ExtendRelativeToFull(std::wstring dir, std::wstring path);
+	static std::wstring ExtendRelativeToFull(const std::wstring& dir, const std::wstring& path);
 };
 
 /**********************************************************
@@ -46,22 +46,22 @@ public:
 	EFpsController();
 
 	void SetFps(int fps) { controller_->SetFps(fps); }
-	int GetFps() { return controller_->GetFps(); }
+	int GetFps() const { return controller_->GetFps(); }
 	void SetTimerEnable(bool b) { controller_->SetTimerEnable(b); }
 
 	void Wait() { controller_->Wait(); }
-	bool IsSkip() { return controller_->IsSkip(); }
+	bool IsSkip() const { return controller_->IsSkip(); }
 	void SetCriticalFrame() { controller_->SetCriticalFrame(); }
-	float GetCurrentFps() { return controller_->GetCurrentFps(); }
-	float GetCurrentWorkFps() { return controller_->GetCurrentWorkFps(); }
-	float GetCurrentRenderFps() { return controller_->GetCurrentRenderFps(); }
-	bool IsFastMode() { return controller_->IsFastMode(); }
+	float GetCurrentFps() const { return controller_->GetCurrentFps(); }
+	float GetCurrentWorkFps() const { return controller_->GetCurrentWorkFps(); }
+	float GetCurrentRenderFps() const { return controller_->GetCurrentRenderFps(); }
+	bool IsFastMode() const { return controller_->IsFastMode(); }
 	void SetFastMode(bool b) { controller_->SetFastMode(b); }
 
 	void AddFpsControlObject(ref_count_weak_ptr<FpsControlObject> obj) { controller_->AddFpsControlObject(obj); }
 	void RemoveFpsControlObject(ref_count_weak_ptr<FpsControlObject> obj) { controller_->RemoveFpsControlObject(obj); }
 
-	int GetFastModeKey() { return fastModeKey_; }
+	int GetFastModeKey() const { return fastModeKey_; }
 	void SetFastModeKey(int key) { fastModeKey_ = key; }
 
 private:
@@ -161,7 +161,7 @@ public:
 public:
 	virtual bool Initialize(HWND hWnd);
 	void ResetVirtualKeyMap();
-	int GetPadIndex() { return padIndex_; }
+	int GetPadIndex() const { return padIndex_; }
 };
 
 #endif

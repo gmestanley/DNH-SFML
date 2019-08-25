@@ -188,20 +188,20 @@ ref_count_ptr<MenuItem> MenuTask::GetSelectedMenuItem()
 	return res;
 }
 
-int MenuTask::GetCurrentPageItemCount()
+int MenuTask::GetCurrentPageItemCount() const
 {
 	int countItem = item_.size();
 	int countCurrentPageItem = countItem - ((pageMaxX_ + 1) * (pageMaxY_ + 1)) * (pageCurrent_ - 1);
 	countCurrentPageItem = min(countCurrentPageItem, (pageMaxX_ + 1) * (pageMaxY_ + 1));
 	return countCurrentPageItem;
 }
-int MenuTask::GetCurrentPageMaxX()
+int MenuTask::GetCurrentPageMaxX() const
 {
 	int countCurrentPageItem = GetCurrentPageItemCount();
 	int countCurrentPageMaxX = min(pageMaxX_, max(0, countCurrentPageItem - 1));
 	return countCurrentPageMaxX;
 }
-int MenuTask::GetCurrentPageMaxY()
+int MenuTask::GetCurrentPageMaxY() const
 {
 	int countCurrentPageItem = GetCurrentPageItemCount();
 	int countCurrentPageMaxY = min(pageMaxY_, max(0, (countCurrentPageItem - 1) / (pageMaxX_ + 1)));
