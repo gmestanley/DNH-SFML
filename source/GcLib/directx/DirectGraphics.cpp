@@ -374,8 +374,9 @@ void DirectGraphics::SetBlendMode(DWORD mode, int stage)
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
 		pDevice_->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 		pDevice_->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+		+pDevice_->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, FALSE);
 		break;
-	case MODE_BLEND_ALPHA: //αで半透明合成
+	case MODE_BLEND_ALPHA://αで半透明合成
 		pDevice_->SetTextureStageState(stage, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
@@ -383,8 +384,11 @@ void DirectGraphics::SetBlendMode(DWORD mode, int stage)
 		pDevice_->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 		pDevice_->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 		pDevice_->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+		+pDevice_->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, TRUE);
+		+pDevice_->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_ONE);
+		+pDevice_->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_INVSRCALPHA);
 		break;
-	case MODE_BLEND_ADD_RGB: //RGBで加算合成
+	case MODE_BLEND_ADD_RGB://RGBで加算合成
 		pDevice_->SetTextureStageState(stage, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
@@ -392,8 +396,9 @@ void DirectGraphics::SetBlendMode(DWORD mode, int stage)
 		pDevice_->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 		pDevice_->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 		pDevice_->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+		+pDevice_->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, FALSE);
 		break;
-	case MODE_BLEND_ADD_ARGB: //αで加算合成
+	case MODE_BLEND_ADD_ARGB://αで加算合成
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_MODULATE); //ARG1とARG2のα値を乗算してα値を取得します。
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE); //テクスチャのα値
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE); //頂点のα値
@@ -404,8 +409,9 @@ void DirectGraphics::SetBlendMode(DWORD mode, int stage)
 		pDevice_->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 		pDevice_->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 		pDevice_->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+		+pDevice_->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, FALSE);
 		break;
-	case MODE_BLEND_MULTIPLY: //乗算合成
+	case MODE_BLEND_MULTIPLY://乗算合成
 		pDevice_->SetTextureStageState(stage, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
@@ -423,6 +429,7 @@ void DirectGraphics::SetBlendMode(DWORD mode, int stage)
 			pDevice_->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
 			pDevice_->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCCOLOR);
 		*/
+		pDevice_->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, FALSE);
 		break;
 		/*
 		case MODE_BLEND_SUBTRACT://減算合成
@@ -433,6 +440,7 @@ void DirectGraphics::SetBlendMode(DWORD mode, int stage)
 			pDevice_->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
 			pDevice_->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 			pDevice_->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+			
 			break;
 		*/
 	case MODE_BLEND_SUBTRACT: //減算合成
@@ -446,6 +454,7 @@ void DirectGraphics::SetBlendMode(DWORD mode, int stage)
 		pDevice_->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
 		pDevice_->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 		pDevice_->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+		pDevice_->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, FALSE);
 		break;
 	case MODE_BLEND_SHADOW: //影描画用
 		pDevice_->SetTextureStageState(stage, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -455,6 +464,7 @@ void DirectGraphics::SetBlendMode(DWORD mode, int stage)
 		pDevice_->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 		pDevice_->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
 		pDevice_->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+		pDevice_->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, FALSE);
 		break;
 	case MODE_BLEND_INV_DESTRGB: //描画先色反転合成
 		pDevice_->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_MODULATE); //ARG1とARG2のα値を乗算してα値を取得します。
@@ -467,6 +477,7 @@ void DirectGraphics::SetBlendMode(DWORD mode, int stage)
 		pDevice_->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 		pDevice_->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_INVDESTCOLOR);
 		pDevice_->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+		pDevice_->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, FALSE);
 		break;
 	}
 	// 減算半透明合成
