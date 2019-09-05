@@ -190,7 +190,7 @@ public:
 		element_ = element;
 	}
 
-	virtual ~DxTextToken() {}
+	virtual ~DxTextToken() = default;
 	Type GetType() const { return type_; }
 	std::wstring& GetElement() { return element_; }
 
@@ -217,8 +217,8 @@ public:
 
 public:
 	DxTextScanner(wchar_t* str, int charCount);
-	DxTextScanner(std::wstring str);
-	DxTextScanner(std::vector<wchar_t>& buf);
+	DxTextScanner(const std::wstring& str);
+	DxTextScanner(const std::vector<wchar_t>& buf);
 	virtual ~DxTextScanner();
 
 	DxTextToken& GetToken(); //現在のトークンを取得
@@ -240,12 +240,12 @@ protected:
 	std::vector<wchar_t> buffer_;
 	std::vector<wchar_t>::iterator pointer_; //今の位置
 	DxTextToken token_; //現在のトークン
-	boolean bTagScan_;
+	bool bTagScan_;
 
 	wchar_t _NextChar(); //ポインタを進めて次の文字を調べる
 	virtual void _SkipComment(); //コメントをとばす
 	virtual void _SkipSpace(); //空白をとばす
-	virtual void _RaiseError(std::wstring str); //例外を投げます
+	virtual void _RaiseError(const std::wstring& str); //例外を投げます
 	bool _IsTextStartSign();
 	bool _IsTextScan();
 };
@@ -272,7 +272,7 @@ public:
 		indexTag_ = 0;
 		typeTag_ = TYPE_UNKNOWN;
 	}
-	virtual ~DxTextTag(){};
+	virtual ~DxTextTag() = default;
 	int GetTagType() const { return typeTag_; }
 	int GetTagIndex() const { return indexTag_; }
 	void SetTagIndex(int index) { indexTag_ = index; }
@@ -325,7 +325,7 @@ public:
 		height_ = 0;
 		sidePitch_ = 0;
 	}
-	virtual ~DxTextLine(){};
+	virtual ~DxTextLine() = default;
 	int GetWidth() const { return width_; }
 	int GetHeight() const { return height_; }
 	int GetSidePitch() const { return sidePitch_; }
@@ -354,7 +354,7 @@ public:
 		lineValidEnd_ = 0;
 		bAutoIndent_ = false;
 	}
-	virtual ~DxTextInfo(){};
+	virtual ~DxTextInfo() = default;
 	int GetTotalWidth() const { return totalWidth_; }
 	int GetTotalHeight() const { return totalHeight_; }
 	int GetValidStartLine() const { return lineValidStart_; }
@@ -386,7 +386,7 @@ private:
 
 public:
 	DxTextRenderObject();
-	virtual ~DxTextRenderObject() {}
+	virtual ~DxTextRenderObject() = default;
 
 	void Render();
 	void AddRenderObject(gstd::ref_count_ptr<Sprite2D> obj);
@@ -513,19 +513,19 @@ public:
 	void SetFontBold(bool bBold)
 	{
 		LOGFONT info = dxFont_.GetLogFont();
-		info.lfWeight = (bBold == false) * FW_NORMAL + (bBold == TRUE) * FW_BOLD;
+		info.lfWeight = bBold ? FW_BOLD : FW_NORMAL;
 		SetFont(info);
 	}
 	void SetFontItalic(bool bItalic)
 	{
 		LOGFONT info = dxFont_.GetLogFont();
-		info.lfItalic = bItalic;
+		info.lfItalic = static_cast<BYTE>(bItalic);
 		SetFont(info);
 	}
 	void SetFontUnderLine(bool bLine)
 	{
 		LOGFONT info = dxFont_.GetLogFont();
-		info.lfUnderline = bLine;
+		info.lfUnderline = static_cast<BYTE>(bLine);
 		SetFont(info);
 	}
 

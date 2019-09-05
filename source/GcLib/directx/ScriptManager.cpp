@@ -6,7 +6,7 @@ using namespace directx;
 /**********************************************************
 //ScriptManager
 **********************************************************/
-_int64 ScriptManager::idScript_ = 0;
+int64_t ScriptManager::idScript_ = 0;
 ScriptManager::ScriptManager()
 {
 	mainThreadID_ = GetCurrentThreadId();
@@ -26,12 +26,11 @@ void ScriptManager::Work()
 void ScriptManager::Work(int targetType)
 {
 	bHasCloseScriptWork_ = false;
-	std::list<ref_count_ptr<ManagedScript>>::iterator itr = listScriptRun_.begin();
-	for (; itr != listScriptRun_.end();) {
+	for (auto itr = listScriptRun_.begin(); itr != listScriptRun_.end();) {
 		ref_count_ptr<ManagedScript> script = (*itr);
 		int type = script->GetScriptType();
 		if (targetType != ManagedScript::TYPE_ALL && targetType != type) {
-			itr++;
+			++itr;
 			continue;
 		}
 
@@ -43,7 +42,7 @@ void ScriptManager::Work(int targetType)
 		} else {
 			if (script->IsEventExists("MainLoop"))
 				script->Run("MainLoop");
-			itr++;
+			++itr;
 
 			bHasCloseScriptWork_ |= script->IsEndScript();
 		}
@@ -53,34 +52,33 @@ void ScriptManager::Render()
 {
 	//ここではオブジェクトの描画を行わない。
 }
-ref_count_ptr<ManagedScript> ScriptManager::GetScript(_int64 id)
+ref_count_ptr<ManagedScript> ScriptManager::GetScript(int64_t id)
 {
-	ref_count_ptr<ManagedScript> res = NULL;
 	{
 		Lock lock(lock_);
-		if (mapScriptLoad_.find(id) != mapScriptLoad_.end()) {
-			res = mapScriptLoad_[id];
+		auto scriptLoadItr = mapScriptLoad_.find(id);
+		if (scriptLoadItr != mapScriptLoad_.end()) {
+			return scriptLoadItr->second;
 		} else {
-			std::list<ref_count_ptr<ManagedScript>>::iterator itr = listScriptRun_.begin();
-			for (; itr != listScriptRun_.end(); itr++) {
-				if ((*itr)->GetScriptID() == id) {
-					res = (*itr);
-					break;
+			for (auto& script : listScriptRun_) {
+				if (script->GetScriptID() == id) {
+					return script;
 				}
 			}
 		}
 	}
-	return res;
+	return nullptr;
 }
-void ScriptManager::StartScript(_int64 id)
+void ScriptManager::StartScript(int64_t id)
 {
-	ref_count_ptr<ManagedScript> script = NULL;
+	ref_count_ptr<ManagedScript> script = nullptr;
 	{
 		Lock lock(lock_);
-		if (mapScriptLoad_.find(id) == mapScriptLoad_.end())
+		auto scriptLoadItr = mapScriptLoad_.find(id);
+		if (scriptLoadItr == mapScriptLoad_.end())
 			return;
 
-		script = mapScriptLoad_[id];
+		script = scriptLoadItr->second;
 	}
 
 	if (!script->IsLoad()) {
@@ -89,7 +87,7 @@ void ScriptManager::StartScript(_int64 id)
 			if (count % 1000 == 999)
 				Logger::WriteTop(StringUtility::Format(L"読み込み完了待機(ScriptManager)：%s", script->GetPath().c_str()));
 			Sleep(1);
-			count++;
+			++count;
 		}
 	}
 
@@ -99,21 +97,19 @@ void ScriptManager::StartScript(_int64 id)
 		listScriptRun_.push_back(script);
 	}
 
-	if (script != NULL && !IsError()) {
+	if (script != nullptr && !IsError()) {
 		if (script->IsEventExists("Initialize"))
 			script->Run("Initialize");
 	}
 }
-void ScriptManager::CloseScript(_int64 id)
+void ScriptManager::CloseScript(int64_t id)
 {
-	std::list<ref_count_ptr<ManagedScript>>::iterator itr = listScriptRun_.begin();
-	for (; itr != listScriptRun_.end(); itr++) {
-		ref_count_ptr<ManagedScript> script = (*itr);
+	for (auto& script : listScriptRun_) {
 		if (script->GetScriptID() == id) {
 			script->SetEndScript();
 			mapClosedScriptResult_[id] = script->GetResultValue();
 			if (mapClosedScriptResult_.size() > MAX_CLOSED_SCRIPT_RESULT) {
-				_int64 targetID = mapClosedScriptResult_.begin()->first;
+				int64_t targetID = mapClosedScriptResult_.begin()->first;
 				mapClosedScriptResult_.erase(targetID);
 			}
 
@@ -126,15 +122,13 @@ void ScriptManager::CloseScript(_int64 id)
 }
 void ScriptManager::CloseScriptOnType(int type)
 {
-	std::list<ref_count_ptr<ManagedScript>>::iterator itr = listScriptRun_.begin();
-	for (; itr != listScriptRun_.end(); itr++) {
-		ref_count_ptr<ManagedScript> script = (*itr);
+	for (auto& script : listScriptRun_) {
 		if (script->GetScriptType() == type) {
 			script->SetEndScript();
-			_int64 id = script->GetScriptID();
+			int64_t id = script->GetScriptID();
 			mapClosedScriptResult_[id] = script->GetResultValue();
 			if (mapClosedScriptResult_.size() > MAX_CLOSED_SCRIPT_RESULT) {
-				_int64 targetID = mapClosedScriptResult_.begin()->first;
+				int64_t targetID = mapClosedScriptResult_.begin()->first;
 				mapClosedScriptResult_.erase(targetID);
 			}
 
@@ -143,37 +137,30 @@ void ScriptManager::CloseScriptOnType(int type)
 		}
 	}
 }
-bool ScriptManager::IsCloseScript(_int64 id)
+bool ScriptManager::IsCloseScript(int64_t id)
 {
 	ref_count_ptr<ManagedScript> script = GetScript(id);
-	bool res = script == NULL || script->IsEndScript();
-	return res;
+	return (script == nullptr || script->IsEndScript());
 }
-int ScriptManager::GetAllScriptThreadCount()
+int ScriptManager::GetAllScriptThreadCount() const
 {
 	int res = 0;
-	{
-		Lock lock(lock_);
-		std::list<ref_count_ptr<ManagedScript>>::iterator itr = listScriptRun_.begin();
-		for (; itr != listScriptRun_.end(); itr++) {
-			res += (*itr)->GetThreadCount();
-		}
+	Lock lock(lock_);
+	for (auto& script : listScriptRun_) {
+		res += script->GetThreadCount();
 	}
 	return res;
 }
 void ScriptManager::TerminateScriptAll(const std::wstring& message)
 {
-	{
-		Lock lock(lock_);
-		std::list<ref_count_ptr<ManagedScript>>::iterator itr = listScriptRun_.begin();
-		for (; itr != listScriptRun_.end(); itr++) {
-			(*itr)->Terminate(message);
-		}
+	Lock lock(lock_);
+	for (auto& script : listScriptRun_) {
+		script->Terminate(message);
 	}
 }
-_int64 ScriptManager::_LoadScript(const std::wstring& path, ref_count_ptr<ManagedScript> script)
+int64_t ScriptManager::_LoadScript(const std::wstring& path, ref_count_ptr<ManagedScript> script)
 {
-	_int64 res = 0;
+	int64_t res = 0;
 
 	res = script->GetScriptID();
 
@@ -190,48 +177,42 @@ _int64 ScriptManager::_LoadScript(const std::wstring& path, ref_count_ptr<Manage
 
 	return res;
 }
-_int64 ScriptManager::LoadScript(const std::wstring& path, ref_count_ptr<ManagedScript> script)
+int64_t ScriptManager::LoadScript(const std::wstring& path, ref_count_ptr<ManagedScript> script)
 {
-	_int64 res = 0;
-	{
-		Lock lock(lock_);
-		res = _LoadScript(path, script);
-		mapScriptLoad_[res] = script;
-	}
+	int64_t res = 0;
+	Lock lock(lock_);
+	res = _LoadScript(path, script);
+	mapScriptLoad_[res] = script;
 	return res;
 }
-_int64 ScriptManager::LoadScript(const std::wstring& path, int type)
+int64_t ScriptManager::LoadScript(const std::wstring& path, int type)
 {
 	ref_count_ptr<ManagedScript> script = Create(type);
-	_int64 res = LoadScript(path, script);
+	int64_t res = LoadScript(path, script);
 	return res;
 }
-_int64 ScriptManager::LoadScriptInThread(const std::wstring& path, ref_count_ptr<ManagedScript> script)
+int64_t ScriptManager::LoadScriptInThread(const std::wstring& path, ref_count_ptr<ManagedScript> script)
 {
-	_int64 res = 0;
-	{
-		Lock lock(lock_);
+	Lock lock(lock_);
 
-		res = script->GetScriptID();
-		mapScriptLoad_[res] = script;
+	int64_t res = script->GetScriptID();
+	mapScriptLoad_[res] = script;
 
-		ref_count_ptr<FileManager::LoadThreadEvent> event = new FileManager::LoadThreadEvent(this, path, script);
-		FileManager::GetBase()->AddLoadThreadEvent(event);
-	}
+	ref_count_ptr<FileManager::LoadThreadEvent> event = new FileManager::LoadThreadEvent(this, path, script);
+	FileManager::GetBase()->AddLoadThreadEvent(event);
 	return res;
 }
-_int64 ScriptManager::LoadScriptInThread(const std::wstring& path, int type)
+int64_t ScriptManager::LoadScriptInThread(const std::wstring& path, int type)
 {
 	ref_count_ptr<ManagedScript> script = Create(type);
-	_int64 res = LoadScriptInThread(path, script);
-	return res;
+	return LoadScriptInThread(path, script);
 }
 void ScriptManager::CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event)
 {
 	std::wstring path = event->GetPath();
 
 	ref_count_ptr<ManagedScript> script = ref_count_ptr<ManagedScript>::DownCast(event->GetSource());
-	if (script == NULL || script->IsLoad())
+	if (script == nullptr || script->IsLoad())
 		return;
 
 	try {
@@ -245,9 +226,7 @@ void ScriptManager::CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::Lo
 void ScriptManager::RequestEventAll(int type, const std::vector<gstd::value>& listValue)
 {
 	{
-		std::list<ref_count_ptr<ManagedScript>>::iterator itrScript = listScriptRun_.begin();
-		for (; itrScript != listScriptRun_.end(); itrScript++) {
-			ref_count_ptr<ManagedScript> script = (*itrScript);
+		for (auto& script : listScriptRun_) {
 			if (script->IsEndScript())
 				continue;
 
@@ -255,35 +234,33 @@ void ScriptManager::RequestEventAll(int type, const std::vector<gstd::value>& li
 		}
 	}
 
-	if (listRelativeManager_.size() > 0) {
-		std::list<gstd::ref_count_weak_ptr<ScriptManager>>::iterator itrManager = listRelativeManager_.begin();
-		for (; itrManager != listRelativeManager_.end();) {
+	if (!listRelativeManager_.empty()) {
+		for (auto itrManager = listRelativeManager_.begin(); itrManager != listRelativeManager_.end();) {
 			gstd::ref_count_weak_ptr<ScriptManager> manager = (*itrManager);
-			if (manager != NULL) {
-				std::list<ref_count_ptr<ManagedScript>>::iterator itrScript = manager->listScriptRun_.begin();
-				for (; itrScript != manager->listScriptRun_.end(); itrScript++) {
-					ref_count_ptr<ManagedScript> script = (*itrScript);
+			if (manager != nullptr) {
+				for (auto& script : manager->listScriptRun_) {
 					if (script->IsEndScript())
 						continue;
 
 					script->RequestEvent(type, listValue);
 				}
-				itrManager++;
+				++itrManager;
 			} else {
 				itrManager = listRelativeManager_.erase(itrManager);
 			}
 		}
 	}
 }
-gstd::value ScriptManager::GetScriptResult(_int64 idScript)
+gstd::value ScriptManager::GetScriptResult(int64_t idScript)
 {
 	gstd::value res;
 	ref_count_ptr<ManagedScript> script = GetScript(idScript);
-	if (script != NULL) {
+	if (script != nullptr) {
 		res = script->GetResultValue();
 	} else {
-		if (mapClosedScriptResult_.find(idScript) != mapClosedScriptResult_.end()) {
-			res = mapClosedScriptResult_[idScript];
+		auto closedScriptResult = mapClosedScriptResult_.find(idScript) ;
+		if (closedScriptResult != mapClosedScriptResult_.end()) {
+			res = closedScriptResult->second;
 		}
 	}
 	return res;
@@ -318,7 +295,7 @@ const function commonFunction[] = {
 };
 ManagedScript::ManagedScript()
 {
-	scriptManager_ = NULL;
+	scriptManager_ = nullptr;
 	_AddFunction(commonFunction, sizeof(commonFunction) / sizeof(function));
 
 	bLoad_ = false;
@@ -363,7 +340,7 @@ gstd::value ManagedScript::RequestEvent(int type, const std::vector<gstd::value>
 //STG制御共通関数：スクリプト操作
 gstd::value ManagedScript::Func_LoadScript(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	ScriptManager* scriptManager = script->scriptManager_;
 
 	std::wstring path = argv[0].as_string();
@@ -371,64 +348,64 @@ gstd::value ManagedScript::Func_LoadScript(gstd::script_machine* machine, int ar
 	ref_count_ptr<ManagedScript> target = scriptManager->Create(type);
 	target->scriptParam_ = script->scriptParam_;
 
-	_int64 res = scriptManager->LoadScript(path, target);
+	int64_t res = scriptManager->LoadScript(path, target);
 	return value(machine->get_engine()->get_real_type(), (long double)res);
 }
 gstd::value ManagedScript::Func_LoadScriptInThread(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	ScriptManager* scriptManager = script->scriptManager_;
 
 	std::wstring path = argv[0].as_string();
 	int type = script->GetScriptType();
 	ref_count_ptr<ManagedScript> target = scriptManager->Create(type);
 	target->scriptParam_ = script->scriptParam_;
-	_int64 res = scriptManager->LoadScriptInThread(path, target);
+	int64_t res = scriptManager->LoadScriptInThread(path, target);
 	return value(machine->get_engine()->get_real_type(), (long double)res);
 }
 gstd::value ManagedScript::Func_StartScript(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	ScriptManager* scriptManager = script->scriptManager_;
 
-	_int64 idScript = (_int64)argv[0].as_real();
+	auto idScript = (int64_t)argv[0].as_real();
 	scriptManager->StartScript(idScript);
 	return value();
 }
 gstd::value ManagedScript::Func_CloseScript(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	ScriptManager* scriptManager = script->scriptManager_;
 
-	_int64 idScript = (_int64)argv[0].as_real();
+	auto idScript = (int64_t)argv[0].as_real();
 	scriptManager->CloseScript(idScript);
 	return value();
 }
 gstd::value ManagedScript::Func_IsCloseScript(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	ScriptManager* scriptManager = script->scriptManager_;
 
-	_int64 idScript = (_int64)argv[0].as_real();
+	auto idScript = (int64_t)argv[0].as_real();
 	bool res = scriptManager->IsCloseScript(idScript);
 	return value(machine->get_engine()->get_boolean_type(), res);
 }
 
 gstd::value ManagedScript::Func_GetOwnScriptID(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
-	_int64 res = script->GetScriptID();
+	auto* script = (ManagedScript*)machine->data;
+	int64_t res = script->GetScriptID();
 	return value(machine->get_engine()->get_real_type(), (long double)res);
 }
 gstd::value ManagedScript::Func_GetEventType(script_machine* machine, int argc, value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	int res = script->typeEvent_;
 	return value(machine->get_engine()->get_real_type(), (long double)res);
 }
 gstd::value ManagedScript::Func_GetEventArgument(script_machine* machine, int argc, value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	int index = (int)argv[0].as_real();
 	if (index < 0 || index >= script->listValueEvent_.size())
 		throw gstd::wexception(L"スクリプト引数のインデックスが不正です");
@@ -436,12 +413,12 @@ gstd::value ManagedScript::Func_GetEventArgument(script_machine* machine, int ar
 }
 gstd::value ManagedScript::Func_SetScriptArgument(script_machine* machine, int argc, value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	ScriptManager* scriptManager = script->scriptManager_;
 
-	_int64 idScript = (_int64)argv[0].as_real();
+	auto idScript = (int64_t)argv[0].as_real();
 	ref_count_ptr<ManagedScript> target = scriptManager->GetScript(idScript);
-	if (target == NULL)
+	if (target == nullptr)
 		return value();
 
 	int index = (int)argv[1].as_real();
@@ -450,16 +427,16 @@ gstd::value ManagedScript::Func_SetScriptArgument(script_machine* machine, int a
 }
 gstd::value ManagedScript::Func_GetScriptResult(script_machine* machine, int argc, value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	ScriptManager* scriptManager = script->scriptManager_;
 
-	_int64 idScript = (_int64)argv[0].as_real();
+	auto idScript = (int64_t)argv[0].as_real();
 	gstd::value res = scriptManager->GetScriptResult(idScript);
 	return res;
 }
 gstd::value ManagedScript::Func_SetAutoDeleteObject(script_machine* machine, int argc, value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 
 	bool bAutoDelete = argv[0].as_boolean();
 	script->SetAutoDeleteObject(bAutoDelete);
@@ -467,14 +444,14 @@ gstd::value ManagedScript::Func_SetAutoDeleteObject(script_machine* machine, int
 }
 gstd::value ManagedScript::Func_NotifyEvent(script_machine* machine, int argc, value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	script->CheckRunInMainThread();
 	ScriptManager* scriptManager = script->scriptManager_;
 
-	_int64 idScript = (_int64)argv[0].as_real();
+	auto idScript = (int64_t)argv[0].as_real();
 	ref_count_ptr<ManagedScript> target = scriptManager->GetScript(idScript);
 
-	if (target == NULL)
+	if (target == nullptr)
 		return value();
 
 	int type = (int)argv[1].as_real();
@@ -485,7 +462,7 @@ gstd::value ManagedScript::Func_NotifyEvent(script_machine* machine, int argc, v
 }
 gstd::value ManagedScript::Func_NotifyEventAll(script_machine* machine, int argc, value const* argv)
 {
-	ManagedScript* script = (ManagedScript*)machine->data;
+	auto* script = (ManagedScript*)machine->data;
 	script->CheckRunInMainThread();
 
 	ScriptManager* scriptManager = script->scriptManager_;

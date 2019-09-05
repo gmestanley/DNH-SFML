@@ -30,7 +30,7 @@ public:
 
 	int GetObjectID() const { return idObject_; }
 	int GetObjectType() const { return typeObject_; }
-	_int64 GetScriptID() const { return idScript_; }
+	int64_t GetScriptID() const { return idScript_; }
 	bool IsDeleted() const { return bDeleted_; }
 	bool IsActive() const { return bActive_; }
 	void SetActive(bool bActive) { bActive_ = bActive; }
@@ -49,7 +49,7 @@ public:
 protected:
 	int idObject_;
 	int typeObject_;
-	_int64 idScript_;
+	int64_t idScript_;
 	DxScriptObjectManager* manager_;
 	double priRender_;
 	bool bVisible_;
@@ -93,10 +93,10 @@ public:
 		nameRelativeBone_ = bone;
 	}
 
-	virtual gstd::ref_count_ptr<Shader> GetShader() { return NULL; }
+	virtual gstd::ref_count_ptr<Shader> GetShader() { return nullptr; }
 	virtual void SetShader(gstd::ref_count_ptr<Shader> shader) {}
-	virtual void Render() {}
-	virtual void SetRenderState() {}
+	void Render() override {}
+	void SetRenderState() override {}
 
 protected:
 	bool bZWrite_;
@@ -119,11 +119,11 @@ protected:
 class DxScriptShaderObject : public DxScriptRenderObject {
 public:
 	DxScriptShaderObject();
-	virtual gstd::ref_count_ptr<Shader> GetShader() { return shader_; }
-	virtual void SetShader(gstd::ref_count_ptr<Shader> shader) { shader_ = shader; }
+	gstd::ref_count_ptr<Shader> GetShader() override { return shader_; }
+	void SetShader(gstd::ref_count_ptr<Shader> shader) override { shader_ = shader; }
 
-	virtual void SetColor(int r, int g, int b) {}
-	virtual void SetAlpha(int alpha) {}
+	void SetColor(int r, int g, int b) override {}
+	void SetAlpha(int alpha) override {}
 
 private:
 	gstd::ref_count_ptr<Shader> shader_;
@@ -150,8 +150,8 @@ public:
 	virtual void SetVertexColor(int index, int r, int g, int b) = 0;
 	virtual D3DXVECTOR3 GetVertexPosition(int index) = 0;
 
-	virtual gstd::ref_count_ptr<Shader> GetShader();
-	virtual void SetShader(gstd::ref_count_ptr<Shader> shader);
+	gstd::ref_count_ptr<Shader> GetShader() override;
+	void SetShader(gstd::ref_count_ptr<Shader> shader) override;
 
 protected:
 	gstd::ref_count_ptr<RenderObject> objRender_;
@@ -163,20 +163,20 @@ protected:
 class DxScriptPrimitiveObject2D : public DxScriptPrimitiveObject {
 public:
 	DxScriptPrimitiveObject2D();
-	virtual void Render();
-	virtual void SetRenderState();
+	void Render() override;
+	void SetRenderState() override;
 	RenderObjectTLX* GetObjectPointer() { return (RenderObjectTLX*)objRender_.GetPointer(); }
 	const RenderObjectTLX* GetObjectPointer() const { return (RenderObjectTLX*)objRender_.GetPointer(); }
 
-	virtual bool IsValidVertexIndex(int index) const;
-	virtual void SetColor(int r, int g, int b);
-	virtual void SetAlpha(int alpha);
-	virtual void SetVertexPosition(int index, float x, float y, float z);
-	virtual void SetVertexUV(int index, float u, float v);
-	virtual void SetVertexAlpha(int index, int alpha);
-	virtual void SetVertexColor(int index, int r, int g, int b);
+	bool IsValidVertexIndex(int index) const override;
+	void SetColor(int r, int g, int b) override;
+	void SetAlpha(int alpha) override;
+	void SetVertexPosition(int index, float x, float y, float z) override;
+	void SetVertexUV(int index, float u, float v) override;
+	void SetVertexAlpha(int index, int alpha) override;
+	void SetVertexColor(int index, int r, int g, int b) override;
 	void SetPermitCamera(bool bPermit);
-	virtual D3DXVECTOR3 GetVertexPosition(int index);
+	D3DXVECTOR3 GetVertexPosition(int index) override;
 };
 
 /**********************************************************
@@ -195,8 +195,8 @@ public:
 class DxScriptSpriteListObject2D : public DxScriptPrimitiveObject2D {
 public:
 	DxScriptSpriteListObject2D();
-	virtual void SetColor(int r, int g, int b);
-	virtual void SetAlpha(int alpha);
+	void SetColor(int r, int g, int b) override;
+	void SetAlpha(int alpha) override;
 	void AddVertex();
 	void CloseVertex();
 	SpriteList2D* GetSpritePointer() { return (SpriteList2D*)objRender_.GetPointer(); }
@@ -210,19 +210,19 @@ class DxScriptPrimitiveObject3D : public DxScriptPrimitiveObject {
 
 public:
 	DxScriptPrimitiveObject3D();
-	virtual void Render();
-	virtual void SetRenderState();
+	void Render() override;
+	void SetRenderState() override;
 	RenderObjectLX* GetObjectPointer() { return (RenderObjectLX*)objRender_.GetPointer(); }
 	const RenderObjectLX* GetObjectPointer() const { return (RenderObjectLX*)objRender_.GetPointer(); }
 
-	virtual bool IsValidVertexIndex(int index) const;
-	virtual void SetColor(int r, int g, int b);
-	virtual void SetAlpha(int alpha);
-	virtual void SetVertexPosition(int index, float x, float y, float z);
-	virtual void SetVertexUV(int index, float u, float v);
-	virtual void SetVertexAlpha(int index, int alpha);
-	virtual void SetVertexColor(int index, int r, int g, int b);
-	virtual D3DXVECTOR3 GetVertexPosition(int index);
+	bool IsValidVertexIndex(int index) const override;
+	void SetColor(int r, int g, int b) override;
+	void SetAlpha(int alpha) override;
+	void SetVertexPosition(int index, float x, float y, float z) override;
+	void SetVertexUV(int index, float u, float v) override;
+	void SetVertexAlpha(int index, int alpha) override;
+	void SetVertexColor(int index, int r, int g, int b) override;
+	D3DXVECTOR3 GetVertexPosition(int index) override;
 };
 /**********************************************************
 //DxScriptSpriteObject3D
@@ -239,20 +239,20 @@ public:
 class DxScriptTrajectoryObject3D : public DxScriptPrimitiveObject {
 public:
 	DxScriptTrajectoryObject3D();
-	virtual void Work();
-	virtual void Render();
-	virtual void SetRenderState();
+	void Work() override;
+	void Render() override;
+	void SetRenderState() override;
 	TrajectoryObject3D* GetObjectPointer() { return (TrajectoryObject3D*)objRender_.GetPointer(); }
 	const TrajectoryObject3D* GetObjectPointer() const { return (TrajectoryObject3D*)objRender_.GetPointer(); }
 
-	virtual bool IsValidVertexIndex(int index) const { return false; }
-	virtual void SetColor(int r, int g, int b);
-	virtual void SetAlpha(int alpha){};
-	virtual void SetVertexPosition(int index, float x, float y, float z){};
-	virtual void SetVertexUV(int index, float u, float v){};
-	virtual void SetVertexAlpha(int index, int alpha){};
-	virtual void SetVertexColor(int index, int r, int g, int b){};
-	virtual D3DXVECTOR3 GetVertexPosition(int index) { return D3DXVECTOR3(0, 0, 0); }
+	bool IsValidVertexIndex(int index) const override { return false; }
+	void SetColor(int r, int g, int b) override;
+	void SetAlpha(int alpha) override{};
+	void SetVertexPosition(int index, float x, float y, float z) override{};
+	void SetVertexUV(int index, float u, float v) override{};
+	void SetVertexAlpha(int index, int alpha) override{};
+	void SetVertexColor(int index, int r, int g, int b) override{};
+	D3DXVECTOR3 GetVertexPosition(int index) override { return {0, 0, 0}; }
 };
 
 /**********************************************************
@@ -263,10 +263,10 @@ class DxScriptMeshObject : public DxScriptRenderObject {
 
 public:
 	DxScriptMeshObject();
-	virtual void Render();
-	virtual void SetRenderState();
-	virtual void SetColor(int r, int g, int b);
-	virtual void SetAlpha(int alpha);
+	void Render() override;
+	void SetRenderState() override;
+	void SetColor(int r, int g, int b) override;
+	void SetAlpha(int alpha) override;
 	void SetMesh(gstd::ref_count_ptr<DxMesh> mesh) { mesh_ = mesh; }
 	gstd::ref_count_ptr<DxMesh> GetMesh() { return mesh_; }
 	int GetAnimeFrame() const { return time_; }
@@ -317,7 +317,7 @@ public:
 		scale_.z = z;
 		_UpdateMeshState();
 	}
-	virtual void SetShader(gstd::ref_count_ptr<Shader> shader);
+	void SetShader(gstd::ref_count_ptr<Shader> shader) override;
 
 protected:
 	gstd::ref_count_ptr<DxMesh> mesh_;
@@ -336,8 +336,8 @@ class DxScriptTextObject : public DxScriptRenderObject {
 
 public:
 	DxScriptTextObject();
-	virtual void Render();
-	virtual void SetRenderState();
+	void Render() override;
+	void SetRenderState() override;
 
 	void SetText(const std::wstring& text)
 	{
@@ -430,10 +430,10 @@ public:
 	void SetPermitCamera(bool bPermit) { text_.SetPermitCamera(bPermit); }
 	void SetSyntacticAnalysis(bool bEnable) { text_.SetSyntacticAnalysis(bEnable); }
 
-	virtual void SetAlpha(int alpha);
-	virtual void SetColor(int r, int g, int b);
+	void SetAlpha(int alpha) override;
+	void SetColor(int r, int g, int b) override;
 	void SetVertexColor(D3DCOLOR color) { text_.SetVertexColor(color); }
-	virtual void SetShader(gstd::ref_count_ptr<Shader> shader);
+	void SetShader(gstd::ref_count_ptr<Shader> shader) override;
 
 protected:
 	bool bChange_;
@@ -454,11 +454,11 @@ class DxSoundObject : public DxScriptObjectBase {
 
 public:
 	DxSoundObject();
-	~DxSoundObject();
-	virtual void Render() {}
-	virtual void SetRenderState() {}
+	~DxSoundObject() override;
+	void Render() override {}
+	void SetRenderState() override {}
 
-	bool Load(std::wstring path);
+	bool Load(const std::wstring& path);
 	void Play();
 
 	gstd::ref_count_ptr<SoundPlayer> GetPlayer() { return player_; }
@@ -477,11 +477,11 @@ class DxFileObject : public DxScriptObjectBase {
 
 public:
 	DxFileObject();
-	~DxFileObject();
+	~DxFileObject() override;
 	gstd::ref_count_ptr<gstd::File> GetFile() { return file_; }
 
-	virtual void Render() {}
-	virtual void SetRenderState() {}
+	void Render() override {}
+	void SetRenderState() override {}
 
 	virtual bool OpenR(const std::wstring& path);
 	virtual bool OpenW(const std::wstring& path);
@@ -498,10 +498,10 @@ protected:
 class DxTextFileObject : public DxFileObject {
 public:
 	DxTextFileObject();
-	virtual ~DxTextFileObject();
-	virtual bool OpenR(const std::wstring& path);
-	virtual bool OpenW(const std::wstring& path);
-	virtual bool Store();
+	~DxTextFileObject() override;
+	bool OpenR(const std::wstring& path) override;
+	bool OpenW(const std::wstring& path) override;
+	bool Store() override;
 	int GetLineCount() const { return listLine_.size(); }
 	std::string GetLine(int line) const;
 
@@ -518,10 +518,10 @@ protected:
 class DxBinaryFileObject : public DxFileObject {
 public:
 	DxBinaryFileObject();
-	virtual ~DxBinaryFileObject();
-	virtual bool OpenR(const std::wstring& path);
-	virtual bool OpenW(const std::wstring& path);
-	virtual bool Store();
+	~DxBinaryFileObject() override;
+	bool OpenR(const std::wstring& path) override;
+	bool OpenW(const std::wstring& path) override;
+	bool Store() override;
 
 	gstd::ref_count_ptr<gstd::ByteBuffer> GetBuffer() { return buffer_; }
 	bool IsReadableSize(int size);
@@ -548,7 +548,7 @@ public:
 	struct SoundInfo {
 		gstd::ref_count_ptr<SoundPlayer> player_;
 		SoundPlayer::PlayStyle style_;
-		virtual ~SoundInfo() {}
+		virtual ~SoundInfo() = default;
 	};
 
 public:
@@ -567,7 +567,7 @@ public:
 	DxScriptObjectBase* GetObjectPointer(int id);
 	virtual void DeleteObject(int id);
 	void ClearObject();
-	void DeleteObjectByScriptID(_int64 idScript);
+	void DeleteObjectByScriptID(int64_t idScript);
 	void AddRenderObject(gstd::ref_count_ptr<DxScriptObjectBase>::unsync obj); //要フレームごとに登録
 	void WorkObject();
 	void RenderObject();
@@ -584,7 +584,7 @@ public:
 	void ReserveSound(gstd::ref_count_ptr<SoundPlayer> player, const SoundPlayer::PlayStyle& style);
 	void DeleteReservedSound(gstd::ref_count_ptr<SoundPlayer> player);
 	void SetFogParam(bool bEnable, D3DCOLOR fogColor, float start, float end);
-	_int64 GetTotalObjectCreateCount() const { return totalObjectCreateCount_; }
+	int64_t GetTotalObjectCreateCount() const { return totalObjectCreateCount_; }
 
 	bool IsFogEneble() const { return bFogEnable_; }
 	D3DCOLOR GetFogColor() const { return fogColor_; }
@@ -592,7 +592,7 @@ public:
 	float GetFogEnd() const { return fogEnd_; }
 
 protected:
-	_int64 totalObjectCreateCount_;
+	int64_t totalObjectCreateCount_;
 	std::list<int> listUnusedIndex_;
 	std::vector<gstd::ref_count_ptr<DxScriptObjectBase>::unsync> obj_; //オブジェクト
 	std::list<gstd::ref_count_ptr<DxScriptObjectBase>::unsync> listActiveObject_;
@@ -646,7 +646,7 @@ public:
 
 public:
 	DxScript();
-	virtual ~DxScript();
+	~DxScript() override;
 
 	void SetObjectManager(gstd::ref_count_ptr<DxScriptObjectManager> manager) { objManager_ = manager; }
 	gstd::ref_count_ptr<DxScriptObjectManager> GetObjectManager() { return objManager_; }

@@ -18,68 +18,66 @@ public:
 
 public:
 	ScriptManager();
-	virtual ~ScriptManager();
+	~ScriptManager() override;
 	virtual void Work();
 	virtual void Work(int targetType);
 	virtual void Render();
 
 	virtual void SetError(const std::wstring& error) { error_ = error; }
-	virtual bool IsError() const { return error_ != L""; }
+	virtual bool IsError() const { return !error_.empty(); }
 
 	int GetMainThreadID() const { return mainThreadID_; }
-	_int64 IssueScriptID()
+	int64_t IssueScriptID()
 	{
-		{
-			gstd::Lock lock(lock_);
-			idScript_++;
-			return idScript_;
-		}
+		gstd::Lock lock(lock_);
+		++idScript_;
+		return idScript_;
 	}
 
-	gstd::ref_count_ptr<ManagedScript> GetScript(_int64 id);
-	void StartScript(_int64 id);
-	void CloseScript(_int64 id);
+	gstd::ref_count_ptr<ManagedScript> GetScript(int64_t id);
+	void StartScript(int64_t id);
+	void CloseScript(int64_t id);
 	void CloseScriptOnType(int type);
-	bool IsCloseScript(_int64 id);
-	int IsHasCloseScliptWork() const { return bHasCloseScriptWork_; }
-	int GetAllScriptThreadCount();
+	bool IsCloseScript(int64_t id);
+	bool IsHasCloseScriptWork() const { return bHasCloseScriptWork_; }
+	int GetAllScriptThreadCount() const;
 	void TerminateScriptAll(const std::wstring& message);
 
-	_int64 LoadScript(const std::wstring& path, gstd::ref_count_ptr<ManagedScript> script);
-	_int64 LoadScript(const std::wstring& path, int type);
-	_int64 LoadScriptInThread(const std::wstring& path, gstd::ref_count_ptr<ManagedScript> script);
-	_int64 LoadScriptInThread(const std::wstring& path, int type);
-	virtual void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event);
+	int64_t LoadScript(const std::wstring& path, gstd::ref_count_ptr<ManagedScript> script);
+	int64_t LoadScript(const std::wstring& path, int type);
+	int64_t LoadScriptInThread(const std::wstring& path, gstd::ref_count_ptr<ManagedScript> script);
+	int64_t LoadScriptInThread(const std::wstring& path, int type);
+	void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event) override;
 
 	virtual gstd::ref_count_ptr<ManagedScript> Create(int type) = 0;
 	virtual void RequestEventAll(int type, const std::vector<gstd::value>& listValue = std::vector<gstd::value>());
-	gstd::value GetScriptResult(_int64 idScript);
+	gstd::value GetScriptResult(int64_t idScript);
 	void AddRelativeScriptManager(gstd::ref_count_weak_ptr<ScriptManager> manager) { listRelativeManager_.push_back(manager); }
 	static void AddRelativeScriptManagerMutual(gstd::ref_count_weak_ptr<ScriptManager> manager1, gstd::ref_count_weak_ptr<ScriptManager> manager2);
 
 protected:
-	_int64 _LoadScript(const std::wstring& path, gstd::ref_count_ptr<ManagedScript> script);
+	int64_t _LoadScript(const std::wstring& path, gstd::ref_count_ptr<ManagedScript> script);
 
-	gstd::CriticalSection lock_;
-	static _int64 idScript_;
+	mutable gstd::CriticalSection lock_;
+	static int64_t idScript_;
 	bool bHasCloseScriptWork_;
 
 	std::wstring error_;
-	std::map<_int64, gstd::ref_count_ptr<ManagedScript>> mapScriptLoad_;
+	std::map<int64_t, gstd::ref_count_ptr<ManagedScript>> mapScriptLoad_;
 	std::list<gstd::ref_count_ptr<ManagedScript>> listScriptRun_;
-	std::map<_int64, gstd::value> mapClosedScriptResult_;
+	std::map<int64_t, gstd::value> mapClosedScriptResult_;
 	std::list<gstd::ref_count_weak_ptr<ScriptManager>> listRelativeManager_;
 
 	int mainThreadID_;
 };
 
 /**********************************************************
-	//ManagedScript
-	**********************************************************/
+//ManagedScript
+**********************************************************/
 class ManagedScriptParameter {
 public:
-	ManagedScriptParameter() {}
-	virtual ~ManagedScriptParameter() {}
+	ManagedScriptParameter() = default;
+	virtual ~ManagedScriptParameter() = default;
 };
 class ManagedScript : public DxScript, public gstd::FileManager::LoadObject {
 	friend ScriptManager;

@@ -16,7 +16,7 @@ class RenderManager;
 **********************************************************/
 struct VERTEX_TL {
 	//座標3D変換済み、ライティング済み
-	VERTEX_TL() {}
+	VERTEX_TL() = default;
 	VERTEX_TL(D3DXVECTOR4 pos, D3DCOLOR dcol)
 		: position(pos)
 		, diffuse_color(dcol)
@@ -29,7 +29,7 @@ struct VERTEX_TL {
 
 struct VERTEX_TLX {
 	//座標3D変換済み、ライティング済み、テクスチャ有り
-	VERTEX_TLX() {}
+	VERTEX_TLX() = default;
 	VERTEX_TLX(D3DXVECTOR4 pos, D3DCOLOR diffcol, D3DXVECTOR2 tex)
 		: position(pos)
 		, diffuse_color(diffcol)
@@ -44,7 +44,7 @@ struct VERTEX_TLX {
 
 struct VERTEX_L {
 	//ライティング済み
-	VERTEX_L() {}
+	VERTEX_L() = default;
 	VERTEX_L(D3DXVECTOR3 pos, D3DCOLOR col)
 		: position(pos)
 		, diffuse_color(col)
@@ -57,7 +57,7 @@ struct VERTEX_L {
 
 struct VERTEX_LX {
 	//ライティング済み、テクスチャ有り
-	VERTEX_LX() {}
+	VERTEX_LX() = default;
 	VERTEX_LX(D3DXVECTOR3 pos, D3DCOLOR diffcol, D3DXVECTOR2 tex)
 		: position(pos)
 		, diffuse_color(diffcol)
@@ -72,7 +72,7 @@ struct VERTEX_LX {
 
 struct VERTEX_N {
 	//未ライティング
-	VERTEX_N() {}
+	VERTEX_N() = default;
 	VERTEX_N(D3DXVECTOR3 pos, D3DXVECTOR3 n)
 		: position(pos)
 		, normal(n)
@@ -85,7 +85,7 @@ struct VERTEX_N {
 
 struct VERTEX_NX {
 	//未ライティング、テクスチャ有り
-	VERTEX_NX() {}
+	VERTEX_NX() = default;
 	VERTEX_NX(D3DXVECTOR3 pos, D3DXVECTOR3 n, D3DXVECTOR2 tc)
 		: position(pos)
 		, normal(n)
@@ -99,7 +99,7 @@ struct VERTEX_NX {
 };
 
 struct VERTEX_NXG {
-	VERTEX_NXG() {}
+	VERTEX_NXG() = default;
 	VERTEX_NXG(D3DXVECTOR3& pos, D3DXVECTOR3& n, D3DXVECTOR2& tc)
 		: position(pos)
 		, normal(n)
@@ -115,7 +115,7 @@ struct VERTEX_NXG {
 
 struct VERTEX_B1NX {
 	//未ライティング、テクスチャ有り、頂点ブレンド1
-	VERTEX_B1NX() {}
+	VERTEX_B1NX() = default;
 	VERTEX_B1NX(D3DXVECTOR3 pos, DWORD bi, D3DXVECTOR3 n, D3DXVECTOR2 tc)
 		: position(pos)
 		, normal(n)
@@ -132,7 +132,7 @@ struct VERTEX_B1NX {
 
 struct VERTEX_B2NX {
 	//未ライティング、テクスチャ有り、頂点ブレンド2
-	VERTEX_B2NX() {}
+	VERTEX_B2NX() = default;
 	VERTEX_B2NX(D3DXVECTOR3 pos, float rate, BYTE index1, BYTE index2, D3DXVECTOR3 n, D3DXVECTOR2 tc)
 		: position(pos)
 		, normal(n)
@@ -152,15 +152,15 @@ struct VERTEX_B2NX {
 
 struct VERTEX_B4NX {
 	//未ライティング、テクスチャ有り、頂点ブレンド4
-	VERTEX_B4NX() {}
-	VERTEX_B4NX(D3DXVECTOR3 pos, float rate[3], BYTE index[4], D3DXVECTOR3 n, D3DXVECTOR2 tc)
+	VERTEX_B4NX() = default;
+	VERTEX_B4NX(D3DXVECTOR3 pos, const float rate[3], BYTE index[4], D3DXVECTOR3 n, D3DXVECTOR2 tc)
 		: position(pos)
 		, normal(n)
 		, texcoord(tc)
 	{
-		for (int iRate = 0; iRate < 3; iRate++)
+		for (int iRate = 0; iRate < 3; ++iRate)
 			blendRate[iRate] = rate[iRate];
-		for (int iIndex = 0; iIndex < 4; iIndex++)
+		for (int iIndex = 0; iIndex < 4; ++iIndex)
 			gstd::BitAccess::SetByte(blendIndex, 8 * iIndex, index[iIndex]);
 	}
 	D3DXVECTOR3 position;
@@ -208,8 +208,8 @@ protected:
 
 class RenderBlocks {
 public:
-	RenderBlocks(){};
-	virtual ~RenderBlocks(){};
+	RenderBlocks() = default;
+	virtual ~RenderBlocks() = default;
 	void Add(gstd::ref_count_ptr<RenderBlock> block) { listBlock_.push_back(block); }
 	std::list<gstd::ref_count_ptr<RenderBlock>>& GetList() { return listBlock_; }
 
@@ -272,12 +272,12 @@ private:
 
 class Matrices {
 public:
-	Matrices(){};
-	virtual ~Matrices(){};
+	Matrices() = default;
+	virtual ~Matrices() = default;
 	void SetSize(int size)
 	{
 		matrix_.resize(size);
-		for (int iMat = 0; iMat < size; iMat++) {
+		for (int iMat = 0; iMat < size; ++iMat) {
 			D3DXMatrixIdentity(&matrix_[iMat]);
 		}
 	}
@@ -331,14 +331,14 @@ public:
 	void SetY(float y) { position_.y = y; }
 	void SetZ(float z) { position_.z = z; }
 	void SetAngle(const D3DXVECTOR3& angle) { angle_ = angle; }
-	void SetAngleXYZ(float angx = 0.0f, float angy = 0.0f, float angz = 0.0f)
+	void SetAngleXYZ(float angx = 0.0F, float angy = 0.0F, float angz = 0.0F)
 	{
 		angle_.x = angx;
 		angle_.y = angy;
 		angle_.z = angz;
 	}
 	void SetScale(const D3DXVECTOR3& scale) { scale_ = scale; }
-	void SetScaleXYZ(float sx = 1.0f, float sy = 1.0f, float sz = 1.0f)
+	void SetScaleXYZ(float sx = 1.0F, float sy = 1.0F, float sz = 1.0F)
 	{
 		scale_.x = sx;
 		scale_.y = sy;
@@ -383,8 +383,8 @@ protected:
 	void _SetTextureStageCount(int count)
 	{
 		texture_.resize(count);
-		for (int i = 0; i < count; i++)
-			texture_[i] = NULL;
+		for (auto& texture : texture_)
+			texture = nullptr;
 	}
 	virtual D3DXMATRIX _CreateWorldTransformMaxtrix(); //position_,angle_,scale_から作成
 	void _SetCoordinate2dDeviceMatrix();
@@ -398,14 +398,14 @@ protected:
 class RenderObjectTLX : public RenderObject {
 public:
 	RenderObjectTLX();
-	~RenderObjectTLX();
-	virtual void Render();
-	virtual void SetVertexCount(int count);
+	~RenderObjectTLX() override;
+	void Render() override;
+	void SetVertexCount(int count) override;
 
 	//頂点設定
 	VERTEX_TLX* GetVertex(int index);
 	void SetVertex(int index, const VERTEX_TLX& vertex);
-	void SetVertexPosition(int index, float x, float y, float z = 1.0f, float w = 1.0f);
+	void SetVertexPosition(int index, float x, float y, float z = 1.0F, float w = 1.0F);
 	void SetVertexUV(int index, float u, float v);
 	void SetVertexColor(int index, D3DCOLOR color);
 	void SetVertexColorARGB(int index, int a, int r, int g, int b);
@@ -422,7 +422,7 @@ protected:
 	bool bPermitCamera_;
 	gstd::ByteBuffer vertCopy_;
 
-	virtual void _CreateVertexDeclaration();
+	void _CreateVertexDeclaration() override;
 };
 
 /**********************************************************
@@ -433,9 +433,9 @@ protected:
 class RenderObjectLX : public RenderObject {
 public:
 	RenderObjectLX();
-	~RenderObjectLX();
-	virtual void Render();
-	virtual void SetVertexCount(int count);
+	~RenderObjectLX() override;
+	void Render() override;
+	void SetVertexCount(int count) override;
 
 	//頂点設定
 	VERTEX_LX* GetVertex(int index);
@@ -450,7 +450,7 @@ public:
 	void SetAlpha(int alpha);
 
 protected:
-	virtual void _CreateVertexDeclaration();
+	void _CreateVertexDeclaration() override;
 };
 
 /**********************************************************
@@ -460,8 +460,8 @@ protected:
 class RenderObjectNX : public RenderObject {
 public:
 	RenderObjectNX();
-	~RenderObjectNX();
-	virtual void Render();
+	~RenderObjectNX() override;
+	void Render() override;
 
 	//頂点設定
 	VERTEX_NX* GetVertex(int index);
@@ -473,7 +473,7 @@ public:
 
 protected:
 	D3DCOLOR color_;
-	virtual void _CreateVertexDeclaration();
+	void _CreateVertexDeclaration() override;
 };
 
 /**********************************************************
@@ -494,9 +494,9 @@ public:
 
 public:
 	RenderObjectBNX();
-	~RenderObjectBNX();
-	virtual void InitializeVertexBuffer();
-	virtual void Render();
+	~RenderObjectBNX() override;
+	void InitializeVertexBuffer() override;
+	void Render() override;
 
 	//描画用設定
 	void SetMatrix(gstd::ref_count_ptr<Matrices> matrix) { matrix_ = matrix; }
@@ -506,7 +506,7 @@ protected:
 	gstd::ref_count_ptr<Matrices> matrix_;
 	D3DCOLOR color_;
 	D3DMATERIAL9 materialBNX_;
-	virtual void _CreateVertexDeclaration();
+	void _CreateVertexDeclaration() override;
 	virtual void _CopyVertexBufferOnInitialize() = 0;
 };
 
@@ -530,9 +530,9 @@ protected:
 class RenderObjectB2NX : public RenderObjectBNX {
 public:
 	RenderObjectB2NX();
-	~RenderObjectB2NX();
+	~RenderObjectB2NX() override;
 
-	virtual void CalculateWeightCenter();
+	void CalculateWeightCenter() override;
 
 	//頂点設定
 	VERTEX_B2NX* GetVertex(int index);
@@ -543,14 +543,14 @@ public:
 	void SetVertexNormal(int index, float x, float y, float z);
 
 protected:
-	virtual void _CopyVertexBufferOnInitialize();
+	void _CopyVertexBufferOnInitialize() override;
 };
 
 class RenderObjectB2NXBlock : public RenderObjectBNXBlock {
 public:
 	RenderObjectB2NXBlock();
-	virtual ~RenderObjectB2NXBlock();
-	virtual void Render();
+	~RenderObjectB2NXBlock() override;
+	void Render() override;
 };
 
 /**********************************************************
@@ -562,9 +562,9 @@ public:
 class RenderObjectB4NX : public RenderObjectBNX {
 public:
 	RenderObjectB4NX();
-	~RenderObjectB4NX();
+	~RenderObjectB4NX() override;
 
-	virtual void CalculateWeightCenter();
+	void CalculateWeightCenter() override;
 
 	//頂点設定
 	VERTEX_B4NX* GetVertex(int index);
@@ -575,14 +575,14 @@ public:
 	void SetVertexNormal(int index, float x, float y, float z);
 
 protected:
-	virtual void _CopyVertexBufferOnInitialize();
+	void _CopyVertexBufferOnInitialize() override;
 };
 
 class RenderObjectB4NXBlock : public RenderObjectBNXBlock {
 public:
 	RenderObjectB4NXBlock();
-	virtual ~RenderObjectB4NXBlock();
-	virtual void Render();
+	~RenderObjectB4NXBlock() override;
+	void Render() override;
 };
 
 /**********************************************************
@@ -592,7 +592,7 @@ public:
 class Sprite2D : public RenderObjectTLX {
 public:
 	Sprite2D();
-	~Sprite2D();
+	~Sprite2D() override;
 	void Copy(const Sprite2D* src);
 	void SetSourceRect(const RECT_D& rcSrc);
 	void SetDestinationRect(const RECT_D& rcDest);
@@ -609,8 +609,8 @@ public:
 class SpriteList2D : public RenderObjectTLX {
 public:
 	SpriteList2D();
-	virtual int GetVertexCount() const;
-	virtual void Render();
+	int GetVertexCount() const override;
+	void Render() override;
 	void ClearVertexCount()
 	{
 		countRenderVertex_ = 0;
@@ -640,7 +640,7 @@ private:
 class Sprite3D : public RenderObjectLX {
 public:
 	Sprite3D();
-	~Sprite3D();
+	~Sprite3D() override;
 	void SetSourceRect(const RECT_D& rcSrc);
 	void SetDestinationRect(const RECT_D& rcDest);
 	void SetVertex(const RECT_D& rcSrc, const RECT_D& rcDest, D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255));
@@ -650,7 +650,7 @@ public:
 
 protected:
 	bool bBillboard_;
-	virtual D3DXMATRIX _CreateWorldTransformMaxtrix();
+	D3DXMATRIX _CreateWorldTransformMaxtrix() override;
 };
 
 /**********************************************************
@@ -660,9 +660,9 @@ protected:
 class TrajectoryObject3D : public RenderObjectLX {
 public:
 	TrajectoryObject3D();
-	~TrajectoryObject3D();
+	~TrajectoryObject3D() override;
 	virtual void Work();
-	virtual void Render();
+	void Render() override;
 	void SetInitialLine(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2);
 	void AddPoint(D3DXMATRIX mat);
 	void SetAlphaVariation(int diff) { diffAlpha_ = diff; }
@@ -684,7 +684,7 @@ protected:
 	Data dataLast1_;
 	Data dataLast2_;
 	std::list<Data> listData_;
-	virtual D3DXMATRIX _CreateWorldTransformMaxtrix();
+	D3DXMATRIX _CreateWorldTransformMaxtrix() override;
 
 };
 
@@ -704,7 +704,7 @@ public:
 public:
 	DxMeshData();
 	virtual ~DxMeshData();
-	void SetName(std::wstring name) { name_ = name; }
+	void SetName(const std::wstring& name) { name_ = name; }
 	std::wstring& GetName() { return name_; }
 	virtual bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader) = 0;
 
@@ -719,7 +719,7 @@ public:
 
 public:
 	DxMesh();
-	virtual ~DxMesh();
+	~DxMesh() override;
 	virtual void Release();
 	bool CreateFromFile(const std::wstring& _path);
 	virtual bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader) = 0;
@@ -740,14 +740,14 @@ public:
 	void SetY(float y) { position_.y = y; }
 	void SetZ(float z) { position_.z = z; }
 	void SetAngle(D3DXVECTOR3 angle) { angle_ = angle; }
-	void SetAngleXYZ(float angx = 0.0f, float angy = 0.0f, float angz = 0.0f)
+	void SetAngleXYZ(float angx = 0.0F, float angy = 0.0F, float angz = 0.0F)
 	{
 		angle_.x = angx;
 		angle_.y = angy;
 		angle_.z = angz;
 	}
 	void SetScale(D3DXVECTOR3 scale) { scale_ = scale; }
-	void SetScaleXYZ(float sx = 1.0f, float sy = 1.0f, float sz = 1.0f)
+	void SetScaleXYZ(float sx = 1.0F, float sy = 1.0F, float sz = 1.0F)
 	{
 		scale_.x = sx;
 		scale_.y = sy;
@@ -761,7 +761,7 @@ public:
 	bool IsCoordinate2D() const { return bCoordinate2D_; }
 	void SetCoordinate2D(bool b) { bCoordinate2D_ = b; }
 
-	gstd::ref_count_ptr<RenderBlocks> CreateRenderBlocks() { return NULL; }
+	gstd::ref_count_ptr<RenderBlocks> CreateRenderBlocks() { return nullptr; }
 	virtual D3DXMATRIX GetAnimationMatrix(const std::wstring& nameAnime, double time, const std::wstring& nameBone)
 	{
 		D3DXMATRIX mat;
@@ -795,7 +795,7 @@ class DxMeshManager : public gstd::FileManager::LoadThreadListener {
 
 public:
 	DxMeshManager();
-	virtual ~DxMeshManager();
+	~DxMeshManager() override;
 	static DxMeshManager* GetBase() { return thisBase_; }
 	bool Initialize();
 	gstd::CriticalSection& GetLock() { return lock_; }
@@ -806,7 +806,7 @@ public:
 	virtual bool IsDataExists(const std::wstring& name);
 
 	gstd::ref_count_ptr<DxMesh> CreateFromFileInLoadThread(const std::wstring& path, int type);
-	virtual void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event);
+	void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event) override;
 
 	void SetInfoPanel(gstd::ref_count_ptr<DxMeshInfoPanel> panel) { panelInfo_ = panel; }
 
@@ -827,8 +827,8 @@ private:
 class DxMeshInfoPanel : public gstd::WindowLogger::Panel, public gstd::Thread {
 public:
 	DxMeshInfoPanel();
-	~DxMeshInfoPanel();
-	virtual void LocateParts();
+	~DxMeshInfoPanel() override;
+	void LocateParts() override;
 	virtual void Update(DxMeshManager* manager);
 
 protected:
@@ -840,8 +840,8 @@ protected:
 	};
 	int timeUpdateInterval_;
 	gstd::WListView wndListView_;
-	virtual bool _AddedLogger(HWND hTab);
-	void _Run();
+	bool _AddedLogger(HWND hTab) override;
+	void _Run() override;
 };
 
 } // namespace directx

@@ -6,19 +6,15 @@ using namespace directx;
 /**********************************************************
 //TransitionEffect
 **********************************************************/
-TransitionEffect::TransitionEffect()
-{
-}
-TransitionEffect::~TransitionEffect()
-{
-}
+TransitionEffect::TransitionEffect() = default;
+TransitionEffect::~TransitionEffect() = default;
 
 /**********************************************************
 //TransitionEffect_FadeOut
 **********************************************************/
 void TransitionEffect_FadeOut::Work()
 {
-	if (sprite_ == NULL)
+	if (sprite_ == nullptr)
 		return;
 	alpha_ -= diffAlpha_;
 	alpha_ = max(alpha_, 0);
@@ -26,7 +22,7 @@ void TransitionEffect_FadeOut::Work()
 }
 void TransitionEffect_FadeOut::Render()
 {
-	if (sprite_ == NULL)
+	if (sprite_ == nullptr)
 		return;
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	graphics->SetBlendMode(DirectGraphics::MODE_BLEND_ALPHA);
@@ -55,24 +51,20 @@ void TransitionEffect_FadeOut::Initialize(int frame, gstd::ref_count_ptr<Texture
 /**********************************************************
 //TransitionEffectTask
 **********************************************************/
-TransitionEffectTask::TransitionEffectTask()
-{
-}
-TransitionEffectTask::~TransitionEffectTask()
-{
-}
+TransitionEffectTask::TransitionEffectTask() = default;
+TransitionEffectTask::~TransitionEffectTask() = default;
 void TransitionEffectTask::SetTransition(gstd::ref_count_ptr<TransitionEffect> effect)
 {
 	effect_ = effect;
 }
 void TransitionEffectTask::Work()
 {
-	if (effect_ != NULL) {
+	if (effect_ != nullptr) {
 		effect_->Work();
 	}
 }
 void TransitionEffectTask::Render()
 {
-	if (effect_ != NULL)
+	if (effect_ != nullptr)
 		effect_->Render();
 }

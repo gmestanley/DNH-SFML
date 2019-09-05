@@ -18,7 +18,7 @@ public:
 	};
 	static int GetColorA(const D3DCOLOR& color);
 	static D3DCOLOR& SetColorA(D3DCOLOR& color, int alpha);
-	static int GetColorR(const D3DCOLOR color);
+	static int GetColorR(const D3DCOLOR& color);
 	static D3DCOLOR& SetColorR(D3DCOLOR& color, int red);
 	static int GetColorG(const D3DCOLOR& color);
 	static D3DCOLOR& SetColorG(D3DCOLOR& color, int green);
@@ -49,7 +49,7 @@ public:
 		y_ = y;
 		r_ = r;
 	}
-	virtual ~DxCircle() {}
+	virtual ~DxCircle() = default;
 	double GetX() const { return x_; }
 	void SetX(float x) { x_ = x; }
 	double GetY() const { return y_; }
@@ -82,7 +82,7 @@ public:
 		posY2_ = y2;
 		width_ = width;
 	}
-	virtual ~DxWidthLine() {}
+	virtual ~DxWidthLine() = default;
 	double GetX1() const { return posX1_; }
 	double GetY1() const { return posY1_; }
 	double GetX2() const { return posX2_; }
@@ -99,16 +99,16 @@ private:
 
 class DxLine3D {
 public:
-	DxLine3D(){};
+	DxLine3D() = default;
 	DxLine3D(const D3DXVECTOR3& p1, const D3DXVECTOR3& p2)
 	{
 		vertex_[0] = p1;
 		vertex_[1] = p2;
 	}
 
-	D3DXVECTOR3& GetPosition(int index) { return vertex_[index]; }
-	D3DXVECTOR3& GetPosition1() { return vertex_[0]; }
-	D3DXVECTOR3& GetPosition2() { return vertex_[1]; }
+	D3DXVECTOR3 GetPosition(int index) const { return vertex_[index]; }
+	D3DXVECTOR3 GetPosition1() const { return vertex_[0]; }
+	D3DXVECTOR3 GetPosition2() const { return vertex_[1]; }
 
 private:
 	D3DXVECTOR3 vertex_[2];
@@ -116,7 +116,7 @@ private:
 
 class DxTriangle {
 public:
-	DxTriangle() {}
+	DxTriangle() = default;
 	DxTriangle(const D3DXVECTOR3& p1, const D3DXVECTOR3& p2, const D3DXVECTOR3& p3)
 	{
 		vertex_[0] = p1;
@@ -125,10 +125,10 @@ public:
 		_Compute();
 	}
 
-	D3DXVECTOR3& GetPosition(int index) { return vertex_[index]; }
-	D3DXVECTOR3& GetPosition1() { return vertex_[0]; }
-	D3DXVECTOR3& GetPosition2() { return vertex_[1]; }
-	D3DXVECTOR3& GetPosition3() { return vertex_[2]; }
+	D3DXVECTOR3 GetPosition(int index) const { return vertex_[index]; }
+	D3DXVECTOR3 GetPosition1() const { return vertex_[0]; }
+	D3DXVECTOR3 GetPosition2() const { return vertex_[1]; }
+	D3DXVECTOR3 GetPosition3() const { return vertex_[2]; }
 
 private:
 	D3DXVECTOR3 vertex_[3];
@@ -185,19 +185,19 @@ public:
 	static D3DXVECTOR4 VectMatMulti(D3DXVECTOR4 v, const D3DMATRIX& mat);
 
 	//衝突判定：点－多角形
-	static bool IsIntersected(D3DXVECTOR2& pos, std::vector<D3DXVECTOR2>& list);
+	static bool IsIntersected(const D3DXVECTOR2& pos, const std::vector<D3DXVECTOR2>& list);
 
 	//衝突判定：円-円
-	static bool IsIntersected(DxCircle& circle1, DxCircle& circle2);
+	static bool IsIntersected(const DxCircle& circle1, const DxCircle& circle2);
 
 	//衝突判定：円-直線
-	static bool IsIntersected(DxCircle& circle, DxWidthLine& line);
+	static bool IsIntersected(const DxCircle& circle, const DxWidthLine& line);
 
 	//衝突判定：直線-直線
-	static bool IsIntersected(DxWidthLine& line1, DxWidthLine& line2);
+	static bool IsIntersected(const DxWidthLine& line1, const DxWidthLine& line2);
 
 	//衝突判定：直線：三角
-	static bool IsIntersected(DxLine3D& line, std::vector<DxTriangle>& triangles, std::vector<D3DXVECTOR3>& out);
+	static bool IsIntersected(const DxLine3D& line, const std::vector<DxTriangle>& triangles, std::vector<D3DXVECTOR3>& out);
 };
 
 struct RECT_D {

@@ -91,9 +91,9 @@ public:
 		element_ = element;
 	}
 
-	virtual ~EventScriptToken() {}
+	virtual ~EventScriptToken() = default;
 	Type GetType() const { return type_; }
-	std::string& GetElement() { return element_; }
+	std::string GetElement() const { return element_; }
 
 	int GetInteger() const;
 	double GetReal() const;
@@ -141,7 +141,7 @@ protected:
 	std::vector<char> buffer_;
 	std::vector<char>::iterator pointer_; //今の位置
 	EventScriptToken token_; //現在のトークン
-	boolean bTagScan_;
+	bool bTagScan_;
 
 	char _NextChar(); //ポインタを進めて次の文字を調べる
 	virtual void _SkipComment(); //コメントをとばす
@@ -195,7 +195,7 @@ public:
 		posEnd_ = POS_NULL;
 		posReturn_ = POS_NULL;
 	}
-	virtual ~EventScriptBlock() {}
+	virtual ~EventScriptBlock() = default;
 	int GetStartPosition() const { return posStart_; }
 	void SetStartPosition(int pos) { posStart_ = pos; }
 	int GetEndPosition() const { return posEnd_; }
@@ -217,10 +217,10 @@ class EventScriptBlock_Main : public EventScriptBlock {
 
 public:
 	EventScriptBlock_Main() { bInner_ = false; }
-	virtual ~EventScriptBlock_Main() {}
+	~EventScriptBlock_Main() override = default;
 	std::string GetName() const { return name_; }
 	void SetName(const std::string& name) { name_ = name; }
-	bool IsGlobal() const { return name_ == BLOCK_GLOBAL; }
+	bool IsGlobal() const override { return name_ == BLOCK_GLOBAL; }
 
 private:
 	std::string name_;
@@ -305,7 +305,7 @@ class EventScriptCode_Text : public EventScriptCode {
 public:
 	EventScriptCode_Text();
 	std::string GetText() const { return text_; }
-	std::string GetCodeText() const { return GetText(); }
+	std::string GetCodeText() const override { return GetText(); }
 	void SetText(const std::string& text) { text_ = text; }
 
 protected:
@@ -314,7 +314,7 @@ protected:
 class EventScriptCode_NextLine : public EventScriptCode {
 public:
 	EventScriptCode_NextLine();
-	std::string GetCodeText() const;
+	std::string GetCodeText() const override;
 };
 class EventScriptCode_WaitClick : public EventScriptCode {
 public:
@@ -587,7 +587,7 @@ protected:
 	double _GetElementReal(const std::string& value);
 	bool _GetElementBoolean(const std::string& value);
 	std::string _GetElementString(const std::string& value);
-	bool _IsValieElement(const std::string& value);
+	bool _IsValidElement(const std::string& value);
 };
 
 class EventScriptCodeExecuter_WaitClick : public EventScriptCodeExecuter {
@@ -596,7 +596,7 @@ public:
 		: EventScriptCodeExecuter(engine)
 	{
 	}
-	virtual void Execute();
+	void Execute() override;
 };
 
 class EventScriptCodeExecuter_WaitNextPage : public EventScriptCodeExecuter {
@@ -605,13 +605,13 @@ public:
 		: EventScriptCodeExecuter(engine)
 	{
 	}
-	virtual void Execute();
+	void Execute() override;
 };
 
 class EventScriptCodeExecuter_WaitTime : public EventScriptCodeExecuter {
 public:
 	EventScriptCodeExecuter_WaitTime(EventEngine* engine, EventScriptCode_WaitTime* code);
-	virtual void Execute();
+	void Execute() override;
 
 private:
 	int count_;
@@ -622,7 +622,7 @@ private:
 class EventScriptCodeExecuter_Transition : public EventScriptCodeExecuter {
 public:
 	EventScriptCodeExecuter_Transition(EventEngine* engine, EventScriptCode_Transition* code);
-	virtual void Execute();
+	void Execute() override;
 
 private:
 	class DxScriptRenderObject_Transition : public DxScriptObjectBase {
@@ -632,8 +632,8 @@ private:
 			effect_ = effect;
 			priRender_ = 1.0;
 		}
-		virtual void Render() { effect_->Render(); }
-		virtual void SetRenderState() {}
+		void Render() override { effect_->Render(); }
+		void SetRenderState() override {}
 
 	private:
 		TransitionEffect* effect_;
@@ -647,8 +647,8 @@ private:
 class EventScriptCodeExecuter_Image : public EventScriptCodeExecuter {
 public:
 	EventScriptCodeExecuter_Image(EventEngine* engine, EventScriptCode_Image* code);
-	~EventScriptCodeExecuter_Image();
-	virtual void Execute();
+	~EventScriptCodeExecuter_Image() override;
+	void Execute() override;
 
 private:
 	EventScriptCode_Image* code_;
@@ -666,7 +666,7 @@ private:
 class EventScriptCodeExecuter_Script : public EventScriptCodeExecuter {
 public:
 	EventScriptCodeExecuter_Script(EventEngine* engine, DxScriptForEvent* script);
-	virtual void Execute();
+	void Execute() override;
 
 private:
 	DxScriptForEvent* script_;
@@ -684,8 +684,8 @@ public:
 	EventWindowManager(EventEngine* engine);
 	EventEngine* GetEngine() { return engine_; }
 	virtual bool Initialize();
-	virtual void Work();
-	virtual void Render();
+	void Work() override;
+	void Render() override;
 
 	gstd::ref_count_ptr<EventMouseCaptureLayer> GetMouseCaptureLayer() { return layerCapture_; }
 	gstd::ref_count_ptr<EventTextWindow> GetTextWindow() { return wndText_; }
@@ -734,8 +734,8 @@ protected:
 };
 class EventMouseCaptureLayer : public EventWindow {
 public:
-	virtual void AddedManager();
-	virtual void DispatchedEvent(gstd::ref_count_ptr<DxWindowEvent> event);
+	void AddedManager() override;
+	void DispatchedEvent(gstd::ref_count_ptr<DxWindowEvent> event) override;
 	void ClearEvent();
 	gstd::ref_count_ptr<DxWindowEvent> GetEvent() { return event_; }
 
@@ -745,8 +745,8 @@ protected:
 class EventTextWindow : public EventWindow {
 public:
 	EventTextWindow();
-	virtual void AddedManager();
-	virtual void Render();
+	void AddedManager() override;
+	void Render() override;
 	bool IsWait();
 
 protected:
@@ -756,8 +756,8 @@ protected:
 class EventNameWindow : public EventWindow {
 public:
 	EventNameWindow();
-	void Work();
-	void Render();
+	void Work() override;
+	void Render() override;
 	virtual void RenderText();
 	std::wstring GetText() const { return text_->GetText(); }
 	void SetText(const std::wstring& text) { text_->SetText(text); }
@@ -768,9 +768,9 @@ private:
 class EventLogWindow : public EventWindow {
 public:
 	EventLogWindow();
-	virtual void AddedManager();
-	virtual void Work();
-	virtual void Render();
+	void AddedManager() override;
+	void Work() override;
+	void Render() override;
 
 	gstd::ref_count_ptr<DxText> GetRenderer() { return dxText_; }
 	void ResetPosition();
@@ -788,8 +788,8 @@ class EventScriptObjectManager : public DxScriptObjectManager, public gstd::Reco
 public:
 	virtual int AddObject(gstd::ref_count_ptr<DxScriptObjectBase>::unsync obj);
 
-	void Read(gstd::RecordBuffer& record);
-	void Write(gstd::RecordBuffer& record);
+	void Read(gstd::RecordBuffer& record) override;
+	void Write(gstd::RecordBuffer& record) override;
 
 private:
 	enum {
@@ -827,7 +827,7 @@ public:
 
 public:
 	EventValue() { type_ = TYPE_UNKNOWN; }
-	virtual ~EventValue(){};
+	~EventValue() override = default;
 	int GetType() const { return type_; }
 	double GetReal() const
 	{
@@ -880,8 +880,8 @@ public:
 	void Copy(const gstd::TextParser::Result& val);
 	void Copy(const EventValue& val);
 
-	void Read(gstd::RecordBuffer& record);
-	void Write(gstd::RecordBuffer& record);
+	void Read(gstd::RecordBuffer& record) override;
+	void Write(gstd::RecordBuffer& record) override;
 
 protected:
 	int type_;
@@ -938,7 +938,7 @@ public:
 	gstd::ref_count_ptr<EventValue> GetEventValue(const std::string& text);
 protected:
 	EventEngine* engine_;
-	virtual Result _ParseIdentifer(std::vector<char>::iterator);
+	virtual Result _ParseIdentifer(std::vector<char>::iterator /*unused*/);
 	std::vector<std::string> _GetFuctionArgument();
 
 };
@@ -955,15 +955,15 @@ public:
 
 public:
 	EventImage();
-	virtual ~EventImage();
+	~EventImage() override;
 	void Render(int layer);
 	int GetForegroundLayerIndex() const;
 	int GetBackgroundLayerIndex() const;
 	void SwapForeBackLayerIndex();
 	gstd::ref_count_ptr<DxScriptObjectManager> GetObjectManager(int layer) { return objManager_[layer]; }
 
-	void Read(gstd::RecordBuffer& record);
-	void Write(gstd::RecordBuffer& record);
+	void Read(gstd::RecordBuffer& record) override;
+	void Write(gstd::RecordBuffer& record) override;
 
 protected:
 	std::vector<gstd::ref_count_ptr<EventScriptObjectManager>> objManager_;
@@ -994,13 +994,13 @@ public:
 
 public:
 	EventSound();
-	virtual ~EventSound();
+	~EventSound() override;
 
 	void Play(int type, const std::string& path);
 	void Delete(int type);
 
-	void Read(gstd::RecordBuffer& record);
-	void Write(gstd::RecordBuffer& record);
+	void Read(gstd::RecordBuffer& record) override;
+	void Write(gstd::RecordBuffer& record) override;
 
 private:
 	gstd::ref_count_ptr<SoundPlayer> playerBgm_;
@@ -1018,7 +1018,7 @@ public:
 
 public:
 	EventEngine();
-	virtual ~EventEngine();
+	~EventEngine() override;
 	virtual bool Initialize();
 
 	virtual void Work();
@@ -1052,8 +1052,8 @@ public:
 	bool Load(const std::wstring& path);
 	bool Load(gstd::RecordBuffer& record);
 	bool Save(const std::wstring& path);
-	void Read(gstd::RecordBuffer& record);
-	void Write(gstd::RecordBuffer& record);
+	void Read(gstd::RecordBuffer& record) override;
+	void Write(gstd::RecordBuffer& record) override;
 
 protected:
 	enum {
@@ -1092,12 +1092,12 @@ protected:
 class DxScriptForEvent : public DxScript, public gstd::Recordable {
 public:
 	DxScriptForEvent(EventEngine* engine);
-	~DxScriptForEvent();
+	~DxScriptForEvent() override;
 	void Clear();
-	virtual bool SetSourceFromFile(const std::wstring& path);
-	virtual void SetSource(const std::string& source);
+	bool SetSourceFromFile(const std::wstring& path) override;
+	void SetSource(const std::string& source) override;
 	virtual int AddObject(gstd::ref_count_ptr<DxScriptObjectBase>::unsync obj);
-	virtual void DeleteObject(int id);
+	void DeleteObject(int id) override;
 
 	std::string GetMethod() const { return method_; }
 	void SetMethod(const std::string& method) { method_ = method; }
@@ -1112,8 +1112,8 @@ public:
 
 	void AddArgumentValue(gstd::ref_count_ptr<EventValue> arg);
 
-	void Read(gstd::RecordBuffer& record);
-	void Write(gstd::RecordBuffer& record);
+	void Read(gstd::RecordBuffer& record) override;
+	void Write(gstd::RecordBuffer& record) override;
 
 	//関数：スクリプト操作
 	static gstd::value Func_EndScript(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -1133,7 +1133,7 @@ private:
 	std::set<int> listObj_;
 	std::string code_;
 
-	virtual std::vector<char> _Include(std::vector<char>& source);
+	std::vector<char> _Include(std::vector<char>& source) override;
 };
 
 } // namespace directx

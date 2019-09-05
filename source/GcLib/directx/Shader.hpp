@@ -42,18 +42,18 @@ class ShaderManager : public DirectGraphicsListener {
 
 public:
 	ShaderManager();
-	virtual ~ShaderManager();
+	~ShaderManager() override;
 	static ShaderManager* GetBase() { return thisBase_; }
 	virtual bool Initialize();
 	gstd::CriticalSection& GetLock() { return lock_; }
 	void Clear();
 
-	virtual void ReleaseDirectGraphics() { ReleaseDxResource(); }
-	virtual void RestoreDirectGraphics() { RestoreDxResource(); }
+	void ReleaseDirectGraphics() override { ReleaseDxResource(); }
+	void RestoreDirectGraphics() override { RestoreDxResource(); }
 	void ReleaseDxResource();
 	void RestoreDxResource();
 
-	virtual bool IsDataExists(const std::wstring& name);
+	virtual bool IsDataExists(const std::wstring& name) const;
 	gstd::ref_count_ptr<ShaderData> GetShaderData(const std::wstring& name);
 	gstd::ref_count_ptr<Shader> CreateFromFile(const std::wstring& path); //読み込みます。ShaderDataは保持しますが、Shaderは保持しません。
 	gstd::ref_count_ptr<Shader> CreateFromText(const std::string& source); //読み込みます。ShaderDataは保持しますが、Shaderは保持しません。
@@ -69,7 +69,7 @@ public:
 	std::wstring GetLastError();
 
 protected:
-	gstd::CriticalSection lock_;
+	mutable gstd::CriticalSection lock_;
 	std::map<std::wstring, gstd::ref_count_ptr<Shader>> mapShader_;
 	std::map<std::wstring, gstd::ref_count_ptr<ShaderData>> mapShaderData_;
 
@@ -117,7 +117,7 @@ public:
 	float GetFloat();
 	void SetFloatArray(std::vector<float>& values);
 	std::vector<float> GetFloatArray();
-	void SetTexture(const gstd::ref_count_ptr<Texture> texture);
+	void SetTexture(gstd::ref_count_ptr<Texture> texture);
 	gstd::ref_count_ptr<Texture> GetTexture();
 
 private:
@@ -138,7 +138,7 @@ public:
 	virtual ~Shader();
 	void Release();
 
-	int Begin(int pass = 0);
+	void Begin(int pass = 0);
 	void End();
 
 	ID3DXEffect* GetEffect();
@@ -147,7 +147,7 @@ public:
 
 	bool CreateFromFile(const std::wstring& path);
 	bool CreateFromText(const std::string& source);
-	bool IsLoad() const { return data_ != NULL && data_->bLoad_; }
+	bool IsLoad() const { return data_ != nullptr && data_->bLoad_; }
 
 	bool SetTechnique(const std::string& name);
 	bool SetMatrix(const std::string& name, D3DXMATRIX& matrix);

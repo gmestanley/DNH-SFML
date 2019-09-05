@@ -24,9 +24,9 @@ protected:
 **********************************************************/
 class TransitionEffect_FadeOut : public TransitionEffect {
 public:
-	virtual void Work();
-	virtual void Render();
-	virtual bool IsEnd() const;
+	void Work() override;
+	void Render() override;
+	bool IsEnd() const override;
 	void Initialize(int frame, gstd::ref_count_ptr<Texture> texture);
 
 protected:
@@ -42,7 +42,7 @@ class TransitionEffectTask : public gstd::TaskBase {
 
 public:
 	TransitionEffectTask();
-	~TransitionEffectTask();
+	~TransitionEffectTask() override;
 
 	void SetTransition(gstd::ref_count_ptr<TransitionEffect> effect);
 	virtual void Work();
