@@ -15,18 +15,15 @@ StgShotManager::StgShotManager(StgStageController* stageController)
 }
 StgShotManager::~StgShotManager()
 {
-	std::list<ref_count_ptr<StgShotObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end(); itr++) {
-		ref_count_ptr<StgShotObject>::unsync obj = (*itr);
-		if (obj != NULL) {
-			obj->ClearShotObject();
+	for (auto& object : listObj_) {
+		if (object != nullptr) {
+			object->ClearShotObject();
 		}
 	}
 }
 void StgShotManager::Work()
 {
-	std::list<ref_count_ptr<StgShotObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end();) {
+	for (auto itr = listObj_.begin(); itr != listObj_.end();) {
 		ref_count_ptr<StgShotObject>::unsync obj = (*itr);
 		if (obj->IsDeleted()) {
 			obj->ClearShotObject();
@@ -34,7 +31,7 @@ void StgShotManager::Work()
 		} else if (!obj->IsActive()) {
 			itr = listObj_.erase(itr);
 		} else
-			itr++;
+			++itr;
 	}
 }
 void StgShotManager::Render(int targetPriority)
@@ -56,16 +53,14 @@ void StgShotManager::Render(int targetPriority)
 	DxCamera2D* camera = graphics->GetCamera2D().GetPointer();
 	D3DXMATRIX matCamera = camera->GetMatrix();
 
-	std::list<ref_count_ptr<StgShotObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end(); itr++) {
-		ref_count_ptr<StgShotObject>::unsync obj = (*itr);
-		if (obj->IsDeleted())
+	for (auto& object : listObj_) {
+		if (object->IsDeleted())
 			continue;
-		if (!obj->IsActive())
+		if (!object->IsActive())
 			continue;
-		if (obj->GetRenderPriorityI() != targetPriority)
+		if (object->GetRenderPriorityI() != targetPriority)
 			continue;
-		obj->RenderOnShotManager(matCamera);
+		object->RenderOnShotManager(matCamera);
 	}
 
 	//描画
@@ -86,15 +81,15 @@ void StgShotManager::Render(int targetPriority)
 		StgShotDataList::RENDER_INV_DESTRGB,
 		StgShotDataList::RENDER_ALPHA
 	};
-	for (int iBlend = 0; iBlend < countBlendType; iBlend++) {
+	for (int iBlend = 0; iBlend < countBlendType; ++iBlend) {
 		graphics->SetBlendMode(blendMode[iBlend]);
 		std::vector<ref_count_ptr<StgShotRenderer>::unsync>* listPlayer = listPlayerShotData_->GetRendererList(typeRender[iBlend]);
 		int iRender = 0;
-		for (iRender = 0; iRender < listPlayer->size(); iRender++)
+		for (iRender = 0; iRender < listPlayer->size(); ++iRender)
 			(listPlayer->at(iRender))->Render();
 
 		std::vector<ref_count_ptr<StgShotRenderer>::unsync>* listEnemy = listEnemyShotData_->GetRendererList(typeRender[iBlend]);
-		for (iRender = 0; iRender < listEnemy->size(); iRender++)
+		for (iRender = 0; iRender < listEnemy->size(); ++iRender)
 			(listEnemy->at(iRender))->Render();
 	}
 
@@ -103,21 +98,19 @@ void StgShotManager::Render(int targetPriority)
 }
 void StgShotManager::RegistIntersectionTarget()
 {
-	std::list<ref_count_ptr<StgShotObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end(); itr++) {
-		ref_count_ptr<StgShotObject>::unsync obj = (*itr);
-		if (!obj->IsDeleted() && obj->IsActive()) {
-			obj->ClearIntersectedIdList();
-			obj->RegistIntersectionTarget();
+	for (auto& object : listObj_) {
+		if (!object->IsDeleted() && object->IsActive()) {
+			object->ClearIntersectedIdList();
+			object->RegistIntersectionTarget();
 		}
 	}
 }
 
-bool StgShotManager::LoadPlayerShotData(std::wstring path, bool bReload)
+bool StgShotManager::LoadPlayerShotData(const std::wstring& path, bool bReload)
 {
 	return listPlayerShotData_->AddShotDataList(path, bReload);
 }
-bool StgShotManager::LoadEnemyShotData(std::wstring path, bool bReload)
+bool StgShotManager::LoadEnemyShotData(const std::wstring& path, bool bReload)
 {
 	return listEnemyShotData_->AddShotDataList(path, bReload);
 }
@@ -138,29 +131,27 @@ void StgShotManager::DeleteInCircle(int typeDelete, int typeTo, int typeOnwer, i
 {
 	ref_count_ptr<StgStageScriptObjectManager> objectManager = stageController_->GetMainObjectManager();
 
-	std::list<ref_count_ptr<StgShotObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end(); itr++) {
-		ref_count_ptr<StgShotObject>::unsync obj = (*itr);
-		if (obj->IsDeleted())
+	for (auto& object : listObj_) {
+		if (object->IsDeleted())
 			continue;
 
-		if (typeOnwer != StgShotObject::OWNER_NULL && obj->GetOwnerType() != typeOnwer)
+		if (typeOnwer != StgShotObject::OWNER_NULL && object->GetOwnerType() != typeOnwer)
 			continue;
 
-		if (typeDelete == DEL_TYPE_SHOT && obj->GetLife() == StgShotObject::LIFE_SPELL_REGIST)
+		if (typeDelete == DEL_TYPE_SHOT && object->GetLife() == StgShotObject::LIFE_SPELL_REGIST)
 			continue;
 
-		double sx = obj->GetPositionX();
-		double sy = obj->GetPositionY();
+		double sx = object->GetPositionX();
+		double sy = object->GetPositionY();
 
 		double tr = pow(pow(cx - sx, 2) + pow(cy - sy, 2), 0.5);
 		if (tr <= radius) {
 			if (typeTo == TO_TYPE_IMMEDIATE)
-				obj->DeleteImmediate();
+				object->DeleteImmediate();
 			else if (typeTo == TO_TYPE_FADE)
-				obj->SetFadeDelete();
+				object->SetFadeDelete();
 			else if (typeTo == TO_TYPE_ITEM)
-				obj->ConvertToItem();
+				object->ConvertToItem();
 		}
 	}
 }
@@ -170,39 +161,34 @@ std::vector<int> StgShotManager::GetShotIdInCircle(int typeOnwer, int cx, int cy
 	std::vector<int> res;
 	ref_count_ptr<StgStageScriptObjectManager> objectManager = stageController_->GetMainObjectManager();
 
-	std::list<ref_count_ptr<StgShotObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end(); itr++) {
-		ref_count_ptr<StgShotObject>::unsync obj = (*itr);
-		if (obj->IsDeleted())
+	for (auto& object : listObj_) {
+		if (object->IsDeleted())
 			continue;
 
-		if (typeOnwer != StgShotObject::OWNER_NULL && obj->GetOwnerType() != typeOnwer)
+		if (typeOnwer != StgShotObject::OWNER_NULL && object->GetOwnerType() != typeOnwer)
 			continue;
 
-		double sx = obj->GetPositionX();
-		double sy = obj->GetPositionY();
+		double sx = object->GetPositionX();
+		double sy = object->GetPositionY();
 
 		double tr = pow(pow(cx - sx, 2) + pow(cy - sy, 2), 0.5);
 		if (tr <= radius) {
-			int id = obj->GetObjectID();
+			int id = object->GetObjectID();
 			res.push_back(id);
 		}
 	}
 	return res;
 }
-int StgShotManager::GetShotCount(int typeOnwer)
+int StgShotManager::GetShotCount(int typeOwner)
 {
 	int res = 0;
-	std::list<ref_count_ptr<StgShotObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end(); itr++) {
-		ref_count_ptr<StgShotObject>::unsync obj = (*itr);
-		if (obj->IsDeleted())
+	for (auto& object : listObj_) {
+		if (object->IsDeleted())
+			continue;
+		if (typeOwner != StgShotObject::OWNER_NULL && typeOwner != object->GetOwnerType())
 			continue;
 
-		if (typeOnwer != StgShotObject::OWNER_NULL && obj->GetOwnerType() != typeOnwer)
-			continue;
-
-		res++;
+		++res;
 	}
 	return res;
 }
@@ -212,13 +198,11 @@ std::vector<bool> StgShotManager::GetValidRenderPriorityList()
 	ref_count_ptr<StgStageScriptObjectManager> objectManager = stageController_->GetMainObjectManager();
 	res.resize(objectManager->GetRenderBucketCapacity());
 
-	std::list<ref_count_ptr<StgShotObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end(); itr++) {
-		ref_count_ptr<StgShotObject>::unsync obj = (*itr);
-		if (obj->IsDeleted())
+	for (auto& object : listObj_) {
+		if (object->IsDeleted())
 			continue;
 
-		int pri = obj->GetRenderPriorityI();
+		int pri = object->GetRenderPriorityI();
 		res[pri] = true;
 	}
 
@@ -247,8 +231,7 @@ void StgShotManager::SetDeleteEventEnableByType(int type, bool bEnable)
 }
 bool StgShotManager::IsDeleteEventEnable(int bit) const
 {
-	bool res = listDeleteEventEnable_[bit];
-	return res;
+	return listDeleteEventEnable_[bit];
 }
 
 /**********************************************************
@@ -259,32 +242,29 @@ StgShotDataList::StgShotDataList()
 	listRenderer_.resize(RENDER_TYPE_COUNT);
 	defaultDelayColor_ = D3DCOLOR_ARGB(255, 128, 128, 128);
 }
-StgShotDataList::~StgShotDataList()
-{
-}
-bool StgShotDataList::AddShotDataList(std::wstring path, bool bReload)
+StgShotDataList::~StgShotDataList() = default;
+bool StgShotDataList::AddShotDataList(const std::wstring& path, bool bReload)
 {
 	if (!bReload && listReadPath_.find(path) != listReadPath_.end())
 		return true;
 
 	ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
-	if (reader == NULL)
-		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path).c_str());
+	if (reader == nullptr)
+		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path));
 	if (!reader->Open())
-		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path).c_str());
+		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path));
 	std::string source = reader->ReadAllString();
 
-	bool res = false;
 	Scanner scanner(source);
 	try {
 		std::vector<ref_count_ptr<StgShotData>::unsync> listData;
-		std::wstring pathImage = L"";
+		std::wstring pathImage;
 		RECT rcDelay = { -1, -1, -1, -1 };
 		while (scanner.HasNext()) {
 			Token& tok = scanner.Next();
 			if (tok.GetType() == Token::TK_EOF) //Eofの識別子が来たらファイルの調査終了
 				break;
-			else if (tok.GetType() == Token::TK_ID) {
+			if (tok.GetType() == Token::TK_ID) {
 				std::wstring element = tok.GetElement();
 				if (element == L"ShotData") {
 					_ScanShot(listData, scanner);
@@ -312,7 +292,7 @@ bool StgShotDataList::AddShotDataList(std::wstring path, bool bReload)
 		}
 
 		//テクスチャ読み込み
-		if (pathImage.size() == 0)
+		if (pathImage.empty())
 			throw gstd::wexception(L"画像ファイルが設定されていません。");
 		std::wstring dir = PathProperty::GetFileDirectory(path);
 		pathImage = StringUtility::Replace(pathImage, L"./", dir);
@@ -333,18 +313,18 @@ bool StgShotDataList::AddShotDataList(std::wstring path, bool bReload)
 		if (textureIndex < 0) {
 			textureIndex = listTexture_.size();
 			listTexture_.push_back(texture);
-			for (int iRender = 0; iRender < listRenderer_.size(); iRender++) {
+			for (auto& iRender : listRenderer_) {
 				ref_count_ptr<StgShotRenderer>::unsync render = new StgShotRenderer();
 				render->SetTexture(texture);
-				listRenderer_[iRender].push_back(render);
+				iRender.push_back(render);
 			}
 		}
 
 		if (listData_.size() < listData.size())
 			listData_.resize(listData.size());
-		for (int iData = 0; iData < listData.size(); iData++) {
+		for (int iData = 0; iData < listData.size(); ++iData) {
 			ref_count_ptr<StgShotData>::unsync data = listData[iData];
-			if (data == NULL)
+			if (data == nullptr)
 				continue;
 			data->indexTexture_ = textureIndex;
 			if (data->rcDelay_.left < 0)
@@ -354,18 +334,16 @@ bool StgShotDataList::AddShotDataList(std::wstring path, bool bReload)
 
 		listReadPath_.insert(path);
 		Logger::WriteTop(StringUtility::Format(L"弾データを読み込みました:%s", path.c_str()));
-		res = true;
+		return true;
 	} catch (gstd::wexception& e) {
 		std::wstring log = StringUtility::Format(L"弾データ読み込み失敗:%d行目(%s)", scanner.GetCurrentLine(), e.what());
 		Logger::WriteTop(log);
-		res = NULL;
+		return false;
 	} catch (...) {
 		std::wstring log = StringUtility::Format(L"弾データ読み込み失敗:%d行目", scanner.GetCurrentLine());
 		Logger::WriteTop(log);
-		res = NULL;
+		return false;
 	}
-
-	return res;
 }
 void StgShotDataList::_ScanShot(std::vector<ref_count_ptr<StgShotData>::unsync>& listData, Scanner& scanner)
 {
@@ -380,9 +358,9 @@ void StgShotDataList::_ScanShot(std::vector<ref_count_ptr<StgShotData>::unsync>&
 
 	while (true) {
 		tok = scanner.Next();
-		if (tok.GetType() == Token::TK_CLOSEC) {
+		if (tok.GetType() == Token::TK_CLOSEC)
 			break;
-		} else if (tok.GetType() == Token::TK_ID) {
+		if (tok.GetType() == Token::TK_ID) {
 			std::wstring element = tok.GetElement();
 
 			if (element == L"id") {
@@ -469,7 +447,7 @@ void StgShotDataList::_ScanShot(std::vector<ref_count_ptr<StgShotData>::unsync>&
 	}
 
 	if (id >= 0) {
-		if (data->listCol_.size() == 0) {
+		if (data->listCol_.empty()) {
 			RECT rect = data->rcSrc_;
 			int rx = abs(rect.right - rect.left);
 			int ry = abs(rect.bottom - rect.top);
@@ -497,7 +475,7 @@ void StgShotDataList::_ScanAnimation(ref_count_ptr<StgShotData>::unsync shotData
 		tok = scanner.Next();
 		if (tok.GetType() == Token::TK_CLOSEC)
 			break;
-		else if (tok.GetType() == Token::TK_ID) {
+		if (tok.GetType() == Token::TK_ID) {
 			std::wstring element = tok.GetElement();
 
 			if (element == L"animation_data") {
@@ -535,7 +513,7 @@ std::vector<std::wstring> StgShotDataList::_GetArgumentList(Scanner& scanner)
 			int type = tok.GetType();
 			if (type == Token::TK_CLOSEP)
 				break;
-			else if (type != Token::TK_COMMA) {
+			if (type != Token::TK_COMMA) {
 				std::wstring str = tok.GetElement();
 				res.push_back(str);
 			}
@@ -561,9 +539,7 @@ StgShotData::StgShotData(StgShotDataList* listShotData)
 	angularVelocityMax_ = 0;
 	bFixedAngle_ = false;
 }
-StgShotData::~StgShotData()
-{
-}
+StgShotData::~StgShotData() = default;
 RECT StgShotData::GetRect(int frame)
 {
 	if (totalAnimeFrame_ == 0)
@@ -572,12 +548,10 @@ RECT StgShotData::GetRect(int frame)
 	RECT res;
 	frame = frame % totalAnimeFrame_;
 	int total = 0;
-	std::vector<AnimationData>::iterator itr = listAnime_.begin();
-	for (; itr != listAnime_.end(); itr++) {
-		// AnimationData* anime = itr;
-		total += itr->frame_;
+	for (auto& anime : listAnime_) {
+		total += anime.frame_;
 		if (total >= frame) {
-			res = itr->rcSrc_;
+			res = anime.rcSrc_;
 			break;
 		}
 	}
@@ -600,7 +574,7 @@ StgShotRenderer* StgShotData::GetRenderer(int type)
 }
 StgShotRenderer* StgShotData::GetRendererFromGraphicsBlendType(int blendType)
 {
-	StgShotRenderer* res = NULL;
+	StgShotRenderer* res = nullptr;
 	if (blendType == DirectGraphics::MODE_BLEND_ALPHA)
 		res = listShotData_->GetRenderer(indexTexture_, StgShotDataList::RENDER_ALPHA).GetPointer();
 	else if (blendType == DirectGraphics::MODE_BLEND_ADD_RGB)
@@ -643,10 +617,10 @@ void StgShotRenderer::Render()
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	IDirect3DDevice9* device = graphics->GetDevice();
 	ref_count_ptr<Texture>& texture = texture_[0];
-	if (texture != NULL)
+	if (texture != nullptr)
 		device->SetTexture(0, texture->GetD3DTexture());
 	else
-		device->SetTexture(0, NULL);
+		device->SetTexture(0, nullptr);
 	device->SetFVF(VERTEX_TLX::fvf);
 
 	device->DrawPrimitiveUP(typePrimitive_, _GetPrimitiveCount(), vertex_.GetPointer(), strideVertexStreamZero_);
@@ -657,7 +631,7 @@ void StgShotRenderer::Render()
 void StgShotRenderer::AddVertex(VERTEX_TLX& vertex)
 {
 	SetVertex(countRenderVertex_, vertex);
-	countRenderVertex_++;
+	++countRenderVertex_;
 }
 void StgShotRenderer::AddSquareVertex(VERTEX_TLX* listVertex)
 {
@@ -707,7 +681,7 @@ StgShotObject::StgShotObject(StgStageController* stageController)
 }
 StgShotObject::~StgShotObject()
 {
-	if (listReserveShot_ != NULL)
+	if (listReserveShot_ != nullptr)
 		listReserveShot_->Clear(stageController_);
 }
 void StgShotObject::Work()
@@ -721,7 +695,7 @@ void StgShotObject::_Move()
 	SetY(posY_);
 
 	//弾画像置き換え処理
-	if (pattern_ != NULL) {
+	if (pattern_ != nullptr) {
 		int idShot = pattern_->GetShotDataID();
 		if (idShot != StgMovePattern::NO_CHANGE) {
 			SetShotDataID(idShot);
@@ -783,7 +757,7 @@ void StgShotObject::_SendDeleteEvent(int bit)
 
 	StgStageScriptManager* stageScriptManager = stageController_->GetScriptManagerP();
 	ref_count_ptr<ManagedScript> scriptShot = stageScriptManager->GetShotScript();
-	if (scriptShot == NULL)
+	if (scriptShot == nullptr)
 		return;
 
 	StgShotManager* shotManager = stageController_->GetShotManager();
@@ -820,20 +794,18 @@ void StgShotObject::_AddReservedShotWork()
 {
 	if (IsDeleted())
 		return;
-	if (listReserveShot_ == NULL)
+	if (listReserveShot_ == nullptr)
 		return;
 	ref_count_ptr<ReserveShotList::ListElement>::unsync listData = listReserveShot_->GetNextFrameData();
-	if (listData == NULL)
+	if (listData == nullptr)
 		return;
 
 	ref_count_ptr<StgStageScriptObjectManager> objectManager = stageController_->GetMainObjectManager();
-	std::list<ReserveShotListData>* list = listData->GetDataList();
-	std::list<ReserveShotListData>::iterator itr = list->begin();
-	for (; itr != list->end(); itr++) {
-		StgShotObject::ReserveShotListData& data = (*itr);
+	std::list<ReserveShotListData>* datas = listData->GetDataList();
+	for (auto& data : *datas) {
 		int idShot = data.GetShotID();
 		ref_count_ptr<StgShotObject>::unsync obj = ref_count_ptr<StgShotObject>::unsync::DownCast(objectManager->GetObject(idShot));
-		if (obj == NULL || obj->IsDeleted())
+		if (obj == nullptr || obj->IsDeleted())
 			continue;
 		_AddReservedShot(obj, &data);
 	}
@@ -870,11 +842,11 @@ void StgShotObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTa
 }
 StgShotData* StgShotObject::_GetShotData()
 {
-	StgShotData* res = NULL;
+	StgShotData* res = nullptr;
 	StgShotManager* shotManager = stageController_->GetShotManager();
 	StgShotDataList* dataList = (typeOwner_ == OWNER_PLAYER) ? shotManager->GetPlayerShotDataList() : shotManager->GetEnemyShotDataList();
 
-	if (dataList != NULL) {
+	if (dataList != nullptr) {
 		res = dataList->GetData(idShotData_).GetPointer();
 	}
 
@@ -886,7 +858,7 @@ ref_count_ptr<StgShotObject>::unsync StgShotObject::GetOwnObject()
 }
 void StgShotObject::_SetVertexPosition(VERTEX_TLX& vertex, float x, float y, float z, float w)
 {
-	float bias = -0.5f;
+	float bias = -0.5F;
 	vertex.position.x = x + bias;
 	vertex.position.y = y + bias;
 	vertex.position.z = z;
@@ -895,7 +867,7 @@ void StgShotObject::_SetVertexPosition(VERTEX_TLX& vertex, float x, float y, flo
 void StgShotObject::_SetVertexUV(VERTEX_TLX& vertex, float u, float v)
 {
 	StgShotData* shotData = _GetShotData();
-	if (shotData == NULL)
+	if (shotData == nullptr)
 		return;
 
 	ref_count_ptr<Texture> texture = shotData->GetTexture();
@@ -924,7 +896,7 @@ void StgShotObject::AddShot(int frame, int idShot, int radius, int angle)
 	ref_count_ptr<StgStageScriptObjectManager> objectManager = stageController_->GetMainObjectManager();
 	objectManager->ActivateObject(idShot, false);
 
-	if (listReserveShot_ == NULL)
+	if (listReserveShot_ == nullptr)
 		listReserveShot_ = new ReserveShotList();
 	listReserveShot_->AddData(frame, idShot, radius, angle);
 }
@@ -955,13 +927,14 @@ void StgShotObject::DeleteImmediate()
 //StgShotObject::ReserveShotList
 ref_count_ptr<StgShotObject::ReserveShotList::ListElement>::unsync StgShotObject::ReserveShotList::GetNextFrameData()
 {
-	ref_count_ptr<ListElement>::unsync res = NULL;
-	if (mapData_.find(frame_) != mapData_.end()) {
-		res = mapData_[frame_];
+	ref_count_ptr<ListElement>::unsync res = nullptr;
+	auto dataItr = mapData_.find(frame_);
+	if (dataItr != mapData_.end()) {
+		res = dataItr->second;
 		mapData_.erase(frame_);
 	}
 
-	frame_++;
+	++frame_;
 	return res;
 }
 void StgShotObject::ReserveShotList::AddData(int frame, int idShot, int radius, int angle)
@@ -983,19 +956,16 @@ void StgShotObject::ReserveShotList::AddData(int frame, int idShot, int radius, 
 void StgShotObject::ReserveShotList::Clear(StgStageController* stageController)
 {
 	ref_count_ptr<StgStageScriptObjectManager> objectManager = stageController->GetMainObjectManager();
-	if (objectManager == NULL)
+	if (objectManager == nullptr)
 		return;
 
-	std::map<int, ref_count_ptr<ListElement>::unsync>::iterator itrMap = mapData_.begin();
-	for (; itrMap != mapData_.end(); itrMap++) {
-		ref_count_ptr<ListElement>::unsync listElement = itrMap->second;
-		std::list<ReserveShotListData>* list = listElement->GetDataList();
-		std::list<ReserveShotListData>::iterator itr = list->begin();
-		for (; itr != list->end(); itr++) {
-			StgShotObject::ReserveShotListData& data = (*itr);
-			int idShot = data.GetShotID();
+	for (auto& data : mapData_) {
+		ref_count_ptr<ListElement>::unsync listElement = data.second;
+		std::list<ReserveShotListData>* elements = listElement->GetDataList();
+		for (auto& element : *elements) {
+			int idShot = element.GetShotID();
 			ref_count_ptr<StgShotObject>::unsync objShot = ref_count_ptr<StgShotObject>::unsync::DownCast(objectManager->GetObject(idShot));
-			if (objShot != NULL)
+			if (objShot != nullptr)
 				objShot->ClearShotObject();
 			objectManager->DeleteObject(idShot);
 		}
@@ -1011,9 +981,7 @@ StgNormalShotObject::StgNormalShotObject(StgStageController* stageController)
 	typeObject_ = StgStageScript::OBJ_SHOT;
 	angularVelocity_ = 0;
 }
-StgNormalShotObject::~StgNormalShotObject()
-{
-}
+StgNormalShotObject::~StgNormalShotObject() = default;
 void StgNormalShotObject::Work()
 {
 	_Move();
@@ -1022,12 +990,12 @@ void StgNormalShotObject::Work()
 	}
 
 	delay_ = max(delay_ - 1, 0);
-	frameWork_++;
+	++frameWork_;
 
 	angle_.z += angularVelocity_;
 
 	if (frameFadeDelete_ >= 0) {
-		frameFadeDelete_--;
+		--frameFadeDelete_;
 	}
 
 	_DeleteInAutoClip();
@@ -1051,7 +1019,7 @@ void StgNormalShotObject::_AddIntersectionRelativeTarget()
 		return;
 
 	StgShotData* shotData = _GetShotData();
-	if (shotData == NULL)
+	if (shotData == nullptr)
 		return;
 
 	StgIntersectionManager* intersectionManager = stageController_->GetIntersectionManager();
@@ -1060,7 +1028,7 @@ void StgNormalShotObject::_AddIntersectionRelativeTarget()
 		ClearIntersectionRelativeTarget();
 
 		ref_count_ptr<StgShotObject>::unsync obj = GetOwnObject();
-		if (obj == NULL)
+		if (obj == nullptr)
 			return;
 		ref_count_weak_ptr<StgShotObject>::unsync wObj = obj;
 
@@ -1078,7 +1046,7 @@ void StgNormalShotObject::_AddIntersectionRelativeTarget()
 	bool bInvalid = true;
 	for (int iCircle = 0; iCircle < listCircle->size(); iCircle++) {
 		ref_count_ptr<StgIntersectionTarget>::unsync target = GetIntersectionRelativeTarget(iCircle);
-		StgIntersectionTarget_Circle* cTarget = (StgIntersectionTarget_Circle*)target.GetPointer();
+		auto* cTarget = (StgIntersectionTarget_Circle*)target.GetPointer();
 
 		DxCircle circle = listCircle->at(iCircle);
 		if (circle.GetX() != 0 || circle.GetY() != 0) {
@@ -1109,7 +1077,7 @@ void StgNormalShotObject::_AddIntersectionRelativeTarget()
 	} else {
 		//自機の移動範囲が負の値が可能であれば敵弾でも登録
 		ref_count_ptr<StgPlayerObject>::unsync player = stageController_->GetPlayerObject();
-		if (player != NULL) {
+		if (player != nullptr) {
 			RECT rcClip = player->GetClip();
 			if (rcClip.left < 0 || rcClip.top < 0)
 				bInvalid = false;
@@ -1135,18 +1103,17 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgNormalShotObject::G
 		return res;
 
 	StgShotData* shotData = _GetShotData();
-	if (shotData == NULL)
+	if (shotData == nullptr)
 		return res;
 
 	std::vector<DxCircle>* listCircle = shotData->GetIntersectionCircleList();
 	StgIntersectionManager* intersectionManager = stageController_->GetIntersectionManager();
 
-	for (int iCircle = 0; iCircle < listCircle->size(); iCircle++) {
+	for (auto circle : *listCircle) {
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync target = ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(intersectionManager->GetPoolObject(StgIntersectionTarget::SHAPE_CIRCLE));
 		StgIntersectionTarget_Circle* cTarget = (StgIntersectionTarget_Circle*)target.GetPointer();
 
-		DxCircle circle = listCircle->at(iCircle);
-		if (circle.GetX() != 0 || circle.GetY() != 0) {
+			if (circle.GetX() != 0 || circle.GetY() != 0) {
 			double angleZ = 0;
 			if (!shotData->IsFixedAngle())
 				angleZ = GetDirectionAngle() + 90 + angle_.z;
@@ -1163,7 +1130,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgNormalShotObject::G
 		}
 		cTarget->SetCircle(circle);
 
-		res.push_back(target);
+		res.emplace_back(target);
 	}
 
 	return res;
@@ -1175,10 +1142,10 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX mat)
 		return;
 
 	StgShotData* shotData = _GetShotData();
-	if (shotData == NULL)
+	if (shotData == nullptr)
 		return;
 
-	StgShotRenderer* renderer = NULL;
+	StgShotRenderer* renderer = nullptr;
 
 	int shotBlendType = DirectGraphics::MODE_BLEND_ALPHA;
 	if (delay_ > 0) {
@@ -1200,7 +1167,7 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX mat)
 		}
 	}
 
-	if (renderer == NULL)
+	if (renderer == nullptr)
 		return;
 
 	D3DXMATRIX matScale;
@@ -1210,7 +1177,7 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX mat)
 	D3DCOLOR color;
 	if (delay_ > 0) {
 		//遅延時間
-		double expa = 0.5f + (double)delay_ / 30.0f * 2;
+		double expa = 0.5F + (double)delay_ / 30.0F * 2;
 		if (expa > 2)
 			expa = 2;
 
@@ -1220,7 +1187,7 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX mat)
 		else
 			angleZ = angle_.z;
 
-		D3DXMatrixScaling(&matScale, expa, expa, 1.0f);
+		D3DXMatrixScaling(&matScale, expa, expa, 1.0F);
 		D3DXMatrixRotationYawPitchRoll(&matRot, D3DXToRadian(angle_.y), D3DXToRadian(angle_.x), D3DXToRadian(angleZ));
 		D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
 		mat = matScale * matRot * matTrans * mat;
@@ -1303,7 +1270,7 @@ void StgNormalShotObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 	case StgIntersectionTarget::TYPE_PLAYER_SHOT: {
 		//自機弾
 		StgShotObject* shot = (StgShotObject*)otherTarget->GetObject().GetPointer();
-		if (shot != NULL) {
+		if (shot != nullptr) {
 			bool bEraseShot = shot->IsEraseShot();
 			if (bEraseShot && life_ != LIFE_SPELL_REGIST)
 				ConvertToItem();
@@ -1313,7 +1280,7 @@ void StgNormalShotObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 	case StgIntersectionTarget::TYPE_PLAYER_SPELL: {
 		//自機スペル
 		StgPlayerSpellObject* spell = (StgPlayerSpellObject*)otherTarget->GetObject().GetPointer();
-		if (spell != NULL) {
+		if (spell != nullptr) {
 			bool bEraseShot = spell->IsEraseShot();
 			if (bEraseShot && life_ != LIFE_SPELL_REGIST)
 				ConvertToItem();
@@ -1338,7 +1305,7 @@ void StgNormalShotObject::_ConvertToItemAndSendEvent()
 
 	int posX = GetPositionX();
 	int posY = GetPositionY();
-	if (scriptItem != NULL) {
+	if (scriptItem != nullptr) {
 		std::vector<long double> listPos;
 		listPos.push_back(posX);
 		listPos.push_back(posY);
@@ -1374,7 +1341,7 @@ void StgNormalShotObject::SetShotDataID(int id)
 
 	//角速度更新
 	StgShotData* shotData = _GetShotData();
-	if (shotData != NULL && oldData != shotData) {
+	if (shotData != nullptr && oldData != shotData) {
 		if (angularVelocity_ != 0) {
 			angularVelocity_ = 0;
 			angle_.z = 0;
@@ -1433,8 +1400,8 @@ void StgLaserObject::_AddIntersectionRelativeTarget()
 
 	StgIntersectionManager* intersectionManager = stageController_->GetIntersectionManager();
 	std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> listTarget = GetIntersectionTargetList();
-	for (int iTarget = 0; iTarget < listTarget.size(); iTarget++)
-		intersectionManager->AddTarget(listTarget[iTarget]);
+	for (auto & iTarget : listTarget)
+		intersectionManager->AddTarget(iTarget);
 }
 void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget)
 {
@@ -1451,7 +1418,7 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 	case StgIntersectionTarget::TYPE_PLAYER_SHOT: {
 		//自機弾弾
 		StgShotObject* shot = (StgShotObject*)otherTarget->GetObject().GetPointer();
-		if (shot != NULL) {
+		if (shot != nullptr) {
 			bool bEraseShot = shot->IsEraseShot();
 			if (bEraseShot && life_ != LIFE_SPELL_REGIST) {
 				damage = shot->GetDamage();
@@ -1463,7 +1430,7 @@ void StgLaserObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 	case StgIntersectionTarget::TYPE_PLAYER_SPELL: {
 		//自機スペル
 		StgPlayerSpellObject* spell = (StgPlayerSpellObject*)otherTarget->GetObject().GetPointer();
-		if (spell != NULL) {
+		if (spell != nullptr) {
 			bool bEraseShot = spell->IsEraseShot();
 			if (bEraseShot && life_ != LIFE_SPELL_REGIST) {
 				damage = spell->GetDamage();
@@ -1498,7 +1465,7 @@ void StgLooseLaserObject::Work()
 		_AddReservedShotWork();
 
 	delay_ = max(delay_ - 1, 0);
-	frameWork_++;
+	++frameWork_;
 
 	if (frameFadeDelete_ >= 0)
 		frameFadeDelete_--;
@@ -1508,7 +1475,7 @@ void StgLooseLaserObject::Work()
 	_DeleteInFadeDelete();
 	_DeleteInAutoDeleteFrame();
 	// _AddIntersectionRelativeTarget();
-	frameGrazeInvalid_--;
+	--frameGrazeInvalid_;
 }
 void StgLooseLaserObject::_Move()
 {
@@ -1557,11 +1524,11 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgLooseLaserObject::G
 		return res;
 
 	StgShotData* shotData = _GetShotData();
-	if (shotData == NULL)
+	if (shotData == nullptr)
 		return res;
 
 	ref_count_ptr<StgShotObject>::unsync obj = GetOwnObject();
-	if (obj == NULL)
+	if (obj == nullptr)
 		return res;
 
 	//当たり判定
@@ -1586,7 +1553,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgLooseLaserObject::G
 	target->SetObject(wObj);
 	target->SetLine(line);
 
-	res.push_back(target);
+	res.emplace_back(target);
 	return res;
 }
 
@@ -1596,11 +1563,11 @@ void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		return;
 
 	StgShotData* shotData = _GetShotData();
-	if (shotData == NULL)
+	if (shotData == nullptr)
 		return;
 
 	int shotBlendType = StgShotDataList::RENDER_ADD_ARGB;
-	StgShotRenderer* renderer = NULL;
+	StgShotRenderer* renderer = nullptr;
 	if (delay_ > 0) {
 		//遅延時間
 		int objDelayBlendType = GetSourceBlendType();
@@ -1621,7 +1588,7 @@ void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		}
 	}
 
-	if (renderer == NULL)
+	if (renderer == nullptr)
 		return;
 
 	D3DXMATRIX matScale;
@@ -1632,11 +1599,11 @@ void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 	D3DCOLOR color;
 	if (delay_ > 0) {
 		//遅延時間
-		double expa = 0.5f + (double)delay_ / 30.0f * 2;
+		double expa = 0.5F + (double)delay_ / 30.0F * 2;
 		if (expa > 3.5)
 			expa = 3.5;
 
-		D3DXMatrixScaling(&matScale, expa, expa, 1.0f);
+		D3DXMatrixScaling(&matScale, expa, expa, 1.0F);
 		D3DXMatrixRotationYawPitchRoll(&matRot, 0, 0, D3DXToRadian(GetDirectionAngle() + 90));
 		D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
 		mat = matScale * matRot * matTrans * mat;
@@ -1652,7 +1619,7 @@ void StgLooseLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		if (height % 2 == 1)
 			rcDest.bottom += 1;
 	} else {
-		D3DXMatrixScaling(&matScale, 1.0f, 1.0f, 1.0f);
+		D3DXMatrixScaling(&matScale, 1.0F, 1.0F, 1.0F);
 		D3DXMatrixRotationYawPitchRoll(&matRot, 0, 0, D3DXToRadian(GetDirectionAngle() + 90));
 		D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
 		mat = matScale * matRot * matTrans * mat;
@@ -1711,7 +1678,7 @@ void StgLooseLaserObject::_ConvertToItemAndSendEvent()
 	for (double itemPos = 0; itemPos < length; itemPos += itemDistance_) {
 		double posX = ex - itemPos * cos(Math::DegreeToRadian(angle));
 		double posY = ey - itemPos * sin(Math::DegreeToRadian(angle));
-		if (scriptItem != NULL) {
+		if (scriptItem != nullptr) {
 			std::vector<long double> listPos;
 			listPos.push_back(posX);
 			listPos.push_back(posY);
@@ -1762,17 +1729,17 @@ void StgStraightLaserObject::Work()
 	if (delay_ <= 0)
 		scaleX_ = min(1.0, scaleX_ + 0.1);
 
-	frameWork_++;
+	++frameWork_;
 
 	if (frameFadeDelete_ >= 0)
-		frameFadeDelete_--;
+		--frameFadeDelete_;
 
 	_DeleteInAutoClip();
 	_DeleteInLife();
 	_DeleteInFadeDelete();
 	_DeleteInAutoDeleteFrame();
 	// _AddIntersectionRelativeTarget();
-	frameGrazeInvalid_--;
+	--frameGrazeInvalid_;
 }
 
 void StgStraightLaserObject::_DeleteInAutoClip()
@@ -1817,7 +1784,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgStraightLaserObject
 		return res;
 
 	StgShotData* shotData = _GetShotData();
-	if (shotData == NULL)
+	if (shotData == nullptr)
 		return res;
 	if (scaleX_ < 1.0 && typeOwner_ != OWNER_PLAYER)
 		return res;
@@ -1832,7 +1799,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgStraightLaserObject
 	StgIntersectionManager* intersectionManager = stageController_->GetIntersectionManager();
 	DxWidthLine line(posXS, posYS, posXE, posYE, widthIntersection_);
 	ref_count_ptr<StgShotObject>::unsync obj = GetOwnObject();
-	if (obj == NULL)
+	if (obj == nullptr)
 		return res;
 
 	ref_count_weak_ptr<StgShotObject>::unsync wObj = obj;
@@ -1844,7 +1811,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgStraightLaserObject
 	target->SetObject(wObj);
 	target->SetLine(line);
 
-	res.push_back(target);
+	res.emplace_back(target);
 	return res;
 }
 void StgStraightLaserObject::_AddReservedShot(ref_count_ptr<StgShotObject>::unsync obj, StgShotObject::ReserveShotListData* data)
@@ -1879,20 +1846,20 @@ void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 	if (!IsVisible())
 		return;
 	StgShotData* shotData = _GetShotData();
-	if (shotData == NULL)
+	if (shotData == nullptr)
 		return;
 
 	int objBlendType = GetBlendType();
 	int shotBlendType = objBlendType;
 	{
-		StgShotRenderer* renderer = NULL;
+		StgShotRenderer* renderer = nullptr;
 		if (objBlendType == DirectGraphics::MODE_BLEND_NONE) {
 			renderer = shotData->GetRenderer(StgShotDataList::RENDER_ADD_ARGB);
 			shotBlendType = DirectGraphics::MODE_BLEND_ADD_ARGB;
 		} else {
 			renderer = shotData->GetRendererFromGraphicsBlendType(objBlendType);
 		}
-		if (renderer == NULL)
+		if (renderer == nullptr)
 			return;
 
 		//レーザー
@@ -1902,7 +1869,7 @@ void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		RECT rcSrc;
 		RECT rcDest;
 		D3DCOLOR color;
-		D3DXMatrixScaling(&matScale, scaleX_, 1.0f, 1.0f);
+		D3DXMatrixScaling(&matScale, scaleX_, 1.0F, 1.0F);
 		D3DXMatrixRotationYawPitchRoll(&matRot, 0, 0, D3DXToRadian(angLaser_ + 270));
 		D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
 		D3DXMATRIX matLaser = matScale * matRot * matTrans * mat;
@@ -1949,7 +1916,7 @@ void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 	}
 
 	if (bUseSouce_ && frameFadeDelete_ < 0) {
-		StgShotRenderer* renderer = NULL;
+		StgShotRenderer* renderer = nullptr;
 		int objSourceBlendType = GetSourceBlendType();
 		int sourceBlendType = shotBlendType;
 		if (objSourceBlendType == DirectGraphics::MODE_BLEND_NONE) {
@@ -1959,7 +1926,7 @@ void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 			renderer = shotData->GetRendererFromGraphicsBlendType(objSourceBlendType);
 			sourceBlendType = objSourceBlendType;
 		}
-		if (renderer == NULL)
+		if (renderer == nullptr)
 			return;
 
 		//光源
@@ -1969,7 +1936,7 @@ void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		RECT rcSrc;
 		RECT rcDest;
 		D3DCOLOR color;
-		D3DXMatrixScaling(&matScale, 1.0f, 1.0f, 1.0f);
+		D3DXMatrixScaling(&matScale, 1.0F, 1.0F, 1.0F);
 		D3DXMatrixRotationYawPitchRoll(&matRot, 0, 0, D3DXToRadian(angLaser_ + 270));
 		D3DXMatrixTranslation(&matTrans, position_.x, position_.y, position_.z);
 		D3DXMATRIX matSource = matScale * matRot * matTrans * mat;
@@ -1985,7 +1952,7 @@ void StgStraightLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		int srcY[] = { rcSrc.top, rcSrc.top, rcSrc.bottom, rcSrc.bottom };
 		int destX[] = { rcDest.left, rcDest.right, rcDest.left, rcDest.right };
 		int destY[] = { rcDest.top, rcDest.top, rcDest.bottom, rcDest.bottom };
-		for (int iVert = 0; iVert < 4; iVert++) {
+		for (int iVert = 0; iVert < 4; ++iVert) {
 			_SetVertexUV(verts[iVert], srcX[iVert], srcY[iVert]);
 			_SetVertexPosition(verts[iVert], destX[iVert], destY[iVert]);
 			_SetVertexColorARGB(verts[iVert], color);
@@ -2014,7 +1981,7 @@ void StgStraightLaserObject::_ConvertToItemAndSendEvent()
 		double posX = ex + itemPos * cos(Math::DegreeToRadian(angle));
 		double posY = ey + itemPos * sin(Math::DegreeToRadian(angle));
 
-		if (scriptItem != NULL) {
+		if (scriptItem != nullptr) {
 			std::vector<long double> listPos;
 			listPos.push_back(posX);
 			listPos.push_back(posY);
@@ -2062,14 +2029,14 @@ void StgCurveLaserObject::Work()
 	frameWork_++;
 
 	if (frameFadeDelete_ >= 0)
-		frameFadeDelete_--;
+		--frameFadeDelete_;
 
 	_DeleteInAutoClip();
 	_DeleteInLife();
 	_DeleteInFadeDelete();
 	_DeleteInAutoDeleteFrame();
 	// _AddIntersectionRelativeTarget();
-	frameGrazeInvalid_--;
+	--frameGrazeInvalid_;
 }
 void StgCurveLaserObject::_Move()
 {
@@ -2095,10 +2062,8 @@ void StgCurveLaserObject::_DeleteInAutoClip()
 	StgShotManager* shotManager = stageController_->GetShotManager();
 	RECT rect = shotManager->GetShotAutoDeleteClipRect();
 
-	bool bDelete = listPosition_.size() > 0;
-	std::list<Position>::iterator itr = listPosition_.begin();
-	for (; itr != listPosition_.end(); itr++) {
-		Position& pos = (*itr);
+	bool bDelete = !listPosition_.empty();
+	for (auto& pos : listPosition_) {
 		bool bXOut = pos.x < rect.left || pos.x > rect.right;
 		bool bYOut = pos.y < rect.top || pos.y > rect.bottom;
 		if (!bXOut && !bYOut) {
@@ -2127,19 +2092,18 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgCurveLaserObject::G
 		return res;
 
 	StgShotData* shotData = _GetShotData();
-	if (shotData == NULL)
+	if (shotData == nullptr)
 		return res;
 
 	ref_count_ptr<StgShotObject>::unsync obj = GetOwnObject();
-	if (obj == NULL)
+	if (obj == nullptr)
 		return res;
 	ref_count_weak_ptr<StgShotObject>::unsync wObj = obj;
 
 	//当たり判定
 	std::vector<Position> listPos;
-	std::list<Position>::iterator itr = listPosition_.begin();
-	for (; itr != listPosition_.end(); itr++) {
-		listPos.push_back(*itr);
+	for (auto& pos : listPosition_) {
+		listPos.push_back(pos);
 	}
 
 	StgIntersectionManager* intersectionManager = stageController_->GetIntersectionManager();
@@ -2172,7 +2136,7 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgCurveLaserObject::G
 		target->SetObject(wObj);
 		target->SetLine(line);
 
-		res.push_back(target);
+		res.emplace_back(target);
 	}
 	return res;
 }
@@ -2230,7 +2194,7 @@ void StgCurveLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 		RECT rcSrc = shotData->GetDelayRect();
 		RECT rcDest;
 
-		double expa = 0.5f + (double)delay_ / 30.0f * 2;
+		double expa = 0.5F + (double)delay_ / 30.0F * 2;
 		if (expa > 3.5)
 			expa = 3.5;
 
@@ -2302,12 +2266,11 @@ void StgCurveLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 
 		VERTEX_TLX oldVerts[4];
 
-		std::list<Position>::iterator itr = listPosition_.begin();
 		size_t iPos = 0;
 		size_t incr = 1;
 
-		for (; iPos < listPosition_.size(); itr++, iPos++) {
-			std::list<Position>::iterator nxt = next(itr, 1);
+		for (auto itr = listPosition_.begin(); iPos < listPosition_.size(); ++itr, ++iPos) {
+			auto nxt = next(itr, 1);
 			if ((iPos + 1) >= listPosition_.size())
 				break;
 
@@ -2327,7 +2290,7 @@ void StgCurveLaserObject::RenderOnShotManager(D3DXMATRIX mat)
 			rcSrcD.top = rcSrcOrg.top + posSrc;
 			double bottom = rcSrcD.top + rate;
 			if (rcSrcD.top == bottom)
-				bottom++;
+				++bottom;
 			rcSrcD.bottom = bottom;
 			posSrc += rate;
 
@@ -2385,13 +2348,11 @@ void StgCurveLaserObject::_ConvertToItemAndSendEvent()
 	StgStageScriptManager* stageScriptManager = stageController_->GetScriptManagerP();
 	ref_count_ptr<ManagedScript> scriptItem = stageScriptManager->GetItemScript();
 
-	std::list<Position>::iterator itr = listPosition_.begin();
-	for (; itr != listPosition_.end(); itr++) {
-		Position pos = (*itr);
+	for (auto& pos : listPosition_) {
 		double posX = pos.x;
 		double posY = pos.y;
 
-		if (scriptItem != NULL) {
+		if (scriptItem != nullptr) {
 			std::vector<long double> listPos;
 			listPos.push_back(posX);
 			listPos.push_back(posY);

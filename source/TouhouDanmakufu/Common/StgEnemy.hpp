@@ -35,20 +35,20 @@ private:
 class StgEnemyObject : public DxScriptSpriteObject2D, public StgMoveObject, public StgIntersectionObject {
 public:
 	StgEnemyObject(StgStageController* stageController);
-	virtual ~StgEnemyObject();
+	~StgEnemyObject() override;
 
-	virtual void Work();
+	void Work() override;
 	virtual void Activate();
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 	virtual void ClearEnemyObject() { ClearIntersectionRelativeTarget(); }
 	virtual void RegistIntersectionTarget();
 
-	virtual void SetX(double x)
+	void SetX(double x) override
 	{
 		posX_ = x;
 		DxScriptRenderObject::SetX(x);
 	}
-	virtual void SetY(double y)
+	void SetY(double y) override
 	{
 		posY_ = y;
 		DxScriptRenderObject::SetY(y);
@@ -72,7 +72,7 @@ public:
 	int GetIntersectedPlayerShotCount() const { return intersectedPlayerShotCount_; }
 
 protected:
-	virtual void _Move();
+	void _Move() override;
 	virtual void _AddRelativeIntersection();
 
 	StgStageController* stageController_;
@@ -101,10 +101,10 @@ class StgEnemyBossSceneData;
 class StgEnemyBossSceneObject : public DxScriptObjectBase {
 public:
 	StgEnemyBossSceneObject(StgStageController* stageController);
-	virtual void Work();
+	void Work() override;
 	virtual void Activate();
-	virtual void Render() {} //何もしない
-	virtual void SetRenderState() {} //何もしない
+	void Render() override {} //何もしない
+	void SetRenderState() override {} //何もしない
 
 	void AddData(int step, ref_count_ptr<StgEnemyBossSceneData>::unsync data);
 	ref_count_ptr<StgEnemyBossSceneData>::unsync GetActiveData() const { return activeData_; }
@@ -137,11 +137,11 @@ private:
 class StgEnemyBossSceneData {
 public:
 	StgEnemyBossSceneData();
-	virtual ~StgEnemyBossSceneData() {}
+	virtual ~StgEnemyBossSceneData() = default;
 	std::wstring GetPath() const { return path_; }
 	void SetPath(const std::wstring& path) { path_ = path; }
-	_int64 GetScriptID() const { return isScript_; }
-	void SetScriptID(_int64 id) { isScript_ = id; }
+	int64_t GetScriptID() const { return isScript_; }
+	void SetScriptID(int64_t id) { isScript_ = id; }
 	std::vector<double>& GetLifeList() { return listLife_; }
 	void SetLifeList(const std::vector<double>& list) { listLife_ = list; }
 	std::vector<ref_count_ptr<StgEnemyBossObject>::unsync>& GetEnemyObjectList() { return listEnemyObject_; }
@@ -150,9 +150,9 @@ public:
 	bool IsReadyNext() const { return bReadyNext_; }
 	void SetReadyNext() { bReadyNext_ = true; }
 
-	_int64 GetCurrentSpellScore() const;
-	_int64 GetSpellScore() const { return scoreSpell_; }
-	void SetSpellScore(_int64 score) { scoreSpell_ = score; }
+	int64_t GetCurrentSpellScore() const;
+	int64_t GetSpellScore() const { return scoreSpell_; }
+	void SetSpellScore(int64_t score) { scoreSpell_ = score; }
 	int GetSpellTimer() const { return timerSpell_; }
 	void SetSpellTimer(int timer) { timerSpell_ = timer; }
 	int GetOriginalSpellTimer() const { return timerSpellOrg_; }
@@ -175,7 +175,7 @@ public:
 
 private:
 	std::wstring path_;
-	_int64 isScript_;
+	int64_t isScript_;
 	std::vector<double> listLife_;
 	std::vector<ref_count_ptr<StgEnemyBossObject>::unsync> listEnemyObject_;
 	int countCreate_; //ボス生成数。listEnemyObject_を超えて生成しようとしたらエラー。
@@ -184,7 +184,7 @@ private:
 	bool bSpell_; //スペルカード
 	bool bLastSpell_; //ラストスペル
 	bool bDurable_; //耐久スペル
-	_int64 scoreSpell_;
+	int64_t scoreSpell_;
 	int timerSpellOrg_; //初期タイマー フレーム単位 -1で無効
 	int timerSpell_; //タイマー フレーム単位 -1で無効
 	int countPlayerShootDown_; //自機撃破数

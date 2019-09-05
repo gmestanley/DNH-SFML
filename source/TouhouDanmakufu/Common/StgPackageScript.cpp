@@ -10,9 +10,7 @@ StgPackageScriptManager::StgPackageScriptManager(StgSystemController* controller
 	systemController_ = controller;
 	objectManager_ = new DxScriptObjectManager();
 }
-StgPackageScriptManager::~StgPackageScriptManager()
-{
-}
+StgPackageScriptManager::~StgPackageScriptManager() = default;
 void StgPackageScriptManager::Work()
 {
 	if (!IsError()) {
@@ -35,7 +33,7 @@ ref_count_ptr<ManagedScript> StgPackageScriptManager::Create(int type)
 		break;
 	}
 
-	if (res != NULL) {
+	if (res != nullptr) {
 		res->SetObjectManager(objectManager_);
 		res->SetScriptManager(this);
 	}
@@ -83,14 +81,14 @@ void StgPackageScript::_CheckNextStageExists()
 {
 	ref_count_ptr<StgPackageInformation> infoPackage = packageController_->GetPackageInformation();
 	ref_count_ptr<StgStageStartData> nextStageData = infoPackage->GetNextStageData();
-	if (nextStageData == NULL)
+	if (nextStageData == nullptr)
 		RaiseError(L"not initialized stage data");
 }
 
 //パッケージ共通関数：パッケージ操作
 gstd::value StgPackageScript::Func_ClosePackage(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 
 	ref_count_ptr<StgPackageInformation> infoPackage = packageController->GetPackageInformation();
@@ -102,12 +100,12 @@ gstd::value StgPackageScript::Func_ClosePackage(gstd::script_machine* machine, i
 //パッケージ共通関数：ステージ操作
 gstd::value StgPackageScript::Func_InitializeStageScene(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 
 	StgSystemController* systemController = packageController->GetSystemController();
 	ref_count_ptr<StgSystemInformation> infoSystem = systemController->GetSystemInformation();
-	infoSystem->SetActiveReplayInformation(NULL);
+	infoSystem->SetActiveReplayInformation(nullptr);
 
 	ref_count_ptr<StgPackageInformation> infoPackage = packageController->GetPackageInformation();
 	infoPackage->InitializeStageData();
@@ -116,17 +114,17 @@ gstd::value StgPackageScript::Func_InitializeStageScene(gstd::script_machine* ma
 }
 gstd::value StgPackageScript::Func_FinalizeStageScene(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 	StgSystemController* systemController = packageController->GetSystemController();
 	ref_count_ptr<StgSystemInformation> infoSystem = systemController->GetSystemInformation();
 
 	ref_count_ptr<StgPackageInformation> infoPackage = packageController->GetPackageInformation();
-	if (infoPackage->GetNextStageData() != NULL && infoPackage->GetNextStageData()->GetPrevStageInformation() == NULL)
+	if (infoPackage->GetNextStageData() != nullptr && infoPackage->GetNextStageData()->GetPrevStageInformation() == nullptr)
 		script->RaiseError(L"not finished stage");
 
 	std::vector<ref_count_ptr<StgStageStartData>> listStage = infoPackage->GetStageDataList();
-	if (listStage.size() > 0) {
+	if (!listStage.empty()) {
 		ref_count_ptr<StgStageStartData> stageData = listStage[listStage.size() - 1];
 		ref_count_ptr<StgStageInformation> infoStage = stageData->GetStageInformation();
 		bool bReplay = infoStage->IsReplay();
@@ -141,7 +139,7 @@ gstd::value StgPackageScript::Func_FinalizeStageScene(gstd::script_machine* mach
 }
 gstd::value StgPackageScript::Func_StartStageScene(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 	script->_CheckNextStageExists();
 
@@ -155,9 +153,9 @@ gstd::value StgPackageScript::Func_StartStageScene(gstd::script_machine* machine
 	ref_count_ptr<ReplayInformation> infoReplay = infoPackage->GetReplayInformation();
 	std::wstring replayPlayerID;
 	std::wstring replayPlayerScriptFileName;
-	if (infoReplay != NULL) {
+	if (infoReplay != nullptr) {
 		ref_count_ptr<ReplayInformation::StageData> replayStageData = infoReplay->GetStageData(stageIndex);
-		if (replayStageData == NULL)
+		if (replayStageData == nullptr)
 			script->RaiseError(L"invalid replay stage index");
 		nextStageData->SetStageReplayData(replayStageData);
 
@@ -166,26 +164,25 @@ gstd::value StgPackageScript::Func_StartStageScene(gstd::script_machine* machine
 		replayPlayerScriptFileName = replayStageData->GetPlayerScriptFileName();
 	} else {
 		ref_count_ptr<ScriptInformation> infoPlayer = infoStage->GetPlayerScriptInformation();
-		if (infoPlayer != NULL) {
+		if (infoPlayer != nullptr) {
 			replayPlayerID = infoPlayer->GetID();
 			replayPlayerScriptFileName = PathProperty::GetFileName(infoPlayer->GetScriptPath());
 		}
 	}
 
 	//自機を検索
-	infoStage->SetPlayerScriptInformation(NULL);
+	infoStage->SetPlayerScriptInformation(nullptr);
 	ref_count_ptr<ScriptInformation> infoMain = infoSystem->GetMainScriptInformation();
 	std::vector<ref_count_ptr<ScriptInformation>> listPlayer;
 	std::vector<std::wstring> listPlayerPath = infoMain->GetPlayerList();
-	if (listPlayerPath.size() == 0) {
+	if (listPlayerPath.empty()) {
 		std::wstring dir = EPathProperty::GetPlayerScriptRootDirectory();
 		listPlayer = ScriptInformation::FindPlayerScriptInformationList(dir);
 	} else {
 		listPlayer = infoMain->CreatePlayerScriptInformationList();
 	}
 
-	for (int iPlayer = 0; iPlayer < listPlayer.size(); iPlayer++) {
-		ref_count_ptr<ScriptInformation> tInfo = listPlayer[iPlayer];
+	for (auto& tInfo : listPlayer) {
 		if (tInfo->GetID() != replayPlayerID)
 			continue;
 		std::wstring tPlayerScriptFileName = PathProperty::GetFileName(tInfo->GetScriptPath());
@@ -196,7 +193,7 @@ gstd::value StgPackageScript::Func_StartStageScene(gstd::script_machine* machine
 		break;
 	}
 
-	if (infoStage->GetPlayerScriptInformation() == NULL)
+	if (infoStage->GetPlayerScriptInformation() == nullptr)
 		script->RaiseError(L"player not found");
 
 	//packageController->RenderToTransitionTexture();
@@ -207,7 +204,7 @@ gstd::value StgPackageScript::Func_StartStageScene(gstd::script_machine* machine
 }
 gstd::value StgPackageScript::Func_SetStageIndex(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 	script->_CheckNextStageExists();
 
@@ -217,8 +214,7 @@ gstd::value StgPackageScript::Func_SetStageIndex(gstd::script_machine* machine, 
 
 	int stageIndex = (int)argv[0].as_real();
 	std::vector<ref_count_ptr<StgStageStartData>> listStage = infoPackage->GetStageDataList();
-	for (int iStage = 0; iStage < listStage.size(); iStage++) {
-		ref_count_ptr<StgStageStartData> stageData = listStage[iStage];
+	for (auto& stageData : listStage) {
 		if (stageIndex == stageData->GetStageInformation()->GetStageIndex())
 			script->RaiseError(L"stage index already used");
 	}
@@ -229,7 +225,7 @@ gstd::value StgPackageScript::Func_SetStageIndex(gstd::script_machine* machine, 
 }
 gstd::value StgPackageScript::Func_SetStageMainScript(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 	script->_CheckNextStageExists();
 
@@ -239,18 +235,18 @@ gstd::value StgPackageScript::Func_SetStageMainScript(gstd::script_machine* mach
 
 	std::wstring path = argv[0].as_string();
 	ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
-	if (reader == NULL || !reader->Open()) {
+	if (reader == nullptr || !reader->Open()) {
 		std::wstring error = ErrorUtility::GetFileNotFoundErrorMessage(path);
 		script->RaiseError(error);
 	}
 
-	std::string source = "";
+	std::string source;
 	int size = reader->GetFileSize();
 	source.resize(size);
 	reader->Read(&source[0], size);
 
 	ref_count_ptr<ScriptInformation> infoScript = ScriptInformation::CreateScriptInformation(path, L"", source, false);
-	if (infoScript == NULL)
+	if (infoScript == nullptr)
 		script->RaiseError(ErrorUtility::GetFileNotFoundErrorMessage(path));
 
 	infoStage->SetMainScriptInformation(infoScript);
@@ -259,7 +255,7 @@ gstd::value StgPackageScript::Func_SetStageMainScript(gstd::script_machine* mach
 }
 gstd::value StgPackageScript::Func_SetStagePlayerScript(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 	script->_CheckNextStageExists();
 
@@ -269,12 +265,12 @@ gstd::value StgPackageScript::Func_SetStagePlayerScript(gstd::script_machine* ma
 
 	std::wstring path = argv[0].as_string();
 	ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
-	if (reader == NULL || !reader->Open()) {
+	if (reader == nullptr || !reader->Open()) {
 		std::wstring error = ErrorUtility::GetFileNotFoundErrorMessage(path);
 		script->RaiseError(error);
 	}
 
-	std::string source = "";
+	std::string source;
 	int size = reader->GetFileSize();
 	source.resize(size);
 	reader->Read(&source[0], size);
@@ -286,7 +282,7 @@ gstd::value StgPackageScript::Func_SetStagePlayerScript(gstd::script_machine* ma
 }
 gstd::value StgPackageScript::Func_SetStageReplayFile(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 	script->_CheckNextStageExists();
 
@@ -294,7 +290,7 @@ gstd::value StgPackageScript::Func_SetStageReplayFile(gstd::script_machine* mach
 
 	std::wstring pathReplay = argv[0].as_string();
 	ref_count_ptr<ReplayInformation> infoRepray = ReplayInformation::CreateFromFile(pathReplay);
-	if (infoRepray == NULL) {
+	if (infoRepray == nullptr) {
 		std::wstring path = ErrorUtility::GetFileNotFoundErrorMessage(pathReplay);
 		script->RaiseError(path);
 	}
@@ -303,7 +299,7 @@ gstd::value StgPackageScript::Func_SetStageReplayFile(gstd::script_machine* mach
 }
 gstd::value StgPackageScript::Func_GetStageSceneState(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 	StgSystemController* systemController = packageController->GetSystemController();
 	ref_count_ptr<StgSystemInformation> infoSystem = systemController->GetSystemInformation();
@@ -317,14 +313,14 @@ gstd::value StgPackageScript::Func_GetStageSceneState(gstd::script_machine* mach
 }
 gstd::value StgPackageScript::Func_GetStageSceneResult(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 	script->_CheckNextStageExists();
 
 	int res = StgStageInformation::RESULT_UNKNOWN;
 	ref_count_ptr<StgPackageInformation> infoPackage = packageController->GetPackageInformation();
 	std::vector<ref_count_ptr<StgStageStartData>> listStage = infoPackage->GetStageDataList();
-	if (listStage.size() > 0) {
+	if (!listStage.empty()) {
 		ref_count_ptr<StgStageStartData> stageData = listStage[listStage.size() - 1];
 		ref_count_ptr<StgStageInformation> infoStage = stageData->GetStageInformation();
 		res = infoStage->GetResult();
@@ -334,11 +330,11 @@ gstd::value StgPackageScript::Func_GetStageSceneResult(gstd::script_machine* mac
 }
 gstd::value StgPackageScript::Func_PauseStageScene(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 	StgSystemController* systemController = packageController->GetSystemController();
 	StgStageController* stageController = systemController->GetStageController();
-	if (stageController == NULL)
+	if (stageController == nullptr)
 		return gstd::value();
 
 	bool bPause = argv[0].as_boolean();
@@ -356,11 +352,11 @@ gstd::value StgPackageScript::Func_PauseStageScene(gstd::script_machine* machine
 }
 gstd::value StgPackageScript::Func_TerminateStageScene(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	StgPackageScript* script = (StgPackageScript*)machine->data;
+	auto* script = (StgPackageScript*)machine->data;
 	StgPackageController* packageController = script->packageController_;
 	StgSystemController* systemController = packageController->GetSystemController();
 	StgStageController* stageController = systemController->GetStageController();
-	if (stageController == NULL)
+	if (stageController == nullptr)
 		return gstd::value();
 
 	ref_count_ptr<StgStageInformation> infoStage = stageController->GetStageInformation();

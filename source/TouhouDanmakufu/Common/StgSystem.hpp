@@ -25,7 +25,7 @@ public:
 
 public:
 	StgSystemController();
-	~StgSystemController();
+	~StgSystemController() override;
 	void Initialize(ref_count_ptr<StgSystemInformation> infoSystem);
 	void Start(ref_count_ptr<ScriptInformation> infoPlayer, ref_count_ptr<ReplayInformation> infoReplay);
 	void Work();
@@ -93,7 +93,7 @@ public:
 	void SetStgEnd() { bEndStg_ = true; }
 	bool IsRetry() const { return bRetry_; }
 	void SetRetry() { bRetry_ = true; }
-	bool IsError() const { return listError_.size() > 0; }
+	bool IsError() const { return !listError_.empty(); }
 	void SetError(const std::wstring& error) { listError_.push_back(error); }
 	std::wstring GetErrorMessage() const;
 

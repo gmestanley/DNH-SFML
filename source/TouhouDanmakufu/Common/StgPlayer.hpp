@@ -16,8 +16,8 @@ class StgPlayerInformation {
 	friend StgPlayerObject;
 
 public:
-	StgPlayerInformation() {}
-	virtual ~StgPlayerInformation() {}
+	StgPlayerInformation() = default;
+	virtual ~StgPlayerInformation() = default;
 
 	double GetLife() const { return life_; }
 	void SetLife(double life) { life_ = life; }
@@ -47,21 +47,21 @@ public:
 
 public:
 	StgPlayerObject(StgStageController* stageController);
-	virtual ~StgPlayerObject();
+	~StgPlayerObject() override;
 	void Clear() { ClearIntersectionRelativeTarget(); }
 	void SetScript(StgStagePlayerScript* script) { script_ = script; }
 
-	virtual void Work();
+	void Work() override;
 	void Move();
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 	void CallSpell();
 
-	virtual void SetX(double x)
+	void SetX(double x) override
 	{
 		posX_ = x;
 		DxScriptRenderObject::SetX(x);
 	}
-	virtual void SetY(double y)
+	void SetY(double y) override
 	{
 		posY_ = y;
 		DxScriptRenderObject::SetY(y);
@@ -111,7 +111,7 @@ public:
 
 protected:
 	void _InitializeRebirth();
-	void _Move();
+	void _Move() override;
 	void _AddIntersection();
 	bool _IsValidSpell();
 
@@ -159,8 +159,8 @@ private:
 class StgPlayerSpellManageObject : public DxScriptObjectBase {
 public:
 	StgPlayerSpellManageObject() { bVisible_ = false; }
-	virtual void Render() {}
-	virtual void SetRenderState() {}
+	void Render() override {}
+	void SetRenderState() override {}
 };
 
 /**********************************************************
@@ -169,8 +169,8 @@ public:
 class StgPlayerSpellObject : public DxScriptPrimitiveObject2D, public StgIntersectionObject {
 public:
 	StgPlayerSpellObject(StgStageController* stageController);
-	virtual void Work();
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Work() override;
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 
 	double GetDamage() const { return damage_; }
 	void SetDamage(double damage) { damage_ = damage; }

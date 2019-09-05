@@ -15,7 +15,7 @@ class SystemController : public Singleton<SystemController> {
 	friend Singleton<SystemController>;
 
 public:
-	virtual ~SystemController();
+	~SystemController() override;
 	void Reset();
 	void ClearTaskWithoutSystem();
 
@@ -79,8 +79,8 @@ private:
 
 class SystemTransitionEffectTask : public TransitionEffectTask {
 public:
-	void Work();
-	void Render();
+	void Work() override;
+	void Render() override;
 };
 
 /**********************************************************
@@ -136,7 +136,7 @@ public:
 
 public:
 	SystemResidentTask();
-	~SystemResidentTask();
+	~SystemResidentTask() override;
 	void RenderFps();
 
 private:

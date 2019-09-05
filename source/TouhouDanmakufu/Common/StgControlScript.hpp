@@ -10,7 +10,7 @@ class StgControlScript;
 class StgControlScriptManager : public ScriptManager {
 public:
 	StgControlScriptManager();
-	virtual ~StgControlScriptManager();
+	~StgControlScriptManager() override;
 };
 
 /**********************************************************
@@ -163,11 +163,11 @@ protected:
 class ScriptInfoPanel : public WindowLogger::Panel {
 public:
 	ScriptInfoPanel();
-	virtual void LocateParts();
+	void LocateParts() override;
 
 protected:
-	virtual bool _AddedLogger(HWND hTab);
-	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam); //オーバーライド用プロシージャ
+	bool _AddedLogger(HWND hTab) override;
+	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override; //オーバーライド用プロシージャ
 	void _TerminateScriptAll();
 
 	WButton buttonTerminateScript_;

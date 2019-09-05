@@ -41,14 +41,14 @@ public:
 	StgShotDataList* GetPlayerShotDataList() { return listPlayerShotData_.GetPointer(); }
 	StgShotDataList* GetEnemyShotDataList() { return listEnemyShotData_.GetPointer(); }
 
-	bool LoadPlayerShotData(std::wstring path, bool bReload = false);
-	bool LoadEnemyShotData(std::wstring path, bool bReload = false);
+	bool LoadPlayerShotData(const std::wstring& path, bool bReload = false);
+	bool LoadEnemyShotData(const std::wstring& path, bool bReload = false);
 
 	RECT GetShotAutoDeleteClipRect();
 
 	void DeleteInCircle(int typeDelete, int typeTo, int typeOnwer, int cx, int cy, double radius);
 	std::vector<int> GetShotIdInCircle(int typeOnwer, int cx, int cy, int radius);
-	int GetShotCount(int typeOnwer);
+	int GetShotCount(int typeOwner);
 	int GetShotCountAll() const { return listObj_.size(); }
 	std::vector<bool> GetValidRenderPriorityList();
 
@@ -88,9 +88,9 @@ public:
 	ref_count_ptr<StgShotRenderer>::unsync GetRenderer(int index, int typeRender) const { return listRenderer_[typeRender][index]; }
 	std::vector<ref_count_ptr<StgShotRenderer>::unsync>* GetRendererList(int typeRender) { return &listRenderer_[typeRender]; }
 
-	ref_count_ptr<StgShotData>::unsync GetData(int id) const { return (id >= 0 && id < listData_.size()) ? listData_[id] : NULL; }
+	ref_count_ptr<StgShotData>::unsync GetData(int id) const { return (id >= 0 && id < listData_.size()) ? listData_[id] : nullptr; }
 
-	bool AddShotDataList(std::wstring path, bool bReload);
+	bool AddShotDataList(const std::wstring& path, bool bReload);
 
 private:
 	void _ScanShot(std::vector<ref_count_ptr<StgShotData>::unsync>& listData, Scanner& scanner);
@@ -159,8 +159,8 @@ private:
 class StgShotRenderer : public RenderObjectTLX {
 public:
 	StgShotRenderer();
-	virtual int GetVertexCount() const;
-	virtual void Render();
+	int GetVertexCount() const override;
+	void Render() override;
 	void AddVertex(VERTEX_TLX& vertex);
 	void AddSquareVertex(VERTEX_TLX* listVertex);
 
@@ -189,30 +189,30 @@ public:
 
 public:
 	StgShotObject(StgStageController* stageController);
-	virtual ~StgShotObject();
+	~StgShotObject() override;
 
-	virtual void Work();
-	virtual void Render() {} //一括で描画するためオブジェクト管理での描画はしない
+	void Work() override;
+	void Render() override {} //一括で描画するためオブジェクト管理での描画はしない
 	virtual void Activate() {}
 	virtual void RenderOnShotManager(D3DXMATRIX mat) {}
 	double cssn(double s, double ang);
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 	virtual void ClearShotObject() { ClearIntersectionRelativeTarget(); }
 	virtual void RegistIntersectionTarget() = 0;
 
-	virtual void SetX(double x)
+	void SetX(double x) override
 	{
 		posX_ = x;
 		DxScriptRenderObject::SetX(x);
 	}
-	virtual void SetY(double y)
+	void SetY(double y) override
 	{
 		posY_ = y;
 		DxScriptRenderObject::SetY(y);
 	}
-	virtual void SetColor(int r, int g, int b);
-	virtual void SetAlpha(int alpha);
-	virtual void SetRenderState() {}
+	void SetColor(int r, int g, int b) override;
+	void SetAlpha(int alpha) override;
+	void SetRenderState() override {}
 
 	ref_count_ptr<StgShotObject>::unsync GetOwnObject();
 	int GetShotDataID() const { return idShotData_; }
@@ -274,14 +274,14 @@ protected:
 	bool bChangeItemEnable_;
 
 	StgShotData* _GetShotData();
-	void _SetVertexPosition(VERTEX_TLX& vertex, float x, float y, float z = 1.0f, float w = 1.0f);
+	void _SetVertexPosition(VERTEX_TLX& vertex, float x, float y, float z = 1.0F, float w = 1.0F);
 	void _SetVertexUV(VERTEX_TLX& vertex, float u, float v);
 	void _SetVertexColorARGB(VERTEX_TLX& vertex, D3DCOLOR color);
 	virtual void _DeleteInLife();
 	virtual void _DeleteInAutoClip();
 	virtual void _DeleteInFadeDelete();
 	virtual void _DeleteInAutoDeleteFrame();
-	virtual void _Move();
+	void _Move() override;
 	void _AddReservedShotWork();
 	virtual void _AddReservedShot(ref_count_ptr<StgShotObject>::unsync obj, ReserveShotListData* data);
 	virtual void _ConvertToItemAndSendEvent() {}
@@ -298,7 +298,7 @@ public:
 		radius_ = 0;
 		angle_ = 0;
 	}
-	virtual ~ReserveShotListData() {}
+	virtual ~ReserveShotListData() = default;
 	int GetShotID() const { return idShot_; }
 	double GetRadius() const { return radius_; }
 	double GetAngle() const { return angle_; }
@@ -315,15 +315,15 @@ public:
 		std::list<ReserveShotListData> list_;
 
 	public:
-		ListElement() {}
-		virtual ~ListElement() {}
+		ListElement() = default;
+		virtual ~ListElement() = default;
 		void Add(ReserveShotListData& data) { list_.push_back(data); }
 		std::list<ReserveShotListData>* GetDataList() { return &list_; }
 	};
 
 public:
 	ReserveShotList() { frame_ = 0; }
-	virtual ~ReserveShotList() {}
+	virtual ~ReserveShotList() = default;
 	ref_count_ptr<ListElement>::unsync GetNextFrameData();
 	void AddData(int frame, int idShot, int radius, int angle);
 	void Clear(StgStageController* stageController);
@@ -339,19 +339,19 @@ private:
 class StgNormalShotObject : public StgShotObject {
 public:
 	StgNormalShotObject(StgStageController* stageController);
-	virtual ~StgNormalShotObject();
-	virtual void Work();
-	virtual void RenderOnShotManager(D3DXMATRIX mat);
-	virtual void ClearShotObject();
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	~StgNormalShotObject() override;
+	void Work() override;
+	void RenderOnShotManager(D3DXMATRIX mat) override;
+	void ClearShotObject() override;
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 
-	virtual void RegistIntersectionTarget();
-	virtual std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList();
-	virtual void SetShotDataID(int id);
+	void RegistIntersectionTarget() override;
+	std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList() override;
+	void SetShotDataID(int id) override;
 
 protected:
 	void _AddIntersectionRelativeTarget();
-	virtual void _ConvertToItemAndSendEvent();
+	void _ConvertToItemAndSendEvent() override;
 	double angularVelocity_;
 };
 
@@ -361,8 +361,8 @@ protected:
 class StgLaserObject : public StgShotObject {
 public:
 	StgLaserObject(StgStageController* stageController);
-	virtual void ClearShotObject();
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void ClearShotObject() override;
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 
 	int GetLength() const { return length_; }
 	void SetLength(int length);
@@ -395,26 +395,26 @@ protected:
 class StgLooseLaserObject : public StgLaserObject {
 public:
 	StgLooseLaserObject(StgStageController* stageController);
-	virtual void Work();
-	virtual void RenderOnShotManager(D3DXMATRIX mat);
+	void Work() override;
+	void RenderOnShotManager(D3DXMATRIX mat) override;
 
-	virtual void RegistIntersectionTarget();
-	virtual std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList();
-	virtual void SetX(double x)
+	void RegistIntersectionTarget() override;
+	std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList() override;
+	void SetX(double x) override
 	{
 		StgShotObject::SetX(x);
 		posXE_ = x;
 	}
-	virtual void SetY(double y)
+	void SetY(double y) override
 	{
 		StgShotObject::SetY(y);
 		posYE_ = y;
 	}
 
 protected:
-	virtual void _DeleteInAutoClip();
-	virtual void _Move();
-	virtual void _ConvertToItemAndSendEvent();
+	void _DeleteInAutoClip() override;
+	void _Move() override;
+	void _ConvertToItemAndSendEvent() override;
 
 	double posXE_; //後方x
 	double posYE_; //後方y
@@ -426,14 +426,14 @@ protected:
 class StgStraightLaserObject : public StgLaserObject {
 public:
 	StgStraightLaserObject(StgStageController* stageController);
-	virtual void Work();
-	virtual void RenderOnShotManager(D3DXMATRIX mat);
-	virtual void RegistIntersectionTarget();
-	virtual std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList();
+	void Work() override;
+	void RenderOnShotManager(D3DXMATRIX mat) override;
+	void RegistIntersectionTarget() override;
+	std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList() override;
 
 	double GetLaserAngle() const { return angLaser_; }
 	void SetLaserAngle(double angle) { angLaser_ = angle; }
-	void SetFadeDelete()
+	void SetFadeDelete() override
 	{
 		if (frameFadeDelete_ < 0)
 			frameFadeDelete_ = FRAME_FADEDELETE_LASER;
@@ -441,10 +441,10 @@ public:
 	void SetSourceEnable(bool bEnable) { bUseSouce_ = bEnable; }
 
 protected:
-	virtual void _DeleteInAutoClip();
-	virtual void _DeleteInAutoDeleteFrame();
-	virtual void _AddReservedShot(ref_count_ptr<StgShotObject>::unsync obj, ReserveShotListData* data);
-	virtual void _ConvertToItemAndSendEvent();
+	void _DeleteInAutoClip() override;
+	void _DeleteInAutoDeleteFrame() override;
+	void _AddReservedShot(ref_count_ptr<StgShotObject>::unsync obj, ReserveShotListData* data) override;
+	void _ConvertToItemAndSendEvent() override;
 
 	double angLaser_;
 	bool bUseSouce_;
@@ -463,19 +463,19 @@ protected:
 
 public:
 	StgCurveLaserObject(StgStageController* stageController);
-	virtual void Work();
-	virtual void RenderOnShotManager(D3DXMATRIX mat);
-	virtual void RegistIntersectionTarget();
-	virtual std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList();
+	void Work() override;
+	void RenderOnShotManager(D3DXMATRIX mat) override;
+	void RegistIntersectionTarget() override;
+	std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> GetIntersectionTargetList() override;
 	void SetTipDecrement(double dec) { tipDecrement_ = dec; }
 
 protected:
 	std::list<Position> listPosition_;
 	double tipDecrement_;
 
-	virtual void _DeleteInAutoClip();
-	virtual void _Move();
-	virtual void _ConvertToItemAndSendEvent();
+	void _DeleteInAutoClip() override;
+	void _Move() override;
+	void _ConvertToItemAndSendEvent() override;
 };
 
 #endif

@@ -46,7 +46,7 @@ public:
 	ref_count_ptr<PseudoSlowInformation> GetSlowInformation() { return infoSlow_; }
 
 private:
-	void _SetupReplayTargetCommonDataArea(_int64 idScript);
+	void _SetupReplayTargetCommonDataArea(int64_t idScript);
 
 	StgSystemController* systemController_;
 	ref_count_ptr<StgSystemInformation> infoSystem_;
@@ -115,15 +115,15 @@ public:
 
 	ref_count_ptr<MersenneTwister> GetMersenneTwister() { return rand_; }
 	void SetMersenneTwisterSeed(int seed) { rand_->Initialize(seed); }
-	_int64 GetScore() const { return score_; }
-	void SetScore(_int64 score) { score_ = score; }
-	void AddScore(_int64 inc) { score_ += inc; }
-	_int64 GetGraze() const { return graze_; }
-	void SetGraze(_int64 graze) { graze_ = graze; }
-	void AddGraze(_int64 inc) { graze_ += inc; }
-	_int64 GetPoint() const { return point_; }
-	void SetPoint(_int64 point) { point_ = point; }
-	void AddPoint(_int64 inc) { point_ += inc; }
+	int64_t GetScore() const { return score_; }
+	void SetScore(int64_t score) { score_ = score; }
+	void AddScore(int64_t inc) { score_ += inc; }
+	int64_t GetGraze() const { return graze_; }
+	void SetGraze(int64_t graze) { graze_ = graze; }
+	void AddGraze(int64_t inc) { graze_ += inc; }
+	int64_t GetPoint() const { return point_; }
+	void SetPoint(int64_t point) { point_ = point; }
+	void AddPoint(int64_t inc) { point_ += inc; }
 
 	int GetResult() const { return result_; }
 	void SetResult(int result) { result_ = result; }
@@ -154,9 +154,9 @@ private:
 
 	//STG情報
 	ref_count_ptr<MersenneTwister> rand_;
-	_int64 score_;
-	_int64 graze_;
-	_int64 point_;
+	int64_t score_;
+	int64_t graze_;
+	int64_t point_;
 	int result_;
 	int timeStart_;
 };
@@ -166,8 +166,8 @@ private:
 **********************************************************/
 class StgStageStartData {
 public:
-	StgStageStartData() {}
-	virtual ~StgStageStartData() {}
+	StgStageStartData() = default;
+	virtual ~StgStageStartData() = default;
 
 	ref_count_ptr<StgStageInformation> GetStageInformation() { return infoStage_; }
 	void SetStageInformation(ref_count_ptr<StgStageInformation> info) { infoStage_ = info; }
@@ -199,8 +199,8 @@ public:
 
 public:
 	PseudoSlowInformation() { current_ = 0; }
-	virtual ~PseudoSlowInformation() {}
-	virtual int GetFps();
+	~PseudoSlowInformation() override = default;
+	int GetFps() override;
 
 	bool IsValidFrame(int target);
 	void Next();
@@ -218,7 +218,7 @@ private:
 class PseudoSlowInformation::SlowData {
 public:
 	SlowData() { fps_ = STANDARD_FPS; }
-	virtual ~SlowData() {}
+	virtual ~SlowData() = default;
 	int GetFps() const { return fps_; }
 	void SetFps(int fps) { fps_ = fps; }
 

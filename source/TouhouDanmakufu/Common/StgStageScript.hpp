@@ -13,30 +13,30 @@ class StgStageScript;
 class StgStageScriptManager : public StgControlScriptManager {
 public:
 	StgStageScriptManager(StgStageController* stageController);
-	virtual ~StgStageScriptManager();
+	~StgStageScriptManager() override;
 
 	virtual void SetError(std::wstring error);
 	virtual bool IsError();
 
 	gstd::ref_count_ptr<StgStageScriptObjectManager> GetObjectManager() { return objManager_; }
-	virtual ref_count_ptr<ManagedScript> Create(int type);
+	ref_count_ptr<ManagedScript> Create(int type) override;
 
-	_int64 GetPlayerScriptID() const { return idPlayerScript_; }
-	void SetPlayerScriptID(_int64 id) { idPlayerScript_ = id; }
-	_int64 GetItemScriptID() const { return idItemScript_; }
-	void SetItemScriptID(_int64 id) { idItemScript_ = id; }
+	int64_t GetPlayerScriptID() const { return idPlayerScript_; }
+	void SetPlayerScriptID(int64_t id) { idPlayerScript_ = id; }
+	int64_t GetItemScriptID() const { return idItemScript_; }
+	void SetItemScriptID(int64_t id) { idItemScript_ = id; }
 	ref_count_ptr<ManagedScript> GetItemScript();
-	_int64 GetShotScriptID() const { return idShotScript_; }
-	void SetShotScriptID(_int64 id) { idShotScript_ = id; }
+	int64_t GetShotScriptID() const { return idShotScript_; }
+	void SetShotScriptID(int64_t id) { idShotScript_ = id; }
 	ref_count_ptr<ManagedScript> GetShotScript();
 
 protected:
 	StgStageController* stageController_;
 	ref_count_ptr<StgStageScriptObjectManager> objManager_;
 
-	_int64 idPlayerScript_;
-	_int64 idItemScript_;
-	_int64 idShotScript_;
+	int64_t idPlayerScript_;
+	int64_t idItemScript_;
+	int64_t idShotScript_;
 };
 
 /**********************************************************
@@ -45,7 +45,7 @@ protected:
 class StgStageScriptObjectManager : public DxScriptObjectManager {
 public:
 	StgStageScriptObjectManager(StgStageController* stageController);
-	~StgStageScriptObjectManager();
+	~StgStageScriptObjectManager() override;
 	virtual void RenderObject();
 	virtual void RenderObject(int priMin, int priMax);
 
@@ -153,7 +153,7 @@ public:
 
 public:
 	StgStageScript(StgStageController* stageController);
-	virtual ~StgStageScript();
+	~StgStageScript() override;
 
 	ref_count_ptr<StgStageScriptObjectManager> GetStgObjectManager();
 
@@ -377,7 +377,7 @@ protected:
 class StgStageSystemScript : public StgStageScript {
 public:
 	StgStageSystemScript(StgStageController* stageController);
-	virtual ~StgStageSystemScript();
+	~StgStageSystemScript() override;
 
 	//システム専用関数：システム操作
 };
@@ -393,7 +393,7 @@ public:
 
 public:
 	StgStageItemScript(StgStageController* stageController);
-	virtual ~StgStageItemScript();
+	~StgStageItemScript() override;
 
 	//システム専用関数：アイテム操作
 };
@@ -409,7 +409,7 @@ public:
 
 public:
 	StgStageShotScript(StgStageController* stageController);
-	virtual ~StgStageShotScript();
+	~StgStageShotScript() override;
 
 	//システム専用関数：アイテム操作
 	static gstd::value Func_SetShotDeleteEventEnable(gstd::script_machine* machine, int argc, const gstd::value* argv);
@@ -428,7 +428,7 @@ public:
 
 public:
 	StgStagePlayerScript(StgStageController* stageController);
-	virtual ~StgStagePlayerScript();
+	~StgStagePlayerScript() override;
 
 	//自機専用関数
 	static gstd::value Func_CreatePlayerShotA1(gstd::script_machine* machine, int argc, const gstd::value* argv);

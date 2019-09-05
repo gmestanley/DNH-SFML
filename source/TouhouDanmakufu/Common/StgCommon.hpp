@@ -72,9 +72,9 @@ public:
 
 public:
 	StgMovePattern(StgMoveObject* target);
-	virtual ~StgMovePattern() {}
+	virtual ~StgMovePattern() = default;
 	virtual void Move() = 0;
-	double cssn(double c, double ang);
+	double cssn(double s, double ang);
 
 	int GetType() const { return typeMove_; }
 
@@ -98,10 +98,10 @@ protected:
 class StgMovePattern_Angle : public StgMovePattern {
 public:
 	StgMovePattern_Angle(StgMoveObject* target);
-	virtual void Move();
+	void Move() override;
 
-	virtual double GetSpeed() const { return speed_; }
-	virtual double GetDirectionAngle() const { return angDirection_; }
+	double GetSpeed() const override { return speed_; }
+	double GetDirectionAngle() const override { return angDirection_; }
 
 	void SetSpeed(double speed) { speed_ = speed; }
 	void SetDirectionAngle(double angle) { angDirection_ = angle; }
@@ -118,16 +118,16 @@ protected:
 	double angularVelocity_;
 	int idRalativeID_;
 
-	virtual void _Activate();
+	void _Activate() override;
 };
 
 class StgMovePattern_XY : public StgMovePattern {
 public:
 	StgMovePattern_XY(StgMoveObject* target);
-	virtual void Move();
+	void Move() override;
 
-	virtual double GetSpeed() const;
-	virtual double GetDirectionAngle() const;
+	double GetSpeed() const override;
+	double GetDirectionAngle() const override;
 
 	double GetSpeedX() const { return speedX_; }
 	double GetSpeedY() const { return speedY_; }
@@ -158,9 +158,9 @@ protected:
 
 public:
 	StgMovePattern_Line(StgMoveObject* target);
-	virtual void Move();
-	virtual double GetSpeed() const { return speed_; }
-	virtual double GetDirectionAngle() const { return angDirection_; }
+	void Move() override;
+	double GetSpeed() const override { return speed_; }
+	double GetDirectionAngle() const override { return angDirection_; }
 
 	void SetAtSpeed(double tx, double ty, double speed);
 	void SetAtFrame(double tx, double ty, double frame);

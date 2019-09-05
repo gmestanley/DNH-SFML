@@ -23,7 +23,7 @@ class StgIntersectionManager : public ObjectPool<StgIntersectionTarget, false> {
 
 public:
 	StgIntersectionManager();
-	virtual ~StgIntersectionManager();
+	~StgIntersectionManager() override;
 	void Work();
 
 	void AddTarget(ref_count_ptr<StgIntersectionTarget>::unsync target);
@@ -38,8 +38,8 @@ public:
 	static bool IsIntersected(const DxWidthLine& line1, const DxWidthLine& line2);
 
 private:
-	virtual void _ResetPoolObject(gstd::ref_count_ptr<StgIntersectionTarget>::unsync& obj);
-	virtual gstd::ref_count_ptr<StgIntersectionTarget>::unsync _CreatePoolObject(int type);
+	void _ResetPoolObject(gstd::ref_count_ptr<StgIntersectionTarget>::unsync& obj) override;
+	gstd::ref_count_ptr<StgIntersectionTarget>::unsync _CreatePoolObject(int type) override;
 
 	std::vector<ref_count_ptr<StgIntersectionSpace>> listSpace_;
 	std::vector<StgIntersectionTargetPoint> listEnemyTargetPoint_;
@@ -93,7 +93,7 @@ protected:
 class StgIntersectionCheckList {
 public:
 	StgIntersectionCheckList() { count_ = 0; }
-	virtual ~StgIntersectionCheckList() {}
+	virtual ~StgIntersectionCheckList() = default;
 
 	void Clear() { count_ = 0; }
 	int GetCheckCount() const { return count_; }
@@ -106,18 +106,18 @@ public:
 			listTargetA_[count_] = targetA;
 			listTargetB_[count_] = targetB;
 		}
-		count_++;
+		++count_;
 	}
 	ref_count_ptr<StgIntersectionTarget>::unsync GetTargetA(int index)
 	{
 		ref_count_ptr<StgIntersectionTarget>::unsync res = listTargetA_[index];
-		listTargetA_[index] = NULL;
+		listTargetA_[index] = nullptr;
 		return res;
 	}
 	ref_count_ptr<StgIntersectionTarget>::unsync GetTargetB(int index)
 	{
 		ref_count_ptr<StgIntersectionTarget>::unsync res = listTargetB_[index];
-		listTargetB_[index] = NULL;
+		listTargetB_[index] = nullptr;
 		return res;
 	}
 
@@ -134,7 +134,7 @@ public:
 		bIntersected_ = false;
 		intersectedCount_ = 0;
 	}
-	virtual ~StgIntersectionObject() {}
+	virtual ~StgIntersectionObject() = default;
 	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) = 0;
 	void ClearIntersected()
 	{
@@ -145,12 +145,12 @@ public:
 	void SetIntersected()
 	{
 		bIntersected_ = true;
-		intersectedCount_++;
+		++intersectedCount_;
 	}
 	int GetIntersectedCount() const { return intersectedCount_; }
 	void ClearIntersectedIdList()
 	{
-		if (listIntersectedID_.size() > 0)
+		if (!listIntersectedID_.empty())
 			listIntersectedID_.clear();
 	}
 	void AddIntersectedId(int id) { listIntersectedID_.push_back(id); }
@@ -196,7 +196,7 @@ public:
 
 public:
 	StgIntersectionTarget() { mortonNo_ = -1; }
-	virtual ~StgIntersectionTarget() {}
+	~StgIntersectionTarget() override = default;
 	virtual RECT GetIntersectionSapceRect() = 0;
 
 	int GetTargetType() const { return typeTarget_; }
@@ -209,7 +209,7 @@ public:
 	void SetMortonNumber(int no) { mortonNo_ = no; }
 	void ClearObjectIntersectedIdList();
 
-	virtual std::wstring GetInfoAsString();
+	std::wstring GetInfoAsString() override;
 
 protected:
 	int mortonNo_;
@@ -223,8 +223,8 @@ class StgIntersectionTarget_Circle : public StgIntersectionTarget {
 
 public:
 	StgIntersectionTarget_Circle() { shape_ = SHAPE_CIRCLE; }
-	virtual ~StgIntersectionTarget_Circle() {}
-	virtual RECT GetIntersectionSapceRect()
+	~StgIntersectionTarget_Circle() override = default;
+	RECT GetIntersectionSapceRect() override
 	{
 		DirectGraphics* graphics = DirectGraphics::GetBase();
 		int screenWidth = graphics->GetScreenWidth();
@@ -260,8 +260,8 @@ protected:
 	StgIntersectionTarget_Line() { shape_ = SHAPE_LINE; }
 
 public:
-	virtual ~StgIntersectionTarget_Line() {}
-	virtual RECT GetIntersectionSapceRect()
+	~StgIntersectionTarget_Line() override = default;
+	RECT GetIntersectionSapceRect() override
 	{
 		double x1 = line_.GetX1();
 		double y1 = line_.GetY1();
