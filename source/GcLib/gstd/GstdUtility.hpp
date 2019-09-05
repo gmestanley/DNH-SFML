@@ -10,7 +10,7 @@ namespace gstd {
 //wexception
 class wexception {
 public:
-	wexception() {}
+	wexception() = default;
 	wexception(const std::wstring& msg) { message_ = msg; }
 	std::wstring GetMessage() const { return message_; }
 	const wchar_t* what() const { return message_.c_str(); }
@@ -75,8 +75,8 @@ public:
 	static int CountCharacter(const std::vector<char>& str, char c);
 	static int ToInteger(const std::string& s);
 	static double ToDouble(const std::string& s);
-	static std::string Replace(const std::string& source, const std::string pattern, const std::string placement);
-	static std::string ReplaceAll(const std::string& source, const std::string pattern, const std::string placement, int replaceCount = INT_MAX, int start = 0, int end = 0);
+	static std::string Replace(const std::string& source, std::string pattern, std::string placement);
+	static std::string ReplaceAll(const std::string& source, std::string pattern, std::string placement, int replaceCount = INT_MAX, int start = 0, int end = 0);
 	static std::string Slice(const std::string& s, int length);
 	static std::string Trim(const std::string& str);
 
@@ -90,8 +90,8 @@ public:
 	static int CountCharacter(const std::wstring& str, wchar_t c);
 	static int ToInteger(const std::wstring& s);
 	static double ToDouble(const std::wstring& s);
-	static std::wstring Replace(const std::wstring& source, const std::wstring pattern, const std::wstring placement);
-	static std::wstring ReplaceAll(const std::wstring& source, const std::wstring pattern, const std::wstring placement, int replaceCount = INT_MAX, int start = 0, int end = 0);
+	static std::wstring Replace(const std::wstring& source, std::wstring pattern, std::wstring placement);
+	static std::wstring ReplaceAll(const std::wstring& source, std::wstring pattern, std::wstring placement, int replaceCount = INT_MAX, int start = 0, int end = 0);
 	static std::wstring Slice(const std::wstring& s, int length);
 	static std::wstring Trim(const std::wstring& str);
 	static int CountAsciiSizeCharacter(const std::wstring& str);
@@ -152,7 +152,7 @@ public:
 	{
 		wchar_t pDrive[_MAX_PATH];
 		wchar_t pDir[_MAX_PATH];
-		_wsplitpath(path.c_str(), pDrive, pDir, NULL, NULL);
+		_wsplitpath(path.c_str(), pDrive, pDir, nullptr, nullptr);
 		return std::wstring(pDrive) + std::wstring(pDir);
 	}
 
@@ -169,28 +169,28 @@ public:
 	{
 		wchar_t pFileName[_MAX_PATH];
 		wchar_t pExt[_MAX_PATH];
-		_wsplitpath(path.c_str(), NULL, NULL, pFileName, pExt);
+		_wsplitpath(path.c_str(), nullptr, nullptr, pFileName, pExt);
 		return std::wstring(pFileName) + std::wstring(pExt);
 	}
 
 	static std::wstring GetDriveName(const std::wstring& path)
 	{
 		wchar_t pDrive[_MAX_PATH];
-		_wsplitpath(path.c_str(), pDrive, NULL, NULL, NULL);
+		_wsplitpath(path.c_str(), pDrive, nullptr, nullptr, nullptr);
 		return std::wstring(pDrive);
 	}
 
 	static std::wstring GetFileNameWithoutExtension(const std::wstring& path)
 	{
 		wchar_t pFileName[_MAX_PATH];
-		_wsplitpath(path.c_str(), NULL, NULL, pFileName, NULL);
+		_wsplitpath(path.c_str(), nullptr, nullptr, pFileName, nullptr);
 		return std::wstring(pFileName);
 	}
 
 	static std::wstring GetFileExtension(const std::wstring& path)
 	{
 		wchar_t pExt[_MAX_PATH];
-		_wsplitpath(path.c_str(), NULL, NULL, NULL, pExt);
+		_wsplitpath(path.c_str(), nullptr, nullptr, nullptr, pExt);
 		return std::wstring(pExt);
 	}
 
@@ -198,7 +198,7 @@ public:
 	{
 		wchar_t modulePath[_MAX_PATH];
 		ZeroMemory(modulePath, sizeof(modulePath));
-		GetModuleFileName(NULL, modulePath, sizeof(modulePath) - 1); //実行ファイルパス取得
+		GetModuleFileName(nullptr, modulePath, sizeof(modulePath) - 1); //実行ファイルパス取得
 		return GetFileNameWithoutExtension(std::wstring(modulePath));
 	}
 
@@ -206,7 +206,7 @@ public:
 	{
 		wchar_t modulePath[_MAX_PATH];
 		ZeroMemory(modulePath, sizeof(modulePath));
-		GetModuleFileName(NULL, modulePath, sizeof(modulePath) - 1); //実行ファイルパス取得
+		GetModuleFileName(nullptr, modulePath, sizeof(modulePath) - 1); //実行ファイルパス取得
 		return GetFileDirectory(std::wstring(modulePath));
 	}
 	static std::wstring GetDirectoryWithoutModuleDirectory(const std::wstring& path)
@@ -236,7 +236,7 @@ public:
 		BOOL b = PathRelativePathTo(path, from.c_str(), FILE_ATTRIBUTE_DIRECTORY, to.c_str(), FILE_ATTRIBUTE_DIRECTORY);
 
 		std::wstring res;
-		if (b) {
+		if (b != 0) {
 			res = GetFileDirectory(path);
 		}
 		return res;
@@ -301,7 +301,7 @@ public:
 //IStringInfo
 class IStringInfo {
 public:
-	virtual ~IStringInfo() {}
+	virtual ~IStringInfo() = default;
 	virtual std::wstring GetInfoAsString()
 	{
 		int address = (int)this;
@@ -318,7 +318,7 @@ public:
 template <class T>
 class InnerClass {
 public:
-	InnerClass(T* outer = NULL) { outer_ = outer; }
+	InnerClass(T* outer = nullptr) { outer_ = outer; }
 
 protected:
 	T* _GetOuter() { return outer_; }
@@ -333,32 +333,32 @@ private:
 template <class T>
 class Singleton {
 public:
-	virtual ~Singleton(){};
+	virtual ~Singleton() = default;
 	static T* CreateInstance()
 	{
-		if (_This() == NULL)
+		if (_This() == nullptr)
 			_This() = new T();
 		return _This();
 	}
 	static T* GetInstance()
 	{
-		if (_This() == NULL) {
+		if (_This() == nullptr) {
 			throw std::exception("Singleton::GetInstance 未初期化");
 		}
 		return _This();
 	}
 	static void DeleteInstance()
 	{
-		if (_This() != NULL)
+		if (_This() != nullptr)
 			delete _This();
-		_This() = NULL;
+		_This() = nullptr;
 	}
 
 protected:
-	Singleton(){};
+	Singleton() = default;
 	inline static T*& _This()
 	{
-		static T* s = NULL;
+		static T* s = nullptr;
 		return s;
 	}
 };
@@ -418,7 +418,7 @@ public:
 		posStart_ = start;
 		posEnd_ = end;
 	}
-	virtual ~Token(){};
+	virtual ~Token() = default;
 
 	Type GetType() const { return type_; }
 	std::wstring GetElement() const { return element_; }
@@ -445,11 +445,6 @@ protected:
 };
 
 class Scanner {
-public:
-	enum {
-
-	};
-
 public:
 	Scanner(const char* str, int size);
 	Scanner(const std::string& str);
@@ -514,7 +509,7 @@ public:
 		};
 
 	public:
-		virtual ~Result(){};
+		virtual ~Result() = default;
 		int GetType() const { return type_; }
 		double GetReal() const
 		{
@@ -609,12 +604,12 @@ protected:
 template <class T, bool SYNC>
 class ObjectPool {
 public:
-	ObjectPool() {}
-	virtual ~ObjectPool() {}
+	ObjectPool() = default;
+	virtual ~ObjectPool() = default;
 	virtual gstd::ref_count_ptr<T, SYNC> GetPoolObject(int type)
 	{
-		gstd::ref_count_ptr<T, SYNC> res = NULL;
-		if (listCachePool_[type].size() > 0) {
+		gstd::ref_count_ptr<T, SYNC> res = nullptr;
+		if (!listCachePool_[type].empty()) {
 			res = listCachePool_[type].back();
 			listCachePool_[type].pop_back();
 		} else {
@@ -627,8 +622,8 @@ public:
 	int GetUsedPoolObjectCount() const
 	{
 		int res = 0;
-		for (int i = 0; i < listUsedPool_.size(); i++) {
-			res += listUsedPool_[i].size();
+		for (auto& usedPool : listUsedPool_) {
+			res += usedPool.size();
 		}
 		return res;
 	}
@@ -636,8 +631,8 @@ public:
 	int GetCachePoolObjectCount() const
 	{
 		int res = 0;
-		for (int i = 0; i < listCachePool_.size(); i++) {
-			res += listCachePool_[i].size();
+		for (auto& cachePool : listCachePool_) {
+			res += cachePool.size();
 		}
 		return res;
 	}
@@ -656,19 +651,18 @@ protected:
 	virtual void _ArrangePool()
 	{
 		int countType = listUsedPool_.size();
-		for (int iType = 0; iType < countType; iType++) {
+		for (int iType = 0; iType < countType; ++iType) {
 			std::list<gstd::ref_count_ptr<T, SYNC>>* listUsed = &listUsedPool_[iType];
 			std::vector<gstd::ref_count_ptr<T, SYNC>>* listCache = &listCachePool_[iType];
 
-			std::list<gstd::ref_count_ptr<T, SYNC>>::iterator itr = listUsed->begin();
-			for (; itr != listUsed->end();) {
+			for (auto itr = listUsed->begin(); itr != listUsed->end();) {
 				gstd::ref_count_ptr<T, SYNC> obj = (*itr);
 				if (obj.GetReferenceCount() == 2) {
 					itr = listUsed->erase(itr);
 					_ResetPoolObject(obj);
 					listCache->push_back(obj);
 				} else {
-					itr++;
+					++itr;
 				}
 			}
 		}

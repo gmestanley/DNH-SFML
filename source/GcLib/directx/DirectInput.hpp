@@ -22,16 +22,6 @@ enum {
 //DirectInput
 **********************************************************/
 class DirectInput {
-	static DirectInput* thisBase_;
-
-public:
-	enum {
-		MAX_JOYPAD = 4,
-		MAX_KEY = 256,
-		MAX_MOUSE_BUTTON = 4,
-		MAX_PAD_BUTTON = 16,
-	};
-
 public:
 	DirectInput();
 	virtual ~DirectInput();
@@ -57,21 +47,12 @@ public:
 	int GetPadDeviceCount() const { return bufPad_.size(); }
 	DIDEVICEINSTANCE GetPadDeviceInformation(int padIndex);
 
+	static constexpr int MAX_JOYPAD = 4;
+	static constexpr int MAX_KEY = 256;
+	static constexpr int MAX_MOUSE_BUTTON = 4;
+	static constexpr int MAX_PAD_BUTTON = 16;
+
 protected:
-	HWND hWnd_;
-	LPDIRECTINPUT8 pInput_;
-	LPDIRECTINPUTDEVICE8 pKeyboard_;
-	LPDIRECTINPUTDEVICE8 pMouse_;
-	std::vector<LPDIRECTINPUTDEVICE8> pJoypad_; // パッドデバイスオブジェクト
-	BYTE stateKey_[MAX_KEY];
-	DIMOUSESTATE stateMouse_;
-	std::vector<DIJOYSTATE> statePad_;
-	std::vector<int> padRes_; //パッドの遊び
-
-	int bufKey_[MAX_KEY]; //現フレームのキーの状態
-	int bufMouse_[MAX_MOUSE_BUTTON]; //現フレームのマウスの状態
-	std::vector<std::vector<int>> bufPad_; //現フレームのパッドの状態
-
 	bool _InitializeKeyBoard();
 	bool _InitializeMouse();
 	bool _InitializeJoypad();
@@ -87,6 +68,23 @@ protected:
 	int _GetPadDirection(int index, UINT code, int state); //ジョイスティック方向キーの状態取得
 	int _GetPadButton(int index, int buttonNo, int state); //ジョイスティックのボタンの状態を取得
 	int _GetStateSub(bool flag, int state);
+
+	HWND hWnd_;
+	LPDIRECTINPUT8 pInput_;
+	LPDIRECTINPUTDEVICE8 pKeyboard_;
+	LPDIRECTINPUTDEVICE8 pMouse_;
+	std::vector<LPDIRECTINPUTDEVICE8> pJoypad_; // パッドデバイスオブジェクト
+	BYTE stateKey_[MAX_KEY];
+	DIMOUSESTATE stateMouse_;
+	std::vector<DIJOYSTATE> statePad_;
+	std::vector<int> padRes_; //パッドの遊び
+
+	std::array<int, MAX_KEY> bufKey_; //現フレームのキーの状態
+	std::array<int, MAX_MOUSE_BUTTON> bufMouse_; //現フレームのマウスの状態
+	std::vector<std::vector<int>> bufPad_; //現フレームのパッドの状態
+
+private:
+	static DirectInput* thisBase_;
 };
 
 /**********************************************************
@@ -119,8 +117,8 @@ private:
 class VirtualKeyManager : public DirectInput {
 public:
 	VirtualKeyManager();
-	~VirtualKeyManager();
-	virtual void Update(); //キーをセットする
+	~VirtualKeyManager() override;
+	void Update() override; //キーをセットする
 	void ClearKeyState();
 
 	void AddKeyMap(int id, gstd::ref_count_ptr<VirtualKey> key) { mapKey_[id] = key; }

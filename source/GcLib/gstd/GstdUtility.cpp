@@ -50,12 +50,12 @@ int Encoding::GetBomSize(const void* data, int dataSize)
 //StringUtility
 std::string StringUtility::ConvertWideToMulti(const std::wstring& wstr, int codeMulti)
 {
-	if (wstr == L"")
+	if (wstr.empty())
 		return "";
 
 	//マルチバイト変換後のサイズを調べます
 	//WideCharToMultiByteの第6引数に0を渡すと変換後のサイズが返ります
-	int sizeMulti = ::WideCharToMultiByte(codeMulti, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
+	int sizeMulti = ::WideCharToMultiByte(codeMulti, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
 	if (sizeMulti == 0)
 		return ""; //失敗(とりあえず空文字とします)
 
@@ -66,18 +66,18 @@ std::string StringUtility::ConvertWideToMulti(const std::wstring& wstr, int code
 	std::string str;
 	str.resize(sizeMulti);
 	::WideCharToMultiByte(codeMulti, 0, wstr.c_str(), -1, &str[0],
-		sizeMulti, NULL, NULL);
+		sizeMulti, nullptr, nullptr);
 	return str;
 }
 
 std::wstring StringUtility::ConvertMultiToWide(const std::string& str, int codeMulti)
 {
-	if (str == "")
+	if (str.empty())
 		return L"";
 
 	//UNICODE変換後のサイズを調べます
 	//MultiByteToWideCharの第6引数に0を渡すと変換後のサイズが返ります
-	int sizeWide = ::MultiByteToWideChar(codeMulti, 0, str.c_str(), -1, NULL, 0);
+	int sizeWide = ::MultiByteToWideChar(codeMulti, 0, str.c_str(), -1, nullptr, 0);
 	if (sizeWide == 0)
 		return L""; //失敗(とりあえず空文字とします)
 
@@ -120,14 +120,14 @@ void StringUtility::Split(const std::string& str, const std::string& delim, std:
 {
 	//wcstok
 	std::wstring wstr = StringUtility::ConvertMultiToWide(str);
-	wchar_t* wsource = new wchar_t[wstr.size() + sizeof(wchar_t)];
+	auto* wsource = new wchar_t[wstr.size() + sizeof(wchar_t)];
 	memcpy(wsource, wstr.c_str(), wstr.size() * sizeof(wchar_t));
 	wsource[wstr.size()] = 0;
 	std::wstring wdelim = StringUtility::ConvertMultiToWide(delim);
 
-	wchar_t* pStr = NULL;
+	wchar_t* pStr = nullptr;
 	wchar_t* cDelim = const_cast<wchar_t*>(wdelim.c_str());
-	while ((pStr = wcstok(pStr == NULL ? wsource : NULL, cDelim)) != NULL) {
+	while ((pStr = wcstok(pStr == nullptr ? wsource : nullptr, cDelim)) != nullptr) {
 		//切り出した文字列を追加
 		std::string s = StringUtility::ConvertWideToMulti(std::wstring(pStr));
 		s = s.substr(0, s.size() - 1); //最後の\0を削除
@@ -194,7 +194,7 @@ int StringUtility::CountCharacter(const std::string& str, char c)
 }
 int StringUtility::CountCharacter(const std::vector<char>& str, char c)
 {
-	if (str.size() == 0)
+	if (str.empty())
 		return 0;
 
 	int encoding = Encoding::SHIFT_JIS;
@@ -208,15 +208,15 @@ int StringUtility::CountCharacter(const std::vector<char>& str, char c)
 		if (encoding == Encoding::UTF16LE) {
 			wchar_t ch = (wchar_t&)*pbuf;
 			if (ch == (wchar_t)c)
-				count++;
+				++count;
 			pbuf += 2;
 		} else {
 			if (*pbuf == c)
-				count++;
+				++count;
 			if (IsDBCSLeadByteEx(Encoding::CP_SHIFT_JIS, *pbuf))
 				pbuf += 2;
 			else
-				pbuf++;
+				++pbuf;
 		}
 	}
 	return count;
@@ -248,11 +248,10 @@ std::string StringUtility::ReplaceAll(const std::string& source, const std::stri
 		if (pos > 0) {
 			char ch = source[pos - 1];
 			if (bDBCSLeadByteCheck && IsDBCSLeadByteEx(Encoding::CP_SHIFT_JIS, ch)) {
-				pos++;
+				++pos;
 				if (pos >= end)
 					break;
-				else
-					continue;
+				continue;
 			}
 			if (pos >= end)
 				break;
@@ -263,7 +262,7 @@ std::string StringUtility::ReplaceAll(const std::string& source, const std::stri
 		pos += len;
 		pos_before = pos;
 
-		count++;
+		++count;
 		if (count >= replaceCount)
 			break;
 	}
@@ -277,22 +276,22 @@ std::string StringUtility::Slice(const std::string& s, int length)
 }
 std::string StringUtility::Trim(const std::string& str)
 {
-	if (str.size() == 0)
+	if (str.empty())
 		return str;
 
 	std::wstring wstr = StringUtility::ConvertMultiToWide(str);
 	int left = 0;
-	for (; left < wstr.size(); left++) {
+	for (; left < wstr.size(); ++left) {
 		wchar_t wch = wstr[left];
 		if (wch != 0x20 && wch != 0x09)
 			break;
 	}
 
 	int right = wstr.size() - 1;
-	for (; right >= 0; right--) {
+	for (; right >= 0; --right) {
 		wchar_t wch = wstr[right];
 		if (wch != 0x20 && wch != 0x09 && wch != 0x0 && wch != '\r' && wch != '\n') {
-			right++;
+			++right;
 			break;
 		}
 	}
@@ -315,9 +314,9 @@ std::vector<std::wstring> StringUtility::Split(std::wstring str, std::wstring de
 void StringUtility::Split(std::wstring str, std::wstring delim, std::vector<std::wstring>& res)
 {
 	wchar_t* wsource = (wchar_t*)str.c_str();
-	wchar_t* pStr = NULL;
+	wchar_t* pStr = nullptr;
 	wchar_t* cDelim = const_cast<wchar_t*>(delim.c_str());
-	while ((pStr = wcstok(pStr == NULL ? wsource : NULL, cDelim)) != NULL) {
+	while ((pStr = wcstok(pStr == nullptr ? wsource : nullptr, cDelim)) != nullptr) {
 		//切り出した文字列を追加
 		std::wstring s = std::wstring(pStr);
 		// s = s.substr(0, s.size() - 1);//最後の\0を削除
@@ -382,7 +381,7 @@ int StringUtility::CountCharacter(const std::wstring& str, wchar_t c)
 	const wchar_t* ebuf = &str[str.size() - 1];
 	while (pbuf <= ebuf) {
 		if (*pbuf == c)
-			count++;
+			++count;
 	}
 	return count;
 }
@@ -416,7 +415,7 @@ std::wstring StringUtility::ReplaceAll(const std::wstring& source, const std::ws
 		pos += len;
 		pos_before = pos;
 
-		count++;
+		++count;
 		if (count >= replaceCount)
 			break;
 	}
@@ -430,7 +429,7 @@ std::wstring StringUtility::Slice(const std::wstring& s, int length)
 }
 std::wstring StringUtility::Trim(const std::wstring& str)
 {
-	if (str.size() == 0)
+	if (str.empty())
 		return str;
 
 	int left = 0;
@@ -441,10 +440,10 @@ std::wstring StringUtility::Trim(const std::wstring& str)
 	}
 
 	int right = str.size() - 1;
-	for (; right >= 0; right--) {
+	for (; right >= 0; --right) {
 		wchar_t wch = str[right];
 		if (wch != 0x20 && wch != 0x09 && wch != 0x0 && wch != '\r' && wch != '\n') {
-			right++;
+			++right;
 			break;
 		}
 	}
@@ -457,7 +456,7 @@ std::wstring StringUtility::Trim(const std::wstring& str)
 }
 int StringUtility::CountAsciiSizeCharacter(const std::wstring& str)
 {
-	if (str.size() == 0)
+	if (str.empty())
 		return 0;
 
 	int wcount = str.size();
@@ -468,7 +467,7 @@ int StringUtility::CountAsciiSizeCharacter(const std::wstring& str)
 	for (int iType = 0; iType < wcount; iType++) {
 		WORD type = listType[iType];
 		if ((type & C3_HALFWIDTH) == C3_HALFWIDTH) {
-			res++;
+			++res;
 		} else {
 			res += 2;
 		}
@@ -488,12 +487,12 @@ std::wstring ErrorUtility::GetLastErrorMessage(DWORD error)
 {
 	LPVOID lpMsgBuf;
 	::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL,
+		nullptr,
 		error,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // 既定の言語
 		(LPTSTR)&lpMsgBuf,
 		0,
-		NULL);
+		nullptr);
 	std::wstring res = (wchar_t*)lpMsgBuf;
 	::LocalFree(lpMsgBuf);
 	return res;
@@ -547,16 +546,11 @@ void Math::InitializeFPU()
 //ByteOrder
 void ByteOrder::Reverse(LPVOID buf, DWORD size)
 {
-	unsigned char* pStart = (unsigned char*)buf;
+	auto* pStart = (unsigned char*)buf;
 	unsigned char* pEnd = (unsigned char*)buf + size - 1;
 
-	for (; pStart < pEnd;) {
-		unsigned char temp = *pStart;
-		*pStart = *pEnd;
-		*pEnd = temp;
-
-		pStart++;
-		pEnd--;
+	for (; pStart < pEnd; ++pStart, --pEnd) {
+		std::swap(*pStart, *pEnd);
 	}
 }
 
@@ -606,9 +600,7 @@ Scanner::Scanner(const std::vector<char>& buf)
 
 	SetPointerBegin();
 }
-Scanner::~Scanner()
-{
-}
+Scanner::~Scanner() = default;
 wchar_t Scanner::_CurrentChar() const
 {
 	wchar_t res = L'\0';
@@ -617,8 +609,7 @@ wchar_t Scanner::_CurrentChar() const
 			res = (wchar_t&)buffer_[pointer_];
 	} else {
 		if (pointer_ < buffer_.size()) {
-			char ch = buffer_[pointer_];
-			res = ch;
+			res = buffer_[pointer_];
 		}
 	}
 	return res;
@@ -626,7 +617,7 @@ wchar_t Scanner::_CurrentChar() const
 
 wchar_t Scanner::_NextChar()
 {
-	if (HasNext() == false) {
+	if (!HasNext()) {
 		Logger::WriteTop(L"終端異常発生->");
 
 		int size = buffer_.size() - textStartPointer_;
@@ -635,13 +626,11 @@ wchar_t Scanner::_NextChar()
 		Logger::WriteTop(target);
 
 		int index = 1;
-		std::list<Token>::iterator itr;
-		for (itr = listDebugToken_.begin(); itr != listDebugToken_.end(); itr++) {
-			Token token = *itr;
+		for (const auto& token : listDebugToken_) {
 			std::wstring log = StringUtility::Format(L"  %2d token -> type=%2d, element=%s, start=%d, end=%d",
 				index, token.GetType(), token.GetElement().c_str(), token.GetStartPointer(), token.GetEndPointer());
 			Logger::WriteTop(log);
-			index++;
+			++index;
 		}
 
 		_RaiseError(L"_NextChar:すでに文字列終端です");
@@ -654,12 +643,10 @@ wchar_t Scanner::_NextChar()
 			while (IsDBCSLeadByteEx(Encoding::CP_SHIFT_JIS, buffer_[pointer_]))
 				pointer_ += 2;
 		} else {
-			pointer_++;
+			++pointer_;
 		}
 	}
-
-	wchar_t res = _CurrentChar();
-	return res;
+	return _CurrentChar();
 }
 void Scanner::_SkipComment()
 {
@@ -699,9 +686,7 @@ void Scanner::_SkipComment()
 void Scanner::_SkipSpace()
 {
 	wchar_t ch = _CurrentChar();
-	while (true) {
-		if (ch != L' ' && ch != L'\t')
-			break;
+	while (ch == L' ' || ch == L'\t') {
 		ch = _NextChar();
 	}
 }
@@ -901,13 +886,13 @@ Token& Scanner::Next()
 	if (type == Token::TK_STRING) {
 		std::wstring wstr;
 		if (typeEncoding_ == Encoding::UTF16LE) {
-			wchar_t* pPosStart = (wchar_t*)&buffer_[posStart];
-			wchar_t* pPosEnd = (wchar_t*)&buffer_[pointer_];
+			const wchar_t* pPosStart = (wchar_t*)&buffer_[posStart];
+			const wchar_t* pPosEnd = (wchar_t*)&buffer_[pointer_];
 			wstr = std::wstring(pPosStart, pPosEnd);
 			wstr = StringUtility::ReplaceAll(wstr, L"\\\"", L"\"");
 		} else {
-			char* pPosStart = &buffer_[posStart];
-			char* pPosEnd = &buffer_[pointer_];
+			const char* pPosStart = &buffer_[posStart];
+			const char* pPosEnd = &buffer_[pointer_];
 			std::string str = std::string(pPosStart, pPosEnd);
 			str = StringUtility::ReplaceAll(str, "\\\"", "\"");
 			wstr = StringUtility::ConvertMultiToWide(str);
@@ -917,12 +902,12 @@ Token& Scanner::Next()
 	} else {
 		std::wstring wstr;
 		if (typeEncoding_ == Encoding::UTF16LE) {
-			wchar_t* pPosStart = (wchar_t*)&buffer_[posStart];
-			wchar_t* pPosEnd = (wchar_t*)&buffer_[pointer_];
+			const wchar_t* pPosStart = (wchar_t*)&buffer_[posStart];
+			const wchar_t* pPosEnd = (wchar_t*)&buffer_[pointer_];
 			wstr = std::wstring(pPosStart, pPosEnd);
 		} else {
-			char* pPosStart = &buffer_[posStart];
-			char* pPosEnd = &buffer_[pointer_];
+			const char* pPosStart = &buffer_[posStart];
+			const char* pPosEnd = &buffer_[pointer_];
 			std::string str = std::string(pPosStart, pPosEnd);
 			wstr = StringUtility::ConvertMultiToWide(str);
 		}
@@ -935,7 +920,9 @@ Token& Scanner::Next()
 }
 bool Scanner::HasNext() const
 {
-	return pointer_ < buffer_.size() && _CurrentChar() != L'\0' && token_.GetType() != Token::TK_EOF;
+	return pointer_ < buffer_.size()
+		&& _CurrentChar() != L'\0'
+		&& token_.GetType() != Token::TK_EOF;
 }
 void Scanner::CheckType(const Token& tok, Token::Type type) const
 {
@@ -953,7 +940,7 @@ void Scanner::CheckIdentifer(const Token& tok, const std::wstring& id) const
 }
 int Scanner::GetCurrentLine() const
 {
-	if (buffer_.size() == 0)
+	if (buffer_.empty())
 		return 0;
 
 	int line = 1;
@@ -965,17 +952,17 @@ int Scanner::GetCurrentLine() const
 				break;
 			wchar_t wch = (wchar_t&)*pbuf;
 			if (wch == L'\n')
-				line++;
+				++line;
 			pbuf += 2;
 		} else {
 			if (pbuf >= ebuf)
 				break;
-			if (IsDBCSLeadByteEx(Encoding::CP_SHIFT_JIS, *pbuf)) {
+			if (IsDBCSLeadByteEx(Encoding::CP_SHIFT_JIS, *pbuf) != 0) {
 				pbuf += 2;
 			} else {
 				if (*pbuf == '\n')
-					line++;
-				pbuf++;
+					++line;
+				++pbuf;
 			}
 		}
 	}
@@ -997,8 +984,8 @@ std::wstring Scanner::GetString(int start, int end) const
 {
 	std::wstring res;
 	if (typeEncoding_ == Encoding::UTF16LE) {
-		auto pPosStart = (const wchar_t*)&buffer_[start];
-		auto pPosEnd = (const wchar_t*)&buffer_[end];
+		const wchar_t* pPosStart = (const wchar_t*)&buffer_[start];
+		const wchar_t* pPosEnd = (const wchar_t*)&buffer_[end];
 		res = std::wstring(pPosStart, pPosEnd);
 	} else {
 		const char* pPosStart = &buffer_[start];
@@ -1014,8 +1001,7 @@ bool Scanner::CompareMemory(int start, int end, const char* data) const
 		return false;
 
 	int bufSize = end - start;
-	bool res = memcmp(&buffer_[start], data, bufSize) == 0;
-	return res;
+	return (memcmp(&buffer_[start], data, bufSize) == 0);
 }
 
 //Token
@@ -1071,16 +1057,13 @@ std::string Token::GetIdentifierA() const
 
 //================================================================
 //TextParser
-TextParser::TextParser()
-{
-}
+TextParser::TextParser() = default;
 TextParser::TextParser(const std::string& source)
 {
 	SetSource(source);
 }
-TextParser::~TextParser()
-{
-}
+TextParser::~TextParser() = default;
+
 void TextParser::_RaiseError(const std::wstring& message)
 {
 	throw gstd::wexception(message);
@@ -1274,7 +1257,7 @@ void TextParser::SetSource(const std::string& source)
 }
 TextParser::Result TextParser::GetResult()
 {
-	if (scan_ == NULL)
+	if (scan_ == nullptr)
 		_RaiseError(L"テキストが設定されていません");
 	scan_->SetPointerBegin();
 	Result res = _ParseComparison(scan_->GetCurrentPointer());
@@ -1284,7 +1267,7 @@ TextParser::Result TextParser::GetResult()
 }
 double TextParser::GetReal()
 {
-	if (scan_ == NULL)
+	if (scan_ == nullptr)
 		_RaiseError(L"テキストが設定されていません");
 	scan_->SetPointerBegin();
 	Result res = _ParseSum(scan_->GetCurrentPointer());
@@ -1302,7 +1285,7 @@ const wchar_t* Font::MINCHOH = L"MS Mincho";
 
 Font::Font()
 {
-	hFont_ = NULL;
+	hFont_ = nullptr;
 }
 Font::~Font()
 {
@@ -1310,9 +1293,9 @@ Font::~Font()
 }
 void Font::Clear()
 {
-	if (hFont_ != NULL) {
+	if (hFont_ != nullptr) {
 		::DeleteObject(hFont_);
-		hFont_ = NULL;
+		hFont_ = nullptr;
 		ZeroMemory(&info_, sizeof(LOGFONT));
 	}
 }
@@ -1321,14 +1304,14 @@ void Font::CreateFont(const wchar_t* type, int size, bool bBold, bool bItalic, b
 	LOGFONT fontInfo;
 
 	lstrcpy(fontInfo.lfFaceName, type);
-	fontInfo.lfWeight = (bBold == false) * FW_NORMAL + (bBold == TRUE) * FW_BOLD;
+	fontInfo.lfWeight = bBold ? FW_BOLD : FW_NORMAL;
 	fontInfo.lfEscapement = 0;
 	fontInfo.lfWidth = 0;
 	fontInfo.lfHeight = size;
-	fontInfo.lfItalic = bItalic;
-	fontInfo.lfUnderline = bLine;
+	fontInfo.lfItalic = static_cast<BYTE>(bItalic);
+	fontInfo.lfUnderline = static_cast<BYTE>(bLine);
 	fontInfo.lfCharSet = ANSI_CHARSET;
-	for (int i = 0; i < (int)wcslen(type); i++) {
+	for (int i = 0; i < (int)wcslen(type); ++i) {
 		if (!(IsCharAlphaNumeric(type[i]) || type[i] == L' ' || type[i] == L'-')) {
 			fontInfo.lfCharSet = SHIFTJIS_CHARSET;
 			break;
@@ -1339,7 +1322,7 @@ void Font::CreateFont(const wchar_t* type, int size, bool bBold, bool bItalic, b
 }
 void Font::CreateFontIndirect(LOGFONT& fontInfo)
 {
-	if (hFont_ != NULL)
+	if (hFont_ != nullptr)
 		this->Clear();
 	hFont_ = ::CreateFontIndirect(&fontInfo);
 	info_ = fontInfo;

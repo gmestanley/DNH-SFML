@@ -54,7 +54,7 @@ protected:
 
 class DirectGraphicsListener {
 public:
-	virtual ~DirectGraphicsListener() {}
+	virtual ~DirectGraphicsListener() = default;
 	virtual void ReleaseDirectGraphics() {}
 	virtual void RestoreDirectGraphics() {}
 	virtual void StartChangeScreenMode() { ReleaseDirectGraphics(); }
@@ -172,14 +172,14 @@ protected:
 class DirectGraphicsPrimaryWindow : public DirectGraphics, public gstd::WindowBase {
 public:
 	DirectGraphicsPrimaryWindow();
-	~DirectGraphicsPrimaryWindow();
+	~DirectGraphicsPrimaryWindow() override;
 	virtual bool Initialize();
 	virtual bool Initialize(DirectGraphicsConfig& config);
 	void ChangeScreenMode();
 
 protected:
 	gstd::WindowBase wndGraphics_;
-	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam); //オーバーライド用プロシージャ
+	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override; //オーバーライド用プロシージャ
 	void _PauseDrawing();
 	void _RestartDrawing();
 };

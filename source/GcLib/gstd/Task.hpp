@@ -30,12 +30,12 @@ protected:
 public:
 	TaskFunction()
 	{
-		task_ = NULL;
+		task_ = nullptr;
 		id_ = TASK_FREE_ID;
 		bEnable_ = true;
 		delay_ = 0;
 	}
-	virtual ~TaskFunction() {}
+	~TaskFunction() override = default;
 	virtual void Call() = 0;
 
 	ref_count_ptr<TaskBase> GetTask() { return task_; }
@@ -46,7 +46,7 @@ public:
 	void SetDelay(int delay) { delay_ = delay; }
 	bool IsDelay() const { return delay_ > 0; }
 
-	virtual std::wstring GetInfoAsString();
+	std::wstring GetInfoAsString() override;
 };
 
 template <class T>
@@ -60,9 +60,9 @@ public:
 		task_ = task;
 		pFunc = func;
 	}
-	virtual void Call()
+	void Call() override
 	{
-		if (task_ != NULL)
+		if (task_ != nullptr)
 			((T*)task_.GetPointer()->*pFunc)();
 	}
 
@@ -88,12 +88,12 @@ class TaskBase : public IStringInfo {
 
 public:
 	TaskBase();
-	virtual ~TaskBase();
+	~TaskBase() override;
 	int GetTaskID() const { return idTask_; }
-	_int64 GetTaskIndex() const { return indexTask_; }
+	int64_t GetTaskIndex() const { return indexTask_; }
 
 protected:
-	_int64 indexTask_; //TaskManagerによってつけられる一意のインデックス
+	int64_t indexTask_; //TaskManagerによってつけられる一意のインデックス
 	int idTask_; //ID
 	int idTaskGroup_; //グループID
 };
@@ -110,7 +110,7 @@ public:
 
 public:
 	TaskManager();
-	virtual ~TaskManager();
+	~TaskManager() override;
 	void Clear(); //全タスク削除
 	void ClearTask();
 	void AddTask(ref_count_ptr<TaskBase> task); //タスクを追加
@@ -146,7 +146,7 @@ protected:
 	static gstd::CriticalSection lockStatic_;
 	std::list<ref_count_ptr<TaskBase>> listTask_; //タスクの元クラス
 	function_map mapFunc_; //タスク機能のリスト(divFunc, priority, func)
-	_int64 indexTaskManager_; //一意のインデックス
+	int64_t indexTaskManager_; //一意のインデックス
 	ref_count_ptr<TaskInfoPanel> panelInfo_;
 
 	void _ArrangeTask(); //必要のなくなった領域削除
@@ -160,7 +160,7 @@ class TaskInfoPanel : public WindowLogger::Panel {
 public:
 	TaskInfoPanel();
 	void SetUpdateInterval(int time) { timeUpdateInterval_ = time; }
-	virtual void LocateParts();
+	void LocateParts() override;
 	virtual void Update(TaskManager* taskManager);
 
 protected:
@@ -180,7 +180,7 @@ protected:
 	int timeUpdateInterval_;
 	int addressLastFindManager_;
 
-	virtual bool _AddedLogger(HWND hTab);
+	bool _AddedLogger(HWND hTab) override;
 	void _UpdateTreeView(TaskManager* taskManager, ref_count_ptr<WTreeView::Item> item);
 	void _UpdateListView(TaskManager* taskManager);
 };
@@ -192,7 +192,7 @@ protected:
 class WorkRenderTaskManager : public TaskManager {
 public:
 	WorkRenderTaskManager();
-	~WorkRenderTaskManager();
+	~WorkRenderTaskManager() override;
 	virtual void InitializeFunctionDivision(int maxPriWork, int maxPriRender);
 
 	//動作機能

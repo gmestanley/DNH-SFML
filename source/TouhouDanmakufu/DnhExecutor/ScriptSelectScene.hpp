@@ -35,14 +35,14 @@ private:
 	std::vector<ref_count_ptr<DxTextRenderObject>> objMenuText_;
 	int frameSelect_;
 
-	virtual void _ChangePage();
+	void _ChangePage() override;
 
 public:
 	ScriptSelectScene();
-	~ScriptSelectScene();
-	virtual void Work();
-	virtual void Render();
-	virtual void Clear();
+	~ScriptSelectScene() override;
+	void Work() override;
+	void Render() override;
+	void Clear() override;
 
 	int GetType();
 	void SetModel(ref_count_ptr<ScriptSelectModel> model);
@@ -70,7 +70,7 @@ private:
 
 public:
 	ScriptSelectSceneMenuItem(int type, const std::wstring& path, ref_count_ptr<ScriptInformation> info);
-	~ScriptSelectSceneMenuItem();
+	~ScriptSelectSceneMenuItem() override;
 
 	int GetType() const { return type_; }
 	std::wstring GetPath() const { return path_; }
@@ -83,8 +83,8 @@ public:
 	{
 		ref_count_ptr<MenuItem> lsp = lf;
 		ref_count_ptr<MenuItem> rsp = rf;
-		ScriptSelectSceneMenuItem* lp = (ScriptSelectSceneMenuItem*)lsp.GetPointer();
-		ScriptSelectSceneMenuItem* rp = (ScriptSelectSceneMenuItem*)rsp.GetPointer();
+		auto* lp = (ScriptSelectSceneMenuItem*)lsp.GetPointer();
+		auto* rp = (ScriptSelectSceneMenuItem*)rsp.GetPointer();
 
 		if (lp->GetType() == ScriptSelectSceneMenuItem::TYPE_DIR && rp->GetType() != ScriptSelectSceneMenuItem::TYPE_DIR)
 			return TRUE;
@@ -135,7 +135,7 @@ protected:
 	int timeLastUpdate_;
 
 	std::list<ref_count_ptr<ScriptSelectSceneMenuItem>> listItem_;
-	virtual void _Run();
+	void _Run() override;
 	virtual void _SearchScript(const std::wstring& dir);
 	void _CreateMenuItem(const std::wstring& path);
 	bool _IsValidScriptInformation(ref_count_ptr<ScriptInformation> info);
@@ -143,8 +143,8 @@ protected:
 
 public:
 	ScriptSelectFileModel(int type, const std::wstring& dir);
-	virtual ~ScriptSelectFileModel();
-	virtual void CreateMenuItem();
+	~ScriptSelectFileModel() override;
+	void CreateMenuItem() override;
 
 	int GetType() const { return type_; }
 	std::wstring GetDirectory() const { return dir_; }
@@ -169,8 +169,8 @@ private:
 
 public:
 	PlayTypeSelectScene(ref_count_ptr<ScriptInformation> info);
-	void Work();
-	void Render();
+	void Work() override;
+	void Render() override;
 };
 class PlayTypeSelectMenuItem : public TextLightUpMenuItem {
 	ref_count_ptr<DxTextRenderObject> objText_;
@@ -180,9 +180,9 @@ class PlayTypeSelectMenuItem : public TextLightUpMenuItem {
 
 public:
 	PlayTypeSelectMenuItem(std::wstring text, int x, int y);
-	virtual ~PlayTypeSelectMenuItem();
-	void Work();
-	void Render();
+	~PlayTypeSelectMenuItem() override;
+	void Work() override;
+	void Render() override;
 };
 
 /**********************************************************
@@ -202,12 +202,12 @@ private:
 	std::vector<ref_count_ptr<ScriptInformation>> listPlayer_;
 	int frameSelect_;
 
-	virtual void _ChangePage() { frameSelect_ = 0; };
+	void _ChangePage() override { frameSelect_ = 0; };
 
 public:
 	PlayerSelectScene(ref_count_ptr<ScriptInformation> info);
-	void Work();
-	void Render();
+	void Work() override;
+	void Render() override;
 };
 class PlayerSelectMenuItem : public TextLightUpMenuItem {
 	ref_count_ptr<ScriptInformation> info_;
@@ -216,9 +216,9 @@ class PlayerSelectMenuItem : public TextLightUpMenuItem {
 
 public:
 	PlayerSelectMenuItem(ref_count_ptr<ScriptInformation> info);
-	virtual ~PlayerSelectMenuItem();
-	void Work();
-	void Render();
+	~PlayerSelectMenuItem() override;
+	void Work() override;
+	void Render() override;
 
 	ref_count_ptr<ScriptInformation> GetScriptInformation() { return info_; }
 };

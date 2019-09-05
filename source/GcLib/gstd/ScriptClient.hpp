@@ -19,9 +19,9 @@ class ScriptCommonDataManager;
 class ScriptException : public gstd::wexception {
 public:
 	ScriptException()
-		: gstd::wexception(L""){};
+		: gstd::wexception(L"") {}
 	ScriptException(std::wstring str)
-		: gstd::wexception(str.c_str()){};
+		: gstd::wexception(str) {}
 };
 
 /**********************************************************
@@ -98,7 +98,7 @@ public:
 	bool IsEventExists(const std::string& name) const;
 	void RaiseError(const std::wstring& error) { _RaiseError(machine_->get_error_line(), error); }
 	void Terminate(const std::wstring& error) { machine_->terminate(error); }
-	_int64 GetScriptID() const { return idScript_; }
+	int64_t GetScriptID() const { return idScript_; }
 	int GetThreadCount() const;
 
 	void AddArgumentValue(value v) { listValueArg_.push_back(v); }
@@ -193,7 +193,7 @@ protected:
 	ref_count_ptr<MersenneTwister> mt_;
 	gstd::ref_count_ptr<ScriptCommonDataManager> commonDataManager_;
 	int mainThreadID_;
-	_int64 idScript_;
+	int64_t idScript_;
 
 	gstd::CriticalSection criticalSection_;
 
@@ -227,7 +227,7 @@ public:
 public:
 	ScriptFileLineMap();
 	virtual ~ScriptFileLineMap();
-	void AddEntry(std::wstring path, int lineAdd, int lineCount);
+	void AddEntry(const std::wstring& path, int lineAdd, int lineCount);
 	Entry GetEntry(int line) const;
 	std::wstring GetPath(int line) const;
 	std::list<Entry> GetEntryList() const { return listEntry_; }
@@ -295,7 +295,7 @@ class ScriptCommonDataInfoPanel : public WindowLogger::Panel {
 public:
 	ScriptCommonDataInfoPanel();
 	void SetUpdateInterval(int time) { timeUpdateInterval_ = time; }
-	virtual void LocateParts();
+	void LocateParts() override;
 	virtual void Update(gstd::ref_count_ptr<ScriptCommonDataManager> commonDataManager);
 
 protected:
@@ -314,7 +314,7 @@ protected:
 	int timeLastUpdate_;
 	int timeUpdateInterval_;
 
-	virtual bool _AddedLogger(HWND hTab);
+	bool _AddedLogger(HWND hTab) override;
 	void _UpdateListViewKey(WListView* listView, std::vector<std::string> listKey);
 	void _UpdateAreaView();
 	void _UpdateValueView();

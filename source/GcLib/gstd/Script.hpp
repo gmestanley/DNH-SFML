@@ -40,14 +40,12 @@ std::wstring to_wide(const std::string& s);
 template <typename T>
 class lightweight_vector {
 public:
-	unsigned length;
-	unsigned capacity;
+	unsigned length {0};
+	unsigned capacity {0};
 	T* at;
 
 	lightweight_vector()
-		: length(0)
-		, capacity(0)
-		, at(NULL)
+		: at(nullptr)
 	{
 	}
 
@@ -55,7 +53,7 @@ public:
 
 	~lightweight_vector()
 	{
-		if (at != NULL) {
+		if (at != nullptr) {
 			delete[] at;
 		}
 	}
@@ -88,9 +86,9 @@ public:
 	void release()
 	{
 		length = 0;
-		if (at != NULL) {
+		if (at != nullptr) {
 			delete[] at;
-			at = NULL;
+			at = nullptr;
 			capacity = 0;
 		}
 	}
@@ -134,14 +132,14 @@ lightweight_vector<T>::lightweight_vector(const lightweight_vector & source)
 		for (int i = length - 1; i >= 0; --i)
 			at[i] = source.at[i];
 	} else {
-		at = NULL;
+		at = nullptr;
 	}
 }
 
 template <typename T>
 lightweight_vector<T>& lightweight_vector<T>::operator=(const lightweight_vector<T> & source)
 {
-	if (at != NULL)
+	if (at != nullptr)
 		delete[] at;
 	length = source.length;
 	capacity = source.capacity;
@@ -150,7 +148,7 @@ lightweight_vector<T>& lightweight_vector<T>::operator=(const lightweight_vector
 		for (int i = length - 1; i >= 0; --i)
 			at[i] = source.at[i];
 	} else {
-		at = NULL;
+		at = nullptr;
 	}
 	return *this;
 }
@@ -207,13 +205,13 @@ public:
 		tk_array
 	};
 
-	type_data(type_kind k, type_data* t = NULL)
+	type_data(type_kind k, type_data* t = nullptr)
 		: kind(k)
 		, element(t)
 	{
 	}
 
-	type_data(type_data const& source)
+	type_data(const type_data& source)
 		: kind(source.kind)
 		, element(source.element)
 	{
@@ -228,15 +226,12 @@ private:
 	type_kind kind;
 	type_data* element;
 
-	type_data& operator=(const type_data& source);
+	type_data& operator=(const type_data& source) = delete;
 };
 
 class value {
 public:
-	value()
-		: data(NULL)
-	{
-	}
+	value() = default;
 
 	value(type_data* type, long double val)
 	{
@@ -267,7 +262,7 @@ public:
 	value(const value& source)
 	{
 		data = source.data;
-		if (data != NULL)
+		if (data != nullptr)
 			++(data->ref_count);
 	}
 
@@ -278,7 +273,7 @@ public:
 
 	value& operator=(const value& source)
 	{
-		if (source.data != NULL) {
+		if (source.data != nullptr) {
 			++(source.data->ref_count);
 		}
 		release();
@@ -288,7 +283,7 @@ public:
 
 	bool has_data() const
 	{
-		return data != NULL;
+		return data != nullptr;
 	}
 
 	void set(type_data* type, long double val)
@@ -319,10 +314,10 @@ public:
 
 	void unique() const
 	{
-		if (data == NULL) {
+		if (data == nullptr) {
 			data = new body();
 			data->ref_count = 1;
-			data->type = NULL;
+			data->type = nullptr;
 		} else if (data->ref_count > 1) {
 			--(data->ref_count);
 			data = new body(*data);
@@ -335,7 +330,7 @@ public:
 private:
 	inline void release()
 	{
-		if (data != NULL) {
+		if (data != nullptr) {
 			--(data->ref_count);
 			if (data->ref_count == 0) {
 				delete data;
@@ -354,7 +349,7 @@ private:
 		};
 	};
 
-	mutable body* data;
+	mutable body* data {nullptr};
 };
 
 class script_engine;
@@ -395,8 +390,8 @@ public:
 	type_data* get_array_type(type_data* element);
 
 private:
-	script_type_manager(const script_type_manager&);
-	script_type_manager& operator=(const script_type_manager& source);
+	script_type_manager(const script_type_manager&) = delete;
+	script_type_manager& operator=(const script_type_manager& source) = delete;
 
 	std::list<type_data> types; //中身のポインタを使うのでアドレスが変わらないようにlist
 	type_data* real_type;
@@ -499,9 +494,7 @@ private:
 			};
 		};
 
-		code()
-		{
-		}
+		code() = default;
 
 		code(int the_line, command_kind the_command)
 			: line(the_line)
@@ -563,9 +556,7 @@ private:
 		block(int the_level, block_kind the_kind)
 			: level(the_level)
 			, arguments(0)
-			, name()
-			, func(NULL)
-			, codes()
+			, func(nullptr)
 			, kind(the_kind)
 		{
 		}
@@ -631,9 +622,9 @@ public:
 	int get_thread_count() const { return threads.size(); }
 
 private:
-	script_machine();
-	script_machine(const script_machine& source);
-	script_machine& operator=(const script_machine& source);
+	script_machine() = delete;
+	script_machine(const script_machine& source) = delete;
+	script_machine& operator=(const script_machine& source) = delete;
 
 	script_engine* engine;
 
