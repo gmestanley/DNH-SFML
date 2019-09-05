@@ -109,6 +109,10 @@ void StgEnemyObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownT
 				damage = damage * rateDamageSpell_ / 100;
 			else
 				damage = damage * rateDamageShot_ / 100;
+				
+			double shotDamageRed = shot->GetDamageReductionRate();
+			if(shotDamageRed != 0)
+				damage = damage / (1 + intersectedPlayerShotCount_ * shotDamageRed );
 			intersectedPlayerShotCount_++;
 		}
 	} else if (otherTarget->GetTargetType() == StgIntersectionTarget::TYPE_PLAYER_SPELL) {

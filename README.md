@@ -2,49 +2,42 @@
 All hail our lord and savior Mima and our queen, Kogasa's Woo. This version of Danmakufu is made for the purposes of both optimization and fixing some issues with the original source that mkm dropped. (See James7132's repo for a link to the original download) <b>The master branch version of this repo is completely backwards compatible with ph3. This branch will contain functions that are not in original PH3.  If something doesn't work as expected, please let me know.</b> My Discord tag is WishMakers#0426 if you need to reach me.
 
 ## Changes To New Feature Branch
-The original creator of each change will be listed here in parentheses next to the new function/change's listing.
- * Added "solid_pixel" tag to shot data definitions (gtbot)
+If you would like detailed information on each function, please check out a full explanation inside the corresponding version's changelog.
+Credits for each function can be found inside the changelogs as well.
+
+###### [.1 pre6a open nf3]
+ * Alpha values in Render Targets will now render properly
+ * Added SetShotGrazeInvalidFrame(frames)
+	- Sets the default amount of frames that must pass before a bullet can be grazed again for all bullets
+ * Added SetShotInvalidIntersectionDistance(distance)
+	- Sets the distance in pixels to automatically disable and enable non-laser bullet hitboxes
+	- IMPORTANT: Check the version changelog for more details on this function.
+ * Added ObjShot_SetGrazeInvalidFrame(ObjShotID, frames)
+	- Sets the amount of frames that must pass before the specified bullet can be grazed again
+ * Added ObjShot_GetGrazeStatus(ObjShotID)
+	- Returns true if the player is colliding with the specified bullet's graze hitbox
+ * ObjShot_SetDamageReductionRate(ObjShotID, Reduction Rate)
+	- Sets the rate at which the specified bullet's damage will be reduced by based on the total number of bullets colliding with a single enemy on a single frame.
+ * ObjShot_GetDamageReductionRate(ObjShotID)
+	- Returns the damage reduction rate specified in ObjShot_SetDamageReductionRate
+
+###### [.1 pre6a open nf2]
+ * Added "solid_pixel" tag to shot data definitions
 	- In a shot data definition, if you add solid_pixel = true, the bullet will be rendered on solid pixels, preserving image quality.
- * Added SetTextureRenderMethod (gtbot)
-	- Argument 1: Texture Width/Height determination
+ * Added SetTextureRenderMethod(Texture Width/Height determination)
 	- Determines how future loaded textures' internal widths and heights are determined
-		* D3DX_DEFAULT: Textures will be rounded up to a power of 2 (blurry if not in a power of 2, but faster)
-		* D3DX_DEFAULT_NONPOW2: Textures will not be rounded up to a power of 2 (crisper image if not in a power of 2, but slower)
-	- Keep in mind that changes to this will only affect textures loaded after this function was called.
-	- D3DX_DEFAULT is the default value.
- * Added SetShotDelayRenderBlendType (gtbot)
-    - argument 1: Blend Type
-    - Globally forces all delay clouds to use the specified blend type
-    - use BLEND_NONE to disable this. BLEND_NONE is the default.
- * Added GetShotDelayRenderBlendType (gtbot)
-    - returns the value that's specified in SetShotDelayRenderBlendType    
- * Added ObjSpell_SetEraseShotType (gtbot)
-    - argument 1: ObjSpell ID
-    - argument 2: bullet collision behaviour 
-    - Sets the behaviour of ObjSpells when colliding with an enemy bullet
-    - TO_TYPE_ITEM is the default value
-      * TO_TYPE_ITEM: Deletes bullets and spawns an item 
-      * TO_TYPE_IMMEDIATE: Immediately deletes bullets
-      * TO_TYPE_FADE: Sets bullets to fade out and delete
-	  * TO_TYPE_MOVEMENT_FREEZE: Stops the movement processing of bullets
-	  * TO_TYPE_MOVEMENT_RESTORE: Restores the movement processing of bullets
-	- Exercise caution when using TO_TYPE_MOVEMENT_FREEZE, as the bullets will never move again until you restore their movement.
-	- ObjMove_SetProcessMovement can also restore these frozen bullets, and vice versa
- * Added ObjShot_SetEraseShotType (gtbot)
-    - Argument 1: ObjShot ID
-    - argument 2: bullet collision behaviour 
+ * Added ObjShot_SetEraseShotType(ShotObjID, behaviour)
 	- When bullets are set to erase shots, their behaviour can be changed with this function.
-	- Argument 2 accepts the same constants found in ObjSpell_SetEraseShotType.
-    - TO_TYPE_ITEM is the default value
- * Added ObjMove_SetProcessMovement (gtbot)
-	- Argument 1: object ID
-	- Argument 2: set movement processing on/off (boolean)
+ * Added ObjSpell_SetEraseShotType(SpellObjID, behaviour)
+    - Sets the behaviour of ObjSpells when colliding with an enemy bullet
+ * Added ObjMove_SetProcessMovement(ObjMoveID, process movement)
 	- Determines whether the specified object will run their movement process or not.
-	- Exercise caution when using ObjMove_SetProcessMovement, as objects will never move again until you restore their movement.
-	- true is the default value.
- * Added ObjMove_GetProcessMovement (gtbot)
-	- Argument 1: object ID
+ * Added ObjMove_GetProcessMovement(ObjMoveID)
 	- returns the value that's specified in ObjMove_SetProcessMovement
+ * Added SetShotDelayRenderBlendType(blend type)
+    - Globally forces all delay clouds to use the specified blend type
+ * Added GetShotDelayRenderBlendType()
+    - returns the value that's specified in SetShotDelayRenderBlendType
 
  
  ## Changes To Master Branch

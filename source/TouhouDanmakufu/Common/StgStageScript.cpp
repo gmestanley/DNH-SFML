@@ -232,6 +232,8 @@ function const stgFunction[] = {
 	{ "SetItemRenderPriorityI", StgStageScript::Func_SetItemRenderPriorityI, 1 },
 	{ "SetShotRenderPriorityI", StgStageScript::Func_SetShotRenderPriorityI, 1 },
 	{ "SetShotDelayRenderBlendType", StgStageScript::Func_SetShotDelayRenderBlendType, 1 },
+	{ "SetShotGrazeInvalidFrame", StgStageScript::Func_SetShotInvalidGrazeFrame, 1 },
+	{ "SetShotInvalidIntersectionDistance", StgStageScript::Func_SetShotInvalidIntersectionDistance, 1 },
 	{ "GetStgFrameRenderPriorityMinI", StgStageScript::Func_GetStgFrameRenderPriorityMinI, 0 },
 	{ "GetStgFrameRenderPriorityMaxI", StgStageScript::Func_GetStgFrameRenderPriorityMaxI, 0 },
 	{ "GetItemRenderPriorityI", StgStageScript::Func_GetItemRenderPriorityI, 0 },
@@ -386,10 +388,12 @@ function const stgFunction[] = {
 	{ "ObjShot_SetGraphic", StgStageScript::Func_ObjShot_SetGraphic, 2 },
 	{ "ObjShot_SetSourceBlendType", StgStageScript::Func_ObjShot_SetSourceBlendType, 2 },
 	{ "ObjShot_SetDamage", StgStageScript::Func_ObjShot_SetDamage, 2 },
+	{ "ObjShot_SetDamageReductionRate", StgStageScript::Func_ObjShot_SetDamageReductionRate, 2 },
 	{ "ObjShot_SetPenetration", StgStageScript::Func_ObjShot_SetPenetration, 2 },
 	{ "ObjShot_SetEraseShot", StgStageScript::Func_ObjShot_SetEraseShot, 2 },
 	{ "ObjShot_SetEraseShotType", StgStageScript::Func_ObjShot_SetEraseShotType, 2 },
 	{ "ObjShot_SetSpellFactor", StgStageScript::Func_ObjShot_SetSpellFactor, 2 },
+	{ "ObjShot_SetGrazeInvalidFrame", StgStageScript::Func_ObjShot_SetGrazeInvalidFrame, 2 },
 	{ "ObjShot_ToItem", StgStageScript::Func_ObjShot_ToItem, 1 },
 	{ "ObjShot_AddShotA1", StgStageScript::Func_ObjShot_AddShotA1, 3 },
 	{ "ObjShot_AddShotA2", StgStageScript::Func_ObjShot_AddShotA2, 5 },
@@ -400,8 +404,11 @@ function const stgFunction[] = {
 	{ "ObjShot_SetItemChange", StgStageScript::Func_ObjShot_SetItemChange, 2 },
 	{ "ObjShot_GetDelay", StgStageScript::Func_ObjShot_GetDelay, 1 },
 	{ "ObjShot_GetDamage", StgStageScript::Func_ObjShot_GetDamage, 1 },
+	{ "ObjShot_GetDamageReductionRate", StgStageScript::Func_ObjShot_GetDamageReductionRate, 1 },
 	{ "ObjShot_GetPenetration", StgStageScript::Func_ObjShot_GetPenetration, 1 },
 	{ "ObjShot_IsSpellResist", StgStageScript::Func_ObjShot_IsSpellResist, 1 },
+	{ "ObjShot_GetGrazeInvalidFrame", StgStageScript::Func_ObjShot_GetGrazeInvalidFrame, 1 },
+	{ "ObjShot_GetGrazeStatus", StgStageScript::Func_ObjShot_GetGrazeStatus, 1 },
 	{ "ObjShot_GetImageID", StgStageScript::Func_ObjShot_GetImageID, 1 },
 
 	{ "ObjLaser_SetLength", StgStageScript::Func_ObjLaser_SetLength, 2 },
@@ -539,6 +546,8 @@ function const stgFunction[] = {
 	{ "TARGET_PLAYER", constant<StgStageScript::TARGET_PLAYER>::func, 0 },
 
 	{ "NO_CHANGE", constant<StgMovePattern::NO_CHANGE>::func, 0 },
+	
+	{ "GRAZE_INVALID_NONE", constant<INT_MAX>::func, 0 },
 };
 StgStageScript::StgStageScript(StgStageController* stageController)
 	: StgControlScript(stageController->GetSystemController())
@@ -686,6 +695,26 @@ gstd::value StgStageScript::Func_SetShotDelayRenderBlendType(gstd::script_machin
 	ref_count_ptr<StgStageInformation> info = stageController->GetStageInformation();
 	int blend = (int)argv[0].as_real();
 	info->SetShotObjectDelayBlend(blend);
+	return value();
+}
+gstd::value StgStageScript::Func_SetShotInvalidGrazeFrame(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	ref_count_ptr<StgStageInformation> info = stageController->GetStageInformation();
+	int invGrazeFrame = (int)argv[0].as_real();
+	info->SetShotInvalidGrazeFrame(invGrazeFrame);
+	return value();
+}
+gstd::value StgStageScript::Func_SetShotInvalidIntersectionDistance(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	ref_count_ptr<StgStageInformation> info = stageController->GetStageInformation();
+	double invShotDist = (double)argv[0].as_real();
+	if(invShotDist <= 0){ invShotDist = 0; }else{ invShotDist = pow(invShotDist, 2); }
+	
+	info->SetShotInvalidIntersectionDistance(invShotDist);
 	return value();
 }
 gstd::value StgStageScript::Func_GetStgFrameRenderPriorityMinI(gstd::script_machine* machine, int argc, gstd::value const* argv)
@@ -3337,6 +3366,19 @@ gstd::value StgStageScript::Func_ObjShot_SetDamage(gstd::script_machine* machine
 
 	return value();
 }
+gstd::value StgStageScript::Func_ObjShot_SetDamageReductionRate(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	int id = (int)argv[0].as_real();
+	StgShotObject* obj = dynamic_cast<StgShotObject*>(script->GetObjectPointer(id));
+	if (obj == NULL)
+		return value();
+
+	double damageRed = argv[1].as_real();
+	obj->SetDamageReductionRate(damageRed);
+
+	return value();
+}
 gstd::value StgStageScript::Func_ObjShot_SetPenetration(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -3386,6 +3428,19 @@ gstd::value StgStageScript::Func_ObjShot_SetSpellFactor(gstd::script_machine* ma
 
 	bool bErase = argv[1].as_boolean();
 	obj->SetSpellFactor(bErase);
+
+	return value();
+}
+gstd::value StgStageScript::Func_ObjShot_SetGrazeInvalidFrame(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	int id = (int)argv[0].as_real();
+	StgShotObject* obj = dynamic_cast<StgShotObject*>(script->GetObjectPointer(id));
+	if (obj == NULL)
+		return value();
+
+	int bGrazeInvMax = max(argv[1].as_real(), 1);
+	obj->SetInvalidGrazeMax(bGrazeInvMax);
 
 	return value();
 }
@@ -3578,6 +3633,18 @@ gstd::value StgStageScript::Func_ObjShot_GetDamage(gstd::script_machine* machine
 	int res = obj->GetDamage();
 	return value(machine->get_engine()->get_real_type(), (long double)res);
 }
+gstd::value StgStageScript::Func_ObjShot_GetDamageReductionRate(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	int id = (int)argv[0].as_real();
+	StgShotObject* obj = dynamic_cast<StgShotObject*>(script->GetObjectPointer(id));
+	if (obj == NULL)
+		return value();
+
+	double res = obj->GetDamageReductionRate();
+	return value(machine->get_engine()->get_real_type(), (long double)res);
+}
 gstd::value StgStageScript::Func_ObjShot_GetPenetration(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -3600,6 +3667,30 @@ gstd::value StgStageScript::Func_ObjShot_IsSpellResist(gstd::script_machine* mac
 		return value();
 
 	bool res = obj->GetLife() == StgShotObject::LIFE_SPELL_REGIST;
+	return value(machine->get_engine()->get_boolean_type(), res);
+}
+gstd::value StgStageScript::Func_ObjShot_GetGrazeInvalidFrame(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	int id = (int)argv[0].as_real();
+	StgShotObject* obj = dynamic_cast<StgShotObject*>(script->GetObjectPointer(id));
+	if (obj == NULL)
+		return value();
+
+	int res = obj->GetGrazeInvalidFrame();
+	return value(machine->get_engine()->get_real_type(), (long double)res);
+}
+gstd::value StgStageScript::Func_ObjShot_GetGrazeStatus(gstd::script_machine* machine, int argc, gstd::value const* argv)
+{
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	int id = (int)argv[0].as_real();
+	StgShotObject* obj = dynamic_cast<StgShotObject*>(script->GetObjectPointer(id));
+	if (obj == NULL)
+		return value();
+
+	bool res = obj->GetGrazeStatus();
 	return value(machine->get_engine()->get_boolean_type(), res);
 }
 

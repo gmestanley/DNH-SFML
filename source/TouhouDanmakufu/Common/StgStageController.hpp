@@ -108,6 +108,10 @@ public:
 	void SetShotObjectPriority(int pri) { priShotObject_ = pri; }
 	int GetShotObjectDelayBlend() { return priShotDelayBlend_; }
 	void SetShotObjectDelayBlend(int blend) { priShotDelayBlend_ = blend; }
+	int GetShotInvalidGrazeFrame() { return invShotGrazeFrame_; }
+	void SetShotInvalidGrazeFrame(int igmax) { invShotGrazeFrame_ = igmax; }
+	double GetShotInvalidIntersectionDistance() { return invShotIntersectionDist_; }
+	void SetShotInvalidIntersectionDistance(double iidist) { invShotIntersectionDist_ = iidist; }
 	int GetItemObjectPriority() { return priItemObject_; }
 	void SetItemObjectPriority(int pri) { priItemObject_ = pri; }
 	int GetCameraFocusPermitPriority() { return priCameraFocusPermit_; }
@@ -151,6 +155,8 @@ private:
 	int priMaxStgFrame_;
 	int priShotObject_;
 	int priShotDelayBlend_;
+	int invShotGrazeFrame_;
+	double invShotIntersectionDist_;
 	int priItemObject_;
 	int priCameraFocusPermit_;
 	RECT rcShotAutoDeleteClip_;

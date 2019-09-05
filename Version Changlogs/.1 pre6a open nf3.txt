@@ -1,0 +1,50 @@
+
+Version name of [.1 pre6a open nf3] 
+New exe icon to differentiate from other versions
+Alpha values in Render Targets now render properly (WishMakers)
+Added SetShotGrazeInvalidFrame (gtbot)
+Added SetShotInvalidIntersectionDistance (gtbot)
+Added ObjShot_SetGrazeInvalidFrame (gtbot)
+Added ObjShot_GetGrazeStatus (gtbot)
+Added ObjShot_SetDamageReductionRate (gtbot)
+Added ObjShot_GetDamageReductionRate (gtbot)
+Added GRAZE_INVALID_NONE
+
+
+
+ * Added SetShotGrazeInvalidFrame
+	- Argument 1: Defaulted graze invalid frame
+	- Sets the default amount of frames that must pass before a bullet can be grazed again
+	- Applies to all bullets fired after this was set
+	- Use GRAZE_INVALID_NONE to reset this value to normal (meaning it can only be grazed once).
+	- Default value is GRAZE_INVALID_NONE 
+ * Added SetShotInvalidIntersectionDistance
+	- Argument 1: Distance in pixels
+	- Sets the distance in pixels to automatically disable and enable regular bullet hitboxes
+	- When outside the distance, hitboxes are entirely disabled for the bullet. When inside the distance, they behave as usual. 
+	- This does not apply to laser type bullets
+	- This is calculated by using GetPlayerX/Y and ObjMove_GetX/Y only! This means that radii are NOT accounted for.
+	- Also note that this will also disable collisions with spell objects that are out of range as well.
+	- It's best to use this only in your own distributed packaged scripts/players, as this function may easily cause problems.
+	- Set this value to 0 to disable this function.
+	- Default value is 0
+ * Added ObjShot_SetGrazeInvalidFrame
+	- Argument 1: ObjShot ID
+	- Argument 2: Graze invalid frame
+	- Sets the amount of frames that must pass before the specified bullet can be grazed again
+	- Use GRAZE_INVALID_NONE to reset this value to normal.
+	- Default value is GRAZE_INVALID_NONE
+ * Added ObjShot_GetGrazeStatus
+	- Argument 1: ObjShot ID
+	- Returns true if the player is colliding with the specified bullet's graze hitbox
+ * ObjShot_SetDamageReductionRate
+	- Argument 1: ObjShot ID
+	- Argument 2: Damage reduction rate
+	- Sets the rate at which the specified bullet's damage will be reduced by based on the total number of bullets colliding with a single enemy on a single frame.
+		- Example: 3 bullets hit the same enemy in the same frame, with 10 damage each and 1 damage reduction rate:
+		- Bullet 1 will deal 10 damage, bullet 2 will deal 5 damage, and bullet 3 will deal 3.33 damage
+	- Default value is 0
+ * ObjShot_GetDamageReductionRate
+	- Argument 1: ObjShot ID
+	- Returns the damage reduction rate specified in ObjShot_SetDamageReductionRate
+	

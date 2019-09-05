@@ -223,6 +223,10 @@ public:
 	void SetOwnerType(int type) { typeOwner_ = type; }
 
 	bool IsValidGraze() { return frameGrazeInvalid_ <= 0; }
+	int GetGrazeInvalidFrame() { return frameGrazeInvalid_; }
+	void SetInvalidGrazeMax(int igmax) { frameGrazeInvalidMax_ = igmax; }
+	int GetInvalidGrazeMax() { return frameGrazeInvalidMax_; }
+	bool GetGrazeStatus() { return grazeActive_; }
 	int GetDelay() { return delay_; }
 	void SetDelay(int delay) { delay_ = delay; }
 	int GetSourceBlendType() { return typeSourceBrend_; }
@@ -231,6 +235,8 @@ public:
 	void SetLife(double life) { life_ = life; }
 	double GetDamage() { return damage_; }
 	void SetDamage(double damage) { damage_ = damage; }
+	double GetDamageReductionRate() { return damageIntersectReduction_; }
+	void SetDamageReductionRate(double damageRed) { damageIntersectReduction_ = damageRed; }
 	virtual void SetFadeDelete()
 	{
 		if (frameFadeDelete_ < 0)
@@ -264,8 +270,11 @@ protected:
 	int delay_; //遅延時間
 	int typeSourceBrend_; //遅延時間ブレンド種別
 	int frameGrazeInvalid_; //かすり無効フレーム
+	int frameGrazeInvalidMax_;
 	int frameFadeDelete_;
+	bool grazeActive_;
 	double damage_;
+	double damageIntersectReduction_;
 	double life_; //貫通力
 	bool bAutoDelete_;
 	bool bEraseShot_; //弾削除機能

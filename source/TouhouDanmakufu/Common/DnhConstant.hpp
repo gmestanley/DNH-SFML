@@ -8,6 +8,6 @@ using namespace directx;
 
 const int STANDARD_FPS = 60;
 
-const std::wstring DNH_VERSION = L"[.1 pre6a open nf2]";
+const std::wstring DNH_VERSION = L"[.1 pre6a open nf3]";
 
 #endif

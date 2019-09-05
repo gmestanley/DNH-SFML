@@ -168,6 +168,8 @@ public:
 	static gstd::value Func_SetItemRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetShotRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetShotDelayRenderBlendType(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_SetShotInvalidGrazeFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_SetShotInvalidIntersectionDistance(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetStgFrameRenderPriorityMinI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetStgFrameRenderPriorityMaxI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetItemRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -321,10 +323,12 @@ public:
 	static gstd::value Func_ObjShot_SetGraphic(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetSourceBlendType(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetDamage(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ObjShot_SetDamageReductionRate(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetPenetration(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetEraseShot(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetEraseShotType(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetSpellFactor(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ObjShot_SetGrazeInvalidFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_ToItem(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_AddShotA1(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_AddShotA2(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -335,8 +339,11 @@ public:
 	static gstd::value Func_ObjShot_SetItemChange(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_GetDelay(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_GetDamage(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ObjShot_GetDamageReductionRate(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_GetPenetration(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_IsSpellResist(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ObjShot_GetGrazeInvalidFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ObjShot_GetGrazeStatus(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_GetImageID(gstd::script_machine* machine, int argc, gstd::value const* argv);
 
 	static gstd::value Func_ObjLaser_SetLength(gstd::script_machine* machine, int argc, gstd::value const* argv);

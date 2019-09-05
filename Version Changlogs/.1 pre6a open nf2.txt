@@ -1,14 +1,16 @@
 
 	
-Temporary version name of [.1 pre6a open nf2]
+Version name of [.1 pre6a open nf2]
 Added "solid_pixel" tag to shot data definitions (gtbot)
 Added SetTextureRenderMethod (gtbot)
 Added ObjMove_SetProcessMovement (gtbot)
 Added ObjMove_GetProcessMovement (gtbot)
 Added ObjShot_SetEraseShotType (gtbot)
-Added TO_TYPE_MOVEMENT_FREEZE and TO_TYPE_MOVEMENT_RESTORE erase shot behaviour types to ObjSpell_SetEraseShotType
 Added TO_TYPE_ITEM, TO_TYPE_IMMEDIATE, TO_TYPE_FADE, TO_TYPE_MOVEMENT_FREEZE, and TO_TYPE_MOVEMENT_RESTORE constants for EraseShotType functions
-Other functions from the initial newfeature branch version are included here was well
+
+Added SetShotDelayRenderBlendType (gtbot)
+Added GetShotDelayRenderBlendType (gtbot)
+Added ObjSpell_SetEraseShotType (gtbot)
 
 
  * Added "solid_pixel" tag to shot data definitions (gtbot)

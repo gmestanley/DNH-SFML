@@ -690,6 +690,7 @@ StgShotObject::StgShotObject(StgStageController* stageController)
 	typeSourceBrend_ = DirectGraphics::MODE_BLEND_NONE;
 
 	damage_ = 1;
+	damageIntersectReduction_ = 0;
 	life_ = LIFE_SPELL_UNREGIST;
 	bAutoDelete_ = true;
 	bEraseShot_ = false;
@@ -699,6 +700,8 @@ StgShotObject::StgShotObject(StgStageController* stageController)
 	color_ = D3DCOLOR_ARGB(255, 255, 255, 255);
 	delay_ = 0;
 	frameGrazeInvalid_ = 0;
+	frameGrazeInvalidMax_ = stageController_->GetStageInformation()->GetShotInvalidGrazeFrame();
+	grazeActive_ = false;
 	frameFadeDelete_ = -1;
 	frameAutoDelete_ = INT_MAX;
 
@@ -718,6 +721,7 @@ StgShotObject::~StgShotObject()
 }
 void StgShotObject::Work()
 {
+	grazeActive_ = false;
 }
 void StgShotObject::_Move()
 {
@@ -1040,6 +1044,7 @@ void StgNormalShotObject::Work()
 	_DeleteInLife();
 	_DeleteInFadeDelete();
 	_DeleteInAutoDeleteFrame();
+	frameGrazeInvalid_--;
 }
 
 void StgNormalShotObject::_AddIntersectionRelativeTarget()
@@ -1055,7 +1060,18 @@ void StgNormalShotObject::_AddIntersectionRelativeTarget()
 		return; //ユーザ定義あたり判定モード
 	if (!bIntersectionEnable_)
 		return;
-
+	double distCheck = stageController_->GetStageInformation()->GetShotInvalidIntersectionDistance();
+	if (distCheck > 0){
+		if(typeOwner_ != OWNER_PLAYER){
+			ref_count_ptr<StgPlayerObject>::unsync obj = stageController_->GetPlayerObject();
+			if(obj != NULL){//bul: 300, 124, player: 224, 400 | 5776, 76176
+				if(distCheck < pow(obj->GetX() - posX_, 2) + pow(obj->GetY() - posY_, 2)){
+					return;
+				}
+			}
+		}
+	}
+	
 	StgShotData* shotData = _GetShotData();
 	if (shotData == NULL)
 		return;
@@ -1139,6 +1155,17 @@ std::vector<ref_count_ptr<StgIntersectionTarget>::unsync> StgNormalShotObject::G
 		return res; //ユーザ定義あたり判定モード
 	if (!bIntersectionEnable_)
 		return res;
+	double distCheck = stageController_->GetStageInformation()->GetShotInvalidIntersectionDistance();
+	if (distCheck > 0){
+		if(typeOwner_ != OWNER_PLAYER){
+			ref_count_ptr<StgPlayerObject>::unsync obj = stageController_->GetPlayerObject();
+			if(obj != NULL){
+				if(distCheck < pow(obj->GetX() - posX_, 2) + pow(obj->GetY() - posY_, 2)){
+					return res;
+				}
+			}
+		}
+	}
 
 	StgShotData* shotData = _GetShotData();
 	if (shotData == NULL)
@@ -1231,6 +1258,7 @@ void StgNormalShotObject::RenderOnShotManager(D3DXMATRIX& matO)
 		// if(expa > minscale+3.0f){
 			// expa = minscale+3.0f;
 		// }
+		
 		double expa = 0.5f + (double)delay_ / 30.0f * 2;
 		if (expa > 2)
 			expa = 2;
@@ -1324,7 +1352,10 @@ void StgNormalShotObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 	switch (otherType) {
 	case StgIntersectionTarget::TYPE_PLAYER: {
 		//自機
-		frameGrazeInvalid_ = INT_MAX;
+		grazeActive_ = true;
+		if (frameGrazeInvalid_ <= 0) {
+			frameGrazeInvalid_ = frameGrazeInvalidMax_;
+		}
 		break;
 	}
 	case StgIntersectionTarget::TYPE_PLAYER_SHOT: {
