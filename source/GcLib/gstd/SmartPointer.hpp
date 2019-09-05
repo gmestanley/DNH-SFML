@@ -45,9 +45,9 @@ struct ref_count_ptr_info {
 
 	ref_count_ptr_info()
 	{
-		countRef_ = NULL;
-		countWeak_ = NULL;
-		pPtr_ = NULL;
+		countRef_ = nullptr;
+		countWeak_ = nullptr;
+		pPtr_ = nullptr;
 	}
 };
 
@@ -70,7 +70,7 @@ public:
 public:
 	ref_count_ptr()
 	{
-		SetPointer(NULL);
+		SetPointer(nullptr);
 	}
 	// デフォルトコンストラクタ
 	//explicit 必要?
@@ -163,45 +163,45 @@ public:
 	}
 
 	// *間接演算子
-	T& operator*() { return *info_.pPtr_; }
-	const T& operator*() const { return *info_.pPtr_; }
+	T& operator*() { return *get(); }
+	const T& operator*() const { return *get(); }
 
 	// ->メンバ選択演算子
-	T* operator->() { return info_.pPtr_; }
-	const T* operator->() const { return info_.pPtr_; }
+	T* operator->() { return get(); }
+	const T* operator->() const { return get(); }
 
 	// []配列参照演算子
-	T& operator[](int n) { return info_.pPtr_[n]; }
-	const T& operator[](int n) const { return info_.pPtr_[n]; }
+	T& operator[](int n) { return get()[n]; }
+	const T& operator[](int n) const { return get()[n]; }
 
 	// ==比較演算子
 	bool operator==(const T* p) const
 	{
-		return info_.pPtr_ == p;
+		return get() == p;
 	}
 	bool operator==(const ref_count_ptr<T, SYNC>& p) const
 	{
-		return info_.pPtr_ == p.info_.pPtr_;
+		return get() == p.get();
 	}
 	template <class D>
-	bool operator==(ref_count_ptr<D, SYNC>& p) const
+	bool operator==(const ref_count_ptr<D, SYNC>& p) const
 	{
-		return info_.pPtr_ == p.GetPointer();
+		return get() == p.get();
 	}
 
 	// !=比較演算子
 	bool operator!=(const T* p) const
 	{
-		return info_.pPtr_ != p;
+		return get() != p;
 	}
 	bool operator!=(const ref_count_ptr<T, SYNC>& p) const
 	{
-		return info_.pPtr_ != p.info_.pPtr_;
+		return get() != p.get();
 	}
 	template <class D>
-	bool operator!=(ref_count_ptr<D, SYNC>& p) const
+	bool operator!=(const ref_count_ptr<D, SYNC>& p) const
 	{
-		return info_.pPtr_ != p.GetPointer();
+		return get() != p.get();
 	}
 
 	// ポインタの明示的な登録
@@ -209,9 +209,9 @@ public:
 	{
 		// 参照カウンタを減らした後に再初期化
 		_Release();
-		if (src == NULL) {
-			info_.countRef_ = NULL;
-			info_.countWeak_ = NULL;
+		if (src == nullptr) {
+			info_.countRef_ = nullptr;
+			info_.countWeak_ = nullptr;
 		} else {
 			info_.countRef_ = new long;
 			*info_.countRef_ = add;
@@ -225,11 +225,13 @@ public:
 	// ポインタの貸し出し
 	T* GetPointer() { return info_.pPtr_; }
 	const T* GetPointer() const { return info_.pPtr_; }
+	T* get() { return GetPointer(); }
+	const T* get() const { return GetPointer(); }
 
 	// 参照カウンタへのポインタを取得
 	long* _GetReferenceCountPointer() { return info_.countRef_; } //この関数は外部からしようしないこと
 	long* _GetWeakCountPointer() { return info_.countWeak_; } //この関数は外部からしようしないこと
-	int GetReferenceCount() const { return info_.countRef_ != NULL ? (int)*info_.countRef_ : 0; }
+	int GetReferenceCount() const { return info_.countRef_ != nullptr ? (int)*info_.countRef_ : 0; }
 
 	template <class T2>
 	static ref_count_ptr<T, SYNC> DownCast(ref_count_ptr<T2, SYNC>& src)
@@ -239,7 +241,7 @@ public:
 		// ダウンキャスト可能な場合はオブジェクトを返す
 		ref_count_ptr<T, SYNC> res;
 		T* castPtr = dynamic_cast<T*>(src.GetPointer());
-		if (castPtr != NULL) {
+		if (castPtr != nullptr) {
 			// ダウンキャスト可能
 			res._Release(); //現在の参照を破棄する必要がある
 			res.info_.countRef_ = src._GetReferenceCountPointer();
@@ -256,7 +258,7 @@ private:
 	// 参照カウンタ増加
 	void _AddRef()
 	{
-		if (info_.countRef_ == NULL)
+		if (info_.countRef_ == nullptr)
 			return;
 
 		if (SYNC) {
@@ -271,30 +273,30 @@ private:
 	// 参照カウンタ減少
 	void _Release()
 	{
-		if (info_.countRef_ == NULL)
+		if (info_.countRef_ == nullptr)
 			return;
 
 		if (SYNC) {
 			if (InterlockedDecrement(info_.countRef_) == 0) {
 				delete[] info_.pPtr_;
-				info_.pPtr_ = NULL;
+				info_.pPtr_ = nullptr;
 			}
 			if (InterlockedDecrement(info_.countWeak_) == 0) {
 				delete info_.countRef_;
-				info_.countRef_ = NULL;
+				info_.countRef_ = nullptr;
 				delete info_.countWeak_;
-				info_.countWeak_ = NULL;
+				info_.countWeak_ = nullptr;
 			}
 		} else {
 			if (--(*info_.countRef_) == 0) {
 				delete[] info_.pPtr_;
-				info_.pPtr_ = NULL;
+				info_.pPtr_ = nullptr;
 			}
 			if (--(*info_.countWeak_) == 0) {
 				delete info_.countRef_;
-				info_.countRef_ = NULL;
+				info_.countRef_ = nullptr;
 				delete info_.countWeak_;
-				info_.countWeak_ = NULL;
+				info_.countWeak_ = nullptr;
 			}
 		}
 	}
@@ -308,12 +310,10 @@ public:
 	typedef ref_count_weak_ptr<T, false> unsync; //排他なし版
 
 public:
-	ref_count_weak_ptr()
-	{
-	}
+	ref_count_weak_ptr() = default;
 	ref_count_weak_ptr(T* src)
 	{
-		if (src != NULL)
+		if (src != nullptr)
 			throw std::exception("ref_count_weak_ptrコンストラクタに非NULLを代入しようとしました");
 	}
 	// コピーコンストラクタ
@@ -355,12 +355,12 @@ public:
 	// =代入演算子
 	ref_count_weak_ptr<T, SYNC>& operator=(T* src)
 	{
-		if (src != NULL)
+		if (src != nullptr)
 			throw std::exception("ref_count_weak_ptr =に非NULLを代入しようとしました");
 		_Release();
 		info_.pPtr_ = src;
-		info_.countRef_ = NULL;
-		info_.countWeak_ = NULL;
+		info_.countRef_ = nullptr;
+		info_.countWeak_ = nullptr;
 		return (*this);
 	}
 	ref_count_weak_ptr<T, SYNC>& operator=(const ref_count_weak_ptr<T, SYNC>& src)
@@ -442,45 +442,49 @@ public:
 	// ==比較演算子
 	bool operator==(const T* p) const
 	{
-		return IsExists() ? (info_.pPtr_ == p) : (NULL == p);
+		return get() == p;
 	}
 	bool operator==(const ref_count_weak_ptr<T, SYNC>& p) const
 	{
-		return IsExists() ? (info_.pPtr_ == p.info_.pPtr_) : (NULL == p.info_.pPtr_);
+		return get() == p.get();
 	}
 	template <class D>
 	bool operator==(ref_count_weak_ptr<D, SYNC>& p) const
 	{
-		return IsExists() ? (info_.pPtr_ == p.GetPointer()) : (NULL == p.GetPointer());
+		return get() == p.get();
 	}
 
 	// !=比較演算子
 	bool operator!=(const T* p) const
 	{
-		return IsExists() ? (info_.pPtr_ != p) : (NULL != p);
+		return get() != p;
 	}
 	bool operator!=(const ref_count_weak_ptr<T, SYNC>& p) const
 	{
-		return IsExists() ? (info_.pPtr_ != p.info_.pPtr_) : (NULL != p.info_.pPtr_);
+		return get() != p.get();
 	}
 	template <class D>
 	bool operator!=(ref_count_weak_ptr<D, SYNC>& p) const
 	{
-		return IsExists() ? (info_.pPtr_ != p.GetPointer()) : (NULL != p.GetPointer());
+		return get() != p.get();
 	}
 
 	// ポインタの貸し出し
-	T* GetPointer() { return IsExists() ? info_.pPtr_ : NULL; }
+	T* GetPointer() { return IsExists() ? info_.pPtr_ : nullptr; }
+	const T* GetPointer() const { return IsExists() ? info_.pPtr_ : nullptr; }
+	T* get() { return GetPointer(); }
+	const T* get() const { return GetPointer(); }
+
 
 	// 参照カウンタへのポインタを取得
 	long* _GetReferenceCountPointer() { return info_.countRef_; } //この関数は外部からしようしないこと
 	long* _GetWeakCountPointer() { return info_.countWeak_; } //この関数は外部からしようしないこと
 	int GetReferenceCount() const
 	{
-		int res = info_.countRef_ != NULL ? (int)*info_.countRef_ : 0;
+		int res = info_.countRef_ != nullptr ? (int)*info_.countRef_ : 0;
 		return res;
 	}
-	bool IsExists() const { return info_.countRef_ != NULL ? (*info_.countRef_ > 0) : false; }
+	bool IsExists() const { return info_.countRef_ != nullptr ? (*info_.countRef_ > 0) : false; }
 
 	template <class T2>
 	static ref_count_weak_ptr<T, SYNC> DownCast(ref_count_weak_ptr<T2, SYNC>& src)
@@ -490,7 +494,7 @@ public:
 		// ダウンキャスト可能な場合はオブジェクトを返す
 		ref_count_weak_ptr<T, SYNC> res;
 		T* castPtr = dynamic_cast<T*>(src.GetPointer());
-		if (castPtr != NULL) {
+		if (castPtr != nullptr) {
 			// ダウンキャスト可能
 			res._Release(); //現在の参照を破棄する必要がある
 			res.info_.countRef_ = src._GetReferenceCountPointer();
@@ -507,7 +511,7 @@ private:
 	// 参照カウンタ増加
 	void _AddRef()
 	{
-		if (info_.countRef_ == NULL)
+		if (info_.countRef_ == nullptr)
 			return;
 
 		if (SYNC) {
@@ -520,22 +524,22 @@ private:
 	// 参照カウンタ減少
 	void _Release()
 	{
-		if (info_.countRef_ == NULL)
+		if (info_.countRef_ == nullptr)
 			return;
 
 		if (SYNC) {
 			if (InterlockedDecrement(info_.countWeak_) == 0) {
 				delete info_.countRef_;
-				info_.countRef_ = NULL;
+				info_.countRef_ = nullptr;
 				delete info_.countWeak_;
-				info_.countWeak_ = NULL;
+				info_.countWeak_ = nullptr;
 			}
 		} else {
 			if (--(*info_.countWeak_) == 0) {
 				delete info_.countRef_;
-				info_.countRef_ = NULL;
+				info_.countRef_ = nullptr;
 				delete info_.countWeak_;
-				info_.countWeak_ = NULL;
+				info_.countWeak_ = nullptr;
 			}
 		}
 	}

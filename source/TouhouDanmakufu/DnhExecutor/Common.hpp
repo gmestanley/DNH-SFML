@@ -64,8 +64,8 @@ class MenuItem {
 	friend MenuTask;
 
 public:
-	MenuItem() {}
-	virtual ~MenuItem() {}
+	MenuItem() = default;
+	virtual ~MenuItem() = default;
 	virtual void Work() {}
 	virtual void Render() {}
 

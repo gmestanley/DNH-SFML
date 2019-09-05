@@ -23,8 +23,8 @@ public:
 	struct PlayerListSort;
 
 public:
-	ScriptInformation() {}
-	virtual ~ScriptInformation() {}
+	ScriptInformation() = default;
+	virtual ~ScriptInformation() = default;
 	int GetType() const { return type_; }
 	void SetType(int type) { type_ = type; }
 	std::wstring GetArchivePath() const { return pathArchive_; }
@@ -89,8 +89,8 @@ public:
 	{
 		ref_count_ptr<ScriptInformation> lsp = lf;
 		ref_count_ptr<ScriptInformation> rsp = rf;
-		ScriptInformation* lp = (ScriptInformation*)lsp.GetPointer();
-		ScriptInformation* rp = (ScriptInformation*)rsp.GetPointer();
+		auto* lp = (ScriptInformation*)lsp.GetPointer();
+		auto* rp = (ScriptInformation*)rsp.GetPointer();
 		std::wstring lPath = lp->GetScriptPath();
 		std::wstring rPath = rp->GetScriptPath();
 		BOOL res = CompareString(LOCALE_SYSTEM_DEFAULT, NORM_IGNORECASE,
@@ -133,7 +133,7 @@ protected:
 	WEditBox edit_;
 	WButton button_;
 
-	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 };
 
 /**********************************************************
@@ -159,7 +159,7 @@ public:
 
 public:
 	DnhConfiguration();
-	virtual ~DnhConfiguration();
+	~DnhConfiguration() override;
 	bool LoadConfigFile();
 	bool SaveConfigFile();
 

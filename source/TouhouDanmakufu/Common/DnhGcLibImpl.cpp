@@ -64,7 +64,7 @@ std::wstring EPathProperty::ExtendRelativeToFull(const std::wstring& dir, const 
 	}
 
 	std::wstring drive = PathProperty::GetDriveName(newPath);
-	if (drive.size() == 0) {
+	if (drive.empty()) {
 		newPath = GetModuleDirectory() + newPath;
 	}
 
@@ -74,9 +74,7 @@ std::wstring EPathProperty::ExtendRelativeToFull(const std::wstring& dir, const 
 /**********************************************************
 //ELogger
 **********************************************************/
-ELogger::ELogger()
-{
-}
+ELogger::ELogger() = default;
 void ELogger::Initialize(bool bFile, bool bWindow)
 {
 	gstd::ref_count_ptr<gstd::FileLogger> fileLogger = new gstd::FileLogger();
@@ -103,14 +101,14 @@ EFpsController::EFpsController()
 	DnhConfiguration* config = DnhConfiguration::GetInstance();
 	int fpsType = config->GetFpsType();
 	if (fpsType == DnhConfiguration::FPS_NORMAL || fpsType == DnhConfiguration::FPS_1_2 || fpsType == DnhConfiguration::FPS_1_3) {
-		StaticFpsController* controller = new StaticFpsController();
+		auto* controller = new StaticFpsController();
 		if (fpsType == DnhConfiguration::FPS_1_2)
 			controller->SetSkipRate(1);
 		else if (fpsType == DnhConfiguration::FPS_1_3)
 			controller->SetSkipRate(2);
 		controller_ = controller;
 	} else {
-		AutoSkipFpsController* controller = new AutoSkipFpsController();
+		auto* controller = new AutoSkipFpsController();
 		controller_ = controller;
 	}
 
@@ -142,7 +140,7 @@ bool ETextureManager::Initialize()
 {
 	bool res = TextureManager::Initialize();
 
-	for (int iRender = 0; iRender < MAX_RESERVED_RENDERTARGET; iRender++) {
+	for (int iRender = 0; iRender < MAX_RESERVED_RENDERTARGET; ++iRender) {
 		std::wstring name = GetReservedRenderTargetName(iRender);
 		ref_count_ptr<Texture> texture = new Texture();
 		res &= texture->CreateRenderTarget(name);

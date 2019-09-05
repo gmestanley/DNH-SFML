@@ -11,12 +11,12 @@ const std::wstring ScriptInformation::DEFAULT = L"DEFAULT";
 ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(const std::wstring& pathScript, bool bNeedHeader)
 {
 	ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(pathScript);
-	if (reader == NULL || !reader->Open()) {
+	if (reader == nullptr || !reader->Open()) {
 		Logger::WriteTop(ErrorUtility::GetFileNotFoundErrorMessage(pathScript));
-		return NULL;
+		return nullptr;
 	}
 
-	std::string source = "";
+	std::string source;
 	int size = reader->GetFileSize();
 	source.resize(size);
 	reader->Read(&source[0], size);
@@ -26,7 +26,7 @@ ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(cons
 }
 ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(const std::wstring& pathScript, const std::wstring& pathArchive, const std::string& source, bool bNeedHeader)
 {
-	ref_count_ptr<ScriptInformation> res = NULL;
+	ref_count_ptr<ScriptInformation> res = nullptr;
 
 	Scanner scanner(source);
 	int encoding = scanner.GetEncoding();
@@ -37,21 +37,22 @@ ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(cons
 			type = TYPE_UNKNOWN;
 			bScript = true;
 		}
-		std::wstring idScript = L"";
-		std::wstring title = L"";
-		std::wstring text = L"";
-		std::wstring pathImage = L"";
+		std::wstring idScript;
+		std::wstring title;
+		std::wstring text;
+		std::wstring pathImage;
 		std::wstring pathSystem = DEFAULT;
 		std::wstring pathBackground = DEFAULT;
 		std::wstring pathBGM = DEFAULT;
 		std::vector<std::wstring> listPlayer;
-		std::wstring replayName = L"";
+		std::wstring replayName;
 
 		while (scanner.HasNext()) {
 			Token& tok = scanner.Next();
 			if (tok.GetType() == Token::TK_EOF) { //Eofの識別子が来たらファイルの調査終了
 				break;
-			} else if (tok.GetType() == Token::TK_SHARP) {
+			}
+			if (tok.GetType() == Token::TK_SHARP) {
 				tok = scanner.Next();
 				std::wstring element = tok.GetElement();
 				bool bShiftJisDanmakufu = false;
@@ -106,10 +107,10 @@ ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(cons
 
 		if (bScript) {
 			//IDがなかった場合はしょうがないのでファイル名にする。
-			if (idScript.size() == 0)
+			if (idScript.empty())
 				idScript = PathProperty::GetFileNameWithoutExtension(pathScript);
 
-			if (replayName.size() == 0) {
+			if (replayName.empty()) {
 				replayName = idScript;
 				if (replayName.size() > 8)
 					replayName = replayName.substr(0, 8);
@@ -138,7 +139,7 @@ ref_count_ptr<ScriptInformation> ScriptInformation::CreateScriptInformation(cons
 			res->SetReplayName(replayName);
 		}
 	} catch (...) {
-		res = NULL;
+		res = nullptr;
 	}
 
 	return res;
@@ -171,7 +172,7 @@ std::vector<std::wstring> ScriptInformation::_GetStringList(Scanner& scanner)
 		int type = tok.GetType();
 		if (type == Token::TK_CLOSEB)
 			break;
-		else if (type == Token::TK_STRING) {
+		if (type == Token::TK_STRING) {
 			std::wstring wstr = tok.GetString();
 			res.push_back(wstr);
 		}
@@ -183,23 +184,22 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::CreatePlayerScr
 	std::vector<ref_count_ptr<ScriptInformation>> res;
 	std::vector<std::wstring> listPlayerPath = GetPlayerList();
 	std::wstring dirInfo = PathProperty::GetFileDirectory(GetScriptPath());
-	for (int iPath = 0; iPath < listPlayerPath.size(); iPath++) {
-		std::wstring pathPlayer = listPlayerPath[iPath];
+	for (const auto& pathPlayer : listPlayerPath) {
 		std::wstring path = EPathProperty::ExtendRelativeToFull(dirInfo, pathPlayer);
 
 		ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
-		if (reader == NULL || !reader->Open()) {
+		if (reader == nullptr || !reader->Open()) {
 			Logger::WriteTop(ErrorUtility::GetFileNotFoundErrorMessage(path));
 			continue;
 		}
 
-		std::string source = "";
+		std::string source;
 		int size = reader->GetFileSize();
 		source.resize(size);
 		reader->Read(&source[0], size);
 
 		ref_count_ptr<ScriptInformation> info = ScriptInformation::CreateScriptInformation(path, L"", source);
-		if (info != NULL && info->GetType() == ScriptInformation::TYPE_PLAYER) {
+		if (info != nullptr && info->GetType() == ScriptInformation::TYPE_PLAYER) {
 			res.push_back(info);
 		}
 	}
@@ -225,10 +225,9 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::CreateScriptInf
 			return res;
 
 		std::multimap<std::wstring, ref_count_ptr<ArchiveFileEntry>> mapEntry = archive.GetEntryMap();
-		std::multimap<std::wstring, ref_count_ptr<ArchiveFileEntry>>::iterator itr = mapEntry.begin();
-		for (; itr != mapEntry.end(); itr++) {
+		for (auto& itr : mapEntry) {
 			//明らかに関係なさそうな拡張子は除外
-			ref_count_ptr<ArchiveFileEntry> entry = itr->second;
+			ref_count_ptr<ArchiveFileEntry> entry = itr.second;
 			std::wstring dir = PathProperty::GetFileDirectory(path);
 			std::wstring tPath = dir + entry->GetDirectory() + entry->GetName();
 
@@ -237,13 +236,13 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::CreateScriptInf
 				continue;
 
 			ref_count_ptr<gstd::ByteBuffer> buffer = ArchiveFile::CreateEntryBuffer(entry);
-			std::string source = "";
+			std::string source;
 			int size = buffer->GetSize();
 			source.resize(size);
 			buffer->Read(&source[0], size);
 
 			ref_count_ptr<ScriptInformation> info = CreateScriptInformation(tPath, path, source, bNeedHeader);
-			if (info != NULL)
+			if (info != nullptr)
 				res.push_back(info);
 		}
 	} else {
@@ -254,13 +253,13 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::CreateScriptInf
 			return res;
 
 		file.SetFilePointerBegin();
-		std::string source = "";
+		std::string source;
 		int size = file.GetSize();
 		source.resize(size);
 		file.Read(&source[0], size);
 
 		ref_count_ptr<ScriptInformation> info = CreateScriptInformation(path, L"", source, bNeedHeader);
-		if (info != NULL)
+		if (info != nullptr)
 			res.push_back(info);
 	}
 
@@ -281,8 +280,8 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::FindPlayerScrip
 			tDir += L"\\";
 
 			std::vector<ref_count_ptr<ScriptInformation>> list = FindPlayerScriptInformationList(tDir);
-			for (std::vector<ref_count_ptr<ScriptInformation>>::iterator itr = list.begin(); itr != list.end(); itr++) {
-				res.push_back(*itr);
+			for (auto& itr : list) {
+				res.push_back(itr);
 			}
 			continue;
 		}
@@ -294,9 +293,8 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::FindPlayerScrip
 
 		//スクリプト解析
 		std::vector<ref_count_ptr<ScriptInformation>> listInfo = CreateScriptInformationList(path, true);
-		for (int iInfo = 0; iInfo < listInfo.size(); iInfo++) {
-			ref_count_ptr<ScriptInformation> info = listInfo[iInfo];
-			if (info != NULL && info->GetType() == ScriptInformation::TYPE_PLAYER) {
+		for (auto& info : listInfo) {
+			if (info != nullptr && info->GetType() == ScriptInformation::TYPE_PLAYER) {
 				res.push_back(info);
 			}
 		}
@@ -310,7 +308,7 @@ std::vector<ref_count_ptr<ScriptInformation>> ScriptInformation::FindPlayerScrip
 /**********************************************************
 //ErrorDialog
 **********************************************************/
-HWND ErrorDialog::hWndParentStatic_ = NULL;
+HWND ErrorDialog::hWndParentStatic_ = nullptr;
 ErrorDialog::ErrorDialog(HWND hParent)
 {
 	hParent_ = hParent;
@@ -360,7 +358,7 @@ LRESULT ErrorDialog::_WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 }
 bool ErrorDialog::ShowModal(const std::wstring& msg)
 {
-	HINSTANCE hInst = ::GetModuleHandle(NULL);
+	HINSTANCE hInst = ::GetModuleHandle(nullptr);
 	std::wstring wName = L"ErrorWindow";
 
 	WNDCLASSEX wcex;
@@ -368,18 +366,18 @@ bool ErrorDialog::ShowModal(const std::wstring& msg)
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.lpfnWndProc = (WNDPROC)WindowBase::_StaticWindowProcedure;
 	wcex.hInstance = hInst;
-	wcex.hIcon = NULL;
-	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hIcon = nullptr;
+	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW);
-	wcex.lpszMenuName = NULL;
+	wcex.lpszMenuName = nullptr;
 	wcex.lpszClassName = wName.c_str();
-	wcex.hIconSm = NULL;
+	wcex.hIconSm = nullptr;
 	RegisterClassEx(&wcex);
 
 	hWnd_ = ::CreateWindow(wcex.lpszClassName,
 		wName.c_str(),
 		WS_OVERLAPPEDWINDOW,
-		0, 0, 480, 320, hParent_, (HMENU)NULL, hInst, NULL);
+		0, 0, 480, 320, hParent_, (HMENU)nullptr, hInst, nullptr);
 	::ShowWindow(hWnd_, SW_HIDE);
 	this->Attach(hWnd_);
 
@@ -437,9 +435,7 @@ DnhConfiguration::DnhConfiguration()
 	LoadConfigFile();
 	_LoadDefintionFile();
 }
-DnhConfiguration::~DnhConfiguration()
-{
-}
+DnhConfiguration::~DnhConfiguration() = default;
 bool DnhConfiguration::_LoadDefintionFile()
 {
 	std::wstring path = PathProperty::GetModuleDirectory() + L"th_dnh.def";
@@ -448,7 +444,7 @@ bool DnhConfiguration::_LoadDefintionFile()
 		return false;
 
 	pathPackageScript_ = prop.GetString(L"package.script.main", L"");
-	if (pathPackageScript_.size() > 0) {
+	if (!pathPackageScript_.empty()) {
 		pathPackageScript_ = PathProperty::GetModuleDirectory() + pathPackageScript_;
 	}
 
@@ -489,7 +485,7 @@ bool DnhConfiguration::LoadConfigFile()
 	record.GetRecord("mapKey", bufKey.GetPointer(), bufKey.GetSize());
 	int mapKeyCount = bufKey.ReadInteger();
 	if (mapKeyCount == mapKey_.size()) {
-		for (int iKey = 0; iKey < mapKeyCount; iKey++) {
+		for (int iKey = 0; iKey < mapKeyCount; ++iKey) {
 			int id = bufKey.ReadInteger();
 			int keyCode = bufKey.ReadInteger();
 			int padIndex = bufKey.ReadInteger();
@@ -519,10 +515,9 @@ bool DnhConfiguration::SaveConfigFile()
 	record.SetRecordAsInteger("padIndex", padIndex_);
 	ByteBuffer bufKey;
 	bufKey.WriteInteger(mapKey_.size());
-	std::map<int, ref_count_ptr<VirtualKey>>::iterator itrKey = mapKey_.begin();
-	for (; itrKey != mapKey_.end(); itrKey++) {
-		int id = itrKey->first;
-		ref_count_ptr<VirtualKey> vk = itrKey->second;
+	for (auto& itrKey : mapKey_) {
+		int id = itrKey.first;
+		ref_count_ptr<VirtualKey> vk = itrKey.second;
 
 		bufKey.WriteInteger(id);
 		bufKey.WriteInteger(vk->GetKeyCode());
@@ -542,7 +537,7 @@ bool DnhConfiguration::SaveConfigFile()
 ref_count_ptr<VirtualKey> DnhConfiguration::GetVirtualKey(int id)
 {
 	if (mapKey_.find(id) == mapKey_.end())
-		return NULL;
+		return nullptr;
 
 	ref_count_ptr<VirtualKey> res = mapKey_[id];
 	return res;

@@ -99,7 +99,7 @@ class ETextureManager : public Singleton<ETextureManager>, public TextureManager
 	};
 
 public:
-	virtual bool Initialize();
+	bool Initialize() override;
 	std::wstring GetReservedRenderTargetName(int index);
 };
 
@@ -159,7 +159,7 @@ public:
 	int padIndex_;
 
 public:
-	virtual bool Initialize(HWND hWnd);
+	bool Initialize(HWND hWnd) override;
 	void ResetVirtualKeyMap();
 	int GetPadIndex() const { return padIndex_; }
 };

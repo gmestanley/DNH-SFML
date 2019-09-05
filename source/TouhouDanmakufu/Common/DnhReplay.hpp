@@ -25,7 +25,7 @@ private:
 
 	std::wstring comment_;
 	std::wstring userName_;
-	_int64 totalScore_;
+	int64_t totalScore_;
 	double fpsAvarage_;
 	SYSTEMTIME date_;
 	ref_count_ptr<ScriptCommonData> userData_;
@@ -47,8 +47,8 @@ public:
 	void SetComment(const std::wstring& comment) { comment_ = comment; }
 	std::wstring GetUserName() const { return userName_; }
 	void SetUserName(const std::wstring& name) { userName_ = name; }
-	_int64 GetTotalScore() const { return totalScore_; }
-	void SetTotalScore(_int64 score) { totalScore_ = score; }
+	int64_t GetTotalScore() const { return totalScore_; }
+	void SetTotalScore(int64_t score) { totalScore_ = score; }
 	double GetAvarageFps() const { return fpsAvarage_; }
 	void SetAvarageFps(double fps) { fpsAvarage_ = fps; }
 	SYSTEMTIME GetDate() { return date_; }
@@ -76,7 +76,7 @@ public:
 		scoreStart_ = 0;
 		scoreLast_ = 0;
 	}
-	virtual ~StageData() {}
+	virtual ~StageData() = default;
 
 	std::wstring GetMainScriptID() const { return mainScriptID_; }
 	void SetMainScriptID(std::wstring id) { mainScriptID_ = id; }
@@ -84,14 +84,14 @@ public:
 	void SetMainScriptName(std::wstring name) { mainScriptName_ = name; }
 	std::wstring GetMainScriptRelativePath() const { return mainScriptRelativePath_; }
 	void SetMainScriptRelativePath(std::wstring path) { mainScriptRelativePath_ = path; }
-	_int64 GetStartScore() const { return scoreStart_; }
-	void SetStartScore(_int64 score) { scoreStart_ = score; }
-	_int64 GetLastScore() const { return scoreLast_; }
-	void SetLastScore(_int64 score) { scoreLast_ = score; }
-	_int64 GetGraze() const { return graze_; }
-	void SetGraze(_int64 graze) { graze_ = graze; }
-	_int64 GetPoint() const { return point_; }
-	void SetPoint(_int64 point) { point_ = point; }
+	int64_t GetStartScore() const { return scoreStart_; }
+	void SetStartScore(int64_t score) { scoreStart_ = score; }
+	int64_t GetLastScore() const { return scoreLast_; }
+	void SetLastScore(int64_t score) { scoreLast_ = score; }
+	int64_t GetGraze() const { return graze_; }
+	void SetGraze(int64_t graze) { graze_ = graze; }
+	int64_t GetPoint() const { return point_; }
+	void SetPoint(int64_t point) { point_ = point; }
 	int GetEndFrame() const { return frameEnd_; }
 	void SetEndFrame(int frame) { frameEnd_ = frame; }
 	int GetRandSeed() const { return randSeed_; }
@@ -134,10 +134,10 @@ private:
 	std::wstring mainScriptName_;
 	std::wstring mainScriptRelativePath_;
 
-	_int64 scoreStart_;
-	_int64 scoreLast_;
-	_int64 graze_;
-	_int64 point_;
+	int64_t scoreStart_;
+	int64_t scoreLast_;
+	int64_t graze_;
+	int64_t point_;
 	int frameEnd_;
 	int randSeed_;
 	std::vector<float> listFramePerSecond_;
