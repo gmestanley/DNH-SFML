@@ -5,7 +5,7 @@ All hail our lord and savior Mima and our queen, Kogasa's Woo. This version of D
 If you would like detailed information on each function, please check out a full explanation inside the corresponding version's changelog.
 Credits for each function can be found inside the changelogs as well.
 
-###### [.1 pre6a open nf3]
+###### [ph3.5 .1 pre6a open nf3]
  * Alpha values in Render Targets will now render properly
  * Added SetShotGrazeInvalidFrame(frames)
 	- Sets the default amount of frames that must pass before a bullet can be grazed again for all bullets
@@ -21,7 +21,7 @@ Credits for each function can be found inside the changelogs as well.
  * ObjShot_GetDamageReductionRate(ObjShotID)
 	- Returns the damage reduction rate specified in ObjShot_SetDamageReductionRate
 
-###### [.1 pre6a open nf2]
+###### [ph3.5 .1 pre6a open nf2]
  * Added "solid_pixel" tag to shot data definitions
 	- In a shot data definition, if you add solid_pixel = true, the bullet will be rendered on solid pixels, preserving image quality.
  * Added SetTextureRenderMethod(Texture Width/Height determination)
