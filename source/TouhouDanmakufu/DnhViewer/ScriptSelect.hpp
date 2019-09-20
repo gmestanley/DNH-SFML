@@ -26,13 +26,13 @@ protected:
 
 public:
 	virtual void Initialize();
-	virtual void ShowModal(std::wstring path);
+	virtual void ShowModal(const std::wstring& path);
 
 	ref_count_ptr<ScriptInformation> GetSelectedScript() { return infoSelected_; }
 
 protected:
 	virtual bool _IsValidScript(ref_count_ptr<ScriptInformation> info) { return NULL; }
-	void _SearchScript(std::wstring dir);
+	void _SearchScript(const std::wstring& dir);
 	virtual void _Filter() {}
 	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

@@ -22,7 +22,7 @@ public:
 
 public:
 	ElfreinaMeshData();
-	~ElfreinaMeshData();
+	~ElfreinaMeshData() override;
 	bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader);
 	std::vector<gstd::ref_count_ptr<Bone>>& GetBones() { return bone_; }
 
@@ -57,9 +57,9 @@ public:
 		NO_PARENT = -1,
 	};
 public:
-	Bone(){};
-	virtual ~Bone(){};
-	int GetParentIndex() { return indexParent_; }
+	Bone() = default;
+	virtual ~Bone() = default;
+	int GetParentIndex() const { return indexParent_; }
 	std::vector<int>& GetChildIndex() { return indexChild_; }
 	D3DXMATRIX& GetOffsetMatrix() { return matOffset_; }
 	D3DXMATRIX& GetInitPostureMatrix() { return matInitPosture_; }
@@ -78,8 +78,8 @@ class ElfreinaMeshData::Material {
 	friend RenderObjectElfreinaBlock;
 
 public:
-	Material(){};
-	virtual ~Material(){};
+	Material() = default;
+	virtual ~Material() = default;
 
 protected:
 	std::wstring name_;
@@ -92,8 +92,8 @@ class ElfreinaMeshData::Mesh : public RenderObjectB4NX {
 
 public:
 	Mesh();
-	virtual ~Mesh();
-	virtual void Render();
+	~Mesh() override;
+	void Render() override;
 	gstd::ref_count_ptr<RenderBlock> CreateRenderBlock();
 
 protected:
@@ -113,8 +113,8 @@ class ElfreinaMeshData::AnimationData {
 	friend ElfreinaMeshData;
 
 public:
-	AnimationData(){};
-	virtual ~AnimationData(){};
+	AnimationData() = default;
+	virtual ~AnimationData() = default;
 	gstd::ref_count_ptr<Matrices> CreateBoneAnimationMatrix(double time, ElfreinaMeshData* mesh);
 
 protected:
@@ -131,8 +131,8 @@ class ElfreinaMeshData::BoneAnimationPart {
 	friend ElfreinaMeshData;
 
 public:
-	BoneAnimationPart(){};
-	virtual ~BoneAnimationPart(){};
+	BoneAnimationPart() = default;
+	virtual ~BoneAnimationPart() = default;
 	std::vector<float>& GetTimeKey() { return keyTime_; }
 	std::vector<D3DXVECTOR3>& GetTransKey() { return keyTrans_; }
 	std::vector<D3DXQUATERNION>& GetRotateKey() { return keyRotate_; }
@@ -147,26 +147,26 @@ protected:
 
 class RenderObjectElfreinaBlock : public RenderObjectB2NXBlock {
 public:
-	~RenderObjectElfreinaBlock();
-	virtual bool IsTranslucent();
-	virtual void CalculateZValue();
+	~RenderObjectElfreinaBlock() override;
+	bool IsTranslucent() override;
+	void CalculateZValue() override;
 };
 
 class ElfreinaMesh : public DxMesh {
 public:
-	ElfreinaMesh() {}
-	virtual ~ElfreinaMesh() {}
-	virtual bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader);
-	virtual bool CreateFromFileInLoadThread(std::wstring path);
-	virtual std::wstring GetPath();
-	virtual void Render();
+	ElfreinaMesh() = default;
+	~ElfreinaMesh() override = default;
+	bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader) override;
+	bool CreateFromFileInLoadThread(const std::wstring& path) override;
+	std::wstring GetPath() override;
+	void Render() override;
 	virtual void Render(std::wstring nameAnime, int time);
 
 	gstd::ref_count_ptr<RenderBlocks> CreateRenderBlocks();
-	gstd::ref_count_ptr<RenderBlocks> CreateRenderBlocks(std::wstring nameAnime, double time);
+	gstd::ref_count_ptr<RenderBlocks> CreateRenderBlocks(const std::wstring& nameAnime, double time);
 
-	gstd::ref_count_ptr<Matrices> CreateAnimationMatrix(std::wstring nameAnime, double time);
-	virtual D3DXMATRIX GetAnimationMatrix(std::wstring nameAnime, double time, std::wstring nameBone);
+	gstd::ref_count_ptr<Matrices> CreateAnimationMatrix(const std::wstring& nameAnime, double time);
+	D3DXMATRIX GetAnimationMatrix(const std::wstring& nameAnime, double time, const std::wstring& nameBone) override;
 
 protected:
 	double _CalcFrameToTime(double time, gstd::ref_count_ptr<ElfreinaMeshData::AnimationData> anime);

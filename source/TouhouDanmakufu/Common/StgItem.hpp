@@ -19,23 +19,23 @@ public:
 	void Render(int targetPriority);
 
 	void AddItem(ref_count_ptr<StgItemObject>::unsync obj) { listObj_.push_back(obj); }
-	int GetItemCount() { return listObj_.size(); }
+	int GetItemCount() const { return listObj_.size(); }
 
 	SpriteList2D* GetItemRenderer() { return listSpriteItem_.GetPointer(); }
 	SpriteList2D* GetDigitRenderer() { return listSpriteDigit_.GetPointer(); }
 	std::vector<bool> GetValidRenderPriorityList();
 
 	StgItemDataList* GetItemDataList() { return listItemData_.GetPointer(); }
-	bool LoadItemData(std::wstring path, bool bReload = false);
+	bool LoadItemData(const std::wstring& path, bool bReload = false);
 
 	ref_count_ptr<StgItemObject>::unsync CreateItem(int type);
 
 	void CollectItemsAll();
 	void CollectItemsByType(int type);
-	void CollectItemsInCircle(DxCircle circle);
+	void CollectItemsInCircle(const DxCircle& circle);
 	void CancelCollectItems();
 
-	bool IsDefaultBonusItemEnable() { return bDefaultBonusItemEnable_; }
+	bool IsDefaultBonusItemEnable() const { return bDefaultBonusItemEnable_; }
 	void SetDefaultBonusItemEnable(bool bEnable) { bDefaultBonusItemEnable_ = bEnable; }
 
 private:
@@ -68,14 +68,14 @@ public:
 	StgItemDataList();
 	virtual ~StgItemDataList();
 
-	int GetTextureCount() { return listTexture_.size(); }
+	int GetTextureCount() const { return listTexture_.size(); }
 	ref_count_ptr<Texture> GetTexture(int index) { return listTexture_[index]; }
-	ref_count_ptr<StgItemRenderer>::unsync GetRenderer(int index, int typeRender) { return listRenderer_[typeRender][index]; }
+	ref_count_ptr<StgItemRenderer>::unsync GetRenderer(int index, int typeRender) const { return listRenderer_[typeRender][index]; }
 	std::vector<ref_count_ptr<StgItemRenderer>::unsync>* GetRendererList(int typeRender) { return &listRenderer_[typeRender]; }
 
-	ref_count_ptr<StgItemData>::unsync GetData(int id) { return (id >= 0 && id < listData_.size()) ? listData_[id] : NULL; }
+	ref_count_ptr<StgItemData>::unsync GetData(int id) const { return (id >= 0 && id < listData_.size()) ? listData_[id] : nullptr; }
 
-	bool AddItemDataList(std::wstring path, bool bReload);
+	bool AddItemDataList(const std::wstring& path, bool bReload);
 
 private:
 	void _ScanItem(std::vector<ref_count_ptr<StgItemData>::unsync>& listData, Scanner& scanner);
@@ -102,12 +102,12 @@ public:
 	StgItemData(StgItemDataList* listItemData);
 	virtual ~StgItemData();
 
-	int GetTextureIndex() { return indexTexture_; }
-	int GetItemType() { return typeItem_; }
-	int GetRenderType() { return typeRender_; }
+	int GetTextureIndex() const { return indexTexture_; }
+	int GetItemType() const { return typeItem_; }
+	int GetRenderType() const { return typeRender_; }
 	RECT GetRect(int frame);
-	RECT GetOut() { return rcOut_; }
-	int GetAlpha() { return alpha_; }
+	RECT GetOut() const { return rcOut_; }
+	int GetAlpha() const { return alpha_; }
 
 	ref_count_ptr<Texture> GetTexture();
 	StgItemRenderer* GetRenderer();
@@ -133,10 +133,10 @@ private:
 class StgItemRenderer : public RenderObjectTLX {
 public:
 	StgItemRenderer();
-	virtual int GetVertexCount();
-	virtual void Render();
-	void AddVertex(VERTEX_TLX& vertex);
-	void AddSquareVertex(VERTEX_TLX* listVertex);
+	int GetVertexCount() const override;
+	void Render() override;
+	void AddVertex(const VERTEX_TLX& vertex);
+	void AddSquareVertex(const VERTEX_TLX* listVertex);
 
 private:
 	int countRenderVertex_;
@@ -165,54 +165,54 @@ public:
 
 public:
 	StgItemObject(StgStageController* stageController);
-	virtual void Work();
-	virtual void Render() {} //一括で描画するためオブジェクト管理での描画はしない
+	void Work() override;
+	void Render() override {} //一括で描画するためオブジェクト管理での描画はしない
 	virtual void RenderOnItemManager(D3DXMATRIX mat);
-	virtual void SetRenderState() {}
+	void SetRenderState() override {}
 	virtual void Activate() {}
 
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) = 0;
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override = 0;
 
-	virtual void SetX(double x)
+	void SetX(double x) override
 	{
 		posX_ = x;
 		DxScriptRenderObject::SetX(x);
 	}
-	virtual void SetY(double y)
+	void SetY(double y) override
 	{
 		posY_ = y;
 		DxScriptRenderObject::SetY(y);
 	}
-	virtual void SetColor(int r, int g, int b);
-	virtual void SetAlpha(int alpha);
+	void SetColor(int r, int g, int b) override;
+	void SetAlpha(int alpha) override;
 	void SetToPosition(POINT pos);
 
-	_int64 GetScore() { return score_; }
-	void SetScore(_int64 score) { score_ = score; }
-	bool IsMoveToPlayer() { return bMoveToPlayer_; }
+	int64_t GetScore() const { return score_; }
+	void SetScore(int64_t score) { score_ = score; }
+	bool IsMoveToPlayer() const { return bMoveToPlayer_; }
 	void SetMoveToPlayer(bool b) { bMoveToPlayer_ = b; }
-	bool IsPermitMoveToPlayer() { return bPermitMoveToPlayer_; }
+	bool IsPermitMoveToPlayer() const { return bPermitMoveToPlayer_; }
 	void SetPermitMoveToPlayer(bool bPermit) { bPermitMoveToPlayer_ = bPermit; }
 	void SetChangeItemScore(bool b) { bChangeItemScore_ = b; }
 
 	int GetMoveType();
 	void SetMoveType(int type);
 
-	int GetItemType() { return typeItem_; }
+	int GetItemType() const { return typeItem_; }
 	void SetItemType(int type) { typeItem_ = type; }
 	StgStageController* GetStageController() { return stageController_; }
 
 protected:
 	void _DeleteInAutoClip();
 	void _CreateScoreItem();
-	void _NotifyEventToPlayerScript(std::vector<long double>& listValue);
-	void _NotifyEventToItemScript(std::vector<long double>& listValue);
+	void _NotifyEventToPlayerScript(const std::vector<long double>& listValue);
+	void _NotifyEventToItemScript(const std::vector<long double>& listValue);
 
 	StgStageController* stageController_;
 	int typeItem_;
 	D3DCOLOR color_;
 
-	_int64 score_;
+	int64_t score_;
 	bool bMoveToPlayer_; //自機移動フラグ
 	bool bPermitMoveToPlayer_; //自機自動回収許可
 	bool bChangeItemScore_;
@@ -221,39 +221,39 @@ protected:
 class StgItemObject_1UP : public StgItemObject {
 public:
 	StgItemObject_1UP(StgStageController* stageController);
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 };
 
 class StgItemObject_Bomb : public StgItemObject {
 public:
 	StgItemObject_Bomb(StgStageController* stageController);
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 };
 
 class StgItemObject_Power : public StgItemObject {
 public:
 	StgItemObject_Power(StgStageController* stageController);
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 };
 
 class StgItemObject_Point : public StgItemObject {
 public:
 	StgItemObject_Point(StgStageController* stageController);
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 };
 
 class StgItemObject_Bonus : public StgItemObject {
 public:
 	StgItemObject_Bonus(StgStageController* stageController);
-	virtual void Work();
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Work() override;
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 };
 
 class StgItemObject_Score : public StgItemObject {
 public:
 	StgItemObject_Score(StgStageController* stageController);
-	virtual void Work();
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Work() override;
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 
 private:
 	int frameDelete_;
@@ -262,15 +262,15 @@ private:
 class StgItemObject_User : public StgItemObject {
 public:
 	StgItemObject_User(StgStageController* stageController);
-	virtual void Work();
-	virtual void RenderOnItemManager(D3DXMATRIX mat);
-	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
+	void Work() override;
+	void RenderOnItemManager(D3DXMATRIX mat) override;
+	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
 
 	void SetImageID(int id);
 
 private:
 	StgItemData* _GetItemData();
-	void _SetVertexPosition(VERTEX_TLX& vertex, float x, float y, float z = 1.0f, float w = 1.0f);
+	void _SetVertexPosition(VERTEX_TLX& vertex, float x, float y, float z = 1.0F, float w = 1.0F);
 	void _SetVertexUV(VERTEX_TLX& vertex, float u, float v);
 	void _SetVertexColorARGB(VERTEX_TLX& vertex, D3DCOLOR color);
 
@@ -293,13 +293,13 @@ public:
 
 public:
 	StgMovePattern_Item(StgMoveObject* target);
-	virtual void Move();
+	void Move() override;
 	int GetType() { return TYPE_OTHER; }
-	virtual double GetSpeed() { return 0; }
-	virtual double GetDirectionAngle() { return 0; }
+	double GetSpeed() const override { return 0; }
+	double GetDirectionAngle() const override { return 0; }
 	void SetToPosition(POINT pos) { posTo_ = pos; }
 
-	int GetItemMoveType() { return typeMove_; }
+	int GetItemMoveType() const { return typeMove_; }
 	void SetItemMoveType(int type) { typeMove_ = type; }
 
 protected:

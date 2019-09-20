@@ -22,7 +22,7 @@ public:
 
 	bool Attach(HWND hWnd); //セット
 	bool Detach(); //解除
-	int GetWindowId() { return idWindow_; }
+	int GetWindowId() const { return idWindow_; }
 
 	virtual void SetBounds(int x, int y, int width, int height) { ::MoveWindow(hWnd_, x, y, width, height, TRUE); }
 	RECT GetClientRect()
@@ -44,12 +44,12 @@ public:
 		return rect.bottom - rect.top;
 	}
 
-	void SetWindowEnable(bool bEnable) { ::EnableWindow(hWnd_, bEnable); }
+	void SetWindowEnable(bool bEnable) { ::EnableWindow(hWnd_, static_cast<BOOL>(bEnable)); }
 	void SetWindowVisible(bool bVisible) { ::ShowWindow(hWnd_, bVisible ? SW_SHOW : SW_HIDE); }
-	bool IsWindowVisible() { return ::IsWindowVisible(hWnd_) ? true : false; }
+	bool IsWindowVisible() { return ::IsWindowVisible(hWnd_) != 0 ? true : false; }
 	void SetParentWindow(HWND hParentWnd)
 	{
-		if (hWnd_ != NULL)
+		if (hWnd_ != nullptr)
 			::SetParent(hWnd_, hParentWnd);
 	}
 	DWORD SetWindowStyle(DWORD style)
@@ -94,8 +94,8 @@ public:
 		style_ = 0;
 		styleEx_ = 0;
 	}
-	virtual ~Style() {}
-	DWORD GetStyle() { return style_; }
+	virtual ~Style() = default;
+	DWORD GetStyle() const { return style_; }
 	DWORD SetStyle(DWORD style)
 	{
 		style_ |= style;
@@ -107,7 +107,7 @@ public:
 		return style_;
 	}
 
-	DWORD GetStyleEx() { return styleEx_; }
+	DWORD GetStyleEx() const { return styleEx_; }
 	DWORD SetStyleEx(DWORD style)
 	{
 		styleEx_ |= style;
@@ -147,7 +147,7 @@ public:
 	void Create(HWND hWndParent);
 
 protected:
-	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam); //オーバーライド用プロシージャ
+	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override; //オーバーライド用プロシージャ
 };
 
 /**********************************************************
@@ -157,7 +157,7 @@ class WLabel : public WindowBase {
 public:
 	WLabel();
 	void Create(HWND hWndParent);
-	void SetText(std::wstring text);
+	void SetText(const std::wstring& text);
 	void SetTextColor(int color);
 	void SetBackColor(int color);
 
@@ -167,7 +167,7 @@ public:
 private:
 	int colorText_;
 	int colorBack_;
-	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 };
 
 /**********************************************************
@@ -179,8 +179,8 @@ public:
 
 public:
 	void Create(HWND hWndParent);
-	void Create(HWND hWndParent, WButton::Style& style);
-	void SetText(std::wstring text);
+	void Create(HWND hWndParent, const WButton::Style& style);
+	void SetText(const std::wstring& text);
 	bool IsChecked();
 };
 class WButton::Style : public WindowBase::Style {
@@ -192,7 +192,7 @@ class WButton::Style : public WindowBase::Style {
 class WGroupBox : public WindowBase {
 public:
 	void Create(HWND hWndParent);
-	void SetText(std::wstring text);
+	void SetText(const std::wstring& text);
 };
 
 /**********************************************************
@@ -204,9 +204,9 @@ public:
 
 public:
 	void Create(HWND hWndParent, WEditBox::Style& style);
-	void SetText(std::wstring text);
-	std::wstring GetText();
-	int GetTextLength();
+	void SetText(const std::wstring& text);
+	std::wstring GetText() const;
+	int GetTextLength() const;
 	int GetMaxTextLength() { return ::SendMessage(hWnd_, EM_GETLIMITTEXT, 0, 0); }
 	void SetMaxTextLength(int length) { ::SendMessage(hWnd_, EM_SETLIMITTEXT, (WPARAM)length, 0); }
 };
@@ -221,14 +221,14 @@ public:
 	class Style;
 
 public:
-	void Create(HWND hWndParent, WListBox::Style& style);
+	void Create(HWND hWndParent, const WListBox::Style& style);
 
 	void Clear();
 	int GetCount();
 	void SetSelectedIndex(int index);
 	int GetSelectedIndex();
-	void AddString(std::wstring str);
-	void InsertString(int index, std::wstring str);
+	void AddString(const std::wstring& str);
+	void InsertString(int index, const std::wstring& str);
 	void DeleteString(int index);
 	std::wstring GetText(int index);
 };
@@ -243,7 +243,7 @@ public:
 	class Style;
 
 public:
-	void Create(HWND hWndParent, WComboBox::Style& style);
+	void Create(HWND hWndParent, const WComboBox::Style& style);
 
 	void SetItemHeight(int height);
 	void SetDropDownListWidth(int width);
@@ -253,8 +253,8 @@ public:
 	void SetSelectedIndex(int index);
 	int GetSelectedIndex();
 	std::wstring GetSelectedText();
-	void AddString(std::wstring str);
-	void InsertString(int index, std::wstring str);
+	void AddString(const std::wstring& str);
+	void InsertString(int index, const std::wstring& str);
 };
 class WComboBox::Style : public WindowBase::Style {
 };
@@ -267,18 +267,18 @@ public:
 	class Style;
 
 public:
-	void Create(HWND hWndParent, Style& style);
+	void Create(HWND hWndParent, const Style& style);
 	void Clear();
-	void AddColumn(int cx, int sub, DWORD fmt, std::wstring text);
-	void AddColumn(int cx, int sub, std::wstring text) { AddColumn(cx, sub, LVCFMT_LEFT, text); }
-	void SetColumnText(int cx, std::wstring text);
-	void AddRow(std::wstring text);
-	void SetText(int row, int column, std::wstring text);
+	void AddColumn(int cx, int sub, DWORD fmt, const std::wstring& text);
+	void AddColumn(int cx, int sub, const std::wstring& text) { AddColumn(cx, sub, LVCFMT_LEFT, text); }
+	void SetColumnText(int cx, const std::wstring& text);
+	void AddRow(const std::wstring& text);
+	void SetText(int row, int column, const std::wstring& text);
 	void DeleteRow(int row);
 	int GetRowCount();
 	std::wstring GetText(int row, int column);
-	bool IsExistsInColumn(std::wstring value, int column);
-	int GetIndexInColumn(std::wstring value, int column);
+	bool IsExistsInColumn(const std::wstring& value, int column);
+	int GetIndexInColumn(const std::wstring& value, int column);
 	void SetSelectedRow(int index);
 	int GetSelectedRow();
 	void ClearSelection();
@@ -286,7 +286,7 @@ public:
 class WListView::Style : public WindowBase::Style {
 public:
 	Style() { styleListViewEx_ = 0; }
-	DWORD GetListViewStyleEx() { return styleListViewEx_; }
+	DWORD GetListViewStyleEx() const { return styleListViewEx_; }
 	DWORD SetListViewStyleEx(DWORD style)
 	{
 		styleListViewEx_ |= style;
@@ -315,11 +315,11 @@ public:
 
 public:
 	WTreeView();
-	~WTreeView();
-	void Create(HWND hWndParent, Style& style);
+	~WTreeView() override;
+	void Create(HWND hWndParent, const Style& style);
 	void Clear()
 	{
-		itemRoot_ = NULL;
+		itemRoot_ = nullptr;
 		TreeView_DeleteAllItems(hWnd_);
 	}
 	void CreateRootItem(ItemStyle& style);
@@ -365,10 +365,10 @@ class WTreeView::Style : public WindowBase::Style {
 **********************************************************/
 class WTabControll : public WindowBase {
 public:
-	~WTabControll();
+	~WTabControll() override;
 	void Create(HWND hWndParent);
-	void AddTab(std::wstring text);
-	void AddTab(std::wstring text, ref_count_ptr<WPanel> panel);
+	void AddTab(const std::wstring& text);
+	void AddTab(const std::wstring& text, ref_count_ptr<WPanel> panel);
 	void ShowPage();
 	int GetCurrentPage() { return TabCtrl_GetCurSel(hWnd_); }
 	void SetCurrentPage(int page)
@@ -377,11 +377,11 @@ public:
 		ShowPage();
 	}
 	ref_count_ptr<WPanel> GetPanel(int page) { return vectPanel_[page]; }
-	int GetPageCount() { return vectPanel_.size(); }
-	virtual void LocateParts();
+	int GetPageCount() const { return vectPanel_.size(); }
+	void LocateParts() override;
 
 protected:
-	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
 private:
 	std::vector<ref_count_ptr<WPanel>> vectPanel_;
@@ -410,19 +410,19 @@ public:
 
 public:
 	WSplitter();
-	~WSplitter();
+	~WSplitter() override;
 	void Create(HWND hWndParent, SplitType type);
 	void SetRatioX(float ratio) { ratioX_ = ratio; }
-	float GetRatioX() { return ratioX_; }
+	float GetRatioX() const { return ratioX_; }
 	void SetRatioY(float ratio) { ratioY_ = ratio; }
-	float GetRatioY() { return ratioY_; }
+	float GetRatioY() const { return ratioY_; }
 
 protected:
 	SplitType type_;
 	bool bCapture_;
 	float ratioX_;
 	float ratioY_;
-	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 };
 
 /**********************************************************

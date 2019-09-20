@@ -14,27 +14,24 @@ StgIntersectionManager::StgIntersectionManager()
 
 	_CreatePool(2);
 	listSpace_.resize(3);
-	for (int iSpace = 0; iSpace < listSpace_.size(); iSpace++) {
-		StgIntersectionSpace* space = new StgIntersectionSpace();
-		space->Initialize(4, -100, -100, screenWidth + 100, screenHeight + 100);
-		listSpace_[iSpace] = space;
+	for (auto& space : listSpace_) {
+		auto* newSpace = new StgIntersectionSpace();
+		newSpace->Initialize(4, -100, -100, screenWidth + 100, screenHeight + 100);
+		space = newSpace;
 	}
 }
-StgIntersectionManager::~StgIntersectionManager()
-{
-}
+StgIntersectionManager::~StgIntersectionManager() = default;
+
 void StgIntersectionManager::Work()
 {
 	listEnemyTargetPoint_ = listEnemyTargetPointNext_;
 	listEnemyTargetPointNext_.clear();
 
 	int totalCheck = 0;
-	std::vector<ref_count_ptr<StgIntersectionSpace>>::iterator itr = listSpace_.begin();
-	for (; itr != listSpace_.end(); itr++) {
-		StgIntersectionSpace* space = (*itr).GetPointer();
+	for (auto& space : listSpace_) {
 		ref_count_ptr<StgIntersectionCheckList>::unsync listCheck = space->CreateIntersectionCheckList();
 		int countCheck = listCheck->GetCheckCount();
-		for (int iCheck = 0; iCheck < countCheck; iCheck++) {
+		for (int iCheck = 0; iCheck < countCheck; ++iCheck) {
 			//Getは1回しか使用できません
 			ref_count_ptr<StgIntersectionTarget>::unsync targetA = listCheck->GetTargetA(iCheck);
 			ref_count_ptr<StgIntersectionTarget>::unsync targetB = listCheck->GetTargetB(iCheck);
@@ -46,20 +43,20 @@ void StgIntersectionManager::Work()
 			//Grazeの関係で、先に自機の当たり判定をする必要がある。
 			ref_count_weak_ptr<StgIntersectionObject>::unsync objA = targetA->GetObject();
 			ref_count_weak_ptr<StgIntersectionObject>::unsync objB = targetB->GetObject();
-			if (objA != NULL) {
+			if (objA != nullptr) {
 				objA->Intersect(targetA, targetB);
 				objA->SetIntersected();
 
-				if (objB != NULL) {
+				if (objB != nullptr) {
 					int idObject = objB->GetDxScriptObjectID();
 					objA->AddIntersectedId(idObject);
 				}
 			}
 
-			if (objB != NULL) {
+			if (objB != nullptr) {
 				objB->Intersect(targetB, targetA);
 				objB->SetIntersected();
-				if (objA != NULL) {
+				if (objA != nullptr) {
 					int idObject = objA->GetDxScriptObjectID();
 					objB->AddIntersectedId(idObject);
 				}
@@ -103,11 +100,11 @@ void StgIntersectionManager::AddTarget(ref_count_ptr<StgIntersectionTarget>::uns
 		bool bEraseShot = false;
 		if (type == StgIntersectionTarget::TYPE_PLAYER_SHOT) {
 			StgShotObject* shot = (StgShotObject*)target->GetObject().GetPointer();
-			if (shot != NULL)
+			if (shot != nullptr)
 				bEraseShot = shot->IsEraseShot();
 		} else if (type == StgIntersectionTarget::TYPE_PLAYER_SPELL) {
 			StgPlayerSpellObject* spell = (StgPlayerSpellObject*)target->GetObject().GetPointer();
-			if (spell != NULL)
+			if (spell != nullptr)
 				bEraseShot = spell->IsEraseShot();
 		}
 		if (bEraseShot)
@@ -119,9 +116,9 @@ void StgIntersectionManager::AddTarget(ref_count_ptr<StgIntersectionTarget>::uns
 		listSpace_[SPACE_PLAYERSOHT_ENEMY]->RegistTargetB(target);
 
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync circle = ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(target);
-		if (circle != NULL) {
+		if (circle != nullptr) {
 			ref_count_weak_ptr<StgEnemyObject>::unsync objEnemy = ref_count_weak_ptr<StgEnemyObject>::unsync::DownCast(target->GetObject());
-			if (objEnemy != NULL) {
+			if (objEnemy != nullptr) {
 				int idObject = objEnemy->GetObjectID();
 				POINT pos = { (int)circle->GetCircle().GetX(), (int)circle->GetCircle().GetY() };
 				StgIntersectionTargetPoint tp;
@@ -137,7 +134,6 @@ void StgIntersectionManager::AddTarget(ref_count_ptr<StgIntersectionTarget>::uns
 		listSpace_[SPACE_PLAYER_ENEMY]->RegistTargetB(target);
 		listSpace_[SPACE_PLAYERSHOT_ENEMYSHOT]->RegistTargetB(target);
 		break;
-
 	}
 }
 void StgIntersectionManager::AddEnemyTargetToShot(ref_count_ptr<StgIntersectionTarget>::unsync target)
@@ -151,9 +147,9 @@ void StgIntersectionManager::AddEnemyTargetToShot(ref_count_ptr<StgIntersectionT
 		listSpace_[SPACE_PLAYERSOHT_ENEMY]->RegistTargetB(target);
 
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync circle = ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(target);
-		if (circle != NULL) {
+		if (circle != nullptr) {
 			ref_count_weak_ptr<StgEnemyObject>::unsync objEnemy = ref_count_weak_ptr<StgEnemyObject>::unsync::DownCast(target->GetObject());
-			if (objEnemy != NULL) {
+			if (objEnemy != nullptr) {
 				int idObject = objEnemy->GetObjectID();
 				POINT pos = { (int)circle->GetCircle().GetX(), (int)circle->GetCircle().GetY() };
 				StgIntersectionTargetPoint tp;
@@ -191,8 +187,8 @@ bool StgIntersectionManager::IsIntersected(ref_count_ptr<StgIntersectionTarget>:
 		ref_count_ptr<StgIntersectionTarget_Circle>::unsync c2 = ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(target2);
 		res = DxMath::IsIntersected(c1->GetCircle(), c2->GetCircle());
 	} else if ((shape1 == StgIntersectionTarget::SHAPE_CIRCLE && shape2 == StgIntersectionTarget::SHAPE_LINE) || (shape1 == StgIntersectionTarget::SHAPE_LINE && shape2 == StgIntersectionTarget::SHAPE_CIRCLE)) {
-		ref_count_ptr<StgIntersectionTarget_Circle>::unsync c = NULL;
-		ref_count_ptr<StgIntersectionTarget_Line>::unsync l = NULL;
+		ref_count_ptr<StgIntersectionTarget_Circle>::unsync c = nullptr;
+		ref_count_ptr<StgIntersectionTarget_Line>::unsync l = nullptr;
 		if (shape1 == StgIntersectionTarget::SHAPE_CIRCLE && shape2 == StgIntersectionTarget::SHAPE_LINE) {
 			c = ref_count_ptr<StgIntersectionTarget_Circle>::unsync::DownCast(target1);
 			l = ref_count_ptr<StgIntersectionTarget_Line>::unsync::DownCast(target2);
@@ -209,7 +205,7 @@ bool StgIntersectionManager::IsIntersected(ref_count_ptr<StgIntersectionTarget>:
 	}
 	return res;
 }
-bool StgIntersectionManager::IsIntersected(DxCircle& circle, DxWidthLine& line)
+bool StgIntersectionManager::IsIntersected(const DxCircle& circle, const DxWidthLine& line)
 {
 	//先端もしくは終端が円内にあるかを調べる
 	{
@@ -268,19 +264,19 @@ bool StgIntersectionManager::IsIntersected(DxCircle& circle, DxWidthLine& line)
 	bool res = e < r;
 	return res;
 }
-bool StgIntersectionManager::IsIntersected(DxWidthLine& line1, DxWidthLine& line2)
+bool StgIntersectionManager::IsIntersected(const DxWidthLine& line1, const DxWidthLine& line2)
 {
 	return false;
 }
 void StgIntersectionManager::_ResetPoolObject(gstd::ref_count_ptr<StgIntersectionTarget>::unsync& obj)
 {
 	//	ELogger::WriteTop(StringUtility::Format("_ResetPoolObject:start:%s)", obj->GetInfoAsString().c_str()));
-	obj->obj_ = NULL;
+	obj->obj_ = nullptr;
 	//	ELogger::WriteTop("_ResetPoolObject:end");
 }
 gstd::ref_count_ptr<StgIntersectionTarget>::unsync StgIntersectionManager::_CreatePoolObject(int type)
 {
-	gstd::ref_count_ptr<StgIntersectionTarget>::unsync res = NULL;
+	gstd::ref_count_ptr<StgIntersectionTarget>::unsync res = nullptr;
 	switch (type) {
 	case StgIntersectionTarget::SHAPE_CIRCLE:
 		res = new StgIntersectionTarget_Circle();
@@ -294,15 +290,13 @@ gstd::ref_count_ptr<StgIntersectionTarget>::unsync StgIntersectionManager::_Crea
 void StgIntersectionManager::CheckDeletedObject(std::string funcName)
 {
 	int countType = listUsedPool_.size();
-	for (int iType = 0; iType < countType; iType++) {
+	for (int iType = 0; iType < countType; ++iType) {
 		std::list<gstd::ref_count_ptr<StgIntersectionTarget, false>>* listUsed = &listUsedPool_[iType];
 		std::vector<gstd::ref_count_ptr<StgIntersectionTarget, false>>* listCache = &listCachePool_[iType];
 
-		std::list<gstd::ref_count_ptr<StgIntersectionTarget, false>>::iterator itr = listUsed->begin();
-		for (; itr != listUsed->end(); itr++) {
-			gstd::ref_count_ptr<StgIntersectionTarget, false> target = (*itr);
+		for (auto& target : *listUsed) {
 			ref_count_weak_ptr<DxScriptObjectBase>::unsync dxObj = ref_count_weak_ptr<DxScriptObjectBase>::unsync::DownCast(target->GetObject());
-			if (dxObj != NULL && dxObj->IsDeleted()) {
+			if (dxObj != nullptr && dxObj->IsDeleted()) {
 				ELogger::WriteTop(StringUtility::Format(L"%s(deleted):%s", funcName.c_str(), target->GetInfoAsString().c_str()));
 			}
 		}
@@ -330,9 +324,7 @@ StgIntersectionSpace::StgIntersectionSpace()
 
 	listCheck_ = new StgIntersectionCheckList();
 }
-StgIntersectionSpace::~StgIntersectionSpace()
-{
-}
+StgIntersectionSpace::~StgIntersectionSpace() = default;
 bool StgIntersectionSpace::Initialize(int level, int left, int top, int right, int bottom)
 {
 	// 設定最高レベル以上の空間は作れない
@@ -341,8 +333,8 @@ bool StgIntersectionSpace::Initialize(int level, int left, int top, int right, i
 
 	countCell_ = (listCountLevel_[level + 1] - 1) / 3;
 	listCell_.resize(countCell_);
-	for (int iCell = 0; iCell < listCell_.size(); iCell++) {
-		listCell_[iCell].resize(2);
+	for (auto& cell : listCell_) {
+		cell.resize(2);
 	}
 
 	spaceLeft_ = left;
@@ -380,9 +372,9 @@ bool StgIntersectionSpace::RegistTarget(int type, ref_count_ptr<StgIntersectionT
 
 void StgIntersectionSpace::ClearTarget()
 {
-	for (int iCell = 0; iCell < listCell_.size(); iCell++) {
-		for (int iType = 0; iType < listCell_[iCell].size(); iType++) {
-			listCell_[iCell][iType].clear();
+	for (auto& cell : listCell_) {
+		for (auto& cellType : cell) {
+			cellType.clear();
 		}
 	}
 }
@@ -401,37 +393,28 @@ void StgIntersectionSpace::_WriteIntersectionCheckList(int indexSpace, ref_count
 {
 	std::vector<std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>>& listCell = listCell_[indexSpace];
 	int typeCount = listCell.size();
-	for (int iType1 = 0; iType1 < typeCount; iType1++) {
+	for (int iType1 = 0; iType1 < typeCount; ++iType1) {
 		std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>& list1 = listCell[iType1];
-		int iType2 = 0;
-		for (iType2 = iType1 + 1; iType2 < typeCount; iType2++) {
+		for (int iType2 = iType1 + 1; iType2 < typeCount; ++iType2) {
 			std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>& list2 = listCell[iType2];
 
 			// ① 空間内のオブジェクト同士の衝突リスト作成
-			std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>::iterator itr1 = list1.begin();
-			for (; itr1 != list1.end(); itr1++) {
-				std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>::iterator itr2 = list2.begin();
-				for (; itr2 != list2.end(); itr2++) {
-					ref_count_ptr<StgIntersectionTarget>::unsync target1 = (*itr1);
-					ref_count_ptr<StgIntersectionTarget>::unsync target2 = (*itr2);
+			for (auto& target1 : list1) {
+				for (auto& target2 : list2) {
 					listCheck->Add(target1, target2);
 				}
 			}
 		}
 
 		std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>& stack = listStack[iType1];
-		for (iType2 = 0; iType2 < typeCount; iType2++) {
+		for (int iType2 = 0; iType2 < typeCount; ++iType2) {
 			if (iType1 == iType2)
 				continue;
 			std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>& list2 = listCell[iType2];
 
 			// ② 衝突スタックとの衝突リスト作成
-			std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>::iterator itrStack = stack.begin();
-			for (; itrStack != stack.end(); itrStack++) {
-				std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>::iterator itr2 = list2.begin();
-				for (; itr2 != list2.end(); itr2++) {
-					ref_count_ptr<StgIntersectionTarget>::unsync target2 = (*itr2);
-					ref_count_ptr<StgIntersectionTarget>::unsync targetStack = (*itrStack);
+			for (auto& targetStack : stack) {
+				for (auto& target2 : list2) {
 					if (iType1 < iType2)
 						listCheck->Add(targetStack, target2);
 					else
@@ -442,19 +425,16 @@ void StgIntersectionSpace::_WriteIntersectionCheckList(int indexSpace, ref_count
 	}
 
 	//空間内のオブジェクトをスタックに追加
-	int iType = 0;
-	for (iType = 0; iType < typeCount; iType++) {
+	for (int iType = 0; iType < typeCount; ++iType) {
 		std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>& list = listCell[iType];
 		std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>& stack = listStack[iType];
-		std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>::iterator itr = list.begin();
-		for (; itr != list.end(); itr++) {
-			ref_count_ptr<StgIntersectionTarget>::unsync target = (*itr);
+		for (auto& target : list) {
 			stack.push_back(target);
 		}
 	}
 
 	// ③ 子空間に移動
-	for (int iChild = 0; iChild < 4; iChild++) {
+	for (int iChild = 0; iChild < 4; ++iChild) {
 		int indexChild = indexSpace * 4 + 1 + iChild;
 		if (indexChild < countCell_) {
 			_WriteIntersectionCheckList(indexChild, listCheck, listStack);
@@ -462,11 +442,10 @@ void StgIntersectionSpace::_WriteIntersectionCheckList(int indexSpace, ref_count
 	}
 
 	//スタックから解除
-	for (iType = 0; iType < typeCount; iType++) {
+	for (int iType = 0; iType < typeCount; ++iType) {
 		std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>& list = listCell[iType];
 		std::vector<ref_count_ptr<StgIntersectionTarget>::unsync>& stack = listStack[iType];
-		int count = list.size();
-		for (int iCount = 0; iCount < count; iCount++) {
+		for (int iCount = 0; iCount < list.size(); ++iCount) {
 			stack.pop_back();
 		}
 	}
@@ -521,9 +500,9 @@ unsigned int StgIntersectionSpace::_GetPointElem(float pos_x, float pos_y)
 //StgIntersectionObject
 void StgIntersectionObject::ClearIntersectionRelativeTarget()
 {
-	for (int iTarget = 0; iTarget < listRelativeTarget_.size(); iTarget++) {
-		ref_count_weak_ptr<StgIntersectionTarget>::unsync target = listRelativeTarget_[iTarget];
-		target->SetObject(NULL);
+	for (auto& iTarget : listRelativeTarget_) {
+		ref_count_weak_ptr<StgIntersectionTarget>::unsync target = iTarget;
+		target->SetObject(nullptr);
 	}
 	listRelativeTarget_.clear();
 }
@@ -532,10 +511,10 @@ void StgIntersectionObject::AddIntersectionRelativeTarget(ref_count_ptr<StgInter
 	listRelativeTarget_.push_back(target);
 	int shape = target->GetShape();
 	if (shape == StgIntersectionTarget::SHAPE_CIRCLE) {
-		StgIntersectionTarget_Circle* tTarget = (StgIntersectionTarget_Circle*)target.GetPointer();
+		auto* tTarget = (StgIntersectionTarget_Circle*)target.GetPointer();
 		listOrgCircle_.push_back(tTarget->GetCircle());
 	} else if (shape == StgIntersectionTarget::SHAPE_LINE) {
-		StgIntersectionTarget_Line* tTarget = (StgIntersectionTarget_Line*)target.GetPointer();
+		auto* tTarget = (StgIntersectionTarget_Line*)target.GetPointer();
 		listOrgLine_.push_back(tTarget->GetLine());
 	}
 }
@@ -543,11 +522,10 @@ void StgIntersectionObject::UpdateIntersectionRelativeTarget(int posX, int posY,
 {
 	int iCircle = 0;
 	int iLine = 0;
-	for (int iTarget = 0; iTarget < listRelativeTarget_.size(); iTarget++) {
-		ref_count_ptr<StgIntersectionTarget>::unsync target = listRelativeTarget_[iTarget];
+	for (auto& target : listRelativeTarget_) {
 		int shape = target->GetShape();
 		if (shape == StgIntersectionTarget::SHAPE_CIRCLE) {
-			StgIntersectionTarget_Circle* tTarget = (StgIntersectionTarget_Circle*)target.GetPointer();
+			auto* tTarget = (StgIntersectionTarget_Circle*)target.GetPointer();
 			DxCircle org = listOrgCircle_[iCircle];
 			int px = org.GetX() + posX;
 			int py = org.GetY() + posY;
@@ -556,25 +534,24 @@ void StgIntersectionObject::UpdateIntersectionRelativeTarget(int posX, int posY,
 			circle.SetX(px);
 			circle.SetY(py);
 			tTarget->SetCircle(circle);
-			iCircle++;
+			++iCircle;
 		} else if (shape == StgIntersectionTarget::SHAPE_LINE) {
-			StgIntersectionTarget_Line* tTarget = (StgIntersectionTarget_Line*)target.GetPointer();
-			iLine++;
+			auto* tTarget = (StgIntersectionTarget_Line*)target.GetPointer();
+			++iLine;
 		}
 	}
 }
 void StgIntersectionObject::RegistIntersectionRelativeTarget(StgIntersectionManager* manager)
 {
-	for (int iTarget = 0; iTarget < listRelativeTarget_.size(); iTarget++) {
-		ref_count_ptr<StgIntersectionTarget>::unsync target = listRelativeTarget_[iTarget];
+	for (auto& target : listRelativeTarget_) {
 		manager->AddTarget(target);
 	}
 }
 int StgIntersectionObject::GetDxScriptObjectID()
 {
 	int res = DxScript::ID_INVALID;
-	StgEnemyObject* objEnemy = dynamic_cast<StgEnemyObject*>(this);
-	if (objEnemy != NULL) {
+	auto* objEnemy = dynamic_cast<StgEnemyObject*>(this);
+	if (objEnemy != nullptr) {
 		res = objEnemy->GetObjectID();
 	}
 
@@ -586,7 +563,7 @@ int StgIntersectionObject::GetDxScriptObjectID()
 **********************************************************/
 void StgIntersectionTarget::ClearObjectIntersectedIdList()
 {
-	if (obj_ != NULL) {
+	if (obj_ != nullptr) {
 		obj_->ClearIntersectedIdList();
 	}
 }
@@ -627,11 +604,11 @@ std::wstring StgIntersectionTarget::GetInfoAsString()
 	res += StringUtility::Format(L"address[%08x] ", (int)this);
 
 	res += L"obj[";
-	if (obj_ == NULL) {
+	if (obj_ == nullptr) {
 		res += L"NULL";
 	} else {
 		ref_count_weak_ptr<DxScriptObjectBase>::unsync dxObj = ref_count_weak_ptr<DxScriptObjectBase>::unsync::DownCast(obj_);
-		if (dxObj == NULL)
+		if (dxObj == nullptr)
 			res += L"UNKNOWN";
 		else {
 			int address = (int)dxObj.GetPointer();

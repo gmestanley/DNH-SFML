@@ -19,12 +19,12 @@ public:
 	virtual ~Logger();
 	virtual bool Initialize() { return true; }
 	void AddLogger(ref_count_ptr<Logger> logger) { listLogger_.push_back(logger); }
-	virtual void Write(std::wstring str);
+	virtual void Write(const std::wstring& str);
 
 	static void SetTop(Logger* logger) { top_ = logger; }
-	static void WriteTop(std::wstring str)
+	static void WriteTop(const std::wstring& str)
 	{
-		if (top_ != NULL)
+		if (top_ != nullptr)
 			top_->Write(str);
 	} //トップのロガに出力します
 
@@ -32,8 +32,8 @@ protected:
 	static Logger* top_;
 	gstd::CriticalSection lock_;
 	std::list<ref_count_ptr<Logger>> listLogger_; //子のロガ
-	virtual void _WriteChild(SYSTEMTIME& time, std::wstring str);
-	virtual void _Write(SYSTEMTIME& time, std::wstring str) = 0;
+	virtual void _WriteChild(const SYSTEMTIME& time, const std::wstring& str);
+	virtual void _Write(const SYSTEMTIME& time, const std::wstring& str) = 0;
 };
 
 /**********************************************************
@@ -42,11 +42,11 @@ protected:
 class FileLogger : public Logger {
 public:
 	FileLogger();
-	~FileLogger();
+	~FileLogger() override;
 	void Clear();
 	bool Initialize(bool bEnable = true);
-	bool Initialize(std::wstring path, bool bEnable = true);
-	bool SetPath(std::wstring path);
+	bool Initialize(std::wstring& path, bool bEnable = true);
+	bool SetPath(const std::wstring& path);
 	void SetMaxFileSize(int size) { sizeMax_ = size; }
 
 protected:
@@ -54,7 +54,7 @@ protected:
 	std::wstring path_;
 	std::wstring path2_;
 	int sizeMax_;
-	virtual void _Write(SYSTEMTIME& systemTime, std::wstring str);
+	void _Write(const SYSTEMTIME& systemTime, const std::wstring& str) override;
 	void _CreateFile(File& file);
 };
 
@@ -86,14 +86,14 @@ public:
 
 public:
 	WindowLogger();
-	~WindowLogger();
+	~WindowLogger() override;
 	bool Initialize(bool bEnable = true);
 	void SaveState();
 	void LoadState();
-	void SetInfo(int row, std::wstring textInfo, std::wstring textData);
-	bool AddPanel(ref_count_ptr<Panel> panel, std::wstring name);
+	void SetInfo(int row, const std::wstring& textInfo, const std::wstring& textData);
+	bool AddPanel(ref_count_ptr<Panel> panel, const std::wstring& name);
 
-	void ShowLogWindow();
+	void ShowLogWindow() const;
 	static void InsertOpenCommandInSystemMenu(HWND hWnd);
 
 protected:
@@ -113,8 +113,8 @@ protected:
 
 	void _Run();
 	void _CreateWindow();
-	virtual void _Write(SYSTEMTIME& systemTime, std::wstring str);
-	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	void _Write(const SYSTEMTIME& systemTime, const std::wstring& str) override;
+	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 };
 class WindowLogger::WindowThread : public gstd::Thread, public gstd::InnerClass<WindowLogger> {
 	friend WindowLogger;
@@ -136,12 +136,12 @@ protected:
 class WindowLogger::LogPanel : public WindowLogger::Panel {
 public:
 	LogPanel();
-	~LogPanel();
-	virtual void LocateParts();
-	void AddText(std::wstring text);
+	~LogPanel() override;
+	void LocateParts() override;
+	void AddText(const std::wstring& text);
 
 protected:
-	virtual bool _AddedLogger(HWND hTab);
+	bool _AddedLogger(HWND hTab) override;
 
 private:
 	WEditBox wndEdit_;
@@ -150,12 +150,12 @@ private:
 class WindowLogger::InfoPanel : public WindowLogger::Panel {
 public:
 	InfoPanel();
-	~InfoPanel();
-	virtual void LocateParts();
-	void SetInfo(int row, std::wstring textInfo, std::wstring textData);
+	~InfoPanel() override;
+	void LocateParts() override;
+	void SetInfo(int row, const std::wstring& textInfo, const std::wstring& textData);
 
 protected:
-	virtual bool _AddedLogger(HWND hTab);
+	bool _AddedLogger(HWND hTab) override;
 
 private:
 	enum {
@@ -168,7 +168,7 @@ private:
 class WindowLogger::InfoCollectThread : public Thread {
 public:
 	InfoCollectThread(ref_count_ptr<WStatusBar> wndStatus);
-	~InfoCollectThread();
+	~InfoCollectThread() override;
 
 protected:
 	//CPU情報構造体
@@ -187,11 +187,11 @@ protected:
 	};
 	ref_count_ptr<WStatusBar> wndStatus_;
 	CpuInfo infoCpu_;
-	virtual void _Run();
+	void _Run() override;
 	CpuInfo _GetCpuInformation();
 	double _GetCpuPerformance();
 };
 
-} // namespace gstd;
+}  // namespace gstd
 
 #endif

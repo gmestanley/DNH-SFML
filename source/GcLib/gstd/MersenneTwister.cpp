@@ -19,16 +19,14 @@ const cardinal LOWER_MASK = 0x7fffffffUL;
 #define FIX32(value) value // 32bitの型が無い環境では value & 0xffffffffUL とか
 static cardinal const mag01[2] = { 0x0UL, MATRIX_A };
 
-MersenneTwister::MersenneTwister()
-	: actualTwister(0)
-	, seed(0)
-{
-}
+MersenneTwister::MersenneTwister() = default;
 MersenneTwister::MersenneTwister(unsigned long s)
 	: actualTwister(s)
 	, seed(s)
 {
 }
+MersenneTwister::~MersenneTwister() = default;
+
 unsigned long MersenneTwister::_GenrandInt32()
 {
 	std::uniform_int_distribution<long> new_param(0, maxInt);
@@ -61,14 +59,14 @@ long MersenneTwister::GetInt(long min, long max)
 	std::uniform_int_distribution<int> new_param(min, max);
 	return new_param(actualTwister);
 }
-_int64 MersenneTwister::GetInt64()
+int64_t MersenneTwister::GetInt64()
 {
-	std::uniform_int_distribution<_int64> new_param(0, maxInt64);
+	std::uniform_int_distribution<int64_t> new_param(0, maxInt64);
 	return new_param(actualTwister);
 }
-_int64 MersenneTwister::GetInt64(_int64 min, _int64 max)
+int64_t MersenneTwister::GetInt64(int64_t min, int64_t max)
 {
-	std::uniform_int_distribution<_int64> new_param(min, max);
+	std::uniform_int_distribution<int64_t> new_param(min, max);
 	return new_param(actualTwister);
 }
 long double MersenneTwister::GetReal()
