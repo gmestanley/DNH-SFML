@@ -142,6 +142,7 @@ public:
 	int GetSize() { return size_; }
 	int GetOffset() { return offset_; }
 	int Decompress();
+	int Decompress(int size);
 
 	virtual DWORD Write(LPVOID buf, DWORD size);
 	virtual DWORD Read(LPVOID buf, DWORD size);

@@ -131,6 +131,28 @@ int ByteBuffer::Decompress()
 	data_ = dest;
 	return infstream.total_out;
 }
+int ByteBuffer::Decompress(int size)
+{
+	char* dest = new char[size];
+
+	z_stream infstream;
+	infstream.zalloc = Z_NULL;
+	infstream.zfree = Z_NULL;
+	infstream.opaque = Z_NULL;
+	infstream.avail_in = (uInt)size_;
+	infstream.next_in = (Bytef*)data_;
+	infstream.avail_out = (uInt)size;
+	infstream.next_out = (Bytef*)dest;
+
+	inflateInit(&infstream);
+	inflate(&infstream, Z_NO_FLUSH);
+	inflateEnd(&infstream);
+	delete[] data_;
+	data_ = dest;
+	size_ = size;
+	reserve_ = size;
+	return infstream.total_out;
+}
 
 /**********************************************************
 //File
@@ -611,7 +633,7 @@ ref_count_ptr<ByteBuffer> ArchiveFile::CreateEntryBuffer(ref_count_ptr<ArchiveFi
 			ByteBuffer bufComp;
 			bufComp.SetSize(entry->GetCompressedDataSize());
 			file.Read(bufComp.GetPointer(), bufComp.GetSize());
-			bufComp.Decompress();
+			bufComp.Decompress(entry->GetDataSize());
 			res = new ByteBuffer(bufComp);
 		}
 	}
