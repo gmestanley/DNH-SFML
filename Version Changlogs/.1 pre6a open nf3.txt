@@ -1,6 +1,7 @@
 
 Version name of [.1 pre6a open nf3] 
 New exe icon to differentiate from other versions
+Archive file fixes from stable branch v1.3 (WishMakers)
 Alpha values in Render Targets now render properly (WishMakers)
 Added SetShotGrazeInvalidFrame (gtbot)
 Added SetShotInvalidIntersectionDistance (gtbot)

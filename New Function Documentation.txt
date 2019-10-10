@@ -1,0 +1,77 @@
+ * Added "solid_pixel" tag to shot data definitions (gtbot)
+	- In a shot data definition, if you add solid_pixel = true, the bullet will be rendered on solid pixels, preserving image quality.
+ * Added SetTextureRenderMethod (gtbot)
+	- Argument 1: Texture Width/Height determination
+	- Determines how future loaded textures' internal widths and heights are determined
+		* D3DX_DEFAULT: Textures will be rounded up to a power of 2 (blurry if not in a power of 2, but faster)
+		* D3DX_DEFAULT_NONPOW2: Textures will not be rounded up to a power of 2 (crisper image if not in a power of 2, but slower)
+	- Keep in mind that changes to this will only affect textures loaded after this function was called.
+	- D3DX_DEFAULT is the default value.
+ * Added SetShotDelayRenderBlendType (gtbot)
+    - Argument 1: Blend Type
+    - Globally forces all delay clouds to use the specified blend type
+    - Use BLEND_NONE to disable this. BLEND_NONE is the default value.
+ * Added GetShotDelayRenderBlendType (gtbot)
+    - returns the value that's specified in SetShotDelayRenderBlendType
+ * Added ObjMove_SetProcessMovement (gtbot)
+	- Argument 1: object ID
+	- Argument 2: set movement processing on/off (boolean)
+	- Determines whether the specified object will run their movement process or not.
+	- Exercise caution when using ObjMove_SetProcessMovement, as objects will never move again until you restore their movement.
+	- true is the default value.
+ * Added ObjMove_GetProcessMovement (gtbot)
+	- Argument 1: object ID
+	- returns the value that's specified in ObjMove_SetProcessMovement
+ * Added ObjSpell_SetEraseShotType (gtbot)
+    - Argument 1: ObjSpell ID
+    - argument 2: bullet collision behaviour 
+    - Sets the behaviour of ObjSpells when colliding with an enemy bullet
+    - TO_TYPE_ITEM is the default value
+      * TO_TYPE_ITEM: Deletes bullets and spawns an item 
+      * TO_TYPE_IMMEDIATE: Immediately deletes bullets
+      * TO_TYPE_FADE: Sets bullets to fade out and delete
+	  * TO_TYPE_MOVEMENT_FREEZE: Stops the movement processing of bullets
+	  * TO_TYPE_MOVEMENT_RESTORE: Restores the movement processing of bullets
+	- Exercise caution when using TO_TYPE_MOVEMENT_FREEZE, as the bullets will never move again until you restore their movement.
+	- ObjMove_SetProcessMovement can also restore these frozen bullets, and vice versa
+ * Added ObjShot_SetEraseShotType (gtbot)
+    - Argument 1: ObjShot ID
+    - argument 2: bullet collision behaviour 
+	- When bullets are set to erase shots, their behaviour can be changed with this function.
+	- Argument 2 accepts the same constants found in ObjSpell_SetEraseShotType.
+    - TO_TYPE_ITEM is the default value
+ * Added SetShotGrazeInvalidFrame
+	- Argument 1: Defaulted graze invalid frame
+	- Sets the default amount of frames that must pass before a bullet can be grazed again
+	- Applies to all bullets fired after this was set
+	- Use GRAZE_INVALID_NONE to reset this value to normal (meaning it can only be grazed once).
+	- Default value is GRAZE_INVALID_NONE 
+ * Added SetShotInvalidIntersectionDistance
+	- Argument 1: Distance in pixels
+	- Sets the distance in pixels to automatically disable and enable regular bullet hitboxes
+	- When outside the distance, hitboxes are entirely disabled for the bullet. When inside the distance, they behave as usual. 
+	- This does not apply to laser type bullets
+	- This is calculated by using GetPlayerX/Y and ObjMove_GetX/Y only! This means that radii are NOT accounted for.
+	- Also note that this will also disable collisions with spell objects that are out of range as well.
+	- It's best to use this only in your own distributed packaged scripts/players, as this function may easily cause problems.
+	- Set this value to 0 to disable this function.
+	- Default value is 0
+ * Added ObjShot_SetGrazeInvalidFrame
+	- Argument 1: ObjShot ID
+	- Argument 2: Graze invalid frame
+	- Sets the amount of frames that must pass before the specified bullet can be grazed again
+	- Use GRAZE_INVALID_NONE to reset this value to normal.
+	- Default value is GRAZE_INVALID_NONE
+ * Added ObjShot_GetGrazeStatus
+	- Argument 1: ObjShot ID
+	- Returns true if the player is colliding with the specified bullet's graze hitbox
+ * ObjShot_SetDamageReductionRate
+	- Argument 1: ObjShot ID
+	- Argument 2: Damage reduction rate
+	- Sets the rate at which the specified bullet's damage will be reduced by based on the total number of bullets colliding with a single enemy on a single frame.
+		- Example: 3 bullets hit the same enemy in the same frame, with 10 damage each and 1 damage reduction rate:
+		- Bullet 1 will deal 10 damage, bullet 2 will deal 5 damage, and bullet 3 will deal 3.33 damage
+	- Default value is 0
+ * ObjShot_GetDamageReductionRate
+	- Argument 1: ObjShot ID
+	- Returns the damage reduction rate specified in ObjShot_SetDamageReductionRate
