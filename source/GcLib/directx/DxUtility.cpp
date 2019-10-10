@@ -6,7 +6,7 @@ using namespace directx;
 /**********************************************************
 //ColorAccess
 **********************************************************/
-inline int ColorAccess::GetColorA(const D3DCOLOR& color)
+int ColorAccess::GetColorA(const D3DCOLOR& color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_ALPHA);
 }
@@ -18,7 +18,7 @@ D3DCOLOR& ColorAccess::SetColorA(D3DCOLOR& color, int alpha)
 		alpha = 0;
 	return gstd::BitAccess::SetByte(color, BIT_ALPHA, (unsigned char)alpha);
 }
-inline int ColorAccess::GetColorR(const D3DCOLOR& color)
+int ColorAccess::GetColorR(const D3DCOLOR& color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_RED);
 }
@@ -30,7 +30,7 @@ D3DCOLOR& ColorAccess::SetColorR(D3DCOLOR& color, int red)
 		red = 0;
 	return gstd::BitAccess::SetByte(color, BIT_RED, (unsigned char)red);
 }
-inline int ColorAccess::GetColorG(const D3DCOLOR& color)
+int ColorAccess::GetColorG(const D3DCOLOR& color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_GREEN);
 }
@@ -42,7 +42,7 @@ D3DCOLOR& ColorAccess::SetColorG(D3DCOLOR& color, int green)
 		green = 0;
 	return gstd::BitAccess::SetByte(color, BIT_GREEN, (unsigned char)green);
 }
-inline int ColorAccess::GetColorB(const D3DCOLOR& color)
+int ColorAccess::GetColorB(const D3DCOLOR& color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_BLUE);
 }
