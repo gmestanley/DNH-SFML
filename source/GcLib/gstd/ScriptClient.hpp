@@ -19,9 +19,9 @@ class ScriptCommonDataManager;
 class ScriptException : public gstd::wexception {
 public:
 	ScriptException()
-		: gstd::wexception(L""){};
+		: gstd::wexception(L"") {}
 	ScriptException(std::wstring str)
-		: gstd::wexception(str.c_str()){};
+		: gstd::wexception(str) {}
 };
 
 /**********************************************************
@@ -32,11 +32,11 @@ public:
 	ScriptEngineData();
 	virtual ~ScriptEngineData();
 
-	void SetPath(std::wstring path) { path_ = path; }
-	std::wstring GetPath() { return path_; }
-	void SetSource(std::vector<char>& source);
+	void SetPath(const std::wstring& path) { path_ = path; }
+	std::wstring GetPath() const { return path_; }
+	void SetSource(const std::vector<char>& source);
 	std::vector<char>& GetSource() { return source_; }
-	int GetEncoding() { return encoding_; }
+	int GetEncoding() const { return encoding_; }
 	void SetEngine(gstd::ref_count_ptr<script_engine> engine) { engine_ = engine; }
 	gstd::ref_count_ptr<script_engine> GetEngine() { return engine_; }
 	gstd::ref_count_ptr<ScriptFileLineMap> GetScriptFileLineMap() { return mapLine_; }
@@ -59,9 +59,9 @@ public:
 	virtual ~ScriptEngineCache();
 	void Clear();
 
-	void AddCache(std::wstring name, ref_count_ptr<ScriptEngineData> data);
-	ref_count_ptr<ScriptEngineData> GetCache(std::wstring name);
-	bool IsExists(std::wstring name);
+	void AddCache(const std::wstring& name, ref_count_ptr<ScriptEngineData> data);
+	ref_count_ptr<ScriptEngineData> GetCache(const std::wstring& name);
+	bool IsExists(const std::wstring& name) const;
 
 protected:
 	std::map<std::wstring, ref_count_ptr<ScriptEngineData>> cache_;
@@ -85,103 +85,103 @@ public:
 	virtual ~ScriptClientBase();
 	void SetScriptEngineCache(gstd::ref_count_ptr<ScriptEngineCache> cache) { cache_ = cache; }
 	gstd::ref_count_ptr<ScriptEngineData> GetEngine() { return engine_; }
-	virtual bool SetSourceFromFile(std::wstring path);
-	virtual void SetSource(std::vector<char>& source);
-	virtual void SetSource(std::string source);
+	virtual bool SetSourceFromFile(const std::wstring& path);
+	virtual void SetSource(const std::vector<char>& source);
+	virtual void SetSource(const std::string& source);
 
 	std::wstring GetPath() { return engine_->GetPath(); }
-	void SetPath(std::wstring path) { engine_->SetPath(path); }
+	void SetPath(const std::wstring& path) { engine_->SetPath(path); }
 
 	virtual void Compile();
 	virtual bool Run();
-	virtual bool Run(std::string target);
-	bool IsEventExists(std::string name);
-	void RaiseError(std::wstring error) { _RaiseError(machine_->get_error_line(), error); }
-	void Terminate(std::wstring error) { machine_->terminate(error); }
-	_int64 GetScriptID() { return idScript_; }
-	int GetThreadCount();
+	virtual bool Run(const std::string& target);
+	bool IsEventExists(const std::string& name) const;
+	void RaiseError(const std::wstring& error) { _RaiseError(machine_->get_error_line(), error); }
+	void Terminate(const std::wstring& error) { machine_->terminate(error); }
+	int64_t GetScriptID() const { return idScript_; }
+	int GetThreadCount() const;
 
 	void AddArgumentValue(value v) { listValueArg_.push_back(v); }
 	void SetArgumentValue(value v, int index = 0);
-	value GetResultValue() { return valueRes_; }
+	value GetResultValue() const { return valueRes_; }
 
 	value CreateRealValue(long double r);
 	value CreateBooleanValue(bool b);
-	value CreateStringValue(std::string s);
-	value CreateStringValue(std::wstring s);
-	value CreateRealArrayValue(std::vector<long double>& list);
-	value CreateStringArrayValue(std::vector<std::string>& list);
-	value CreateStringArrayValue(std::vector<std::wstring>& list);
-	value CreateValueArrayValue(std::vector<value>& list);
-	bool IsRealValue(value& v);
-	bool IsBooleanValue(value& v);
-	bool IsStringValue(value& v);
-	bool IsRealArrayValue(value& v);
+	value CreateStringValue(const std::string& s);
+	value CreateStringValue(const std::wstring& s);
+	value CreateRealArrayValue(const std::vector<long double>& list);
+	value CreateStringArrayValue(const std::vector<std::string>& list);
+	value CreateStringArrayValue(const std::vector<std::wstring>& list);
+	value CreateValueArrayValue(const std::vector<value>& list);
+	bool IsRealValue(const value& v);
+	bool IsBooleanValue(const value& v);
+	bool IsStringValue(const value& v);
+	bool IsRealArrayValue(const value& v);
 
 	void CheckRunInMainThread();
 	ScriptCommonDataManager* GetCommonDataManager() { return commonDataManager_.GetPointer(); }
 
 	//共通関数：スクリプト引数結果
-	static value Func_GetScriptArgument(script_machine* machine, int argc, value const* argv);
-	static value Func_GetScriptArgumentCount(script_machine* machine, int argc, value const* argv);
-	static value Func_SetScriptResult(script_machine* machine, int argc, value const* argv);
+	static value Func_GetScriptArgument(script_machine* machine, int argc, const value* argv);
+	static value Func_GetScriptArgumentCount(script_machine* machine, int argc, const value* argv);
+	static value Func_SetScriptResult(script_machine* machine, int argc, const value* argv);
 
 	//共通関数：数学系
-	static value Func_Min(script_machine* machine, int argc, value const* argv);
-	static value Func_Max(script_machine* machine, int argc, value const* argv);
-	static value Func_Log(script_machine* machine, int argc, value const* argv);
-	static value Func_Log10(script_machine* machine, int argc, value const* argv);
-	static value Func_Cos(script_machine* machine, int argc, value const* argv);
-	static value Func_Sin(script_machine* machine, int argc, value const* argv);
-	static value Func_Tan(script_machine* machine, int argc, value const* argv);
-	static value Func_Acos(script_machine* machine, int argc, value const* argv);
-	static value Func_Asin(script_machine* machine, int argc, value const* argv);
-	static value Func_Atan(script_machine* machine, int argc, value const* argv);
-	static value Func_Atan2(script_machine* machine, int argc, value const* argv);
-	static value Func_Rand(script_machine* machine, int argc, value const* argv);
+	static value Func_Min(script_machine* machine, int argc, const value* argv);
+	static value Func_Max(script_machine* machine, int argc, const value* argv);
+	static value Func_Log(script_machine* machine, int argc, const value* argv);
+	static value Func_Log10(script_machine* machine, int argc, const value* argv);
+	static value Func_Cos(script_machine* machine, int argc, const value* argv);
+	static value Func_Sin(script_machine* machine, int argc, const value* argv);
+	static value Func_Tan(script_machine* machine, int argc, const value* argv);
+	static value Func_Acos(script_machine* machine, int argc, const value* argv);
+	static value Func_Asin(script_machine* machine, int argc, const value* argv);
+	static value Func_Atan(script_machine* machine, int argc, const value* argv);
+	static value Func_Atan2(script_machine* machine, int argc, const value* argv);
+	static value Func_Rand(script_machine* machine, int argc, const value* argv);
 
 	//共通関数：文字列操作
-	static value Func_ToString(script_machine* machine, int argc, value const* argv);
-	static value Func_IntToString(script_machine* machine, int argc, value const* argv);
-	static value Func_ItoA(script_machine* machine, int argc, value const* argv);
-	static value Func_RtoA(script_machine* machine, int argc, value const* argv);
-	static value Func_RtoS(script_machine* machine, int argc, value const* argv);
-	static value Func_VtoS(script_machine* machine, int argc, value const* argv);
-	static value Func_AtoI(script_machine* machine, int argc, value const* argv);
-	static value Func_AtoR(script_machine* machine, int argc, value const* argv);
-	static value Func_TrimString(script_machine* machine, int argc, value const* argv);
-	static value Func_SplitString(script_machine* machine, int argc, value const* argv);
+	static value Func_ToString(script_machine* machine, int argc, const value* argv);
+	static value Func_IntToString(script_machine* machine, int argc, const value* argv);
+	static value Func_ItoA(script_machine* machine, int argc, const value* argv);
+	static value Func_RtoA(script_machine* machine, int argc, const value* argv);
+	static value Func_RtoS(script_machine* machine, int argc, const value* argv);
+	static value Func_VtoS(script_machine* machine, int argc, const value* argv);
+	static value Func_AtoI(script_machine* machine, int argc, const value* argv);
+	static value Func_AtoR(script_machine* machine, int argc, const value* argv);
+	static value Func_TrimString(script_machine* machine, int argc, const value* argv);
+	static value Func_SplitString(script_machine* machine, int argc, const value* argv);
 
 	//共通関数：パス関連
-	static value Func_GetModuleDirectory(script_machine* machine, int argc, value const* argv);
-	static value Func_GetMainScriptDirectory(script_machine* machine, int argc, value const* argv);
-	static value Func_GetCurrentScriptDirectory(script_machine* machine, int argc, value const* argv);
-	static value Func_GetFileDirectory(script_machine* machine, int argc, value const* argv);
-	static value Func_GetFilePathList(script_machine* machine, int argc, value const* argv);
-	static value Func_GetDirectoryList(script_machine* machine, int argc, value const* argv);
+	static value Func_GetModuleDirectory(script_machine* machine, int argc, const value* argv);
+	static value Func_GetMainScriptDirectory(script_machine* machine, int argc, const value* argv);
+	static value Func_GetCurrentScriptDirectory(script_machine* machine, int argc, const value* argv);
+	static value Func_GetFileDirectory(script_machine* machine, int argc, const value* argv);
+	static value Func_GetFilePathList(script_machine* machine, int argc, const value* argv);
+	static value Func_GetDirectoryList(script_machine* machine, int argc, const value* argv);
 
 	//共通関数：時刻関連
-	static value Func_GetCurrentDateTimeS(script_machine* machine, int argc, value const* argv);
+	static value Func_GetCurrentDateTimeS(script_machine* machine, int argc, const value* argv);
 
 	//共通関数：デバッグ関連
-	static value Func_WriteLog(script_machine* machine, int argc, value const* argv);
-	static value Func_RaiseError(script_machine* machine, int argc, value const* argv);
+	static value Func_WriteLog(script_machine* machine, int argc, const value* argv);
+	static value Func_RaiseError(script_machine* machine, int argc, const value* argv);
 
 	//共通関数：共通データ
-	static value Func_SetDefaultCommonDataArea(script_machine* machine, int argc, value const* argv);
-	static value Func_SetCommonData(script_machine* machine, int argc, value const* argv);
-	static value Func_GetCommonData(script_machine* machine, int argc, value const* argv);
-	static value Func_ClearCommonData(script_machine* machine, int argc, value const* argv);
-	static value Func_DeleteCommonData(script_machine* machine, int argc, value const* argv);
-	static value Func_SetAreaCommonData(script_machine* machine, int argc, value const* argv);
-	static value Func_GetAreaCommonData(script_machine* machine, int argc, value const* argv);
-	static value Func_ClearAreaCommonData(script_machine* machine, int argc, value const* argv);
-	static value Func_DeleteAreaCommonData(script_machine* machine, int argc, value const* argv);
-	static value Func_CreateCommonDataArea(script_machine* machine, int argc, value const* argv);
-	static value Func_CopyCommonDataArea(script_machine* machine, int argc, value const* argv);
-	static value Func_IsCommonDataAreaExists(script_machine* machine, int argc, value const* argv);
-	static value Func_GetCommonDataAreaKeyList(script_machine* machine, int argc, value const* argv);
-	static value Func_GetCommonDataValueKeyList(script_machine* machine, int argc, value const* argv);
+	static value Func_SetDefaultCommonDataArea(script_machine* machine, int argc, const value* argv);
+	static value Func_SetCommonData(script_machine* machine, int argc, const value* argv);
+	static value Func_GetCommonData(script_machine* machine, int argc, const value* argv);
+	static value Func_ClearCommonData(script_machine* machine, int argc, const value* argv);
+	static value Func_DeleteCommonData(script_machine* machine, int argc, const value* argv);
+	static value Func_SetAreaCommonData(script_machine* machine, int argc, const value* argv);
+	static value Func_GetAreaCommonData(script_machine* machine, int argc, const value* argv);
+	static value Func_ClearAreaCommonData(script_machine* machine, int argc, const value* argv);
+	static value Func_DeleteAreaCommonData(script_machine* machine, int argc, const value* argv);
+	static value Func_CreateCommonDataArea(script_machine* machine, int argc, const value* argv);
+	static value Func_CopyCommonDataArea(script_machine* machine, int argc, const value* argv);
+	static value Func_IsCommonDataAreaExists(script_machine* machine, int argc, const value* argv);
+	static value Func_GetCommonDataAreaKeyList(script_machine* machine, int argc, const value* argv);
+	static value Func_GetCommonDataValueKeyList(script_machine* machine, int argc, const value* argv);
 
 protected:
 	bool bError_;
@@ -193,22 +193,22 @@ protected:
 	ref_count_ptr<MersenneTwister> mt_;
 	gstd::ref_count_ptr<ScriptCommonDataManager> commonDataManager_;
 	int mainThreadID_;
-	_int64 idScript_;
+	int64_t idScript_;
 
 	gstd::CriticalSection criticalSection_;
 
 	std::vector<gstd::value> listValueArg_;
 	gstd::value valueRes_;
 
-	void _AddFunction(char const* name, callback f, unsigned arguments);
+	void _AddFunction(const char* name, callback f, unsigned arguments);
 	void _AddFunction(const function* f, int count);
 	void _RaiseErrorFromEngine();
 	void _RaiseErrorFromMachine();
-	void _RaiseError(int line, std::wstring message);
+	void _RaiseError(int line, const std::wstring& message);
 	std::wstring _GetErrorLineSource(int line);
 	virtual std::vector<char> _Include(std::vector<char>& source);
 	virtual bool _CreateEngine();
-	std::wstring _ExtendPath(std::wstring path);
+	std::wstring _ExtendPath(const std::wstring& path);
 };
 
 /**********************************************************
@@ -227,10 +227,10 @@ public:
 public:
 	ScriptFileLineMap();
 	virtual ~ScriptFileLineMap();
-	void AddEntry(std::wstring path, int lineAdd, int lineCount);
-	Entry GetEntry(int line);
-	std::wstring GetPath(int line);
-	std::list<Entry> GetEntryList() { return listEntry_; }
+	void AddEntry(const std::wstring& path, int lineAdd, int lineCount);
+	Entry GetEntry(int line) const;
+	std::wstring GetPath(int line) const;
+	std::list<Entry> GetEntryList() const { return listEntry_; }
 
 protected:
 	std::list<Entry> listEntry_;
@@ -246,13 +246,13 @@ public:
 	virtual ~ScriptCommonDataManager();
 	void Clear();
 
-	std::string GetDefaultAreaName() { return nameAreaDefailt_; }
-	void SetDefaultAreaName(std::string name) { nameAreaDefailt_ = name; }
-	bool IsExists(std::string name);
-	void CreateArea(std::string name);
-	void CopyArea(std::string nameDest, std::string nameSrc);
-	gstd::ref_count_ptr<ScriptCommonData> GetData(std::string name);
-	void SetData(std::string name, gstd::ref_count_ptr<ScriptCommonData> commonData);
+	std::string GetDefaultAreaName() const { return nameAreaDefailt_; }
+	void SetDefaultAreaName(const std::string& name) { nameAreaDefailt_ = name; }
+	bool IsExists(const std::string& name);
+	void CreateArea(const std::string& name);
+	void CopyArea(const std::string& nameDest, const std::string& nameSrc);
+	gstd::ref_count_ptr<ScriptCommonData> GetData(const std::string& name);
+	void SetData(const std::string& name, gstd::ref_count_ptr<ScriptCommonData> commonData);
 	std::vector<std::string> GetKeyList();
 
 	gstd::CriticalSection& GetLock() { return lock_; }
@@ -271,10 +271,10 @@ public:
 	ScriptCommonData();
 	virtual ~ScriptCommonData();
 	void Clear();
-	bool IsExists(std::string name);
-	gstd::value GetValue(std::string name);
-	void SetValue(std::string name, gstd::value v);
-	void DeleteValue(std::string name);
+	bool IsExists(const std::string& name);
+	gstd::value GetValue(const std::string& name);
+	void SetValue(const std::string& name, const gstd::value& val);
+	void DeleteValue(const std::string& name);
 	void Copy(gstd::ref_count_ptr<ScriptCommonData> dataSrc);
 	std::vector<std::string> GetKeyList();
 
@@ -295,7 +295,7 @@ class ScriptCommonDataInfoPanel : public WindowLogger::Panel {
 public:
 	ScriptCommonDataInfoPanel();
 	void SetUpdateInterval(int time) { timeUpdateInterval_ = time; }
-	virtual void LocateParts();
+	void LocateParts() override;
 	virtual void Update(gstd::ref_count_ptr<ScriptCommonDataManager> commonDataManager);
 
 protected:
@@ -314,7 +314,7 @@ protected:
 	int timeLastUpdate_;
 	int timeUpdateInterval_;
 
-	virtual bool _AddedLogger(HWND hTab);
+	bool _AddedLogger(HWND hTab) override;
 	void _UpdateListViewKey(WListView* listView, std::vector<std::string> listKey);
 	void _UpdateAreaView();
 	void _UpdateValueView();

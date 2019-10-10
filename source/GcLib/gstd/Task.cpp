@@ -19,9 +19,7 @@ TaskBase::TaskBase()
 	idTask_ = TASK_FREE_ID;
 	idTaskGroup_ = TASK_GROUP_FREE_ID;
 }
-TaskBase::~TaskBase()
-{
-}
+TaskBase::~TaskBase() = default;
 
 /**********************************************************
 //TaskManager
@@ -34,42 +32,38 @@ TaskManager::TaskManager()
 TaskManager::~TaskManager()
 {
 	this->Clear();
-	panelInfo_ = NULL;
+	panelInfo_ = nullptr;
 }
 void TaskManager::_ArrangeTask()
 {
 	//タスク削除領域整理
-	std::list<ref_count_ptr<TaskBase>>::iterator itrTask;
-	for (itrTask = listTask_.begin(); itrTask != listTask_.end();) {
-		if (*itrTask == NULL)
+	for (auto itrTask = listTask_.begin(); itrTask != listTask_.end();) {
+		if (*itrTask == nullptr)
 			itrTask = listTask_.erase(itrTask);
 		else
-			itrTask++;
+			++itrTask;
 	}
 
 	//関数削除領域整理
-	std::map<int, std::vector<std::list<ref_count_ptr<TaskFunction>>>>::iterator itrType;
-	for (itrType = mapFunc_.begin(); itrType != mapFunc_.end(); itrType++) {
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>* vectPri = &itrType->second;
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-		for (itrPri = vectPri->begin(); itrPri != vectPri->end(); itrPri++) {
-			std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-			std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-			for (itrFunc = listFunc.begin(); itrFunc != listFunc.end();) {
-				if (*itrFunc == NULL)
+	for (auto& itrType : mapFunc_) {
+		auto& vectPri = itrType.second;
+		for (auto& itrPri : vectPri) {
+			auto& listFunc = itrPri;
+			for (auto itrFunc = listFunc.begin(); itrFunc != listFunc.end();) {
+				if (*itrFunc == nullptr)
 					itrFunc = listFunc.erase(itrFunc);
 				else {
 					int delay = (*itrFunc)->GetDelay();
 					delay = max(0, delay - 1);
 					(*itrFunc)->SetDelay(delay);
-					itrFunc++;
+					++itrFunc;
 				}
 			}
 		}
 	}
 
 	//タスク情報パネル更新
-	if (panelInfo_ != NULL)
+	if (panelInfo_ != nullptr)
 		panelInfo_->Update(this);
 }
 void TaskManager::_CheckInvalidFunctionDivision(int divFunc)
@@ -85,118 +79,108 @@ void TaskManager::Clear()
 void TaskManager::ClearTask()
 {
 	listTask_.clear();
-	std::map<int, std::vector<std::list<ref_count_ptr<TaskFunction>>>>::iterator itrDiv;
-	for (itrDiv = mapFunc_.begin(); itrDiv != mapFunc_.end(); itrDiv++) {
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = (*itrDiv).second;
+	for (auto& itrDiv : mapFunc_) {
+		auto& vectPri = itrDiv.second;
 		vectPri.clear();
 	}
 }
 void TaskManager::AddTask(ref_count_ptr<TaskBase> task)
 {
-	std::list<ref_count_ptr<TaskBase>>::iterator itr;
-	for (itr = listTask_.begin(); itr != listTask_.end(); itr++) {
-		ref_count_ptr<TaskBase>& tTask = (*itr);
-		if ((*itr) == NULL)
+	for (auto& tTask : listTask_) {
+		if (tTask == nullptr)
 			continue;
-		if ((*itr) == task)
+		if (tTask == task)
 			return;
 	}
 	// task->mTask_ = this;
 
 	//TODO IDの割り振り
 	task->indexTask_ = indexTaskManager_;
-	indexTaskManager_++;
+	++indexTaskManager_;
 	listTask_.push_back(task);
 }
 ref_count_ptr<TaskBase> TaskManager::GetTask(int idTask)
 {
-	std::list<ref_count_ptr<TaskBase>>::iterator itr;
-	for (itr = listTask_.begin(); itr != listTask_.end(); itr++) {
-		if ((*itr) == NULL)
+	for (auto& tTask : listTask_) {
+		if (tTask == nullptr)
 			continue;
-		if ((*itr)->idTask_ != idTask)
+		if (tTask->idTask_ != idTask)
 			continue;
-		return (*itr);
+		return tTask;
 	}
-	return NULL;
+	return nullptr;
 }
 ref_count_ptr<TaskBase> TaskManager::GetTask(const std::type_info& info)
 {
-	std::list<ref_count_ptr<TaskBase>>::iterator itr;
-	for (itr = listTask_.begin(); itr != listTask_.end(); itr++) {
-		if ((*itr) == NULL)
+	for (auto& tTask : listTask_) {
+		if (tTask == nullptr)
 			continue;
-		const std::type_info& tInfo = typeid(*(*itr).GetPointer());
+		const std::type_info& tInfo = typeid(*tTask.GetPointer());
 		if (info != tInfo)
 			continue;
-		return (*itr);
+		return tTask;
 	}
-	return NULL;
+	return nullptr;
 }
 void TaskManager::RemoveTask(TaskBase* task)
 {
-	std::list<ref_count_ptr<TaskBase>>::iterator itr;
-	for (itr = listTask_.begin(); itr != listTask_.end(); itr++) {
-		if ((*itr) == NULL)
+	for (auto& tTask : listTask_) {
+		if (tTask == nullptr)
 			continue;
-		if ((*itr).GetPointer() != task)
+		if (tTask.GetPointer() != task)
 			continue;
-		if ((*itr)->idTask_ != task->idTask_)
+		if (tTask->idTask_ != task->idTask_)
 			continue;
 		this->RemoveFunction(task);
-		(*itr) = NULL;
-		break;
+		tTask = nullptr;
+		return;
 	}
 }
 void TaskManager::RemoveTask(int idTask)
 {
-	std::list<ref_count_ptr<TaskBase>>::iterator itr;
-	for (itr = listTask_.begin(); itr != listTask_.end(); itr++) {
-		if ((*itr) == NULL)
+	for (auto& tTask : listTask_) {
+		if (tTask == nullptr)
 			continue;
-		if ((*itr)->idTask_ != idTask)
+		if (tTask->idTask_ != idTask)
 			continue;
-		this->RemoveFunction((*itr).GetPointer());
-		(*itr) = NULL;
-		break;
+		this->RemoveFunction(tTask.GetPointer());
+		tTask = nullptr;
+		return;
 	}
 }
 void TaskManager::RemoveTaskGroup(int idGroup)
 {
-	std::list<ref_count_ptr<TaskBase>>::iterator itr;
-	for (itr = listTask_.begin(); itr != listTask_.end(); itr++) {
-		if ((*itr) == NULL)
+	for (auto& tTask : listTask_) {
+		if (tTask == nullptr)
 			continue;
-		if ((*itr)->idTaskGroup_ != idGroup)
+		if (tTask->idTaskGroup_ != idGroup)
 			continue;
-		this->RemoveFunction((*itr).GetPointer());
-		(*itr) = NULL;
+		this->RemoveFunction(tTask.GetPointer());
+		tTask = nullptr;
 	}
 }
 void TaskManager::RemoveTask(const std::type_info& info)
 {
-	std::list<ref_count_ptr<TaskBase>>::iterator itr;
-	for (itr = listTask_.begin(); itr != listTask_.end(); itr++) {
-		if ((*itr) == NULL)
+	for (auto& tTask : listTask_) {
+		if (tTask == nullptr)
 			continue;
-		const std::type_info& tInfo = typeid(*(*itr).GetPointer());
+		const std::type_info& tInfo = typeid(*tTask.GetPointer());
 		if (info != tInfo)
 			continue;
-		this->RemoveFunction((*itr).GetPointer());
-		(*itr) = NULL;
+		this->RemoveFunction(tTask.GetPointer());
+		tTask = nullptr;
 	}
 }
 void TaskManager::RemoveTaskWithoutTypeInfo(std::set<const std::type_info*> listInfo)
 {
-	std::list<ref_count_ptr<TaskBase>>::iterator itr;
-	for (itr = listTask_.begin(); itr != listTask_.end(); itr++) {
-		if ((*itr) == NULL)
+	for (auto& tTask : listTask_) {
+		if (tTask == nullptr)
 			continue;
-		const std::type_info& tInfo = typeid(*(*itr).GetPointer());
+		const std::type_info& tInfo = typeid(*tTask.GetPointer());
 		if (listInfo.find(&tInfo) != listInfo.end())
 			continue;
-		this->RemoveFunction((*itr).GetPointer());
-		(*itr) = NULL;
+		this->RemoveFunction(tTask.GetPointer());
+		tTask = nullptr;
 	}
 }
 void TaskManager::InitializeFunctionDivision(int divFunc, int maxPri)
@@ -211,19 +195,16 @@ void TaskManager::CallFunction(int divFunc)
 {
 	_CheckInvalidFunctionDivision(divFunc);
 
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = mapFunc_[divFunc];
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-	for (itrPri = vectPri.begin(); itrPri != vectPri.end(); itrPri++) {
-		std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-		std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-		for (itrFunc = listFunc.begin(); itrFunc != listFunc.end(); itrFunc++) {
-			if (*itrFunc == NULL)
+	auto& vectPri = mapFunc_[divFunc];
+	for (auto& listFunc : vectPri) {
+		for (auto& function : listFunc) {
+			if (function == nullptr)
 				continue;
-			if ((*itrFunc)->bEnable_ == false)
+			if (!function->bEnable_)
 				continue;
-			if ((*itrFunc)->IsDelay())
+			if (function->IsDelay())
 				continue;
-			(*itrFunc)->Call();
+			function->Call();
 		}
 	}
 	_ArrangeTask();
@@ -232,27 +213,23 @@ void TaskManager::AddFunction(int divFunc, ref_count_ptr<TaskFunction> func, int
 {
 	if (mapFunc_.find(divFunc) == mapFunc_.end())
 		throw gstd::wexception(L"存在しない機能区分");
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = mapFunc_[divFunc];
+	auto& vectPri = mapFunc_[divFunc];
 	func->id_ = idFunc;
 	vectPri[pri].push_back(func);
 }
 void TaskManager::RemoveFunction(TaskBase* task)
 {
-	std::map<int, std::vector<std::list<ref_count_ptr<TaskFunction>>>>::iterator itrDiv;
-	for (itrDiv = mapFunc_.begin(); itrDiv != mapFunc_.end(); itrDiv++) {
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = (*itrDiv).second;
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-		for (itrPri = vectPri.begin(); itrPri != vectPri.end(); itrPri++) {
-			std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-			std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-			for (itrFunc = listFunc.begin(); itrFunc != listFunc.end(); itrFunc++) {
-				if (*itrFunc == NULL)
+	for (auto& itrDiv : mapFunc_) {
+		auto& vectPri = itrDiv.second;
+		for (auto& listFunc : vectPri) {
+			for (auto& function : listFunc) {
+				if (function == nullptr)
 					continue;
-				if ((*itrFunc)->task_ != task)
+				if (function->task_ != task)
 					continue;
-				if ((*itrFunc)->task_->idTask_ != task->idTask_)
+				if (function->task_->idTask_ != task->idTask_)
 					continue;
-				(*itrFunc) = NULL;
+				function = nullptr;
 			}
 		}
 	}
@@ -260,55 +237,45 @@ void TaskManager::RemoveFunction(TaskBase* task)
 void TaskManager::RemoveFunction(TaskBase* task, int divFunc, int idFunc)
 {
 	_CheckInvalidFunctionDivision(divFunc);
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = mapFunc_[divFunc];
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-	for (itrPri = vectPri.begin(); itrPri != vectPri.end(); itrPri++) {
-		std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-		std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-		for (itrFunc = listFunc.begin(); itrFunc != listFunc.end(); itrFunc++) {
-			if (*itrFunc == NULL)
+
+	auto& vectPri = mapFunc_[divFunc];
+	for (auto& listFunc : vectPri) {
+		for (auto& function : listFunc) {
+			if (function == nullptr)
 				continue;
-			if ((*itrFunc)->id_ != idFunc)
+			if (function->id_ != idFunc)
 				continue;
-			if ((*itrFunc)->task_->idTask_ != task->idTask_)
+			if (function->task_->idTask_ != task->idTask_)
 				continue;
-			(*itrFunc) = NULL;
+			function = nullptr;
 		}
 	}
 }
 void TaskManager::RemoveFunction(const std::type_info& info)
 {
-	std::map<int, std::vector<std::list<ref_count_ptr<TaskFunction>>>>::iterator itrDiv;
-	for (itrDiv = mapFunc_.begin(); itrDiv != mapFunc_.end(); itrDiv++) {
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = (*itrDiv).second;
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-		for (itrPri = vectPri.begin(); itrPri != vectPri.end(); itrPri++) {
-			std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-			std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-			for (itrFunc = listFunc.begin(); itrFunc != listFunc.end(); itrFunc++) {
-				if (*itrFunc == NULL)
+	for (auto& itrDiv : mapFunc_) {
+		auto& vectPri = itrDiv.second;
+		for (auto& listFunc : vectPri) {
+			for (auto& function : listFunc) {
+				if (function == nullptr)
 					continue;
-				const std::type_info& tInfo = typeid(*(*itrFunc)->task_);
+				const std::type_info& tInfo = typeid(*function->task_);
 				if (info != tInfo)
 					continue;
-				(*itrFunc) = NULL;
+				function = nullptr;
 			}
 		}
 	}
 }
 void TaskManager::SetFunctionEnable(bool bEnable)
 {
-	std::map<int, std::vector<std::list<ref_count_ptr<TaskFunction>>>>::iterator itrDiv;
-	for (itrDiv = mapFunc_.begin(); itrDiv != mapFunc_.end(); itrDiv++) {
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = (*itrDiv).second;
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-		for (itrPri = vectPri.begin(); itrPri != vectPri.end(); itrPri++) {
-			std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-			std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-			for (itrFunc = listFunc.begin(); itrFunc != listFunc.end(); itrFunc++) {
-				if (*itrFunc == NULL)
+	for (auto& itrDiv : mapFunc_) {
+		auto& vectPri = itrDiv.second;
+		for (auto& listFunc : vectPri) {
+			for (auto& function : listFunc) {
+				if (function == nullptr)
 					continue;
-				(*itrFunc)->bEnable_ = bEnable;
+				function->bEnable_ = bEnable;
 			}
 		}
 	}
@@ -316,87 +283,79 @@ void TaskManager::SetFunctionEnable(bool bEnable)
 void TaskManager::SetFunctionEnable(bool bEnable, int divFunc)
 {
 	_CheckInvalidFunctionDivision(divFunc);
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = mapFunc_[divFunc];
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-	for (itrPri = vectPri.begin(); itrPri != vectPri.end(); itrPri++) {
-		std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-		std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-		for (itrFunc = listFunc.begin(); itrFunc != listFunc.end(); itrFunc++) {
-			if (*itrFunc == NULL)
+
+	auto& vectPri = mapFunc_[divFunc];
+	for (auto& listFunc : vectPri) {
+		for (auto& function : listFunc) {
+			if (function == nullptr)
 				continue;
-			(*itrFunc)->bEnable_ = bEnable;
+			function->bEnable_ = bEnable;
 		}
 	}
 }
 void TaskManager::SetFunctionEnable(bool bEnable, int idTask, int divFunc)
 {
 	ref_count_ptr<TaskBase> task = this->GetTask(idTask);
-	if (task == NULL)
+	if (task == nullptr)
 		return;
 	this->SetFunctionEnable(bEnable, task.GetPointer(), divFunc);
 }
 void TaskManager::SetFunctionEnable(bool bEnable, int idTask, int divFunc, int idFunc)
 {
 	ref_count_ptr<TaskBase> task = this->GetTask(idTask);
-	if (task == NULL)
+	if (task == nullptr)
 		return;
 	this->SetFunctionEnable(bEnable, task.GetPointer(), divFunc, idFunc);
 }
 void TaskManager::SetFunctionEnable(bool bEnable, TaskBase* task, int divFunc)
 {
 	_CheckInvalidFunctionDivision(divFunc);
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = mapFunc_[divFunc];
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-	for (itrPri = vectPri.begin(); itrPri != vectPri.end(); itrPri++) {
-		std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-		std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-		for (itrFunc = listFunc.begin(); itrFunc != listFunc.end(); itrFunc++) {
-			if (*itrFunc == NULL)
+
+	auto& vectPri = mapFunc_[divFunc];
+	for (auto& listFunc : vectPri) {
+		for (auto& function : listFunc) {
+			if (function == nullptr)
 				continue;
-			if ((*itrFunc)->task_ != task)
+			if (function->task_ != task)
 				continue;
-			if ((*itrFunc)->task_->idTask_ != task->idTask_)
+			if (function->task_->idTask_ != task->idTask_)
 				continue;
-			(*itrFunc)->bEnable_ = bEnable;
+			function->bEnable_ = bEnable;
 		}
 	}
 }
 void TaskManager::SetFunctionEnable(bool bEnable, TaskBase* task, int divFunc, int idFunc)
 {
 	_CheckInvalidFunctionDivision(divFunc);
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = mapFunc_[divFunc];
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-	for (itrPri = vectPri.begin(); itrPri != vectPri.end(); itrPri++) {
-		std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-		std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-		for (itrFunc = listFunc.begin(); itrFunc != listFunc.end(); itrFunc++) {
-			if (*itrFunc == NULL)
+
+	auto& vectPri = mapFunc_[divFunc];
+	for (auto& listFunc : vectPri) {
+		for (auto& function : listFunc) {
+			if (function == nullptr)
 				continue;
-			if ((*itrFunc)->task_ != task)
+			if (function->task_ != task)
 				continue;
-			if ((*itrFunc)->task_->idTask_ != task->idTask_)
+			if (function->task_->idTask_ != task->idTask_)
 				continue;
-			if ((*itrFunc)->id_ != idFunc)
+			if (function->id_ != idFunc)
 				continue;
-			(*itrFunc)->bEnable_ = bEnable;
+			function->bEnable_ = bEnable;
 		}
 	}
 }
 void TaskManager::SetFunctionEnable(bool bEnable, const std::type_info& info, int divFunc)
 {
 	_CheckInvalidFunctionDivision(divFunc);
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>& vectPri = mapFunc_[divFunc];
-	std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-	for (itrPri = vectPri.begin(); itrPri != vectPri.end(); itrPri++) {
-		std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-		std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-		for (itrFunc = listFunc.begin(); itrFunc != listFunc.end(); itrFunc++) {
-			if (*itrFunc == NULL)
+
+	auto& vectPri = mapFunc_[divFunc];
+	for (auto& listFunc : vectPri) {
+		for (auto& function : listFunc) {
+			if (function == nullptr)
 				continue;
-			const std::type_info& tInfo = typeid(*(*itrFunc)->task_);
+			const std::type_info& tInfo = typeid(*function->task_);
 			if (info != tInfo)
 				continue;
-			(*itrFunc)->bEnable_ = bEnable;
+			function->bEnable_ = bEnable;
 		}
 	}
 }
@@ -437,7 +396,7 @@ bool TaskInfoPanel::_AddedLogger(HWND hTab)
 	wndListView_.AddColumn(256, ROW_FUNC_INFO, L"Info");
 
 	wndSplitter_.Create(hWnd_, WSplitter::TYPE_HORIZONTAL);
-	wndSplitter_.SetRatioY(0.25f);
+	wndSplitter_.SetRatioY(0.25F);
 
 	return true;
 }
@@ -471,7 +430,7 @@ void TaskInfoPanel::Update(TaskManager* taskManager)
 
 	int addressManager = 0;
 	ref_count_ptr<WTreeView::Item> itemSelected = wndTreeView_.GetSelectedItem();
-	if (itemSelected != NULL) {
+	if (itemSelected != nullptr) {
 		addressManager = itemSelected->GetParam();
 	}
 	_UpdateListView((TaskManager*)addressManager);
@@ -482,27 +441,24 @@ void TaskInfoPanel::_UpdateTreeView(TaskManager* taskManager, ref_count_ptr<WTre
 	std::set<int> setAddress;
 	{
 		std::list<ref_count_ptr<TaskBase>> listTask = taskManager->GetTaskList();
-		std::list<ref_count_ptr<TaskBase>>::iterator itrTask;
-		for (itrTask = listTask.begin(); itrTask != listTask.end(); itrTask++) {
-			if (*itrTask == NULL)
+		for (auto& tTask : listTask) {
+			if (tTask == nullptr)
 				continue;
-			TaskManager* task = dynamic_cast<TaskManager*>((*itrTask).GetPointer());
-			if (task == NULL)
+			auto* task = dynamic_cast<TaskManager*>(tTask.GetPointer());
+			if (task == nullptr)
 				continue;
 
 			int address = (int)task;
-			ref_count_ptr<WTreeView::Item> itemChild = NULL;
+			ref_count_ptr<WTreeView::Item> itemChild = nullptr;
 			std::list<ref_count_ptr<WTreeView::Item>> listChild = item->GetChildList();
-			std::list<ref_count_ptr<WTreeView::Item>>::iterator itrChild;
-			for (itrChild = listChild.begin(); itrChild != listChild.end(); itrChild++) {
-				ref_count_ptr<WTreeView::Item> iItem = *itrChild;
+			for (auto& iItem : listChild) {
 				LPARAM param = iItem->GetParam();
 				if (param != address)
 					continue;
 				itemChild = iItem;
 			}
 
-			if (itemChild == NULL) {
+			if (itemChild == nullptr) {
 				WTreeView::ItemStyle treeIteSmtyle;
 				treeIteSmtyle.SetMask(TVIF_TEXT | TVIF_PARAM);
 				itemChild = item->CreateChild(treeIteSmtyle);
@@ -517,9 +473,7 @@ void TaskInfoPanel::_UpdateTreeView(TaskManager* taskManager, ref_count_ptr<WTre
 	//削除
 	{
 		std::list<ref_count_ptr<WTreeView::Item>> listChild = item->GetChildList();
-		std::list<ref_count_ptr<WTreeView::Item>>::iterator itrChild;
-		for (itrChild = listChild.begin(); itrChild != listChild.end(); itrChild++) {
-			ref_count_ptr<WTreeView::Item> iItem = *itrChild;
+		for (auto& iItem : listChild) {
 			LPARAM param = iItem->GetParam();
 			if (setAddress.find(param) == setAddress.end())
 				iItem->Delete();
@@ -532,28 +486,24 @@ void TaskInfoPanel::_UpdateListView(TaskManager* taskManager)
 		wndListView_.Clear();
 	}
 
-	if (taskManager == 0) {
+	if (taskManager == nullptr) {
 		wndListView_.Clear();
 		return;
 	}
 
 	std::set<std::wstring> setKey;
 	TaskManager::function_map mapFunc = taskManager->GetFunctionMap();
-	std::map<int, std::vector<std::list<ref_count_ptr<TaskFunction>>>>::iterator itrType;
-	for (itrType = mapFunc.begin(); itrType != mapFunc.end(); itrType++) {
-		int division = itrType->first;
+	for (auto& itrType : mapFunc) {
+		int division = itrType.first;
+		auto& vectPri = itrType.second;
 		int priority = 0;
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>* vectPri = &itrType->second;
-		std::vector<std::list<ref_count_ptr<TaskFunction>>>::iterator itrPri;
-		for (itrPri = vectPri->begin(); itrPri != vectPri->end(); itrPri++) {
-			std::list<ref_count_ptr<TaskFunction>>& listFunc = *itrPri;
-			std::list<ref_count_ptr<TaskFunction>>::iterator itrFunc;
-			for (itrFunc = listFunc.begin(); itrFunc != listFunc.end(); itrFunc++) {
-				if (*itrFunc == NULL)
+		for (auto& listFunc : vectPri) {
+			for (auto& function : listFunc) {
+				if (function == nullptr)
 					continue;
 				std::string keyList;
 
-				TaskFunction* func = itrFunc->GetPointer();
+				TaskFunction* func = function.GetPointer();
 				int address = (int)func;
 				std::wstring key = StringUtility::Format(L"%08x", address);
 				int index = wndListView_.GetIndexInColumn(key, ROW_FUNC_ADDRESS);
@@ -567,19 +517,19 @@ void TaskInfoPanel::_UpdateListView(TaskManager* taskManager)
 				wndListView_.SetText(index, ROW_FUNC_ID, StringUtility::Format(L"%d", func->GetID()));
 				wndListView_.SetText(index, ROW_FUNC_DIVISION, StringUtility::Format(L"%d", division));
 				wndListView_.SetText(index, ROW_FUNC_PRIORITY, StringUtility::Format(L"%d", priority));
-				wndListView_.SetText(index, ROW_FUNC_ENABLE, StringUtility::Format(L"%d", func->IsEnable()));
+				wndListView_.SetText(index, ROW_FUNC_ENABLE, StringUtility::Format(L"%d", static_cast<int>(func->IsEnable())));
 				wndListView_.SetText(index, ROW_FUNC_INFO, func->GetInfoAsString());
 
 				setKey.insert(key);
 			}
-			priority++;
+			++priority;
 		}
 	}
 
 	for (int iRow = 0; iRow < wndListView_.GetRowCount();) {
 		std::wstring key = wndListView_.GetText(iRow, ROW_FUNC_ADDRESS);
 		if (setKey.find(key) != setKey.end())
-			iRow++;
+			++iRow;
 		else
 			wndListView_.DeleteRow(iRow);
 	}
@@ -589,12 +539,8 @@ void TaskInfoPanel::_UpdateListView(TaskManager* taskManager)
 /**********************************************************
 //WorkRenderTaskManager
 **********************************************************/
-WorkRenderTaskManager::WorkRenderTaskManager()
-{
-}
-WorkRenderTaskManager::~WorkRenderTaskManager()
-{
-}
+WorkRenderTaskManager::WorkRenderTaskManager() = default;
+WorkRenderTaskManager::~WorkRenderTaskManager() = default;
 void WorkRenderTaskManager::InitializeFunctionDivision(int maxPriWork, int maxPriRender)
 {
 	this->TaskManager::InitializeFunctionDivision(DIV_FUNC_WORK, maxPriWork);

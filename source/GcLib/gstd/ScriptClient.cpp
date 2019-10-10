@@ -12,10 +12,8 @@ ScriptEngineData::ScriptEngineData()
 	encoding_ = Encoding::UNKNOWN;
 	mapLine_ = new ScriptFileLineMap();
 }
-ScriptEngineData::~ScriptEngineData()
-{
-}
-void ScriptEngineData::SetSource(std::vector<char>& source)
+ScriptEngineData::~ScriptEngineData() = default;
+void ScriptEngineData::SetSource(const std::vector<char>& source)
 {
 	encoding_ = Encoding::SHIFT_JIS;
 	if (Encoding::IsUtf16Le(&source[0], source.size())) {
@@ -27,27 +25,23 @@ void ScriptEngineData::SetSource(std::vector<char>& source)
 /**********************************************************
 //ScriptEngineCache
 **********************************************************/
-ScriptEngineCache::ScriptEngineCache()
-{
-}
-ScriptEngineCache::~ScriptEngineCache()
-{
-}
+ScriptEngineCache::ScriptEngineCache() = default;
+ScriptEngineCache::~ScriptEngineCache() = default;
 void ScriptEngineCache::Clear()
 {
 	cache_.clear();
 }
-void ScriptEngineCache::AddCache(std::wstring name, ref_count_ptr<ScriptEngineData> data)
+void ScriptEngineCache::AddCache(const std::wstring& name, ref_count_ptr<ScriptEngineData> data)
 {
 	cache_[name] = data;
 }
-ref_count_ptr<ScriptEngineData> ScriptEngineCache::GetCache(std::wstring name)
+ref_count_ptr<ScriptEngineData> ScriptEngineCache::GetCache(const std::wstring& name)
 {
 	if (!IsExists(name))
-		return NULL;
+		return nullptr;
 	return cache_[name];
 }
-bool ScriptEngineCache::IsExists(std::wstring name)
+bool ScriptEngineCache::IsExists(const std::wstring& name) const
 {
 	return cache_.find(name) != cache_.end();
 }
@@ -127,7 +121,7 @@ ScriptClientBase::ScriptClientBase()
 {
 	bError_ = false;
 	engine_ = new ScriptEngineData();
-	machine_ = NULL;
+	machine_ = nullptr;
 	mainThreadID_ = -1;
 	idScript_ = ID_SCRIPT_FREE;
 	valueRes_ = value();
@@ -139,10 +133,10 @@ ScriptClientBase::ScriptClientBase()
 }
 ScriptClientBase::~ScriptClientBase()
 {
-	if (machine_ != NULL)
+	if (machine_ != nullptr)
 		delete machine_;
-	machine_ = NULL;
-	engine_ = NULL;
+	machine_ = nullptr;
+	engine_ = nullptr;
 }
 
 void ScriptClientBase::_AddFunction(char const* name, callback f, unsigned arguments)
@@ -160,7 +154,7 @@ void ScriptClientBase::_AddFunction(const function* f, int count)
 	memcpy(&func_[funcPos], f, sizeof(function) * count);
 }
 
-void ScriptClientBase::_RaiseError(int line, std::wstring message)
+void ScriptClientBase::_RaiseError(int line, const std::wstring& message)
 {
 	bError_ = true;
 	std::wstring errorPos = _GetErrorLineSource(line);
@@ -194,10 +188,9 @@ std::wstring ScriptClientBase::_GetErrorLineSource(int line)
 	if (line == 0)
 		return L"";
 	int encoding = engine_->GetEncoding();
-	std::vector<char>& source = engine_->GetSource();
-	char* pbuf = (char*)&source[0];
-	char* sbuf = pbuf;
-	char* ebuf = sbuf + source.size();
+	const std::vector<char>& source = engine_->GetSource();
+	const char* pbuf = (const char*)&source[0];
+	const char* ebuf = pbuf + source.size();
 
 	int tLine = 1;
 	int rLine = line;
@@ -208,33 +201,33 @@ std::wstring ScriptClientBase::_GetErrorLineSource(int line)
 		if (encoding == Encoding::UTF16LE) {
 			wchar_t ch = (wchar_t&)*pbuf;
 			if (ch == L'\n')
-				tLine++;
+				++tLine;
 			pbuf += 2;
 
 		} else {
-			if (IsDBCSLeadByte(*pbuf))
+			if (IsDBCSLeadByte(*pbuf) != 0)
 				pbuf += 2;
 			else {
 				if (*pbuf == '\n')
-					tLine++;
-				pbuf++;
+					++tLine;
+				++pbuf;
 			}
 		}
 	}
 
-	const int countMax = 256;
 	int count = 0;
-	sbuf = pbuf;
+	const int countMax = 256;
+	const char* sbuf = pbuf;
 	while (pbuf < ebuf && count < countMax) {
 		pbuf++;
 		count++;
 	}
 
-	int size = max(count - 1, 0);
+	const int size = max(count - 1, 0);
 	std::wstring res;
 	if (encoding == Encoding::UTF16LE) {
-		wchar_t* wbufS = (wchar_t*)sbuf;
-		wchar_t* wbufE = wbufS + size;
+		const auto* wbufS = (const wchar_t*)sbuf;
+		const wchar_t* wbufE = wbufS + size;
 		res = std::wstring(wbufS, wbufE);
 	} else {
 		std::string sStr = std::string(sbuf, sbuf + size);
@@ -272,7 +265,8 @@ std::vector<char> ScriptClientBase::_Include(std::vector<char>& source)
 			Token& tok = scanner.Next();
 			if (tok.GetType() == Token::TK_EOF) { //Eofの識別子が来たらファイルの調査終了
 				break;
-			} else if (tok.GetType() == Token::TK_SHARP) {
+			}
+			if (tok.GetType() == Token::TK_SHARP) {
 				int posInclude = scanner.GetCurrentPointer() - 1;
 				if (encoding == Encoding::UTF16LE)
 					posInclude--;
@@ -335,7 +329,7 @@ std::vector<char> ScriptClientBase::_Include(std::vector<char>& source)
 				std::vector<char> placement;
 				ref_count_ptr<FileReader> reader;
 				reader = fileManager->GetFileReader(wPath);
-				if (reader == NULL || !reader->Open()) {
+				if (reader == nullptr || !reader->Open()) {
 					int line = scanner.GetCurrentLine();
 					source = res;
 					engine_->SetSource(source);
@@ -444,10 +438,8 @@ std::vector<char> ScriptClientBase::_Include(std::vector<char>& source)
 					}
 
 					std::list<ScriptFileLineMap::Entry> listEntry = mapLine->GetEntryList();
-					std::list<ScriptFileLineMap::Entry>::iterator itr = listEntry.begin();
-					for (; itr != listEntry.end(); itr++) {
+					for (auto& entry : listEntry) {
 						if (encoding == Encoding::UTF16LE) {
-							ScriptFileLineMap::Entry entry = (*itr);
 							std::wstring strPath = entry.path_ + L"\r\n";
 							std::wstring strLineStart = StringUtility::Format(L"  lineStart   :%4d\r\n", entry.lineStart_);
 							std::wstring strLineEnd = StringUtility::Format(L"  lineEnd     :%4d\r\n", entry.lineEnd_);
@@ -461,7 +453,6 @@ std::vector<char> ScriptClientBase::_Include(std::vector<char>& source)
 							file.Write(&strLineEndOrg[0], strLineEndOrg.size() * sizeof(wchar_t));
 							file.Write(&strNewLineW[0], strNewLineW.size() * sizeof(wchar_t));
 						} else {
-							ScriptFileLineMap::Entry entry = (*itr);
 							std::string strPath = StringUtility::ConvertWideToMulti(entry.path_) + "\r\n";
 							std::string strLineStart = StringUtility::Format("  lineStart   :%4d\r\n", entry.lineStart_);
 							std::string strLineEnd = StringUtility::Format("  lineEnd     :%4d\r\n", entry.lineEnd_);
@@ -477,7 +468,7 @@ std::vector<char> ScriptClientBase::_Include(std::vector<char>& source)
 						}
 					}
 
-					countTest++;
+					++countTest;
 				}
 
 				break;
@@ -493,20 +484,20 @@ std::vector<char> ScriptClientBase::_Include(std::vector<char>& source)
 }
 bool ScriptClientBase::_CreateEngine()
 {
-	if (machine_ != NULL)
+	if (machine_ != nullptr)
 		delete machine_;
-	machine_ = NULL;
+	machine_ = nullptr;
 
-	std::vector<char>& source = engine_->GetSource();
+	const std::vector<char>& source = engine_->GetSource();
 
 	ref_count_ptr<script_engine> engine = new script_engine(&typeManagerDefault_, source, func_.size(), &func_[0]);
 	engine_->SetEngine(engine);
 	return true;
 }
-bool ScriptClientBase::SetSourceFromFile(std::wstring path)
+bool ScriptClientBase::SetSourceFromFile(const std::wstring& p_path)
 {
-	path = PathProperty::GetUnique(path);
-	if (cache_ != NULL && cache_->IsExists(path)) {
+	std::wstring path = PathProperty::GetUnique(p_path);
+	if (cache_ != nullptr && cache_->IsExists(path)) {
 		engine_ = cache_->GetCache(path);
 		return true;
 	}
@@ -514,10 +505,10 @@ bool ScriptClientBase::SetSourceFromFile(std::wstring path)
 	engine_->SetPath(path);
 	ref_count_ptr<FileReader> reader;
 	reader = FileManager::GetBase()->GetFileReader(path);
-	if (reader == NULL)
-		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path).c_str());
+	if (reader == nullptr)
+		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path));
 	if (!reader->Open())
-		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path).c_str());
+		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path));
 
 	int size = reader->GetFileSize();
 	std::vector<char> source;
@@ -526,14 +517,14 @@ bool ScriptClientBase::SetSourceFromFile(std::wstring path)
 	this->SetSource(source);
 	return true;
 }
-void ScriptClientBase::SetSource(std::string source)
+void ScriptClientBase::SetSource(const std::string& source)
 {
 	std::vector<char> vect;
 	vect.resize(source.size());
 	memcpy(&vect[0], &source[0], source.size());
 	this->SetSource(vect);
 }
-void ScriptClientBase::SetSource(std::vector<char>& source)
+void ScriptClientBase::SetSource(const std::vector<char>& source)
 {
 	engine_->SetSource(source);
 	gstd::ref_count_ptr<ScriptFileLineMap> mapLine = engine_->GetScriptFileLineMap();
@@ -541,7 +532,7 @@ void ScriptClientBase::SetSource(std::vector<char>& source)
 }
 void ScriptClientBase::Compile()
 {
-	if (engine_->GetEngine() == NULL) {
+	if (engine_->GetEngine() == nullptr) {
 		std::vector<char> source = _Include(engine_->GetSource());
 		engine_->SetSource(source);
 
@@ -550,12 +541,12 @@ void ScriptClientBase::Compile()
 			bError_ = true;
 			_RaiseErrorFromEngine();
 		}
-		if (cache_ != NULL && engine_->GetPath().size() != 0) {
+		if (cache_ != nullptr && !engine_->GetPath().empty()) {
 			cache_->AddCache(engine_->GetPath(), engine_);
 		}
 	}
 
-	if (machine_ != NULL)
+	if (machine_ != nullptr)
 		delete machine_;
 	machine_ = new script_machine(engine_->GetEngine().GetPointer());
 	if (machine_->get_error()) {
@@ -577,7 +568,7 @@ bool ScriptClientBase::Run()
 	return true;
 }
 
-bool ScriptClientBase::Run(std::string target)
+bool ScriptClientBase::Run(const std::string& target)
 {
 	if (bError_)
 		return false;
@@ -596,15 +587,15 @@ bool ScriptClientBase::Run(std::string target)
 	}
 	return true;
 }
-bool ScriptClientBase::IsEventExists(std::string name)
+bool ScriptClientBase::IsEventExists(const std::string& name) const
 {
 	if (bError_)
 		return false;
 	return machine_->has_event(name);
 }
-int ScriptClientBase::GetThreadCount()
+int ScriptClientBase::GetThreadCount() const
 {
-	if (machine_ == NULL)
+	if (machine_ == nullptr)
 		return 0;
 	int res = machine_->get_thread_count();
 	return res;
@@ -628,63 +619,59 @@ value ScriptClientBase::CreateBooleanValue(bool b)
 	value res(typeManager->get_boolean_type(), b);
 	return res;
 }
-value ScriptClientBase::CreateStringValue(std::string s)
+value ScriptClientBase::CreateStringValue(const std::string& s)
 {
-	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
-	std::wstring wstr = to_wide(s);
-	value res(typeManager->get_string_type(), wstr);
-	return res;
+	return CreateStringValue(to_wide(s));
 }
-value ScriptClientBase::CreateStringValue(std::wstring s)
+value ScriptClientBase::CreateStringValue(const std::wstring& s)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), s);
 	return res;
 }
-value ScriptClientBase::CreateRealArrayValue(std::vector<long double>& list)
+value ScriptClientBase::CreateRealArrayValue(const std::vector<long double>& list)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), std::wstring());
-	for (int iData = 0; iData < list.size(); iData++) {
-		value data = CreateRealValue(list[iData]);
+	for (long double iData : list) {
+		value data = CreateRealValue(iData);
 		res.append(typeManager->get_array_type(typeManager->get_real_type()), data);
 	}
 
 	return res;
 }
-value ScriptClientBase::CreateStringArrayValue(std::vector<std::string>& list)
+value ScriptClientBase::CreateStringArrayValue(const std::vector<std::string>& list)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), std::wstring());
-	for (int iData = 0; iData < list.size(); iData++) {
-		value data = CreateStringValue(list[iData]);
+	for (const auto& iData : list) {
+		value data = CreateStringValue(iData);
 		res.append(typeManager->get_array_type(typeManager->get_string_type()), data);
 	}
 
 	return res;
 }
-value ScriptClientBase::CreateStringArrayValue(std::vector<std::wstring>& list)
+value ScriptClientBase::CreateStringArrayValue(const std::vector<std::wstring>& list)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), std::wstring());
-	for (int iData = 0; iData < list.size(); iData++) {
-		value data = CreateStringValue(list[iData]);
+	for (const auto& iData : list) {
+		value data = CreateStringValue(iData);
 		res.append(typeManager->get_array_type(typeManager->get_string_type()), data);
 	}
 
 	return res;
 }
-value ScriptClientBase::CreateValueArrayValue(std::vector<value>& list)
+value ScriptClientBase::CreateValueArrayValue(const std::vector<value>& list)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), std::wstring());
-	for (int iData = 0; iData < list.size(); iData++) {
-		value data = list[iData];
+	for (const auto& data : list) {
 		res.append(typeManager->get_array_type(typeManager->get_real_type()), data);
 	}
 	return res;
 }
-bool ScriptClientBase::IsRealValue(value& v)
+bool ScriptClientBase::IsRealValue(const value& v)
 {
 	if (bError_)
 		return false;
@@ -694,7 +681,7 @@ bool ScriptClientBase::IsRealValue(value& v)
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	return v.get_type() == typeManager->get_real_type();
 }
-bool ScriptClientBase::IsBooleanValue(value& v)
+bool ScriptClientBase::IsBooleanValue(const value& v)
 {
 	if (bError_)
 		return false;
@@ -704,7 +691,7 @@ bool ScriptClientBase::IsBooleanValue(value& v)
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	return v.get_type() == typeManager->get_boolean_type();
 }
-bool ScriptClientBase::IsStringValue(value& v)
+bool ScriptClientBase::IsStringValue(const value& v)
 {
 	if (bError_)
 		return false;
@@ -714,7 +701,7 @@ bool ScriptClientBase::IsStringValue(value& v)
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	return v.get_type() == typeManager->get_string_type();
 }
-bool ScriptClientBase::IsRealArrayValue(value& v)
+bool ScriptClientBase::IsRealArrayValue(const value& v)
 {
 	if (bError_)
 		return false;
@@ -735,21 +722,21 @@ void ScriptClientBase::CheckRunInMainThread()
 		machine_->raise_error(error);
 	}
 }
-std::wstring ScriptClientBase::_ExtendPath(std::wstring path)
+std::wstring ScriptClientBase::_ExtendPath(const std::wstring& path)
 {
 	int line = machine_->get_current_line();
 	std::wstring pathScript = GetEngine()->GetScriptFileLineMap()->GetPath(line);
 
-	path = StringUtility::ReplaceAll(path, L"\\", L"/");
-	path = StringUtility::ReplaceAll(path, L"./", pathScript);
+	std::wstring newPath = StringUtility::ReplaceAll(path, L"\\", L"/");
+	newPath = StringUtility::ReplaceAll(newPath, L"./", pathScript);
 
-	return path;
+	return newPath;
 }
 
 //共通関数：スクリプト引数結果
 value ScriptClientBase::Func_GetScriptArgument(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	int index = (int)argv[0].as_real();
 	if (index < 0 || index >= script->listValueArg_.size()) {
 		std::wstring error;
@@ -761,13 +748,13 @@ value ScriptClientBase::Func_GetScriptArgument(script_machine* machine, int argc
 }
 value ScriptClientBase::Func_GetScriptArgumentCount(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	int res = script->listValueArg_.size();
 	return value(machine->get_engine()->get_real_type(), (long double)res);
 }
 value ScriptClientBase::Func_SetScriptResult(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	script->valueRes_ = argv[0];
 	return value();
 }
@@ -825,7 +812,7 @@ value ScriptClientBase::Func_Atan2(script_machine* machine, int argc, value cons
 }
 value ScriptClientBase::Func_Rand(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	script->CheckRunInMainThread();
 
 	double min = argv[0].as_real();
@@ -856,7 +843,7 @@ value ScriptClientBase::Func_RtoA(script_machine* machine, int argc, value const
 }
 value ScriptClientBase::Func_RtoS(script_machine* machine, int argc, value const* argv)
 {
-	std::string res = "";
+	std::string res;
 	std::string fmtV = to_mbcs(argv[0].as_string());
 	double num = argv[1].as_real();
 
@@ -866,26 +853,25 @@ value ScriptClientBase::Func_RtoS(script_machine* machine, int argc, value const
 		int countI0 = 0;
 		int countF = 0;
 
-		for (int iCh = 0; iCh < fmtV.size(); iCh++) {
-			char ch = fmtV[iCh];
+		for (char ch : fmtV) {
 			if (IsDBCSLeadByte(ch))
 				throw false;
 
 			if (ch == '#')
-				countIS++;
+				++countIS;
 			else if (ch == '.' && bF)
 				throw false;
 			else if (ch == '.')
 				bF = true;
 			else if (ch == '0') {
 				if (bF)
-					countF++;
+					++countF;
 				else
-					countI0++;
+					++countI0;
 			}
 		}
 
-		std::string fmt = "";
+		std::string fmt;
 		if (countI0 > 0 && countF >= 0) {
 			fmt += "%0";
 			fmt += StringUtility::Format("%d", countI0);
@@ -900,7 +886,7 @@ value ScriptClientBase::Func_RtoS(script_machine* machine, int argc, value const
 			fmt += "f";
 		}
 
-		if (fmt.size() > 0) {
+		if (!fmt.empty()) {
 			res = StringUtility::Format((char*)fmt.c_str(), num);
 		}
 	} catch (...) {
@@ -911,7 +897,7 @@ value ScriptClientBase::Func_RtoS(script_machine* machine, int argc, value const
 }
 value ScriptClientBase::Func_VtoS(script_machine* machine, int argc, value const* argv)
 {
-	std::string res = "";
+	std::string res;
 	std::string fmtV = to_mbcs(argv[0].as_string());
 
 	try {
@@ -920,8 +906,7 @@ value ScriptClientBase::Func_VtoS(script_machine* machine, int argc, value const
 		int countF = 0;
 
 		int advance = 0; //0:-, 1:0, 2:num, 3:[d,s,f], 4:., 5:num
-		for (int iCh = 0; iCh < fmtV.size(); iCh++) {
-			char ch = fmtV[iCh];
+		for (char ch : fmtV) {
 			if (IsDBCSLeadByte(ch))
 				throw false;
 			if (advance == 0 && ch == '-')
@@ -930,9 +915,9 @@ value ScriptClientBase::Func_VtoS(script_machine* machine, int argc, value const
 				advance = 2;
 			else if (advance == 2 && (ch == 'd' || ch == 's' || ch == 'f'))
 				advance = 4;
-			else if (advance == 2 && ('.'))
+			else if (advance == 2 && (('.') != 0))
 				advance = 5;
-			else if (advance == 4 && ('.'))
+			else if (advance == 4 && (('.') != 0))
 				advance = 5;
 			else if (advance == 5 && (ch >= '0' && ch <= '9'))
 				advance = 5;
@@ -944,11 +929,11 @@ value ScriptClientBase::Func_VtoS(script_machine* machine, int argc, value const
 
 		fmtV = std::string("%") + fmtV;
 		char* fmt = (char*)fmtV.c_str();
-		if (strstr(fmt, "d") != NULL)
+		if (strstr(fmt, "d") != nullptr)
 			res = StringUtility::Format(fmt, (int)argv[1].as_real());
-		else if (strstr(fmt, "f") != NULL)
+		else if (strstr(fmt, "f") != nullptr)
 			res = StringUtility::Format(fmt, argv[1].as_real());
-		else if (strstr(fmt, "s") != NULL)
+		else if (strstr(fmt, "s") != nullptr)
 			res = StringUtility::Format(fmt, to_mbcs(argv[1].as_string()).c_str());
 	} catch (...) {
 		res = "error format";
@@ -976,7 +961,7 @@ value ScriptClientBase::Func_TrimString(script_machine* machine, int argc, value
 }
 value ScriptClientBase::Func_SplitString(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	std::wstring str = argv[0].as_string();
 	std::wstring delim = argv[1].as_string();
 	std::vector<std::wstring> list = StringUtility::Split(str, delim);
@@ -993,14 +978,14 @@ value ScriptClientBase::Func_GetModuleDirectory(script_machine* machine, int arg
 }
 value ScriptClientBase::Func_GetMainScriptDirectory(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	std::wstring path = script->GetEngine()->GetPath();
 	std::wstring res = PathProperty::GetFileDirectory(path);
 	return value(machine->get_engine()->get_string_type(), res);
 }
 value ScriptClientBase::Func_GetCurrentScriptDirectory(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	int line = machine->get_current_line();
 	std::wstring path = script->GetEngine()->GetScriptFileLineMap()->GetPath(line);
 	std::wstring res = PathProperty::GetFileDirectory(path);
@@ -1008,7 +993,7 @@ value ScriptClientBase::Func_GetCurrentScriptDirectory(script_machine* machine, 
 }
 value ScriptClientBase::Func_GetFileDirectory(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	std::wstring path = argv[0].as_string();
 	// path = StringUtility::ReplaceAll(path, "/", "\\");
 	std::wstring res = PathProperty::GetFileDirectory(path);
@@ -1016,7 +1001,7 @@ value ScriptClientBase::Func_GetFileDirectory(script_machine* machine, int argc,
 }
 value ScriptClientBase::Func_GetFilePathList(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	std::wstring path = argv[0].as_string();
 	std::wstring dir = PathProperty::GetFileDirectory(path);
 	std::vector<std::wstring> listDir = File::GetFilePathList(dir);
@@ -1025,7 +1010,7 @@ value ScriptClientBase::Func_GetFilePathList(script_machine* machine, int argc, 
 }
 value ScriptClientBase::Func_GetDirectoryList(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	std::wstring path = argv[0].as_string();
 	std::wstring dir = PathProperty::GetFileDirectory(path);
 	std::vector<std::wstring> listDir = File::GetDirectoryPathList(dir);
@@ -1056,7 +1041,7 @@ value ScriptClientBase::Func_WriteLog(script_machine* machine, int argc, value c
 }
 value ScriptClientBase::Func_RaiseError(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	std::wstring msg = argv[0].as_string();
 	script->RaiseError(msg);
 
@@ -1066,7 +1051,7 @@ value ScriptClientBase::Func_RaiseError(script_machine* machine, int argc, value
 //共通関数：共通データ
 value ScriptClientBase::Func_SetDefaultCommonDataArea(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 
 	std::string name = to_mbcs(argv[0].as_string());
@@ -1075,7 +1060,7 @@ value ScriptClientBase::Func_SetDefaultCommonDataArea(script_machine* machine, i
 }
 value ScriptClientBase::Func_SetCommonData(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 	std::string area = commonDataManager->GetDefaultAreaName();
 
@@ -1089,7 +1074,7 @@ value ScriptClientBase::Func_SetCommonData(script_machine* machine, int argc, va
 }
 value ScriptClientBase::Func_GetCommonData(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 	std::string area = commonDataManager->GetDefaultAreaName();
 
@@ -1104,7 +1089,7 @@ value ScriptClientBase::Func_GetCommonData(script_machine* machine, int argc, va
 }
 value ScriptClientBase::Func_ClearCommonData(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 	std::string area = commonDataManager->GetDefaultAreaName();
 
@@ -1116,7 +1101,7 @@ value ScriptClientBase::Func_ClearCommonData(script_machine* machine, int argc, 
 }
 value ScriptClientBase::Func_DeleteCommonData(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 	std::string area = commonDataManager->GetDefaultAreaName();
 
@@ -1129,7 +1114,7 @@ value ScriptClientBase::Func_DeleteCommonData(script_machine* machine, int argc,
 }
 value ScriptClientBase::Func_SetAreaCommonData(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 
 	std::string area = to_mbcs(argv[0].as_string());
@@ -1144,7 +1129,7 @@ value ScriptClientBase::Func_SetAreaCommonData(script_machine* machine, int argc
 }
 value ScriptClientBase::Func_GetAreaCommonData(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 
 	std::string area = to_mbcs(argv[0].as_string());
@@ -1159,7 +1144,7 @@ value ScriptClientBase::Func_GetAreaCommonData(script_machine* machine, int argc
 }
 value ScriptClientBase::Func_ClearAreaCommonData(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 
 	std::string area = to_mbcs(argv[0].as_string());
@@ -1171,7 +1156,7 @@ value ScriptClientBase::Func_ClearAreaCommonData(script_machine* machine, int ar
 }
 value ScriptClientBase::Func_DeleteAreaCommonData(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 
 	std::string area = to_mbcs(argv[0].as_string());
@@ -1184,7 +1169,7 @@ value ScriptClientBase::Func_DeleteAreaCommonData(script_machine* machine, int a
 }
 value ScriptClientBase::Func_CreateCommonDataArea(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 
 	std::string area = to_mbcs(argv[0].as_string());
@@ -1193,7 +1178,7 @@ value ScriptClientBase::Func_CreateCommonDataArea(script_machine* machine, int a
 }
 value ScriptClientBase::Func_CopyCommonDataArea(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 
 	std::string areaDest = to_mbcs(argv[0].as_string());
@@ -1204,7 +1189,7 @@ value ScriptClientBase::Func_CopyCommonDataArea(script_machine* machine, int arg
 }
 value ScriptClientBase::Func_IsCommonDataAreaExists(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 
 	std::string area = to_mbcs(argv[0].as_string());
@@ -1213,7 +1198,7 @@ value ScriptClientBase::Func_IsCommonDataAreaExists(script_machine* machine, int
 }
 value ScriptClientBase::Func_GetCommonDataAreaKeyList(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 
 	std::vector<std::string> listKey = commonDataManager->GetKeyList();
@@ -1222,7 +1207,7 @@ value ScriptClientBase::Func_GetCommonDataAreaKeyList(script_machine* machine, i
 }
 value ScriptClientBase::Func_GetCommonDataValueKeyList(script_machine* machine, int argc, value const* argv)
 {
-	ScriptClientBase* script = (ScriptClientBase*)machine->data;
+	auto* script = (ScriptClientBase*)machine->data;
 	ScriptCommonDataManager* commonDataManager = script->GetCommonDataManager();
 
 	std::vector<std::string> listKey;
@@ -1238,13 +1223,10 @@ value ScriptClientBase::Func_GetCommonDataValueKeyList(script_machine* machine, 
 /**********************************************************
 //ScriptFileLineMap
 **********************************************************/
-ScriptFileLineMap::ScriptFileLineMap()
-{
-}
-ScriptFileLineMap::~ScriptFileLineMap()
-{
-}
-void ScriptFileLineMap::AddEntry(std::wstring path, int lineAdd, int lineCount)
+ScriptFileLineMap::ScriptFileLineMap() = default;
+ScriptFileLineMap::~ScriptFileLineMap() = default;
+
+void ScriptFileLineMap::AddEntry(const std::wstring& path, int lineAdd, int lineCount)
 {
 	Entry entryNew;
 	entryNew.path_ = path;
@@ -1252,12 +1234,12 @@ void ScriptFileLineMap::AddEntry(std::wstring path, int lineAdd, int lineCount)
 	entryNew.lineEndOriginal_ = lineCount;
 	entryNew.lineStart_ = lineAdd;
 	entryNew.lineEnd_ = entryNew.lineStart_ + lineCount - 1;
-	if (listEntry_.size() == 0) {
+	if (listEntry_.empty()) {
 		listEntry_.push_back(entryNew);
 		return;
 	}
 
-	Entry* pEntryDivide = NULL;
+	Entry* pEntryDivide = nullptr;
 	std::list<Entry>::iterator itrInsert;
 	for (itrInsert = listEntry_.begin(); itrInsert != listEntry_.end(); itrInsert++) {
 		pEntryDivide = (Entry*)&*itrInsert;
@@ -1267,14 +1249,14 @@ void ScriptFileLineMap::AddEntry(std::wstring path, int lineAdd, int lineCount)
 
 	Entry& entryDivide = *pEntryDivide;
 	if (entryDivide.lineStart_ == lineAdd) {
-		entryDivide.lineStartOriginal_++;
+		++(entryDivide.lineStartOriginal_);
 		listEntry_.insert(itrInsert, entryNew);
 	} else if (entryDivide.lineEnd_ == lineAdd) {
-		entryDivide.lineEnd_--;
-		entryDivide.lineEndOriginal_--;
+		--(entryDivide.lineEnd_);
+		--(entryDivide.lineEndOriginal_);
 
 		listEntry_.insert(itrInsert, entryNew);
-		itrInsert++;
+		++itrInsert;
 	} else {
 		Entry entryNew2 = entryDivide;
 		entryDivide.lineEnd_ = lineAdd - 1;
@@ -1285,7 +1267,7 @@ void ScriptFileLineMap::AddEntry(std::wstring path, int lineAdd, int lineCount)
 		entryNew2.lineEnd_ += lineCount - 1;
 
 		if (itrInsert != listEntry_.end())
-			itrInsert++;
+			++itrInsert;
 		listEntry_.insert(itrInsert, entryNew);
 		listEntry_.insert(itrInsert, entryNew2);
 	}
@@ -1296,10 +1278,10 @@ void ScriptFileLineMap::AddEntry(std::wstring path, int lineAdd, int lineCount)
 		entry.lineEnd_ += lineCount - 1;
 	}
 }
-ScriptFileLineMap::Entry ScriptFileLineMap::GetEntry(int line)
+ScriptFileLineMap::Entry ScriptFileLineMap::GetEntry(int line) const
 {
 	Entry res;
-	std::list<Entry>::iterator itrInsert;
+	std::list<Entry>::const_iterator itrInsert;
 	for (itrInsert = listEntry_.begin(); itrInsert != listEntry_.end(); itrInsert++) {
 		res = *itrInsert;
 		if (line >= res.lineStart_ && line <= res.lineEnd_)
@@ -1307,10 +1289,9 @@ ScriptFileLineMap::Entry ScriptFileLineMap::GetEntry(int line)
 	}
 	return res;
 }
-std::wstring ScriptFileLineMap::GetPath(int line)
+std::wstring ScriptFileLineMap::GetPath(int line) const
 {
-	Entry entry = GetEntry(line);
-	return entry.path_;
+	return GetEntry(line).path_;
 }
 
 /**********************************************************
@@ -1321,37 +1302,35 @@ ScriptCommonDataManager::ScriptCommonDataManager()
 	nameAreaDefailt_ = "";
 	CreateArea("");
 }
-ScriptCommonDataManager::~ScriptCommonDataManager()
-{
-}
+ScriptCommonDataManager::~ScriptCommonDataManager() = default;
 void ScriptCommonDataManager::Clear()
 {
 	mapData_.clear();
 }
-bool ScriptCommonDataManager::IsExists(std::string name)
+bool ScriptCommonDataManager::IsExists(const std::string& name)
 {
 	return mapData_.find(name) != mapData_.end();
 }
-void ScriptCommonDataManager::CreateArea(std::string name)
+void ScriptCommonDataManager::CreateArea(const std::string& name)
 {
 	if (IsExists(name))
 		return;
 	mapData_[name] = new ScriptCommonData();
 }
-void ScriptCommonDataManager::CopyArea(std::string nameDest, std::string nameSrc)
+void ScriptCommonDataManager::CopyArea(const std::string& nameDest, const std::string& nameSrc)
 {
 	gstd::ref_count_ptr<ScriptCommonData> dataSrc = mapData_[nameSrc];
 	gstd::ref_count_ptr<ScriptCommonData> dataDest = new ScriptCommonData();
 	dataDest->Copy(dataSrc);
 	mapData_[nameDest] = dataDest;
 }
-gstd::ref_count_ptr<ScriptCommonData> ScriptCommonDataManager::GetData(std::string name)
+gstd::ref_count_ptr<ScriptCommonData> ScriptCommonDataManager::GetData(const std::string& name)
 {
 	if (!IsExists(name))
-		return NULL;
+		return nullptr;
 	return mapData_[name];
 }
-void ScriptCommonDataManager::SetData(std::string name, gstd::ref_count_ptr<ScriptCommonData> commonData)
+void ScriptCommonDataManager::SetData(const std::string& name, gstd::ref_count_ptr<ScriptCommonData> commonData)
 {
 	mapData_[name] = commonData;
 }
@@ -1368,31 +1347,27 @@ std::vector<std::string> ScriptCommonDataManager::GetKeyList()
 /**********************************************************
 //ScriptCommonData
 **********************************************************/
-ScriptCommonData::ScriptCommonData()
-{
-}
-ScriptCommonData::~ScriptCommonData()
-{
-}
+ScriptCommonData::ScriptCommonData() = default;
+ScriptCommonData::~ScriptCommonData() = default;
 void ScriptCommonData::Clear()
 {
 	mapValue_.clear();
 }
-bool ScriptCommonData::IsExists(std::string name)
+bool ScriptCommonData::IsExists(const std::string& name)
 {
 	return mapValue_.find(name) != mapValue_.end();
 }
-gstd::value ScriptCommonData::GetValue(std::string name)
+gstd::value ScriptCommonData::GetValue(const std::string& name)
 {
 	if (!IsExists(name))
 		return value();
 	return mapValue_[name];
 }
-void ScriptCommonData::SetValue(std::string name, gstd::value v)
+void ScriptCommonData::SetValue(const std::string& name, const gstd::value& val)
 {
-	mapValue_[name] = v;
+	mapValue_[name] = val;
 }
-void ScriptCommonData::DeleteValue(std::string name)
+void ScriptCommonData::DeleteValue(const std::string& name)
 {
 	mapValue_.erase(name);
 }
@@ -1400,8 +1375,7 @@ void ScriptCommonData::Copy(gstd::ref_count_ptr<ScriptCommonData> dataSrc)
 {
 	mapValue_.clear();
 	std::vector<std::string> listSrcKey = dataSrc->GetKeyList();
-	for (int iKey = 0; iKey < listSrcKey.size(); iKey++) {
-		std::string key = listSrcKey[iKey];
+	for (const auto& key : listSrcKey) {
 		gstd::value vSrc = dataSrc->GetValue(key);
 		gstd::value vDest = vSrc;
 		vDest.unique();
@@ -1411,9 +1385,8 @@ void ScriptCommonData::Copy(gstd::ref_count_ptr<ScriptCommonData> dataSrc)
 std::vector<std::string> ScriptCommonData::GetKeyList()
 {
 	std::vector<std::string> res;
-	std::map<std::string, gstd::value>::iterator itrValue;
-	for (itrValue = mapValue_.begin(); itrValue != mapValue_.end(); itrValue++) {
-		std::string key = itrValue->first;
+	for (const auto& itrValue : mapValue_) {
+		std::string key = itrValue.first;
 		res.push_back(key);
 	}
 	return res;
@@ -1423,8 +1396,7 @@ void ScriptCommonData::ReadRecord(gstd::RecordBuffer& record)
 	mapValue_.clear();
 
 	std::vector<std::string> listKey = record.GetKeyList();
-	for (int iKey = 0; iKey < listKey.size(); iKey++) {
-		std::string key = listKey[iKey];
+	for (const auto& key : listKey) {
 		std::string keyValSize = StringUtility::Format("%s_size", key.c_str());
 		if (!record.IsExists(keyValSize)) //サイズ自身がキー登録されている
 			continue;
@@ -1441,7 +1413,7 @@ gstd::value ScriptCommonData::_ReadRecord(gstd::ByteBuffer& buffer)
 {
 	script_type_manager* scriptTypeManager = ScriptClientBase::GetDefaultScriptTypeManager();
 	gstd::value res;
-	type_data::type_kind kind = (type_data::type_kind)buffer.ReadInteger();
+	auto kind = (type_data::type_kind)buffer.ReadInteger();
 
 	if (kind == type_data::tk_real) {
 		long double data = buffer.ReadDouble();
@@ -1468,10 +1440,9 @@ gstd::value ScriptCommonData::_ReadRecord(gstd::ByteBuffer& buffer)
 }
 void ScriptCommonData::WriteRecord(gstd::RecordBuffer& record)
 {
-	std::map<std::string, gstd::value>::iterator itrValue;
-	for (itrValue = mapValue_.begin(); itrValue != mapValue_.end(); itrValue++) {
-		std::string key = itrValue->first;
-		gstd::value comVal = itrValue->second;
+	for (const auto& itrValue : mapValue_) {
+		std::string key = itrValue.first;
+		gstd::value comVal = itrValue.second;
 
 		gstd::ByteBuffer buffer;
 		_WriteRecord(buffer, comVal);
@@ -1496,7 +1467,7 @@ void ScriptCommonData::_WriteRecord(gstd::ByteBuffer& buffer, gstd::value& comVa
 		int arrayLength = comValue.length_as_array();
 		buffer.WriteInteger(arrayLength);
 
-		for (int iArray = 0; iArray < arrayLength; iArray++) {
+		for (int iArray = 0; iArray < arrayLength; ++iArray) {
 			value& arrayValue = comValue.index_as_array(iArray);
 			_WriteRecord(buffer, arrayValue);
 		}
@@ -1532,7 +1503,7 @@ bool ScriptCommonDataInfoPanel::_AddedLogger(HWND hTab)
 	wndListViewValue_.AddColumn(256, COL_VALUE, L"Value");
 
 	wndSplitter_.Create(hWnd_, WSplitter::TYPE_HORIZONTAL);
-	wndSplitter_.SetRatioY(0.25f);
+	wndSplitter_.SetRatioY(0.25F);
 
 	return true;
 }
@@ -1558,10 +1529,9 @@ void ScriptCommonDataInfoPanel::Update(gstd::ref_count_ptr<ScriptCommonDataManag
 		Lock lock(lock_);
 		commonDataManager_->Clear();
 
-		if (commonDataManager != NULL) {
+		if (commonDataManager != nullptr) {
 			std::vector<std::string> listKey = commonDataManager->GetKeyList();
-			for (int iKey = 0; iKey < listKey.size(); iKey++) {
-				std::string area = listKey[iKey];
+			for (const auto& area : listKey) {
 				gstd::ref_count_ptr<ScriptCommonData> dataSrc = commonDataManager->GetData(area);
 				gstd::ref_count_ptr<ScriptCommonData> dataDest = new ScriptCommonData();
 				dataDest->Copy(dataSrc);
@@ -1578,38 +1548,33 @@ void ScriptCommonDataInfoPanel::_UpdateListViewKey(WListView* listView, std::vec
 	std::set<std::string> listManageData;
 	std::set<std::string> listAdd;
 
-	int iKey = 0;
-	for (iKey = 0; iKey < listKey.size(); iKey++) {
-		std::string area = listKey[iKey];
+	for (const auto& area : listKey) {
 		listManageData.insert(area);
 		listAdd.insert(area);
 	}
 
 	int countView = listView->GetRowCount();
-	int iRow = 0;
-	for (iRow = 0; iRow < countView; iRow++) {
+	for (int iRow = 0; iRow < countView; ++iRow) {
 		std::wstring wArea = listView->GetText(iRow, COL_KEY);
 		std::string area = StringUtility::ConvertWideToMulti(wArea);
 		listAdd.erase(area);
 	}
 
 	//削除
-	for (iRow = 0; iRow < listView->GetRowCount();) {
+	for (int iRow = 0; iRow < listView->GetRowCount();) {
 		std::wstring wKey = listView->GetText(iRow, COL_KEY);
 		std::string key = StringUtility::ConvertWideToMulti(wKey);
 		if (listManageData.find(key) != listManageData.end())
-			iRow++;
+			++iRow;
 		else
 			listView->DeleteRow(iRow);
 	}
 
 	//追加
-	iRow = 0;
-	countView = listView->GetRowCount();
-	std::set<std::string>::iterator itr = listAdd.begin();
-	for (; itr != listAdd.end();) {
+	int iRow = 0;
+	for (auto itr = listAdd.begin(); itr != listAdd.end();) {
 		std::string str1 = *itr;
-		for (; iRow < listView->GetRowCount(); iRow++) {
+		for (; iRow < listView->GetRowCount(); ++iRow) {
 			std::wstring wstr2 = listView->GetText(iRow, COL_KEY);
 			std::string str2 = StringUtility::ConvertWideToMulti(wstr2);
 			int index = strcmp(str1.c_str(), str2.c_str());
@@ -1624,9 +1589,7 @@ void ScriptCommonDataInfoPanel::_UpdateListViewKey(WListView* listView, std::vec
 		itr = listAdd.erase(itr);
 	}
 
-	itr = listAdd.begin();
-	for (; itr != listAdd.end(); itr++) {
-		std::string str1 = *itr;
+	for (const auto& str1 : listAdd) {
 		std::wstring wstr1 = StringUtility::ConvertMultiToWide(str1);
 		listView->SetText(listView->GetRowCount(), COL_KEY, wstr1);
 	}
@@ -1652,7 +1615,7 @@ void ScriptCommonDataInfoPanel::_UpdateValueView()
 	_UpdateListViewKey(&wndListViewValue_, listKey);
 
 	int countView = wndListViewValue_.GetRowCount();
-	for (int iRow = 0; iRow < countView; iRow++) {
+	for (int iRow = 0; iRow < countView; ++iRow) {
 		std::wstring wKey = wndListViewValue_.GetText(iRow, COL_KEY);
 		std::string key = StringUtility::ConvertWideToMulti(wKey);
 		gstd::value val = commonData->GetValue(key);

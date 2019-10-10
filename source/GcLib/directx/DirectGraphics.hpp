@@ -21,23 +21,23 @@ public:
 public:
 	DirectGraphicsConfig();
 	virtual ~DirectGraphicsConfig();
-	bool IsShowWindow() { return bShowWindow_; }
+	bool IsShowWindow() const { return bShowWindow_; }
 	void SetShowWindow(bool b) { bShowWindow_ = b; }
-	int GetScreenWidth() { return widthScreen_; }
+	int GetScreenWidth() const { return widthScreen_; }
 	void SetScreenWidth(int width) { widthScreen_ = width; }
-	int GetScreenHeight() { return heightScreen_; }
+	int GetScreenHeight() const { return heightScreen_; }
 	void SetScreenHeight(int height) { heightScreen_ = height; }
-	bool IsWindowed() { return bWindowed_; }
+	bool IsWindowed() const { return bWindowed_; }
 	void SetWindowd(bool bWindowed) { bWindowed_ = bWindowed; }
-	bool IsReferenceEnable() { return bUseRef_; }
+	bool IsReferenceEnable() const { return bUseRef_; }
 	void SetReferenceEnable(bool bEnable) { bUseRef_ = bEnable; }
-	int GetColorMode() { return colorMode_; }
+	int GetColorMode() const { return colorMode_; }
 	void SetColorMode(int mode) { colorMode_ = mode; }
-	bool IsTripleBufferEnable() { return bUseTripleBuffer_; }
+	bool IsTripleBufferEnable() const { return bUseTripleBuffer_; }
 	void SetTripleBufferEnable(bool bEnable) { bUseTripleBuffer_ = bEnable; }
-	bool IsWaitTimerEnable() { return bUseWaitTimer_; }
+	bool IsWaitTimerEnable() const { return bUseWaitTimer_; }
 	void SetWaitTimerEnable(bool bEnable) { bUseWaitTimer_ = bEnable; }
-	bool IsPseudoFullScreen() { return bPseudoFullScreen_; }
+	bool IsPseudoFullScreen() const { return bPseudoFullScreen_; }
 	void SetbPseudoFullScreen(bool b) { bPseudoFullScreen_ = b; }
 
 protected:
@@ -54,7 +54,7 @@ protected:
 
 class DirectGraphicsListener {
 public:
-	virtual ~DirectGraphicsListener() {}
+	virtual ~DirectGraphicsListener() = default;
 	virtual void ReleaseDirectGraphics() {}
 	virtual void RestoreDirectGraphics() {}
 	virtual void StartChangeScreenMode() { ReleaseDirectGraphics(); }
@@ -94,9 +94,9 @@ public:
 	virtual bool Initialize(HWND hWnd, DirectGraphicsConfig& config);
 	void AddDirectGraphicsListener(DirectGraphicsListener* listener);
 	void RemoveDirectGraphicsListener(DirectGraphicsListener* listener);
-	int GetScreenMode() { return modeScreen_; }
-	D3DPRESENT_PARAMETERS GetFullScreenPresentParameter() { return d3dppFull_; }
-	D3DPRESENT_PARAMETERS GetWindowPresentParameter() { return d3dppWin_; }
+	int GetScreenMode() const { return modeScreen_; }
+	D3DPRESENT_PARAMETERS GetFullScreenPresentParameter() const { return d3dppFull_; }
+	D3DPRESENT_PARAMETERS GetWindowPresentParameter() const { return d3dppWin_; }
 
 	IDirect3DDevice9* GetDevice() { return pDevice_; }
 	DirectGraphicsConfig& GetConfigData() { return config_; }
@@ -130,16 +130,16 @@ public:
 	void SetViewPort(int x, int y, int width, int height);
 	void ResetViewPort();
 
-	int GetScreenWidth();
-	int GetScreenHeight();
-	double GetScreenWidthRatio();
-	double GetScreenHeightRatio();
-	POINT GetMousePosition();
+	int GetScreenWidth() const;
+	int GetScreenHeight() const;
+	double GetScreenWidthRatio() const;
+	double GetScreenHeightRatio() const;
+	POINT GetMousePosition() const;
 	gstd::ref_count_ptr<DxCamera> GetCamera() { return camera_; }
 	gstd::ref_count_ptr<DxCamera2D> GetCamera2D() { return camera2D_; }
 
-	void SaveBackSurfaceToFile(std::wstring path);
-	bool IsPixelShaderSupported(int major, int minor);
+	void SaveBackSurfaceToFile(const std::wstring& path);
+	bool IsPixelShaderSupported(int major, int minor) const;
 
 protected:
 	IDirect3D9* pDirect3D_;
@@ -172,14 +172,14 @@ protected:
 class DirectGraphicsPrimaryWindow : public DirectGraphics, public gstd::WindowBase {
 public:
 	DirectGraphicsPrimaryWindow();
-	~DirectGraphicsPrimaryWindow();
+	~DirectGraphicsPrimaryWindow() override;
 	virtual bool Initialize();
 	virtual bool Initialize(DirectGraphicsConfig& config);
 	void ChangeScreenMode();
 
 protected:
 	gstd::WindowBase wndGraphics_;
-	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam); //オーバーライド用プロシージャ
+	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override; //オーバーライド用プロシージャ
 	void _PauseDrawing();
 	void _RestartDrawing();
 };
@@ -192,8 +192,8 @@ public:
 	DxCamera();
 	virtual ~DxCamera();
 	void Reset();
-	D3DXVECTOR3 GetCameraPosition();
-	D3DXVECTOR3 GetFocusPosition() { return pos_; }
+	D3DXVECTOR3 GetCameraPosition() const;
+	D3DXVECTOR3 GetFocusPosition() const { return pos_; }
 	void SetFocus(float x, float y, float z)
 	{
 		pos_.x = x;
@@ -203,22 +203,22 @@ public:
 	void SetFocusX(float x) { pos_.x = x; }
 	void SetFocusY(float y) { pos_.y = y; }
 	void SetFocusZ(float z) { pos_.z = z; }
-	float GetRadius() { return radius_; }
+	float GetRadius() const { return radius_; }
 	void SetRadius(float r) { radius_ = r; }
-	float GetAzimuthAngle() { return angleAzimuth_; }
+	float GetAzimuthAngle() const { return angleAzimuth_; }
 	void SetAzimuthAngle(float angle) { angleAzimuth_ = angle; }
-	float GetElevationAngle() { return angleElevation_; }
+	float GetElevationAngle() const { return angleElevation_; }
 	void SetElevationAngle(float angle) { angleElevation_ = angle; }
 
-	float GetYaw() { return yaw_; }
+	float GetYaw() const { return yaw_; }
 	void SetYaw(float yaw) { yaw_ = yaw; }
-	float GetPitch() { return pitch_; }
+	float GetPitch() const { return pitch_; }
 	void SetPitch(float pitch) { pitch_ = pitch; }
-	float GetRoll() { return roll_; }
+	float GetRoll() const { return roll_; }
 	void SetRoll(float roll) { roll_ = roll; }
 
-	double GetNearClip() { return clipNear_; }
-	double GetFarClip() { return clipFar_; }
+	double GetNearClip() const { return clipNear_; }
+	double GetFarClip() const { return clipFar_; }
 
 	D3DXMATRIX GetMatrixLookAtLH();
 	void UpdateDeviceWorldViewMatrix();
@@ -250,12 +250,12 @@ public:
 	DxCamera2D();
 	virtual ~DxCamera2D();
 
-	bool IsEnable() { return bEnable_; }
+	bool IsEnable() const { return bEnable_; }
 	void SetEnable(bool bEnable) { bEnable_ = bEnable; }
 
-	D3DXVECTOR2 GetFocusPosition() { return pos_; }
-	float GetFocusX() { return pos_.x; }
-	float GetFocusY() { return pos_.y; }
+	D3DXVECTOR2 GetFocusPosition() const { return pos_; }
+	float GetFocusX() const { return pos_.x; }
+	float GetFocusY() const { return pos_.y; }
 	void SetFocus(float x, float y)
 	{
 		pos_.x = x;
@@ -270,11 +270,11 @@ public:
 		ratioX_ = ratio;
 		ratioY_ = ratio;
 	}
-	double GetRatioX() { return ratioX_; }
+	double GetRatioX() const { return ratioX_; }
 	void SetRatioX(double ratio) { ratioX_ = ratio; }
-	double GetRatioY() { return ratioY_; }
+	double GetRatioY() const { return ratioY_; }
 	void SetRatioY(double ratio) { ratioY_ = ratio; }
-	double GetAngleZ() { return angleZ_; }
+	double GetAngleZ() const { return angleZ_; }
 	void SetAngleZ(double angle) { angleZ_ = angle; }
 
 	RECT GetClip() { return rcClip_; }

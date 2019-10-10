@@ -15,8 +15,8 @@ TitleScene::TitleScene()
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	int screenWidth = graphics->GetScreenWidth();
 	int screenHeight = graphics->GetScreenHeight();
-	RECT_D srcBack = { 0., 0., 640., 480. };
-	RECT_D destBack = { 0., 0., (double)screenWidth, (double)screenHeight };
+	RECT_D srcBack = { 0.0, 0.0, 640.0, 480.0 };
+	RECT_D destBack = { 0.0, 0.0, (double)screenWidth, (double)screenHeight };
 
 	spriteBack_ = new Sprite2D();
 	spriteBack_->SetTexture(textureBack);
@@ -24,7 +24,7 @@ TitleScene::TitleScene()
 
 	std::wstring strText[] = { L"All", L"Single", L"Plural", L"Stage", L"Package", L"Directory", L"Quit" };
 	std::wstring strDescription[] = { L"", L"", L"", L"", L"", L"", L"", L"" };
-	for (int iItem = 0; iItem < ITEM_COUNT; iItem++) {
+	for (int iItem = 0; iItem < ITEM_COUNT; ++iItem) {
 		int x = 48 + iItem * 6 + 12 * pow((double)-1, (int)(iItem - 1));
 		int y = 154 + iItem * 30;
 		AddMenuItem(new TitleSceneMenuItem(strText[iItem], strDescription[iItem], x, y));
@@ -69,7 +69,8 @@ void TitleScene::Work()
 			break;
 		}
 		return;
-	} else if (input->GetVirtualKeyState(EDirectInput::KEY_CANCEL) == KEY_PUSH) {
+	}
+	if (input->GetVirtualKeyState(EDirectInput::KEY_CANCEL) == KEY_PUSH) {
 		cursorY_ = ITEM_QUIT;
 	}
 }
@@ -84,7 +85,7 @@ void TitleScene::Render()
 }
 
 //TitleSceneMenuItem
-TitleSceneMenuItem::TitleSceneMenuItem(std::wstring text, std::wstring description, int x, int y)
+TitleSceneMenuItem::TitleSceneMenuItem(const std::wstring& text, const std::wstring& /*unused*/, int x, int y)
 {
 	pos_.x = x;
 	pos_.y = y;
@@ -100,9 +101,7 @@ TitleSceneMenuItem::TitleSceneMenuItem(std::wstring text, std::wstring descripti
 	dxText.SetText(text);
 	objText_ = dxText.CreateRenderObject();
 }
-TitleSceneMenuItem::~TitleSceneMenuItem()
-{
-}
+TitleSceneMenuItem::~TitleSceneMenuItem() = default;
 void TitleSceneMenuItem::Work()
 {
 	_WorkSelectedItem();
