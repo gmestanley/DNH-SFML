@@ -16,17 +16,17 @@ class StgPlayerInformation {
 	friend StgPlayerObject;
 
 public:
-	StgPlayerInformation() = default;
-	virtual ~StgPlayerInformation() = default;
+	StgPlayerInformation() {}
+	virtual ~StgPlayerInformation() {}
 
-	double GetLife() const { return life_; }
+	double GetLife() { return life_; }
 	void SetLife(double life) { life_ = life; }
-	double GetSpell() const { return countBomb_; }
+	double GetSpell() { return countBomb_; }
 	void SetSpell(double spell) { countBomb_ = spell; }
-	double GetPower() const { return power_; }
+	double GetPower() { return power_; }
 	void SetPower(double power) { power_ = power; }
 
-	int GetRebirthFrame() const { return frameRebirth_; }
+	int GetRebirthFrame() { return frameRebirth_; }
 	void SetRebirthFrame(int frame) { frameRebirth_ = frame; }
 
 private:
@@ -47,21 +47,21 @@ public:
 
 public:
 	StgPlayerObject(StgStageController* stageController);
-	~StgPlayerObject() override;
+	virtual ~StgPlayerObject();
 	void Clear() { ClearIntersectionRelativeTarget(); }
 	void SetScript(StgStagePlayerScript* script) { script_ = script; }
 
-	void Work() override;
+	virtual void Work();
 	void Move();
-	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
+	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
 	void CallSpell();
 
-	void SetX(double x) override
+	virtual void SetX(double x)
 	{
 		posX_ = x;
 		DxScriptRenderObject::SetX(x);
 	}
-	void SetY(double y) override
+	virtual void SetY(double y)
 	{
 		posY_ = y;
 		DxScriptRenderObject::SetY(y);
@@ -73,24 +73,24 @@ public:
 
 	StgStagePlayerScript* GetPlayerScript() { return script_; }
 	ref_count_ptr<StgPlayerObject>::unsync GetOwnObject();
-	double GetX() const { return posX_; }
-	double GetY() const { return posY_; }
-	double GetFastSpeed() const { return speedFast_; }
+	double GetX() { return posX_; }
+	double GetY() { return posY_; }
+	double GetFastSpeed() { return speedFast_; }
 	void SetFastSpeed(double speed) { speedFast_ = speed; }
-	double GetSlowSpeed() const { return speedSlow_; }
+	double GetSlowSpeed() { return speedSlow_; }
 	void SetSlowSpeed(double speed) { speedSlow_ = speed; }
 
-	RECT GetClip() const { return rcClip_; }
+	RECT GetClip() { return rcClip_; }
 	void SetClip(RECT rect) { rcClip_ = rect; }
 
-	int GetState() const { return state_; }
-	int GetDownStateFrame() const { return frameStateDown_; }
+	int GetState() { return state_; }
+	int GetDownStateFrame() { return frameStateDown_; }
 	void SetDownStateFrame(int frame) { frameStateDown_ = frame; }
 	int GetRebirthFrame() { return infoPlayer_->GetRebirthFrame(); }
 	void SetRebirthFrameMax(int frame) { frameRebirthMax_ = frame; }
 	void SetRebirthFrame(int frame) { infoPlayer_->SetRebirthFrame(frame); }
 	void SetRebirthLossFrame(int frame) { frameRebirthDiff_ = frame; }
-	double GetItemIntersectionRadius() const { return itemCircle_; }
+	double GetItemIntersectionRadius() { return itemCircle_; }
 	void SetItemIntersectionRadius(double r) { itemCircle_ = r; }
 	double GetLife() { return infoPlayer_->GetLife(); }
 	void SetLife(double life) { infoPlayer_->SetLife(life); }
@@ -98,12 +98,12 @@ public:
 	void SetSpell(double spell) { infoPlayer_->SetSpell(spell); }
 	double GetPower() { return infoPlayer_->GetPower(); }
 	void SetPower(double power) { infoPlayer_->SetPower(power); }
-	int GetInvincibilityFrame() const { return frameInvincibility_; }
+	int GetInvincibilityFrame() { return frameInvincibility_; }
 	void SetInvincibilityFrame(int frame) { frameInvincibility_ = frame; }
-	int GetAutoItemCollectY() const { return yAutoItemCollect_; }
+	int GetAutoItemCollectY() { return yAutoItemCollect_; }
 	void SetAutoItemCollectY(int y) { yAutoItemCollect_ = y; }
 
-	bool IsPermitShot() const;
+	bool IsPermitShot();
 	void SetForbidShot(bool bForbid) { bForbidShot_ = bForbid; }
 	bool IsPermitSpell();
 	void SetForbidSpell(bool bForbid) { bForbidSpell_ = bForbid; }
@@ -111,7 +111,7 @@ public:
 
 protected:
 	void _InitializeRebirth();
-	void _Move() override;
+	void _Move();
 	void _AddIntersection();
 	bool _IsValidSpell();
 
@@ -147,7 +147,7 @@ public:
 		typeTarget_ = TYPE_PLAYER;
 		bGraze_ = bGraze;
 	}
-	bool IsGraze() const { return bGraze_; }
+	bool IsGraze() { return bGraze_; }
 
 private:
 	bool bGraze_;
@@ -159,8 +159,8 @@ private:
 class StgPlayerSpellManageObject : public DxScriptObjectBase {
 public:
 	StgPlayerSpellManageObject() { bVisible_ = false; }
-	void Render() override {}
-	void SetRenderState() override {}
+	virtual void Render() {}
+	virtual void SetRenderState() {}
 };
 
 /**********************************************************
@@ -169,14 +169,14 @@ public:
 class StgPlayerSpellObject : public DxScriptPrimitiveObject2D, public StgIntersectionObject {
 public:
 	StgPlayerSpellObject(StgStageController* stageController);
-	void Work() override;
-	void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget) override;
+	virtual void Work();
+	virtual void Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget);
 
-	double GetDamage() const { return damage_; }
+	double GetDamage() { return damage_; }
 	void SetDamage(double damage) { damage_ = damage; }
-	bool IsEraseShot() const { return bEraseShot_; }
+	bool IsEraseShot() { return bEraseShot_; }
 	void SetEraseShot(bool b) { bEraseShot_ = b; }
-	double GetLife() const { return life_; }
+	double GetLife() { return life_; }
 	void SetLife(double life) { life_ = life; }
 
 protected:

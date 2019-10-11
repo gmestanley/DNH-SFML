@@ -6,7 +6,7 @@ using namespace directx;
 /**********************************************************
 //ColorAccess
 **********************************************************/
-int ColorAccess::GetColorA(const D3DCOLOR& color)
+int ColorAccess::GetColorA(D3DCOLOR& color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_ALPHA);
 }
@@ -18,7 +18,7 @@ D3DCOLOR& ColorAccess::SetColorA(D3DCOLOR& color, int alpha)
 		alpha = 0;
 	return gstd::BitAccess::SetByte(color, BIT_ALPHA, (unsigned char)alpha);
 }
-int ColorAccess::GetColorR(const D3DCOLOR& color)
+int ColorAccess::GetColorR(D3DCOLOR color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_RED);
 }
@@ -30,7 +30,7 @@ D3DCOLOR& ColorAccess::SetColorR(D3DCOLOR& color, int red)
 		red = 0;
 	return gstd::BitAccess::SetByte(color, BIT_RED, (unsigned char)red);
 }
-int ColorAccess::GetColorG(const D3DCOLOR& color)
+int ColorAccess::GetColorG(D3DCOLOR& color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_GREEN);
 }
@@ -42,7 +42,7 @@ D3DCOLOR& ColorAccess::SetColorG(D3DCOLOR& color, int green)
 		green = 0;
 	return gstd::BitAccess::SetByte(color, BIT_GREEN, (unsigned char)green);
 }
-int ColorAccess::GetColorB(const D3DCOLOR& color)
+int ColorAccess::GetColorB(D3DCOLOR& color)
 {
 	return gstd::BitAccess::GetByte(color, BIT_BLUE);
 }
@@ -56,10 +56,10 @@ D3DCOLOR& ColorAccess::SetColorB(D3DCOLOR& color, int blue)
 }
 D3DCOLORVALUE ColorAccess::SetColor(D3DCOLORVALUE value, D3DCOLOR color)
 {
-	float a = (float)GetColorA(color) / 255.0F;
-	float r = (float)GetColorR(color) / 255.0F;
-	float g = (float)GetColorG(color) / 255.0F;
-	float b = (float)GetColorB(color) / 255.0F;
+	float a = (float)GetColorA(color) / 255.0f;
+	float r = (float)GetColorR(color) / 255.0f;
+	float g = (float)GetColorG(color) / 255.0f;
+	float b = (float)GetColorB(color) / 255.0f;
 	value.r *= r;
 	value.g *= g;
 	value.b *= b;
@@ -68,10 +68,10 @@ D3DCOLORVALUE ColorAccess::SetColor(D3DCOLORVALUE value, D3DCOLOR color)
 }
 D3DMATERIAL9 ColorAccess::SetColor(D3DMATERIAL9 mat, D3DCOLOR color)
 {
-	float a = (float)GetColorA(color) / 255.0F;
-	float r = (float)GetColorR(color) / 255.0F;
-	float g = (float)GetColorG(color) / 255.0F;
-	float b = (float)GetColorB(color) / 255.0F;
+	float a = (float)GetColorA(color) / 255.0f;
+	float r = (float)GetColorR(color) / 255.0f;
+	float g = (float)GetColorG(color) / 255.0f;
+	float b = (float)GetColorB(color) / 255.0f;
 	mat.Diffuse.r *= r;
 	mat.Diffuse.g *= g;
 	mat.Diffuse.b *= b;
@@ -101,16 +101,13 @@ D3DCOLOR& ColorAccess::ApplyAlpha(D3DCOLOR& color, double alpha)
 D3DCOLOR& ColorAccess::SetColorHSV(D3DCOLOR& color, int hue, int saturation, int value)
 {
 	float f;
-	int i;
-	int p;
-	int q;
-	int t;
+	int i, p, q, t;
 
-	i = (int)floor(hue / 60.0F) % 6;
-	f = (float)(hue / 60.0F) - (float)floor(hue / 60.0F);
-	p = (int)gstd::Math::Round(value * (1.0F - (saturation / 255.0F)));
-	q = (int)gstd::Math::Round(value * (1.0F - (saturation / 255.0F) * f));
-	t = (int)gstd::Math::Round(value * (1.0F - (saturation / 255.0F) * (1.0F - f)));
+	i = (int)floor(hue / 60.0f) % 6;
+	f = (float)(hue / 60.0f) - (float)floor(hue / 60.0f);
+	p = (int)gstd::Math::Round(value * (1.0f - (saturation / 255.0f)));
+	q = (int)gstd::Math::Round(value * (1.0f - (saturation / 255.0f) * f));
+	t = (int)gstd::Math::Round(value * (1.0f - (saturation / 255.0f) * (1.0f - f)));
 
 	int red = 0;
 	int green = 0;
@@ -157,11 +154,9 @@ D3DCOLOR& ColorAccess::SetColorHSV(D3DCOLOR& color, int hue, int saturation, int
 /**********************************************************
 //DxMath
 **********************************************************/
-D3DXVECTOR4 DxMath::VectMatMulti(D3DXVECTOR4 v, const D3DMATRIX& mat)
+D3DXVECTOR4 DxMath::VectMatMulti(D3DXVECTOR4 v, D3DMATRIX& mat)
 {
-	float x;
-	float y;
-	float z;
+	float x, y, z;
 
 	x = v.x;
 	y = v.y;
@@ -174,7 +169,7 @@ D3DXVECTOR4 DxMath::VectMatMulti(D3DXVECTOR4 v, const D3DMATRIX& mat)
 
 	return v;
 }
-bool DxMath::IsIntersected(const D3DXVECTOR2& pos, const std::vector<D3DXVECTOR2>& list)
+bool DxMath::IsIntersected(D3DXVECTOR2& pos, std::vector<D3DXVECTOR2>& list)
 {
 	if (list.size() <= 2)
 		return false;
@@ -193,13 +188,13 @@ bool DxMath::IsIntersected(const D3DXVECTOR2& pos, const std::vector<D3DXVECTOR2
 	}
 	return res;
 }
-bool DxMath::IsIntersected(const DxCircle& circle1, const DxCircle& circle2)
+bool DxMath::IsIntersected(DxCircle& circle1, DxCircle& circle2)
 {
 	double r1 = pow(circle1.GetX() - circle2.GetX(), 2) + pow(circle1.GetY() - circle2.GetY(), 2);
 	double r2 = pow(circle1.GetR() + circle2.GetR(), 2);
 	return r1 <= r2;
 }
-bool DxMath::IsIntersected(const DxCircle& circle, const DxWidthLine& line)
+bool DxMath::IsIntersected(DxCircle& circle, DxWidthLine& line)
 {
 	//先端もしくは終端が円内にあるかを調べる
 	{
@@ -246,25 +241,24 @@ bool DxMath::IsIntersected(const DxCircle& circle, const DxWidthLine& line)
 	bool res = e < r;
 	return res;
 }
-bool DxMath::IsIntersected(const DxWidthLine& line1, const DxWidthLine& line2)
+bool DxMath::IsIntersected(DxWidthLine& line1, DxWidthLine& line2)
 {
 	return false;
 }
-bool DxMath::IsIntersected(const DxLine3D& line, const std::vector<DxTriangle>& triangles, std::vector<D3DXVECTOR3>& out)
+bool DxMath::IsIntersected(DxLine3D& line, std::vector<DxTriangle>& triangles, std::vector<D3DXVECTOR3>& out)
 {
 	out.clear();
 
-	for (auto& tri : triangles) {
+	for (int iTri = 0; iTri < triangles.size(); iTri++) {
+		DxTriangle& tri = triangles[iTri];
 		D3DXPLANE plane; //3角形の面
 		D3DXPlaneFromPoints(&plane, &tri.GetPosition(0), &tri.GetPosition(1), &tri.GetPosition(2));
 
 		D3DXVECTOR3 vOut; // 面と視線の交点の座標
-		if (D3DXPlaneIntersectLine(&vOut, &plane, &line.GetPosition(0), &line.GetPosition(1)) != nullptr) {
+		if (D3DXPlaneIntersectLine(&vOut, &plane, &line.GetPosition(0), &line.GetPosition(1))) {
 			// 内外判定
 			D3DXVECTOR3 vN[3];
-			D3DXVECTOR3 vv1;
-			D3DXVECTOR3 vv2;
-			D3DXVECTOR3 vv3;
+			D3DXVECTOR3 vv1, vv2, vv3;
 			vv1 = tri.GetPosition(0) - vOut;
 			vv2 = tri.GetPosition(1) - vOut;
 			vv3 = tri.GetPosition(2) - vOut;
@@ -273,9 +267,12 @@ bool DxMath::IsIntersected(const DxLine3D& line, const std::vector<DxTriangle>& 
 			D3DXVec3Cross(&vN[2], &vv3, &vv2);
 			if (D3DXVec3Dot(&vN[0], &vN[1]) < 0 || D3DXVec3Dot(&vN[0], &vN[2]) < 0)
 				continue;
-			// 内側(3角形に接触)
-			out.push_back(vOut);
+			else { // 内側(3角形に接触)
+				out.push_back(vOut);
+			}
 		}
-	}
-	return !out.empty();
+	} //for (int i = 0; i < tris.size(); i++)
+
+	bool res = out.size() > 0;
+	return res;
 }

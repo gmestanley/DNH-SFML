@@ -8,8 +8,8 @@
 **********************************************************/
 class EStgSystemController : public StgSystemController {
 protected:
-	void DoEnd() override;
-	void DoRetry() override;
+	virtual void DoEnd();
+	virtual void DoRetry();
 };
 
 /**********************************************************
@@ -17,8 +17,8 @@ protected:
 **********************************************************/
 class PStgSystemController : public StgSystemController {
 protected:
-	void DoEnd() override;
-	void DoRetry() override;
+	virtual void DoEnd();
+	virtual void DoRetry();
 };
 
 #endif

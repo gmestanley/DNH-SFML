@@ -35,16 +35,16 @@ public:
 	int GetSelectedItemIndex();
 	ref_count_ptr<MenuItem> GetSelectedMenuItem();
 
-	int GetCurrentPageItemCount() const;
-	int GetCurrentPageMaxX() const;
-	int GetCurrentPageMaxY() const;
+	int GetCurrentPageItemCount();
+	int GetCurrentPageMaxX();
+	int GetCurrentPageMaxY();
 
 protected:
 	int _GetCursorKeyState();
 	virtual void _MoveCursor();
 	virtual void _ChangePage(){};
 
-	bool _IsWaitedKeyFree() const { return bWaitedKeyFree_; }
+	bool _IsWaitedKeyFree() { return bWaitedKeyFree_; }
 
 	CriticalSection cs_;
 	bool bActive_;
@@ -64,8 +64,8 @@ class MenuItem {
 	friend MenuTask;
 
 public:
-	MenuItem() = default;
-	virtual ~MenuItem() = default;
+	MenuItem() {}
+	virtual ~MenuItem() {}
 	virtual void Work() {}
 	virtual void Render() {}
 

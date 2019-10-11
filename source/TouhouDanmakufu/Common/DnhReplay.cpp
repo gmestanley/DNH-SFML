@@ -8,13 +8,16 @@ ReplayInformation::ReplayInformation()
 {
 	userData_ = new ScriptCommonData();
 }
-ReplayInformation::~ReplayInformation() = default;
+ReplayInformation::~ReplayInformation()
+{
+}
 std::vector<int> ReplayInformation::GetStageIndexList()
 {
 	std::vector<int> res;
 
-	for (auto& itr : mapStageData_) {
-		int stage = itr.first;
+	std::map<int, ref_count_ptr<StageData>>::iterator itr = mapStageData_.begin();
+	for (; itr != mapStageData_.end(); itr++) {
+		int stage = itr->first;
 		res.push_back(stage);
 	}
 
@@ -30,22 +33,22 @@ std::wstring ReplayInformation::GetDateAsString()
 
 	return res;
 }
-void ReplayInformation::SetUserData(const std::string& key, const gstd::value& val)
+void ReplayInformation::SetUserData(std::string key, gstd::value val)
 {
 	userData_->SetValue(key, val);
 }
-gstd::value ReplayInformation::GetUserData(const std::string& key)
+gstd::value ReplayInformation::GetUserData(std::string key)
 {
 	gstd::value res = userData_->GetValue(key);
 	return res;
 }
-bool ReplayInformation::IsUserDataExists(const std::string& key)
+bool ReplayInformation::IsUserDataExists(std::string key)
 {
 	bool res = userData_->IsExists(key);
 	return res;
 }
 
-bool ReplayInformation::SaveToFile(const std::wstring& scriptPath, int index)
+bool ReplayInformation::SaveToFile(std::wstring scriptPath, int index)
 {
 	std::wstring dir = EPathProperty::GetReplaySaveDirectory(scriptPath);
 	std::wstring scriptName = PathProperty::GetFileNameWithoutExtension(scriptPath);
@@ -74,7 +77,8 @@ bool ReplayInformation::SaveToFile(const std::wstring& scriptPath, int index)
 	std::vector<int> listStage = GetStageIndexList();
 	rec.SetRecordAsInteger("stageCount", listStage.size());
 	rec.SetRecord("stageIndexList", &listStage[0], sizeof(int) * listStage.size());
-	for (int stage : listStage) {
+	for (int iStage = 0; iStage < listStage.size(); iStage++) {
+		int stage = listStage[iStage];
 		std::string key = StringUtility::Format("stage%d", stage);
 
 		ref_count_ptr<StageData> data = mapStageData_[stage];
@@ -86,7 +90,7 @@ bool ReplayInformation::SaveToFile(const std::wstring& scriptPath, int index)
 	rec.WriteToFile(path, "REPLAY");
 	return true;
 }
-ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(const std::wstring& scriptPath, const std::wstring& fileName)
+ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(std::wstring scriptPath, std::wstring fileName)
 {
 	std::wstring dir = EPathProperty::GetReplaySaveDirectory(scriptPath);
 	// std::string scriptName = PathProperty::GetFileNameWithoutExtension(scriptPath);
@@ -96,15 +100,15 @@ ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(const std::ws
 	ref_count_ptr<ReplayInformation> res = CreateFromFile(path);
 	return res;
 }
-ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(const std::wstring& path)
+ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(std::wstring path)
 {
 	RecordBuffer rec;
 	if (!rec.ReadFromFile(path, "REPLAY"))
-		return nullptr;
+		return NULL;
 
 	int version = rec.GetRecordAsInteger("version");
 	if (version != 1)
-		return nullptr;
+		return NULL;
 
 	ref_count_ptr<ReplayInformation> res = new ReplayInformation();
 	res->path_ = path;
@@ -129,7 +133,8 @@ ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(const std::ws
 	std::vector<int> listStage;
 	listStage.resize(stageCount);
 	rec.GetRecord("stageIndexList", &listStage[0], sizeof(int) * stageCount);
-	for (int stage : listStage) {
+	for (int iStage = 0; iStage < listStage.size(); iStage++) {
+		int stage = listStage[iStage];
 		std::string key = StringUtility::Format("stage%d", stage);
 		ref_count_ptr<StageData> data = new StageData();
 		gstd::RecordBuffer recStage;
@@ -142,27 +147,28 @@ ref_count_ptr<ReplayInformation> ReplayInformation::CreateFromFile(const std::ws
 }
 
 //ReplayInformation::StageData
-double ReplayInformation::StageData::GetFramePerSecondAvarage() const
+double ReplayInformation::StageData::GetFramePerSecondAvarage()
 {
 	double res = 0;
-	for (float iFrame : listFramePerSecond_) {
-		res += iFrame;
+	for (int iFrame = 0; iFrame < listFramePerSecond_.size(); iFrame++) {
+		res += listFramePerSecond_[iFrame];
 	}
 
-	if (!listFramePerSecond_.empty())
+	if (listFramePerSecond_.size() > 0)
 		res /= listFramePerSecond_.size();
 	return res;
 }
-std::set<std::string> ReplayInformation::StageData::GetCommonDataAreaList() const
+std::set<std::string> ReplayInformation::StageData::GetCommonDataAreaList()
 {
 	std::set<std::string> res;
-	for (const auto& commonData : mapCommonData_) {
-		const auto& key = commonData.first;
+	std::map<std::string, ref_count_ptr<RecordBuffer>>::iterator itrCommonData;
+	for (itrCommonData = mapCommonData_.begin(); itrCommonData != mapCommonData_.end(); itrCommonData++) {
+		std::string key = itrCommonData->first;
 		res.insert(key);
 	}
 	return res;
 }
-ref_count_ptr<ScriptCommonData> ReplayInformation::StageData::GetCommonData(const std::string& area)
+ref_count_ptr<ScriptCommonData> ReplayInformation::StageData::GetCommonData(std::string area)
 {
 	ref_count_ptr<ScriptCommonData> res = new ScriptCommonData();
 	if (mapCommonData_.find(area) != mapCommonData_.end()) {
@@ -171,10 +177,10 @@ ref_count_ptr<ScriptCommonData> ReplayInformation::StageData::GetCommonData(cons
 	}
 	return res;
 }
-void ReplayInformation::StageData::SetCommonData(const std::string& area, ref_count_ptr<ScriptCommonData> commonData)
+void ReplayInformation::StageData::SetCommonData(std::string area, ref_count_ptr<ScriptCommonData> commonData)
 {
 	ref_count_ptr<RecordBuffer> record = new RecordBuffer();
-	if (commonData != nullptr)
+	if (commonData != NULL)
 		commonData->WriteRecord(*record);
 	mapCommonData_[area] = record;
 }
@@ -185,11 +191,11 @@ void ReplayInformation::StageData::ReadRecord(gstd::RecordBuffer& record)
 	mainScriptName_ = record.GetRecordAsStringW("mainScriptName");
 	mainScriptRelativePath_ = record.GetRecordAsStringW("mainScriptRelativePath");
 	if (record.IsExists("scoreStart"))
-		record.GetRecord("scoreStart", &scoreStart_, sizeof(int64_t));
+		record.GetRecord("scoreStart", &scoreStart_, sizeof(_int64));
 	if (record.IsExists("scoreLast"))
-		record.GetRecord("scoreLast", &scoreLast_, sizeof(int64_t));
-	record.GetRecord("graze", &graze_, sizeof(int64_t));
-	record.GetRecord("point", &point_, sizeof(int64_t));
+		record.GetRecord("scoreLast", &scoreLast_, sizeof(_int64));
+	record.GetRecord("graze", &graze_, sizeof(_int64));
+	record.GetRecord("point", &point_, sizeof(_int64));
 	frameEnd_ = record.GetRecordAsInteger("frameEnd");
 	randSeed_ = record.GetRecordAsInteger("randSeed");
 	record.GetRecordAsRecordBuffer("recordKey", *recordKey_);
@@ -202,7 +208,8 @@ void ReplayInformation::StageData::ReadRecord(gstd::RecordBuffer& record)
 	gstd::RecordBuffer recComMap;
 	record.GetRecordAsRecordBuffer("mapCommonData", recComMap);
 	std::vector<std::string> listKeyCommonData = recComMap.GetKeyList();
-	for (auto key : listKeyCommonData) {
+	for (int iCommonData = 0; iCommonData < listKeyCommonData.size(); iCommonData++) {
+		std::string key = listKeyCommonData[iCommonData];
 		ref_count_ptr<RecordBuffer> recComData = new RecordBuffer();
 		recComMap.GetRecordAsRecordBuffer(key, *recComData);
 		mapCommonData_[key] = recComData;
@@ -222,10 +229,10 @@ void ReplayInformation::StageData::WriteRecord(gstd::RecordBuffer& record)
 	record.SetRecordAsStringW("mainScriptID", mainScriptID_);
 	record.SetRecordAsStringW("mainScriptName", mainScriptName_);
 	record.SetRecordAsStringW("mainScriptRelativePath", mainScriptRelativePath_);
-	record.SetRecord("scoreStart", &scoreStart_, sizeof(int64_t));
-	record.SetRecord("scoreLast", &scoreLast_, sizeof(int64_t));
-	record.SetRecord("graze", &graze_, sizeof(int64_t));
-	record.SetRecord("point", &point_, sizeof(int64_t));
+	record.SetRecord("scoreStart", &scoreStart_, sizeof(_int64));
+	record.SetRecord("scoreLast", &scoreLast_, sizeof(_int64));
+	record.SetRecord("graze", &graze_, sizeof(_int64));
+	record.SetRecord("point", &point_, sizeof(_int64));
 	record.SetRecordAsInteger("frameEnd", frameEnd_);
 	record.SetRecordAsInteger("randSeed", randSeed_);
 	record.SetRecordAsRecordBuffer("recordKey", *recordKey_);
@@ -257,9 +264,13 @@ void ReplayInformation::StageData::WriteRecord(gstd::RecordBuffer& record)
 /**********************************************************
 //ReplayInformationManager
 **********************************************************/
-ReplayInformationManager::ReplayInformationManager() = default;
-ReplayInformationManager::~ReplayInformationManager() = default;
-void ReplayInformationManager::UpdateInformationList(const std::wstring& pathScript)
+ReplayInformationManager::ReplayInformationManager()
+{
+}
+ReplayInformationManager::~ReplayInformationManager()
+{
+}
+void ReplayInformationManager::UpdateInformationList(std::wstring pathScript)
 {
 	mapInfo_.clear();
 
@@ -269,14 +280,16 @@ void ReplayInformationManager::UpdateInformationList(const std::wstring& pathScr
 	std::vector<std::wstring> listPath = File::GetFilePathList(dir);
 
 	int indexFree = ReplayInformation::INDEX_USER;
-	for (auto& path : listPath) {
+	std::vector<std::wstring>::iterator itr;
+	for (itr = listPath.begin(); itr != listPath.end(); itr++) {
+		std::wstring path = *itr;
 		std::wstring fileName = PathProperty::GetFileName(path);
 
 		if (fileName.find(fileNameHead) == std::wstring::npos)
 			continue;
 
 		ref_count_ptr<ReplayInformation> info = ReplayInformation::CreateFromFile(pathScript, fileName);
-		if (info == nullptr)
+		if (info == NULL)
 			continue;
 
 		std::wstring strKey = fileName.substr(fileNameHead.size());
@@ -286,7 +299,7 @@ void ReplayInformationManager::UpdateInformationList(const std::wstring& pathScr
 			strKey = StringUtility::Format(L"%d", index);
 		} else {
 			index = indexFree;
-			++indexFree;
+			indexFree++;
 			strKey = StringUtility::Format(L"%d", index);
 		}
 
@@ -297,16 +310,16 @@ void ReplayInformationManager::UpdateInformationList(const std::wstring& pathScr
 std::vector<int> ReplayInformationManager::GetIndexList()
 {
 	std::vector<int> res;
-	for (auto& infoItr : mapInfo_) {
-		int key = infoItr.first;
+	std::map<int, ref_count_ptr<ReplayInformation>>::iterator itr;
+	for (itr = mapInfo_.begin(); itr != mapInfo_.end(); itr++) {
+		int key = itr->first;
 		res.push_back(key);
 	}
 	return res;
 }
 ref_count_ptr<ReplayInformation> ReplayInformationManager::GetInformation(int index)
 {
-	auto infoItr = mapInfo_.find(index);
-	if (infoItr != mapInfo_.end())
-		return infoItr->second;
-	return nullptr;
+	if (mapInfo_.find(index) == mapInfo_.end())
+		return NULL;
+	return mapInfo_[index];
 }

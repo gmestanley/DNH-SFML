@@ -38,7 +38,7 @@ public:
 	StgPackageInformation();
 	virtual ~StgPackageInformation();
 
-	bool IsEnd() const { return bEndPackage_; }
+	bool IsEnd() { return bEndPackage_; }
 	void SetEnd() { bEndPackage_ = true; }
 
 	void InitializeStageData();
@@ -53,7 +53,7 @@ public:
 	ref_count_ptr<ScriptInformation> GetMainScriptInformation() { return infoMainScript_; }
 	void SetMainScriptInformation(ref_count_ptr<ScriptInformation> info) { infoMainScript_ = info; }
 
-	int GetPackageStartTime() const { return timeStart_; }
+	int GetPackageStartTime() { return timeStart_; }
 	void SetPackageStartTime(int time) { timeStart_ = time; }
 
 private:

@@ -22,7 +22,7 @@ public:
 
 protected:
 	void _InitializeTransitionTexture();
-	void _InitializeScript(const std::wstring& path, int type);
+	void _InitializeScript(std::wstring path, int type);
 	void _CallScriptMainLoop();
 	void _CallScriptFinalize();
 	void _AddRelativeManager();
@@ -38,14 +38,14 @@ class StgUserExtendSceneScript;
 class StgUserExtendSceneScriptManager : public StgControlScriptManager {
 public:
 	StgUserExtendSceneScriptManager(StgSystemController* controller);
-	~StgUserExtendSceneScriptManager() override;
-	void Work() override;
-	void Render() override;
-	ref_count_ptr<ManagedScript> Create(int type) override;
+	virtual ~StgUserExtendSceneScriptManager();
+	virtual void Work();
+	virtual void Render();
+	virtual ref_count_ptr<ManagedScript> Create(int type);
 
 	void CallScriptFinalizeAll();
 	gstd::value GetResultValue();
-	bool IsRealValue(const gstd::value& val);
+	bool IsRealValue(gstd::value val);
 
 protected:
 	StgSystemController* systemController_;
@@ -65,7 +65,7 @@ public:
 
 public:
 	StgUserExtendSceneScript(StgSystemController* controller);
-	~StgUserExtendSceneScript() override;
+	virtual ~StgUserExtendSceneScript();
 };
 
 /**********************************************************
@@ -75,12 +75,12 @@ class StgPauseSceneScript;
 class StgPauseScene : public StgUserExtendScene {
 public:
 	StgPauseScene(StgSystemController* controller);
-	~StgPauseScene() override;
+	virtual ~StgPauseScene();
 
-	void Work() override;
+	virtual void Work();
 
-	void Start() override;
-	void Finish() override;
+	virtual void Start();
+	virtual void Finish();
 };
 
 class StgPauseSceneScript : public StgUserExtendSceneScript {
@@ -91,7 +91,7 @@ public:
 
 public:
 	StgPauseSceneScript(StgSystemController* controller);
-	~StgPauseSceneScript() override;
+	virtual ~StgPauseSceneScript();
 };
 
 /**********************************************************
@@ -101,12 +101,12 @@ class StgEndScript;
 class StgEndScene : public StgUserExtendScene {
 public:
 	StgEndScene(StgSystemController* controller);
-	~StgEndScene() override;
+	virtual ~StgEndScene();
 
-	void Work() override;
+	void Work();
 
-	void Start() override;
-	void Finish() override;
+	void Start();
+	void Finish();
 };
 
 /**********************************************************
@@ -120,7 +120,7 @@ public:
 
 public:
 	StgEndSceneScript(StgSystemController* controller);
-	~StgEndSceneScript() override;
+	virtual ~StgEndSceneScript();
 };
 
 /**********************************************************
@@ -130,12 +130,12 @@ class StgReplaySaveScript;
 class StgReplaySaveScene : public StgUserExtendScene {
 public:
 	StgReplaySaveScene(StgSystemController* controller);
-	~StgReplaySaveScene() override;
+	virtual ~StgReplaySaveScene();
 
-	void Work() override;
+	void Work();
 
-	void Start() override;
-	void Finish() override;
+	void Start();
+	void Finish();
 };
 
 /**********************************************************
@@ -149,7 +149,7 @@ public:
 
 public:
 	StgReplaySaveScript(StgSystemController* controller);
-	~StgReplaySaveScript() override;
+	virtual ~StgReplaySaveScript();
 };
 
 #endif

@@ -13,13 +13,14 @@ class MetasequoiaMeshData : public DxMeshData {
 	friend MetasequoiaMesh;
 
 public:
-	MetasequoiaMeshData();
-	~MetasequoiaMeshData() override;
-	bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader) override;
-
 	class Material;
 	class Object;
 	class RenderObject;
+
+public:
+	MetasequoiaMeshData();
+	~MetasequoiaMeshData();
+	bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader);
 
 protected:
 	std::wstring path_;
@@ -43,7 +44,7 @@ class MetasequoiaMeshData::Material {
 
 public:
 	Material() { ZeroMemory(&mat_, sizeof(D3DMATERIAL9)); };
-	virtual ~Material() = default;
+	virtual ~Material(){};
 
 protected:
 	std::wstring name_; //材質名
@@ -57,8 +58,8 @@ class MetasequoiaMeshData::Object {
 	friend MetasequoiaMeshData;
 
 public:
-	Object() = default;
-	virtual ~Object() = default;
+	Object(){};
+	virtual ~Object(){};
 
 protected:
 	struct Face {
@@ -81,9 +82,9 @@ class MetasequoiaMeshData::RenderObject : public RenderObjectNX {
 	friend MetasequoiaMeshData;
 
 public:
-	RenderObject() = default;
-	~RenderObject() override = default;
-	void Render() override;
+	RenderObject(){};
+	virtual ~RenderObject(){};
+	virtual void Render();
 
 protected:
 	gstd::ref_count_ptr<Material> material_;
@@ -92,12 +93,12 @@ protected:
 class MetasequoiaMesh : public DxMesh {
 protected:
 public:
-	MetasequoiaMesh() = default;
-	~MetasequoiaMesh() override = default;
-	bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader) override;
-	bool CreateFromFileInLoadThread(const std::wstring& path) override;
-	std::wstring GetPath() override;
-	void Render() override;
+	MetasequoiaMesh() {}
+	virtual ~MetasequoiaMesh() {}
+	virtual bool CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader);
+	virtual bool CreateFromFileInLoadThread(std::wstring path);
+	virtual std::wstring GetPath();
+	virtual void Render();
 
 	std::vector<DxTriangle> CreateIntersectionTriangles();
 };

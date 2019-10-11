@@ -11,14 +11,16 @@ StgMoveObject::StgMoveObject(StgStageController* stageController)
 	framePattern_ = 0;
 	stageController_ = stageController;
 }
-StgMoveObject::~StgMoveObject() = default;
+StgMoveObject::~StgMoveObject()
+{
+}
 void StgMoveObject::_Move()
 {
-	if (pattern_ == nullptr)
+	if (pattern_ == NULL)
 		return;
 
-	if (!mapPattern_.empty()) {
-		auto itr = mapPattern_.begin();
+	if (mapPattern_.size() > 0) {
+		std::map<int, ref_count_ptr<StgMovePattern>::unsync>::iterator itr = mapPattern_.begin();
 		int frame = itr->first;
 		if (frame == framePattern_) {
 			ref_count_ptr<StgMovePattern>::unsync pattern = itr->second;
@@ -33,18 +35,18 @@ void StgMoveObject::_Move()
 void StgMoveObject::_AttachReservedPattern(ref_count_ptr<StgMovePattern>::unsync pattern)
 {
 	//速度継続など
-	if (pattern_ == nullptr)
+	if (pattern_ == NULL)
 		pattern_ = new StgMovePattern_Angle(this);
 
 	int newMoveType = pattern->GetType();
 	if (newMoveType == StgMovePattern::TYPE_ANGLE) {
-		auto* angPattern = (StgMovePattern_Angle*)pattern.GetPointer();
+		StgMovePattern_Angle* angPattern = (StgMovePattern_Angle*)pattern.GetPointer();
 		if (angPattern->GetSpeed() == StgMovePattern::NO_CHANGE)
 			angPattern->SetSpeed(pattern_->GetSpeed());
 		if (angPattern->GetDirectionAngle() == StgMovePattern::NO_CHANGE)
 			angPattern->SetDirectionAngle(pattern_->GetDirectionAngle());
 	} else if (newMoveType == StgMovePattern::TYPE_XY) {
-		auto* xyPattern = (StgMovePattern_XY*)pattern.GetPointer();
+		StgMovePattern_XY* xyPattern = (StgMovePattern_XY*)pattern.GetPointer();
 
 		double speed = pattern_->GetSpeed();
 		double angle = pattern_->GetDirectionAngle();
@@ -65,32 +67,32 @@ void StgMoveObject::_AttachReservedPattern(ref_count_ptr<StgMovePattern>::unsync
 }
 double StgMoveObject::GetSpeed()
 {
-	if (pattern_ == nullptr)
+	if (pattern_ == NULL)
 		return 0;
 	double res = pattern_->GetSpeed();
 	return res;
 }
 void StgMoveObject::SetSpeed(double speed)
 {
-	if (pattern_ == nullptr || pattern_->GetType() != StgMovePattern::TYPE_ANGLE) {
+	if (pattern_ == NULL || pattern_->GetType() != StgMovePattern::TYPE_ANGLE) {
 		pattern_ = new StgMovePattern_Angle(this);
 	}
-	auto* pattern = (StgMovePattern_Angle*)pattern_.GetPointer();
+	StgMovePattern_Angle* pattern = (StgMovePattern_Angle*)pattern_.GetPointer();
 	pattern->SetSpeed(speed);
 }
 double StgMoveObject::GetDirectionAngle()
 {
-	if (pattern_ == nullptr)
+	if (pattern_ == NULL)
 		return 0;
 	double res = pattern_->GetDirectionAngle();
 	return res;
 }
 void StgMoveObject::SetDirectionAngle(double angle)
 {
-	if (pattern_ == nullptr || pattern_->GetType() != StgMovePattern::TYPE_ANGLE) {
+	if (pattern_ == NULL || pattern_->GetType() != StgMovePattern::TYPE_ANGLE) {
 		pattern_ = new StgMovePattern_Angle(this);
 	}
-	auto* pattern = (StgMovePattern_Angle*)pattern_.GetPointer();
+	StgMovePattern_Angle* pattern = (StgMovePattern_Angle*)pattern_.GetPointer();
 	pattern->SetDirectionAngle(angle);
 }
 void StgMoveObject::AddPattern(int frameDelay, ref_count_ptr<StgMovePattern>::unsync pattern)
@@ -131,8 +133,8 @@ ref_count_ptr<StgMoveObject>::unsync StgMovePattern::_GetMoveObject(int id)
 {
 	StgStageController* controller = _GetStageController();
 	ref_count_ptr<DxScriptObjectBase>::unsync base = controller->GetMainRenderObject(id);
-	if (base == nullptr || base->IsDeleted())
-		return nullptr;
+	if (base == NULL || base->IsDeleted())
+		return NULL;
 
 	return ref_count_ptr<StgMoveObject>::unsync::DownCast(base);
 }
@@ -197,7 +199,7 @@ void StgMovePattern_Angle::_Activate()
 {
 	if (idRalativeID_ != DxScript::ID_INVALID) {
 		ref_count_ptr<StgMoveObject>::unsync obj = _GetMoveObject(idRalativeID_);
-		if (obj != nullptr) {
+		if (obj != NULL) {
 			double px = target_->GetPositionX();
 			double py = target_->GetPositionY();
 			double tx = obj->GetPositionX();
@@ -246,15 +248,17 @@ void StgMovePattern_XY::Move()
 	target_->SetPositionX(px);
 	target_->SetPositionY(py);
 
-	++frameWork_;
+	frameWork_++;
 }
-double StgMovePattern_XY::GetSpeed() const
+double StgMovePattern_XY::GetSpeed()
 {
-	return pow(speedX_ * speedX_ + speedY_ * speedY_, 0.5);
+	double res = pow(speedX_ * speedX_ + speedY_ * speedY_, 0.5);
+	return res;
 }
-double StgMovePattern_XY::GetDirectionAngle() const
+double StgMovePattern_XY::GetDirectionAngle()
 {
-	return Math::RadianToDegree(atan2(speedY_, speedX_));
+	double res = Math::RadianToDegree(atan2(speedY_, speedX_));
+	return res;
 }
 
 //StgMovePattern_Line
@@ -281,7 +285,7 @@ void StgMovePattern_Line::Move()
 
 		target_->SetPositionX(px);
 		target_->SetPositionY(py);
-		--frameStop_;
+		frameStop_--;
 		if (frameStop_ <= 0) {
 			typeLine_ = TYPE_NONE;
 			speed_ = 0;

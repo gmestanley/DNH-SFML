@@ -30,23 +30,23 @@ protected:
 public:
 	TaskFunction()
 	{
-		task_ = nullptr;
+		task_ = NULL;
 		id_ = TASK_FREE_ID;
 		bEnable_ = true;
 		delay_ = 0;
 	}
-	~TaskFunction() override = default;
+	virtual ~TaskFunction() {}
 	virtual void Call() = 0;
 
 	ref_count_ptr<TaskBase> GetTask() { return task_; }
-	int GetID() const { return id_; }
-	bool IsEnable() const { return bEnable_; }
+	int GetID() { return id_; }
+	bool IsEnable() { return bEnable_; }
 
-	int GetDelay() const { return delay_; }
+	int GetDelay() { return delay_; }
 	void SetDelay(int delay) { delay_ = delay; }
-	bool IsDelay() const { return delay_ > 0; }
+	bool IsDelay() { return delay_ > 0; }
 
-	std::wstring GetInfoAsString() override;
+	virtual std::wstring GetInfoAsString();
 };
 
 template <class T>
@@ -60,9 +60,9 @@ public:
 		task_ = task;
 		pFunc = func;
 	}
-	void Call() override
+	virtual void Call()
 	{
-		if (task_ != nullptr)
+		if (task_ != NULL)
 			((T*)task_.GetPointer()->*pFunc)();
 	}
 
@@ -88,12 +88,12 @@ class TaskBase : public IStringInfo {
 
 public:
 	TaskBase();
-	~TaskBase() override;
-	int GetTaskID() const { return idTask_; }
-	int64_t GetTaskIndex() const { return indexTask_; }
+	virtual ~TaskBase();
+	int GetTaskID() { return idTask_; }
+	_int64 GetTaskIndex() { return indexTask_; }
 
 protected:
-	int64_t indexTask_; //TaskManagerによってつけられる一意のインデックス
+	_int64 indexTask_; //TaskManagerによってつけられる一意のインデックス
 	int idTask_; //ID
 	int idTaskGroup_; //グループID
 };
@@ -110,7 +110,7 @@ public:
 
 public:
 	TaskManager();
-	~TaskManager() override;
+	virtual ~TaskManager();
 	void Clear(); //全タスク削除
 	void ClearTask();
 	void AddTask(ref_count_ptr<TaskBase> task); //タスクを追加
@@ -129,7 +129,7 @@ public:
 	void RemoveFunction(TaskBase* task); //タスク機能削除
 	void RemoveFunction(TaskBase* task, int divFunc, int idFunc); //タスク機能削除
 	void RemoveFunction(const std::type_info& info); //タスク機能削除
-	function_map GetFunctionMap() const { return mapFunc_; }
+	function_map GetFunctionMap() { return mapFunc_; }
 
 	void SetFunctionEnable(bool bEnable); //全タスク機能の状態を切り替える
 	void SetFunctionEnable(bool bEnable, int divFunc); //タスク機能の状態を切り替える
@@ -146,7 +146,7 @@ protected:
 	static gstd::CriticalSection lockStatic_;
 	std::list<ref_count_ptr<TaskBase>> listTask_; //タスクの元クラス
 	function_map mapFunc_; //タスク機能のリスト(divFunc, priority, func)
-	int64_t indexTaskManager_; //一意のインデックス
+	_int64 indexTaskManager_; //一意のインデックス
 	ref_count_ptr<TaskInfoPanel> panelInfo_;
 
 	void _ArrangeTask(); //必要のなくなった領域削除
@@ -160,7 +160,7 @@ class TaskInfoPanel : public WindowLogger::Panel {
 public:
 	TaskInfoPanel();
 	void SetUpdateInterval(int time) { timeUpdateInterval_ = time; }
-	void LocateParts() override;
+	virtual void LocateParts();
 	virtual void Update(TaskManager* taskManager);
 
 protected:
@@ -180,7 +180,7 @@ protected:
 	int timeUpdateInterval_;
 	int addressLastFindManager_;
 
-	bool _AddedLogger(HWND hTab) override;
+	virtual bool _AddedLogger(HWND hTab);
 	void _UpdateTreeView(TaskManager* taskManager, ref_count_ptr<WTreeView::Item> item);
 	void _UpdateListView(TaskManager* taskManager);
 };
@@ -192,7 +192,7 @@ protected:
 class WorkRenderTaskManager : public TaskManager {
 public:
 	WorkRenderTaskManager();
-	~WorkRenderTaskManager() override;
+	~WorkRenderTaskManager();
 	virtual void InitializeFunctionDivision(int maxPriWork, int maxPriRender);
 
 	//動作機能

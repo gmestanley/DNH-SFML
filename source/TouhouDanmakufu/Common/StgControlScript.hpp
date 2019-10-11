@@ -10,7 +10,7 @@ class StgControlScript;
 class StgControlScriptManager : public ScriptManager {
 public:
 	StgControlScriptManager();
-	~StgControlScriptManager() override;
+	virtual ~StgControlScriptManager();
 };
 
 /**********************************************************
@@ -21,9 +21,9 @@ public:
 	StgControlScriptInformation();
 	virtual ~StgControlScriptInformation();
 	void LoadFreePlayerList();
-	std::vector<ref_count_ptr<ScriptInformation>> GetFreePlayerList() { return listFreePlayer_; }
+	std::vector<ref_count_ptr<ScriptInformation>>& GetFreePlayerList() { return listFreePlayer_; }
 
-	void LoadReplayInformation(const std::wstring& pathMainScript);
+	void LoadReplayInformation(std::wstring pathMainScript);
 	ref_count_ptr<ReplayInformationManager> GetReplayInformationManager() { return replayManager_; }
 
 private:
@@ -163,11 +163,11 @@ protected:
 class ScriptInfoPanel : public WindowLogger::Panel {
 public:
 	ScriptInfoPanel();
-	void LocateParts() override;
+	virtual void LocateParts();
 
 protected:
-	bool _AddedLogger(HWND hTab) override;
-	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override; //オーバーライド用プロシージャ
+	virtual bool _AddedLogger(HWND hTab);
+	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam); //オーバーライド用プロシージャ
 	void _TerminateScriptAll();
 
 	WButton buttonTerminateScript_;

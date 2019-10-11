@@ -12,10 +12,10 @@ class StgPackageScript;
 class StgPackageScriptManager : public StgControlScriptManager {
 public:
 	StgPackageScriptManager(StgSystemController* controller);
-	~StgPackageScriptManager() override;
-	void Work() override;
-	void Render() override;
-	ref_count_ptr<ManagedScript> Create(int type) override;
+	virtual ~StgPackageScriptManager();
+	virtual void Work();
+	virtual void Render();
+	virtual ref_count_ptr<ManagedScript> Create(int type);
 
 	ref_count_ptr<DxScriptObjectManager> GetObjectManager() { return objectManager_; }
 

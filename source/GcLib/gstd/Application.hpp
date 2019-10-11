@@ -16,9 +16,9 @@ public:
 	bool Initialize();
 
 	virtual bool Run();
-	bool IsActive() const { return this->bAppActive_; }
+	bool IsActive() { return this->bAppActive_; }
 	void SetActive(bool b) { this->bAppActive_ = b; }
-	bool IsRun() const { return bAppRun_; }
+	bool IsRun() { return bAppRun_; }
 	void End() { bAppRun_ = false; }
 
 	static HINSTANCE GetApplicationHandle() { return ::GetModuleHandle(NULL); }

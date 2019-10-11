@@ -20,10 +20,10 @@ public:
 	virtual ~Thread();
 	virtual void Start();
 	virtual void Stop();
-	bool IsStop() const;
+	bool IsStop();
 	DWORD Join(int mills = INFINITE);
 
-	Status GetStatus() const { return status_; }
+	Status GetStatus() { return status_; }
 
 protected:
 	volatile HANDLE hThread_;

@@ -20,19 +20,21 @@ DirectGraphicsConfig::DirectGraphicsConfig()
 	bUseWaitTimer_ = false;
 	bPseudoFullScreen_ = true;
 }
-DirectGraphicsConfig::~DirectGraphicsConfig() = default;
+DirectGraphicsConfig::~DirectGraphicsConfig()
+{
+}
 
 /**********************************************************
 //DirectGraphics
 **********************************************************/
-DirectGraphics* DirectGraphics::thisBase_ = nullptr;
+DirectGraphics* DirectGraphics::thisBase_ = NULL;
 
 DirectGraphics::DirectGraphics()
 {
-	pDirect3D_ = nullptr;
-	pDevice_ = nullptr;
-	pBackSurf_ = nullptr;
-	pZBuffer_ = nullptr;
+	pDirect3D_ = NULL;
+	pDevice_ = NULL;
+	pBackSurf_ = NULL;
+	pZBuffer_ = NULL;
 	camera_ = new DxCamera();
 	camera2D_ = new DxCamera2D();
 }
@@ -40,15 +42,15 @@ DirectGraphics::~DirectGraphics()
 {
 	Logger::WriteTop(L"DirectGraphics：終了開始");
 
-	if (pZBuffer_ != nullptr)
+	if (pZBuffer_ != NULL)
 		pZBuffer_->Release();
-	if (pBackSurf_ != nullptr)
+	if (pBackSurf_ != NULL)
 		pBackSurf_->Release();
-	if (pDevice_ != nullptr)
+	if (pDevice_ != NULL)
 		pDevice_->Release();
-	if (pDirect3D_ != nullptr)
+	if (pDirect3D_ != NULL)
 		pDirect3D_->Release();
-	thisBase_ = nullptr;
+	thisBase_ = NULL;
 	Logger::WriteTop(L"DirectGraphics：終了完了");
 }
 bool DirectGraphics::Initialize(HWND hWnd)
@@ -57,12 +59,12 @@ bool DirectGraphics::Initialize(HWND hWnd)
 }
 bool DirectGraphics::Initialize(HWND hWnd, DirectGraphicsConfig& config)
 {
-	if (thisBase_ != nullptr)
+	if (thisBase_ != NULL)
 		return false;
 
 	Logger::WriteTop(L"DirectGraphics：初期化");
 	pDirect3D_ = Direct3DCreate9(D3D_SDK_VERSION);
-	if (pDirect3D_ == nullptr)
+	if (pDirect3D_ == NULL)
 		throw gstd::wexception(L"Direct3DCreate9失敗");
 
 	config_ = config;
@@ -85,7 +87,7 @@ bool DirectGraphics::Initialize(HWND hWnd, DirectGraphicsConfig& config)
 		d3dppFull_.BackBufferCount = 1;
 	else
 		d3dppFull_.BackBufferCount = 2;
-	if (!config_.IsWaitTimerEnable())
+	if (config_.IsWaitTimerEnable() == false)
 		d3dppFull_.FullScreen_RefreshRateInHz = 60;
 	d3dppFull_.EnableAutoDepthStencil = TRUE;
 	d3dppFull_.AutoDepthStencilFormat = D3DFMT_D16;
@@ -159,7 +161,7 @@ bool DirectGraphics::Initialize(HWND hWnd, DirectGraphicsConfig& config)
 
 	thisBase_ = this;
 
-	if (camera2D_ != nullptr)
+	if (camera2D_ != NULL)
 		camera2D_->Reset();
 	_InitializeDeviceState();
 
@@ -172,21 +174,23 @@ bool DirectGraphics::Initialize(HWND hWnd, DirectGraphicsConfig& config)
 
 void DirectGraphics::_ReleaseDxResource()
 {
-	if (pZBuffer_ != nullptr)
+	if (pZBuffer_ != NULL)
 		pZBuffer_->Release();
-	if (pBackSurf_ != nullptr)
+	if (pBackSurf_ != NULL)
 		pBackSurf_->Release();
-
-	for (auto& listener : listListener_)
-		listener->ReleaseDirectGraphics();
+	std::list<DirectGraphicsListener*>::iterator itr;
+	for (itr = listListener_.begin(); itr != listListener_.end(); itr++) {
+		(*itr)->ReleaseDirectGraphics();
+	}
 }
 void DirectGraphics::_RestoreDxResource()
 {
 	pDevice_->GetRenderTarget(0, &pBackSurf_);
 	pDevice_->GetDepthStencilSurface(&pZBuffer_);
-
-	for (auto& listener : listListener_)
-		listener->RestoreDirectGraphics();
+	std::list<DirectGraphicsListener*>::iterator itr;
+	for (itr = listListener_.begin(); itr != listListener_.end(); itr++) {
+		(*itr)->RestoreDirectGraphics();
+	}
 	_InitializeDeviceState();
 }
 void DirectGraphics::_Restore()
@@ -222,7 +226,7 @@ void DirectGraphics::_InitializeDeviceState()
 {
 	D3DXMATRIX viewMat;
 	D3DXMATRIX persMat;
-	if (camera_ != nullptr) {
+	if (camera_ != NULL) {
 		camera_->UpdateDeviceWorldViewMatrix();
 	} else {
 		D3DVECTOR viewFrom = D3DXVECTOR3(100, 300, -500);
@@ -262,7 +266,8 @@ void DirectGraphics::_InitializeDeviceState()
 }
 void DirectGraphics::AddDirectGraphicsListener(DirectGraphicsListener* listener)
 {
-	for (auto itr = listListener_.begin(); itr != listListener_.end(); ++itr) {
+	std::list<DirectGraphicsListener*>::iterator itr;
+	for (itr = listListener_.begin(); itr != listListener_.end(); itr++) {
 		if ((*itr) == listener)
 			return;
 	}
@@ -270,7 +275,8 @@ void DirectGraphics::AddDirectGraphicsListener(DirectGraphicsListener* listener)
 }
 void DirectGraphics::RemoveDirectGraphicsListener(DirectGraphicsListener* listener)
 {
-	for (auto itr = listListener_.begin(); itr != listListener_.end(); ++itr) {
+	std::list<DirectGraphicsListener*>::iterator itr;
+	for (itr = listListener_.begin(); itr != listListener_.end(); itr++) {
 		if ((*itr) != listener)
 			continue;
 		listListener_.erase(itr);
@@ -288,7 +294,7 @@ void DirectGraphics::EndScene()
 {
 	pDevice_->EndScene();
 
-	HRESULT hr = pDevice_->Present(nullptr, nullptr, nullptr, nullptr);
+	HRESULT hr = pDevice_->Present(NULL, NULL, NULL, NULL);
 	if (FAILED(hr)) {
 		_Restore();
 		_InitializeDeviceState();
@@ -299,16 +305,16 @@ void DirectGraphics::ClearRenderTarget()
 	int width = GetScreenWidth();
 	int height = GetScreenWidth();
 	D3DRECT rcDest = { 0, 0, width, height };
-	if (textureTarget_ == nullptr) {
-		pDevice_->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0, 0);
+	if (textureTarget_ == NULL) {
+		pDevice_->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0, 0);
 	} else {
-		pDevice_->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(0, 0, 0, 0), 1.0, 0);
+		pDevice_->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(0, 0, 0, 0), 1.0, 0);
 	}
 }
 void DirectGraphics::ClearRenderTarget(RECT rect)
 {
 	D3DRECT rcDest = { rect.left, rect.top, rect.right, rect.bottom };
-	if (textureTarget_ == nullptr) {
+	if (textureTarget_ == NULL) {
 		pDevice_->Clear(1, &rcDest, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0, 0);
 	} else {
 		pDevice_->Clear(1, &rcDest, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(0, 0, 0, 0), 1.0, 0);
@@ -317,7 +323,7 @@ void DirectGraphics::ClearRenderTarget(RECT rect)
 void DirectGraphics::SetRenderTarget(gstd::ref_count_ptr<Texture> texture)
 {
 	textureTarget_ = texture;
-	if (texture == nullptr) {
+	if (texture == NULL) {
 		pDevice_->SetRenderTarget(0, pBackSurf_);
 		pDevice_->SetDepthStencilSurface(pZBuffer_);
 	} else {
@@ -328,11 +334,11 @@ void DirectGraphics::SetRenderTarget(gstd::ref_count_ptr<Texture> texture)
 }
 void DirectGraphics::SetLightingEnable(bool bEnable)
 {
-	pDevice_->SetRenderState(D3DRS_LIGHTING, static_cast<DWORD>(bEnable));
+	pDevice_->SetRenderState(D3DRS_LIGHTING, bEnable);
 }
 void DirectGraphics::SetSpecularEnable(bool bEnable)
 {
-	pDevice_->SetRenderState(D3DRS_SPECULARENABLE, static_cast<DWORD>(bEnable));
+	pDevice_->SetRenderState(D3DRS_SPECULARENABLE, bEnable);
 }
 void DirectGraphics::SetCullingMode(DWORD mode)
 {
@@ -344,15 +350,15 @@ void DirectGraphics::SetShadingMode(DWORD mode)
 }
 void DirectGraphics::SetZBufferEnable(bool bEnable)
 {
-	pDevice_->SetRenderState(D3DRS_ZENABLE, static_cast<DWORD>(bEnable));
+	pDevice_->SetRenderState(D3DRS_ZENABLE, bEnable);
 }
 void DirectGraphics::SetZWriteEnalbe(bool bEnable)
 {
-	pDevice_->SetRenderState(D3DRS_ZWRITEENABLE, static_cast<DWORD>(bEnable));
+	pDevice_->SetRenderState(D3DRS_ZWRITEENABLE, bEnable);
 }
 void DirectGraphics::SetAlphaTest(bool bEnable, DWORD ref, D3DCMPFUNC func)
 {
-	pDevice_->SetRenderState(D3DRS_ALPHATESTENABLE, static_cast<DWORD>(bEnable));
+	pDevice_->SetRenderState(D3DRS_ALPHATESTENABLE, bEnable);
 	if (bEnable) {
 		pDevice_->SetRenderState(D3DRS_ALPHAFUNC, func);
 		pDevice_->SetRenderState(D3DRS_ALPHAREF, ref);
@@ -543,12 +549,12 @@ void DirectGraphics::SetDirectionalLight(D3DVECTOR& dir)
 	D3DLIGHT9 light;
 	ZeroMemory(&light, sizeof(D3DLIGHT9));
 	light.Type = D3DLIGHT_DIRECTIONAL;
-	light.Diffuse.r = 0.5F;
-	light.Diffuse.g = 0.5F;
-	light.Diffuse.b = 0.5F;
-	light.Ambient.r = 0.5F;
-	light.Ambient.g = 0.5F;
-	light.Ambient.b = 0.5F;
+	light.Diffuse.r = 0.5f;
+	light.Diffuse.g = 0.5f;
+	light.Diffuse.b = 0.5f;
+	light.Ambient.r = 0.5f;
+	light.Ambient.g = 0.5f;
+	light.Ambient.b = 0.5f;
 	light.Direction = dir;
 	pDevice_->SetLight(0, &light);
 	pDevice_->LightEnable(0, TRUE);
@@ -561,23 +567,23 @@ void DirectGraphics::SetViewPort(int x, int y, int width, int height)
 	viewPort.Y = y;
 	viewPort.Width = width;
 	viewPort.Height = height;
-	viewPort.MinZ = 0.0F;
-	viewPort.MaxZ = 1.0F;
+	viewPort.MinZ = 0.0f;
+	viewPort.MaxZ = 1.0f;
 	pDevice_->SetViewport(&viewPort);
 }
 void DirectGraphics::ResetViewPort()
 {
 	SetViewPort(0, 0, GetScreenWidth(), GetScreenHeight());
 }
-int DirectGraphics::GetScreenWidth() const
+int DirectGraphics::GetScreenWidth()
 {
 	return config_.GetScreenWidth();
 }
-int DirectGraphics::GetScreenHeight() const
+int DirectGraphics::GetScreenHeight()
 {
 	return config_.GetScreenHeight();
 }
-double DirectGraphics::GetScreenWidthRatio() const
+double DirectGraphics::GetScreenWidthRatio()
 {
 	RECT rect;
 	::GetWindowRect(hAttachedWindow_, &rect);
@@ -591,7 +597,7 @@ double DirectGraphics::GetScreenWidthRatio() const
 
 	return widthWindow / widthView;
 }
-double DirectGraphics::GetScreenHeightRatio() const
+double DirectGraphics::GetScreenHeightRatio()
 {
 	RECT rect;
 	::GetWindowRect(hAttachedWindow_, &rect);
@@ -605,7 +611,7 @@ double DirectGraphics::GetScreenHeightRatio() const
 
 	return heightWindow / heightView;
 }
-POINT DirectGraphics::GetMousePosition() const
+POINT DirectGraphics::GetMousePosition()
 {
 	POINT res = { 0, 0 };
 	GetCursorPos(&res);
@@ -622,16 +628,16 @@ POINT DirectGraphics::GetMousePosition() const
 
 	return res;
 }
-void DirectGraphics::SaveBackSurfaceToFile(const std::wstring& path)
+void DirectGraphics::SaveBackSurfaceToFile(std::wstring path)
 {
 	RECT rect = { 0, 0, config_.GetScreenWidth(), config_.GetScreenHeight() };
-	LPDIRECT3DSURFACE9 pBackSurface = nullptr;
+	LPDIRECT3DSURFACE9 pBackSurface = NULL;
 	pDevice_->GetRenderTarget(0, &pBackSurface);
 	D3DXSaveSurfaceToFile(path.c_str(), D3DXIFF_BMP,
-		pBackSurface, nullptr, &rect);
+		pBackSurface, NULL, &rect);
 	pBackSurface->Release();
 }
-bool DirectGraphics::IsPixelShaderSupported(int major, int minor) const
+bool DirectGraphics::IsPixelShaderSupported(int major, int minor)
 {
 	D3DCAPS9 caps;
 	pDevice_->GetDeviceCaps(&caps);
@@ -642,16 +648,19 @@ bool DirectGraphics::IsPixelShaderSupported(int major, int minor) const
 /**********************************************************
 //DirectGraphicsPrimaryWindow
 **********************************************************/
-DirectGraphicsPrimaryWindow::DirectGraphicsPrimaryWindow() = default;
-DirectGraphicsPrimaryWindow::~DirectGraphicsPrimaryWindow() = default;
-
+DirectGraphicsPrimaryWindow::DirectGraphicsPrimaryWindow()
+{
+}
+DirectGraphicsPrimaryWindow::~DirectGraphicsPrimaryWindow()
+{
+}
 void DirectGraphicsPrimaryWindow::_PauseDrawing()
 {
 	//	gstd::Application::GetBase()->SetActive(false);
 	// ウインドウのメニューバーを描画する
 	::DrawMenuBar(hWnd_);
 	// ウインドウのフレームを描画する
-	::RedrawWindow(hWnd_, nullptr, nullptr, RDW_FRAME);
+	::RedrawWindow(hWnd_, NULL, NULL, RDW_FRAME);
 }
 void DirectGraphicsPrimaryWindow::_RestartDrawing()
 {
@@ -664,7 +673,7 @@ bool DirectGraphicsPrimaryWindow::Initialize()
 }
 bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 {
-	HINSTANCE hInst = ::GetModuleHandle(nullptr);
+	HINSTANCE hInst = ::GetModuleHandle(NULL);
 	{
 		std::wstring nameClass = L"DirectGraphicsPrimaryWindow";
 		WNDCLASSEX wcex;
@@ -673,12 +682,12 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 		// wcex.style=CS_HREDRAW|CS_VREDRAW;
 		wcex.lpfnWndProc = (WNDPROC)WindowBase::_StaticWindowProcedure;
 		wcex.hInstance = hInst;
-		wcex.hIcon = nullptr;
-		wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+		wcex.hIcon = NULL;
+		wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 5);
-		wcex.lpszMenuName = nullptr;
+		wcex.lpszMenuName = NULL;
 		wcex.lpszClassName = nameClass.c_str();
-		wcex.hIconSm = nullptr;
+		wcex.hIconSm = NULL;
 		::RegisterClassEx(&wcex);
 
 		int wWidth = config.GetScreenWidth();
@@ -691,10 +700,10 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 		hWnd_ = ::CreateWindow(wcex.lpszClassName,
 			L"",
 			WS_OVERLAPPEDWINDOW - WS_SIZEBOX,
-			0, 0, wWidth, wHeight, nullptr, nullptr, hInst, nullptr);
+			0, 0, wWidth, wHeight, NULL, NULL, hInst, NULL);
 	}
 
-	HWND hWndGraphics = nullptr;
+	HWND hWndGraphics = NULL;
 	if (config.IsPseudoFullScreen()) {
 		//擬似フルスクリーンの場合は、子ウィンドウにDirectGraphicsを配置する
 		std::wstring nameClass = L"DirectGraphicsPrimaryWindow.Child";
@@ -704,7 +713,7 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 		wcex.style = CS_HREDRAW | CS_VREDRAW;
 		wcex.lpfnWndProc = (WNDPROC)WindowBase::_StaticWindowProcedure;
 		wcex.hInstance = hInst;
-		wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+		wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 5);
 		wcex.lpszClassName = nameClass.c_str();
 		::RegisterClassEx(&wcex);
@@ -714,7 +723,7 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 		HWND hWnd = ::CreateWindow(wcex.lpszClassName,
 			L"",
 			WS_CHILD | WS_VISIBLE,
-			0, 0, screenWidth, screenHeight, hWnd_, nullptr, hInst, nullptr);
+			0, 0, screenWidth, screenHeight, hWnd_, NULL, hInst, NULL);
 		wndGraphics_.Attach(hWnd);
 
 		hWndGraphics = hWnd;
@@ -727,8 +736,7 @@ bool DirectGraphicsPrimaryWindow::Initialize(DirectGraphicsConfig& config)
 	this->Attach(hWnd_);
 
 	//Windowを画面の中央に移動
-	RECT drect;
-	RECT mrect;
+	RECT drect, mrect;
 	HWND hDesk = ::GetDesktopWindow();
 	::GetWindowRect(hDesk, &drect);
 	::GetWindowRect(hWnd_, &mrect);
@@ -755,7 +763,7 @@ LRESULT DirectGraphicsPrimaryWindow::_WindowProcedure(HWND hWnd, UINT uMsg, WPAR
 		return FALSE;
 	}
 	case WM_ACTIVATEAPP: {
-		if ((BOOL)wParam != 0)
+		if ((BOOL)wParam)
 			_RestartDrawing();
 		else
 			_PauseDrawing();
@@ -772,7 +780,7 @@ LRESULT DirectGraphicsPrimaryWindow::_WindowProcedure(HWND hWnd, UINT uMsg, WPAR
 		return FALSE;
 	}
 	case WM_SIZE: {
-		if (wndGraphics_.GetWindowHandle() != nullptr) {
+		if (wndGraphics_.GetWindowHandle() != NULL) {
 			RECT rect;
 			::GetClientRect(hWnd, &rect);
 			int width = rect.right;
@@ -801,7 +809,7 @@ LRESULT DirectGraphicsPrimaryWindow::_WindowProcedure(HWND hWnd, UINT uMsg, WPAR
 		int tw = ::GetSystemMetrics(SM_CXEDGE) + 10 + GetSystemMetrics(SM_CXBORDER) + GetSystemMetrics(SM_CXDLGFRAME);
 		int th = ::GetSystemMetrics(SM_CYEDGE) + 10 + GetSystemMetrics(SM_CYBORDER) + GetSystemMetrics(SM_CYDLGFRAME) + GetSystemMetrics(SM_CYCAPTION);
 
-		auto* info = (MINMAXINFO*)lParam;
+		MINMAXINFO* info = (MINMAXINFO*)lParam;
 		int wWidth = ::GetSystemMetrics(SM_CXFULLSCREEN);
 		int wHeight = ::GetSystemMetrics(SM_CYFULLSCREEN);
 
@@ -871,8 +879,7 @@ void DirectGraphicsPrimaryWindow::ChangeScreenMode()
 			//Windowを画面の中央に移動
 			int tw = ::GetSystemMetrics(SM_CXEDGE) + 10 + GetSystemMetrics(SM_CXBORDER) + GetSystemMetrics(SM_CXDLGFRAME);
 			int th = ::GetSystemMetrics(SM_CYEDGE) + 10 + GetSystemMetrics(SM_CYBORDER) + GetSystemMetrics(SM_CYDLGFRAME) + GetSystemMetrics(SM_CYCAPTION);
-			RECT drect;
-			RECT mrect;
+			RECT drect, mrect;
 			HWND hDesk = ::GetDesktopWindow();
 			::GetWindowRect(hDesk, &drect);
 			::GetWindowRect(hAttachedWindow_, &mrect);
@@ -950,8 +957,9 @@ DxCamera::DxCamera()
 {
 	Reset();
 }
-DxCamera::~DxCamera() = default;
-
+DxCamera::~DxCamera()
+{
+}
 void DxCamera::Reset()
 {
 	radius_ = 500;
@@ -969,7 +977,7 @@ void DxCamera::Reset()
 	clipFar_ = 2000;
 }
 
-D3DXVECTOR3 DxCamera::GetCameraPosition() const
+D3DXVECTOR3 DxCamera::GetCameraPosition()
 {
 	D3DXVECTOR3 res;
 	res.x = pos_.x + (float)(radius_ * cos(D3DXToRadian(angleElevation_)) * cos(D3DXToRadian(angleAzimuth_)));
@@ -984,7 +992,7 @@ D3DXMATRIX DxCamera::GetMatrixLookAtLH()
 
 	D3DXVECTOR3 vCameraUp(0, 1, 0);
 	{
-		D3DXQUATERNION qRot(0, 0, 0, 1.0F);
+		D3DXQUATERNION qRot(0, 0, 0, 1.0f);
 		D3DXQuaternionRotationYawPitchRoll(&qRot,
 			Math::DegreeToRadian(yaw_), Math::DegreeToRadian(pitch_), Math::DegreeToRadian(roll_));
 		D3DXMATRIX matRot;
@@ -1001,7 +1009,7 @@ D3DXMATRIX DxCamera::GetMatrixLookAtLH()
 
 		float pitch = pitch_;
 
-		D3DXQUATERNION qRot(0, 0, 0, 1.0F);
+		D3DXQUATERNION qRot(0, 0, 0, 1.0f);
 		D3DXQuaternionRotationYawPitchRoll(&qRot,
 			Math::DegreeToRadian(yaw_), Math::DegreeToRadian(pitch_), Math::DegreeToRadian(0));
 		D3DXMATRIX matRot;
@@ -1018,7 +1026,7 @@ D3DXMATRIX DxCamera::GetMatrixLookAtLH()
 void DxCamera::UpdateDeviceWorldViewMatrix()
 {
 	DirectGraphics* graph = DirectGraphics::GetBase();
-	if (graph == nullptr)
+	if (graph == NULL)
 		return;
 	IDirect3DDevice9* device = graph->GetDevice();
 
@@ -1028,7 +1036,7 @@ void DxCamera::UpdateDeviceWorldViewMatrix()
 void DxCamera::SetProjectionMatrix(float width, float height, float posNear, float posFar)
 {
 	DirectGraphics* graph = DirectGraphics::GetBase();
-	if (graph == nullptr)
+	if (graph == NULL)
 		return;
 	IDirect3DDevice9* device = graph->GetDevice();
 
@@ -1058,7 +1066,7 @@ void DxCamera::SetProjectionMatrix(float width, float height, float posNear, flo
 void DxCamera::UpdateDeviceProjectionMatrix()
 {
 	DirectGraphics* graph = DirectGraphics::GetBase();
-	if (graph == nullptr)
+	if (graph == NULL)
 		return;
 	IDirect3DDevice9* device = graph->GetDevice();
 	device->SetTransform(D3DTS_PROJECTION, &matProjection_);
@@ -1112,14 +1120,15 @@ DxCamera2D::DxCamera2D()
 	angleZ_ = 0;
 	bEnable_ = false;
 }
-DxCamera2D::~DxCamera2D() = default;
-
+DxCamera2D::~DxCamera2D()
+{
+}
 void DxCamera2D::Reset()
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	int width = graphics->GetScreenWidth();
 	int height = graphics->GetScreenHeight();
-	if (posReset_ == nullptr) {
+	if (posReset_ == NULL) {
 		pos_.x = width / 2;
 		pos_.y = height / 2;
 	} else {

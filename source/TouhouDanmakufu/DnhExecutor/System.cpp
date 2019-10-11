@@ -21,8 +21,8 @@ SystemController::SystemController()
 }
 SystemController::~SystemController()
 {
-	transitionManager_ = nullptr;
-	sceneManager_ = nullptr;
+	transitionManager_ = NULL;
+	sceneManager_ = NULL;
 }
 void SystemController::Reset()
 {
@@ -31,12 +31,12 @@ void SystemController::Reset()
 
 	DnhConfiguration* config = DnhConfiguration::CreateInstance();
 	std::wstring pathPackageScript = config->GetPackageScriptPath();
-	if (pathPackageScript.empty()) {
+	if (pathPackageScript.size() == 0) {
 		infoSystem_->UpdateFreePlayerScriptInformationList();
 		sceneManager_->TransTitleScene();
 	} else {
 		ref_count_ptr<ScriptInformation> info = ScriptInformation::CreateScriptInformation(pathPackageScript, false);
-		if (info == nullptr)
+		if (info == NULL)
 			ShowErrorDialog(ErrorUtility::GetFileNotFoundErrorMessage(pathPackageScript));
 		sceneManager_->TransPackageScene(info, true);
 	}
@@ -50,7 +50,7 @@ void SystemController::ClearTaskWithoutSystem()
 	ETaskManager* taskManager = ETaskManager::GetInstance();
 	taskManager->RemoveTaskWithoutTypeInfo(listInfo);
 }
-void SystemController::ShowErrorDialog(const std::wstring& msg)
+void SystemController::ShowErrorDialog(std::wstring msg)
 {
 	HWND hParent = EDirectGraphics::GetInstance()->GetAttachedWindowHandle();
 	ErrorDialog dialog(hParent);
@@ -60,8 +60,12 @@ void SystemController::ShowErrorDialog(const std::wstring& msg)
 /**********************************************************
 //SceneManager
 **********************************************************/
-SceneManager::SceneManager() = default;
-SceneManager::~SceneManager() = default;
+SceneManager::SceneManager()
+{
+}
+SceneManager::~SceneManager()
+{
+}
 void SceneManager::TransTitleScene()
 {
 	EDirectInput* input = EDirectInput::GetInstance();
@@ -96,7 +100,7 @@ void SceneManager::TransScriptSelectScene(int type)
 	taskManager->AddRenderFunction(TTaskFunction<ScriptSelectScene>::Create(task, &ScriptSelectScene::Render),
 		ScriptSelectScene::TASK_PRI_RENDER);
 
-	ref_count_ptr<ScriptSelectModel> model = nullptr;
+	ref_count_ptr<ScriptSelectModel> model = NULL;
 	if (type == ScriptSelectScene::TYPE_SINGLE
 		|| type == ScriptSelectScene::TYPE_PLURAL
 		|| type == ScriptSelectScene::TYPE_STAGE
@@ -107,7 +111,7 @@ void SceneManager::TransScriptSelectScene(int type)
 		SystemInformation* systemInfo = SystemController::GetInstance()->GetSystemInformation();
 		if (type == ScriptSelectScene::TYPE_DIR)
 			dir = systemInfo->GetLastScriptSearchDirectory();
-		auto* fileModel = new ScriptSelectFileModel(type, dir);
+		ScriptSelectFileModel* fileModel = new ScriptSelectFileModel(type, dir);
 		std::wstring pathWait = systemInfo->GetLastSelectedScriptPath();
 		fileModel->SetWaitPath(pathWait);
 		model = fileModel;
@@ -189,13 +193,14 @@ void SceneManager::TransStgScene(ref_count_ptr<ScriptInformation> infoMain, ref_
 		ref_count_ptr<ScriptInformation> infoPlayer;
 		std::vector<ref_count_ptr<ScriptInformation>> listPlayer;
 		std::vector<std::wstring> listPlayerPath = infoMain->GetPlayerList();
-		if (listPlayerPath.empty()) {
+		if (listPlayerPath.size() == 0) {
 			listPlayer = SystemController::GetInstance()->GetSystemInformation()->GetFreePlayerScriptInformationList();
 		} else {
 			listPlayer = infoMain->CreatePlayerScriptInformationList();
 		}
 
-		for (auto tInfo : listPlayer) {
+		for (int iPlayer = 0; iPlayer < listPlayer.size(); iPlayer++) {
+			ref_count_ptr<ScriptInformation> tInfo = listPlayer[iPlayer];
 			if (tInfo->GetID() != replayPlayerID)
 				continue;
 			std::wstring tPlayerScriptFileName = PathProperty::GetFileName(tInfo->GetScriptPath());
@@ -206,9 +211,9 @@ void SceneManager::TransStgScene(ref_count_ptr<ScriptInformation> infoMain, ref_
 			break;
 		}
 
-		if (infoPlayer == nullptr) {
+		if (infoPlayer == NULL) {
 			std::wstring log = StringUtility::Format(L"自機スクリプトが見つかりません:[%s]", replayPlayerScriptFileName.c_str());
-			throw gstd::wexception(log);
+			throw gstd::wexception(log.c_str());
 		}
 
 		TransStgScene(infoMain, infoPlayer, infoReplay);
@@ -229,7 +234,7 @@ void SceneManager::TransPackageScene(ref_count_ptr<ScriptInformation> infoMain, 
 		//STGシーン初期化
 		ref_count_ptr<StgSystemInformation> infoStgSystem = new StgSystemInformation();
 		infoStgSystem->SetMainScriptInformation(infoMain);
-		ref_count_ptr<StgSystemController> task = nullptr;
+		ref_count_ptr<StgSystemController> task = NULL;
 		if (!bOnlyPackage)
 			task = new EStgSystemController();
 		else
@@ -238,7 +243,7 @@ void SceneManager::TransPackageScene(ref_count_ptr<ScriptInformation> infoMain, 
 		//STGタスク初期化
 		ETaskManager* taskManager = ETaskManager::GetInstance();
 		task->Initialize(infoStgSystem);
-		task->Start(nullptr, nullptr);
+		task->Start(NULL, NULL);
 
 		//タスククリア
 		TransitionManager* transitionManager = SystemController::GetInstance()->GetTransitionManager();
@@ -267,8 +272,12 @@ void SceneManager::TransPackageScene(ref_count_ptr<ScriptInformation> infoMain, 
 /**********************************************************
 //TransitionManager
 **********************************************************/
-TransitionManager::TransitionManager() = default;
-TransitionManager::~TransitionManager() = default;
+TransitionManager::TransitionManager()
+{
+}
+TransitionManager::~TransitionManager()
+{
+}
 void TransitionManager::_CreateCurrentSceneTexture()
 {
 	DirectGraphics* graphics = EDirectGraphics::GetInstance();
@@ -281,7 +290,7 @@ void TransitionManager::_CreateCurrentSceneTexture()
 	graphics->BeginScene();
 	taskManager->CallRenderFunction();
 	graphics->EndScene();
-	graphics->SetRenderTarget(nullptr);
+	graphics->SetRenderTarget(NULL);
 }
 void TransitionManager::_AddTask(ref_count_ptr<TransitionEffect> effect)
 {
@@ -314,7 +323,7 @@ void TransitionManager::DoFadeOut()
 void SystemTransitionEffectTask::Work()
 {
 	TransitionEffectTask::Work();
-	if (effect_ != nullptr && effect_->IsEnd()) {
+	if (effect_ != NULL && effect_->IsEnd()) {
 		WorkRenderTaskManager* taskManager = ETaskManager::GetInstance();
 		taskManager->RemoveTask(this);
 		return;
@@ -335,11 +344,14 @@ SystemInformation::SystemInformation()
 
 	lastPlayerSelectIndex_ = 0;
 }
-SystemInformation::~SystemInformation() = default;
+SystemInformation::~SystemInformation()
+{
+}
 void SystemInformation::_SearchFreePlayerScript(std::wstring dir)
 {
 	listFreePlayer_ = ScriptInformation::FindPlayerScriptInformationList(dir);
-	for (auto info : listFreePlayer_) {
+	for (int iPlayer = 0; iPlayer < listFreePlayer_.size(); iPlayer++) {
+		ref_count_ptr<ScriptInformation> info = listFreePlayer_[iPlayer];
 		std::wstring path = info->GetScriptPath();
 		std::wstring log = StringUtility::Format(L"自機スクリプト：%s", path.c_str());
 		ELogger::WriteTop(log);
@@ -375,13 +387,15 @@ SystemResidentTask::SystemResidentTask()
 	textFps_.SetHorizontalAlignment(DxText::ALIGNMENT_RIGHT);
 	textFps_.SetPosition(0, screenHeight - 20);
 }
-SystemResidentTask::~SystemResidentTask() = default;
+SystemResidentTask::~SystemResidentTask()
+{
+}
 void SystemResidentTask::RenderFps()
 {
 	WorkRenderTaskManager* taskManager = ETaskManager::GetInstance();
-	if (taskManager->GetTask(typeid(EStgSystemController)) != nullptr)
+	if (taskManager->GetTask(typeid(EStgSystemController)) != NULL)
 		return;
-	if (taskManager->GetTask(typeid(PStgSystemController)) != nullptr)
+	if (taskManager->GetTask(typeid(PStgSystemController)) != NULL)
 		return;
 
 	DirectGraphics* graphics = DirectGraphics::GetBase();

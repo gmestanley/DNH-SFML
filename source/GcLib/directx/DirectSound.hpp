@@ -66,10 +66,10 @@ public:
 	IDirectSound8* GetDirectSound() { return pDirectSound_; }
 	gstd::CriticalSection& GetLock() { return lock_; }
 
-	gstd::ref_count_ptr<SoundPlayer> GetPlayer(const std::wstring& path, bool bCreateAlways = false);
+	gstd::ref_count_ptr<SoundPlayer> GetPlayer(std::wstring path, bool bCreateAlways = false);
 	gstd::ref_count_ptr<SoundDivision> CreateSoundDivision(int index);
 	gstd::ref_count_ptr<SoundDivision> GetSoundDivision(int index);
-	gstd::ref_count_ptr<SoundInfo> GetSoundInfo(const std::wstring& path);
+	gstd::ref_count_ptr<SoundInfo> GetSoundInfo(std::wstring path);
 
 	void SetInfoPanel(gstd::ref_count_ptr<SoundInfoPanel> panel)
 	{
@@ -77,21 +77,21 @@ public:
 		panelInfo_ = panel;
 	}
 
-	bool AddSoundInfoFromFile(const std::wstring& path);
+	bool AddSoundInfoFromFile(std::wstring path);
 	std::vector<gstd::ref_count_ptr<SoundInfo>> GetSoundInfoList();
 	void SetFadeDeleteAll();
 
 protected:
-	mutable gstd::CriticalSection lock_;
 	IDirectSound8* pDirectSound_;
 	IDirectSoundBuffer8* pDirectSoundBuffer_;
+	gstd::CriticalSection lock_;
 	SoundManageThread* threadManage_;
 	std::map<std::wstring, std::list<gstd::ref_count_ptr<SoundPlayer>>> mapPlayer_;
 	std::map<int, gstd::ref_count_ptr<SoundDivision>> mapDivision_;
 	std::map<std::wstring, gstd::ref_count_ptr<SoundInfo>> mapInfo_;
 	gstd::ref_count_ptr<SoundInfoPanel> panelInfo_;
 
-	gstd::ref_count_ptr<SoundPlayer> _GetPlayer(const std::wstring& path);
+	gstd::ref_count_ptr<SoundPlayer> _GetPlayer(std::wstring path);
 
 private:
 	static DirectSoundManager* thisBase_;
@@ -119,7 +119,7 @@ class SoundInfoPanel : public gstd::WindowLogger::Panel {
 public:
 	SoundInfoPanel();
 	void SetUpdateInterval(int time) { timeUpdateInterval_ = time; }
-	void LocateParts() override;
+	virtual void LocateParts();
 	virtual void Update(DirectSoundManager* soundManager);
 
 protected:
@@ -138,7 +138,7 @@ protected:
 	int timeLastUpdate_;
 	int timeUpdateInterval_;
 
-	bool _AddedLogger(HWND hTab) override;
+	virtual bool _AddedLogger(HWND hTab);
 };
 
 /**********************************************************
@@ -157,7 +157,7 @@ public:
 	SoundDivision();
 	virtual ~SoundDivision();
 	void SetVolumeRate(double rate) { rateVolume_ = rate; }
-	double GetVolumeRate() const { return rateVolume_; }
+	double GetVolumeRate() { return rateVolume_; }
 
 protected:
 	double rateVolume_; //音量割合(0-100)
@@ -175,11 +175,11 @@ public:
 		timeLoopStart_ = 0;
 		timeLoopEnd_ = 0;
 	}
-	virtual ~SoundInfo() = default;
-	std::wstring GetName() const { return name_; }
-	std::wstring GetTitle() const { return title_; }
-	double GetLoopStartTime() const { return timeLoopStart_; }
-	double GetLoopEndTime() const { return timeLoopEnd_; }
+	virtual ~SoundInfo(){};
+	std::wstring GetName() { return name_; }
+	std::wstring GetTitle() { return title_; }
+	double GetLoopStartTime() { return timeLoopStart_; }
+	double GetLoopEndTime() { return timeLoopEnd_; }
 
 private:
 	std::wstring name_;
@@ -204,7 +204,7 @@ public:
 public:
 	SoundPlayer();
 	virtual ~SoundPlayer();
-	std::wstring GetPath() const { return path_; }
+	std::wstring GetPath() { return path_; }
 	gstd::CriticalSection& GetLock() { return lock_; }
 	virtual void Restore() { pDirectSoundBuffer_->Restore(); }
 	void SetSoundDivision(gstd::ref_count_ptr<SoundDivision> div);
@@ -213,7 +213,7 @@ public:
 	virtual bool Play();
 	virtual bool Play(PlayStyle& style);
 	virtual bool Stop();
-	virtual bool IsPlaying() const;
+	virtual bool IsPlaying();
 	virtual bool Seek(double time) = 0;
 	virtual bool SetVolumeRate(double rateVolume);
 	bool SetPanRate(double ratePan);
@@ -221,14 +221,14 @@ public:
 	void SetFade(double rateVolumeFadePerSec);
 	void SetFadeDelete(double rateVolumeFadePerSec);
 	void SetAutoDelete(bool bAuto = true) { bAutoDelete_ = bAuto; }
-	double GetFadeVolumeRate() const;
+	double GetFadeVolumeRate();
 	void Delete() { bDelete_ = true; }
-	WAVEFORMATEX GetWaveFormat() const { return formatWave_; }
+	WAVEFORMATEX GetWaveFormat() { return formatWave_; }
 
 protected:
-	mutable gstd::CriticalSection lock_;
 	DirectSoundManager* manager_;
 	std::wstring path_;
+	gstd::CriticalSection lock_;
 	IDirectSoundBuffer8* pDirectSoundBuffer_;
 	gstd::ref_count_ptr<gstd::FileReader> reader_;
 	gstd::ref_count_ptr<SoundDivision> division_;
@@ -254,14 +254,14 @@ public:
 	PlayStyle();
 	virtual ~PlayStyle();
 	void SetLoopEnable(bool bLoop) { bLoop_ = bLoop; }
-	bool IsLoopEnable() const { return bLoop_; }
+	bool IsLoopEnable() { return bLoop_; }
 	void SetLoopStartTime(double time) { timeLoopStart_ = time; }
-	double GetLoopStartTime() const { return timeLoopStart_; }
+	double GetLoopStartTime() { return timeLoopStart_; }
 	void SetLoopEndTime(double time) { timeLoopEnd_ = time; }
-	double GetLoopEndTime() const { return timeLoopEnd_; }
+	double GetLoopEndTime() { return timeLoopEnd_; }
 	void SetStartTime(double time) { timeStart_ = time; }
-	double GetStartTime() const { return timeStart_; }
-	bool IsRestart() const { return bRestart_; }
+	double GetStartTime() { return timeStart_; }
+	bool IsRestart() { return bRestart_; }
 	void SetRestart(bool b) { bRestart_ = b; }
 
 private:
@@ -287,23 +287,23 @@ protected:
 	bool bStreaming_;
 	bool bRequestStop_; //ループ完了時のフラグ。すぐ停止すると最後のバッファが再生されないため。
 
-	void _CreateSoundEvent(const WAVEFORMATEX& formatWave);
+	void _CreateSoundEvent(WAVEFORMATEX& formatWave);
 	virtual void _CopyStream(int indexCopy);
 	virtual void _CopyBuffer(LPVOID pMem, DWORD dwSize) = 0;
 	void _RequestStop() { bRequestStop_ = true; }
 
 public:
 	SoundStreamingPlayer();
-	~SoundStreamingPlayer() override;
+	virtual ~SoundStreamingPlayer();
 
-	bool Play(PlayStyle& style) override;
-	bool Stop() override;
-	bool IsPlaying() const override;
+	virtual bool Play(PlayStyle& style);
+	virtual bool Stop();
+	virtual bool IsPlaying();
 
 };
 class SoundStreamingPlayer::StreamingThread : public gstd::Thread, public gstd::InnerClass<SoundStreamingPlayer> {
 protected:
-	void _Run() override;
+	virtual void _Run();
 
 public:
 	StreamingThread(SoundStreamingPlayer* player) { _SetOuter(player); }
@@ -315,15 +315,15 @@ public:
 class SoundPlayerWave : public SoundPlayer {
 public:
 	SoundPlayerWave();
-	~SoundPlayerWave() override;
+	virtual ~SoundPlayerWave();
 
-	bool Play(PlayStyle& style) override;
-	bool Stop() override;
-	bool IsPlaying() const override;
-	bool Seek(double time) override;
+	virtual bool Play(PlayStyle& style);
+	virtual bool Stop();
+	virtual bool IsPlaying();
+	virtual bool Seek(double time);
 
 protected:
-	bool _CreateBuffer(gstd::ref_count_ptr<gstd::FileReader> reader) override;
+	virtual bool _CreateBuffer(gstd::ref_count_ptr<gstd::FileReader> reader);
 };
 
 /**********************************************************
@@ -332,13 +332,13 @@ protected:
 class SoundStreamingPlayerWave : public SoundStreamingPlayer {
 public:
 	SoundStreamingPlayerWave();
-	bool Seek(double time) override;
+	virtual bool Seek(double time);
 
 protected:
 	int posWaveStart_;
 	int posWaveEnd_;
-	bool _CreateBuffer(gstd::ref_count_ptr<gstd::FileReader> reader) override;
-	void _CopyBuffer(LPVOID pMem, DWORD dwSize) override;
+	virtual bool _CreateBuffer(gstd::ref_count_ptr<gstd::FileReader> reader);
+	virtual void _CopyBuffer(LPVOID pMem, DWORD dwSize);
 };
 
 /**********************************************************
@@ -347,15 +347,15 @@ protected:
 class SoundStreamingPlayerOgg : public SoundStreamingPlayer {
 public:
 	SoundStreamingPlayerOgg();
-	~SoundStreamingPlayerOgg() override;
-	bool Seek(double time) override;
+	~SoundStreamingPlayerOgg();
+	virtual bool Seek(double time);
 
 protected:
 	OggVorbis_File fileOgg_;
 	ov_callbacks oggCallBacks_;
 
-	bool _CreateBuffer(gstd::ref_count_ptr<gstd::FileReader> reader) override;
-	void _CopyBuffer(LPVOID pMem, DWORD dwSize) override;
+	virtual bool _CreateBuffer(gstd::ref_count_ptr<gstd::FileReader> reader);
+	virtual void _CopyBuffer(LPVOID pMem, DWORD dwSize);
 
 	static size_t _ReadOgg(void* ptr, size_t size, size_t nmemb, void* source);
 	static int _SeekOgg(void* source, ogg_int64_t offset, int whence);
@@ -369,8 +369,8 @@ protected:
 class SoundStreamingPlayerMp3 : public SoundStreamingPlayer {
 public:
 	SoundStreamingPlayerMp3();
-	~SoundStreamingPlayerMp3() override;
-	bool Seek(double time) override;
+	~SoundStreamingPlayerMp3();
+	virtual bool Seek(double time);
 
 protected:
 	MPEGLAYER3WAVEFORMAT formatMp3_;
@@ -383,8 +383,8 @@ protected:
 	double timeCurrent_;
 	gstd::ref_count_ptr<gstd::ByteBuffer> bufDecode_;
 
-	bool _CreateBuffer(gstd::ref_count_ptr<gstd::FileReader> reader) override;
-	void _CopyBuffer(LPVOID pMem, DWORD dwSize) override;
+	virtual bool _CreateBuffer(gstd::ref_count_ptr<gstd::FileReader> reader);
+	virtual void _CopyBuffer(LPVOID pMem, DWORD dwSize);
 	int _ReadAcmStream(char* pBuffer, int size);
 };
 

@@ -9,8 +9,12 @@ using namespace directx;
 //ElfreinaMesh
 **********************************************************/
 //ElfreinaMeshData
-ElfreinaMeshData::ElfreinaMeshData() = default;
-ElfreinaMeshData::~ElfreinaMeshData() = default;
+ElfreinaMeshData::ElfreinaMeshData()
+{
+}
+ElfreinaMeshData::~ElfreinaMeshData()
+{
+}
 bool ElfreinaMeshData::CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> reader)
 {
 	bool res = false;
@@ -41,8 +45,8 @@ bool ElfreinaMeshData::CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader
 		}
 
 		//頂点バッファ作成
-		for (auto& iMesh : mesh_) {
-			iMesh->InitializeVertexBuffer();
+		for (int iMesh = 0; iMesh < mesh_.size(); iMesh++) {
+			mesh_[iMesh]->InitializeVertexBuffer();
 		}
 
 		res = true;
@@ -84,9 +88,9 @@ bool ElfreinaMeshData::CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader
 				}
 			}
 		}
-		for (auto & iBone : bone_) {
+		for (int iBone = 0; iBone < bone_.size(); iBone++) {
 			std::wstring log = L" Bone ";
-			std::wstring name = iBone->name_;
+			std::wstring name = bone_[iBone]->name_;
 			log += StringUtility::Format(L"name[%s] ", name.c_str());
 			Logger::WriteTop(log);
 		}
@@ -143,7 +147,7 @@ void ElfreinaMeshData::_ReadMeshContainer(gstd::Scanner& scanner)
 				if (tok.GetType() != Token::TK_STRING)
 					continue;
 				bone_[iBone]->name_ = tok.GetString();
-				++iBone;
+				iBone++;
 			}
 		} else if (tok.GetElement() == L"OffsetMatrices") {
 			int iCount = 0;
@@ -158,14 +162,14 @@ void ElfreinaMeshData::_ReadMeshContainer(gstd::Scanner& scanner)
 					if (iCount != 0 && iBone != -1 && iCount != 16)
 						throw gstd::wexception(L"ElfreinaMeshData:OffsetMatricesの数が不正です");
 					iCount = 0;
-					++iBone;
+					iBone++;
 				}
 
 				if (tok.GetType() != Token::TK_INT && tok.GetType() != Token::TK_REAL)
 					continue;
 
 				bone_[iBone]->matOffset_.m[iCount / 4][iCount % 4] = tok.GetReal();
-				++iCount;
+				iCount++;
 			}
 		} else if (tok.GetElement() == L"Materials") {
 			int posMat = 0;
@@ -185,13 +189,13 @@ void ElfreinaMeshData::_ReadMeshContainer(gstd::Scanner& scanner)
 				} else if (tok.GetElement() == L"Material") {
 					scanner.CheckType(scanner.Next(), Token::TK_OPENC);
 					_ReadMaterials(scanner, *material_[posMat].GetPointer());
-					++posMat;
+					posMat++;
 				}
 			}
 		} else if (tok.GetElement() == L"Mesh") {
 			scanner.CheckType(scanner.Next(), Token::TK_OPENC);
 			_ReadMesh(scanner, *mesh_[countReadMesh].GetPointer());
-			++countReadMesh;
+			countReadMesh++;
 		}
 	}
 }
@@ -386,14 +390,14 @@ void ElfreinaMeshData::_ReadMesh(gstd::Scanner& scanner, Mesh& mesh)
 		std::vector<Mesh::BoneWeightData>& datas = vectWeight[iVert];
 		if (false) {
 			//BLEND2
-			Mesh::BoneWeightData* data1 = nullptr;
-			Mesh::BoneWeightData* data2 = nullptr;
-			for (auto& iDatas : datas) {
-				Mesh::BoneWeightData* data = &iDatas;
+			Mesh::BoneWeightData* data1 = NULL;
+			Mesh::BoneWeightData* data2 = NULL;
+			for (int iDatas = 0; iDatas < datas.size(); iDatas++) {
+				Mesh::BoneWeightData* data = &datas[iDatas];
 				totalWeight[data->index] += data->weight;
-				if (data1 == nullptr)
+				if (data1 == NULL)
 					data1 = data;
-				else if (data2 == nullptr) {
+				else if (data2 == NULL) {
 					data2 = data;
 					if (data1->weight < data2->weight) {
 						Mesh::BoneWeightData* temp = data1;
@@ -411,25 +415,25 @@ void ElfreinaMeshData::_ReadMesh(gstd::Scanner& scanner, Mesh& mesh)
 			}
 
 			//頂点データに設定
-			if (data1 != nullptr && data2 != nullptr) {
-				float sub = 1.0F - data1->weight - data2->weight;
-				data1->weight += sub / 2.0F;
-				data2->weight += sub / 2.0F;
-				if (data1->weight > 1.0F)
-					data1->weight = 1.0F;
-				if (data2->weight > 1.0F)
-					data2->weight = 1.0F;
+			if (data1 != NULL && data2 != NULL) {
+				float sub = 1.0f - data1->weight - data2->weight;
+				data1->weight += sub / 2.0f;
+				data2->weight += sub / 2.0f;
+				if (data1->weight > 1.0f)
+					data1->weight = 1.0f;
+				if (data2->weight > 1.0f)
+					data2->weight = 1.0f;
 			}
 
-			if (data1 != nullptr)
+			if (data1 != NULL)
 				mesh.SetVertexBlend(iVert, 0, data1->index, data1->weight);
-			if (data2 != nullptr)
+			if (data2 != NULL)
 				mesh.SetVertexBlend(iVert, 1, data2->index, data2->weight);
 		} else {
 			int dataCount = datas.size();
-			for (int iDatas = 0; iDatas < dataCount; ++iDatas) {
+			for (int iDatas = 0; iDatas < dataCount; iDatas++) {
 				Mesh::BoneWeightData* data = &datas[iDatas];
-				if (data == nullptr)
+				if (data == NULL)
 					continue;
 				totalWeight[data->index] += data->weight;
 				mesh.SetVertexBlend(iVert, iDatas, data->index, data->weight);
@@ -440,7 +444,7 @@ void ElfreinaMeshData::_ReadMesh(gstd::Scanner& scanner, Mesh& mesh)
 	//重心
 	double maxWeight = 0;
 	mesh.CalculateWeightCenter();
-	for (int iBone = 0; iBone < totalWeight.size(); ++iBone) {
+	for (int iBone = 0; iBone < totalWeight.size(); iBone++) {
 		if (totalWeight[iBone] < maxWeight)
 			continue;
 		mesh.indexWeightForCalucZValue_ = iBone;
@@ -450,7 +454,7 @@ void ElfreinaMeshData::_ReadMesh(gstd::Scanner& scanner, Mesh& mesh)
 
 void ElfreinaMeshData::_ReadHierarchyList(gstd::Scanner& scanner)
 {
-	for (int iBone = 0; iBone < bone_.size(); ++iBone) {
+	for (int iBone = 0; iBone < bone_.size(); iBone++) {
 		std::wstring name = bone_[iBone]->name_;
 		mapBoneNameIndex_[name] = iBone;
 	}
@@ -469,7 +473,7 @@ void ElfreinaMeshData::_ReadHierarchyList(gstd::Scanner& scanner)
 int ElfreinaMeshData::_ReadNode(gstd::Scanner& scanner, int parent)
 {
 	int indexBone = -1;
-	Bone* bone = nullptr;
+	Bone* bone = NULL;
 	while (true) {
 		gstd::Token& tok = scanner.Next();
 		if (tok.GetType() == Token::TK_CLOSEC)
@@ -512,7 +516,7 @@ void ElfreinaMeshData::_ReadAnimationList(gstd::Scanner& scanner)
 			scanner.CheckType(scanner.Next(), Token::TK_OPENC);
 			scanner.CheckType(scanner.Next(), Token::TK_NEWLINE);
 			gstd::ref_count_ptr<AnimationData> anime = _ReadAnimationData(scanner);
-			if (anime != nullptr) {
+			if (anime != NULL) {
 				anime_[anime->name_] = anime;
 			}
 		}
@@ -556,9 +560,9 @@ gstd::ref_count_ptr<ElfreinaMeshData::AnimationData> ElfreinaMeshData::_ReadAnim
 			while (true) {
 				tok = scanner.Next();
 				if (tok.GetType() == Token::TK_OPENC)
-					++count;
+					count++;
 				else if (tok.GetType() == Token::TK_CLOSEC)
-					--count;
+					count--;
 				if (count == 0)
 					break;
 			}
@@ -587,7 +591,7 @@ void ElfreinaMeshData::_ReadBoneAnimation(gstd::Scanner& scanner, AnimationData&
 void ElfreinaMeshData::_ReadBoneAnimationPart(gstd::Scanner& scanner, AnimationData& anime)
 {
 	int indexBone = -1;
-	auto* part = new BoneAnimationPart();
+	BoneAnimationPart* part = new BoneAnimationPart();
 	while (true) {
 		gstd::Token& tok = scanner.Next();
 		if (tok.GetType() == Token::TK_CLOSEC)
@@ -652,7 +656,9 @@ ElfreinaMeshData::Mesh::Mesh()
 {
 	SetPrimitiveType(D3DPT_TRIANGLELIST);
 }
-ElfreinaMeshData::Mesh::~Mesh() = default;
+ElfreinaMeshData::Mesh::~Mesh()
+{
+}
 void ElfreinaMeshData::Mesh::Render()
 {
 	IDirect3DDevice9* device = DirectGraphics::GetBase()->GetDevice();
@@ -712,7 +718,8 @@ gstd::ref_count_ptr<Matrices> ElfreinaMeshData::AnimationData::CreateBoneAnimati
 
 		//子の行列を計算
 		std::vector<int>& indexChild = bones[iBone]->GetChildIndex();
-		for (int index : indexChild) {
+		for (int iChild = 0; iChild < indexChild.size(); iChild++) {
+			int index = indexChild[iChild];
 			_CreateBoneAnimationMatrix(time, mesh, matrix, index, mat);
 		}
 	}
@@ -732,7 +739,8 @@ void ElfreinaMeshData::AnimationData::_CreateBoneAnimationMatrix(int time, Elfre
 
 	//子の行列を計算
 	std::vector<int>& indexChild = bones[indexOwn]->GetChildIndex();
-	for (int index : indexChild) {
+	for (int iChild = 0; iChild < indexChild.size(); iChild++) {
+		int index = indexChild[iChild];
 		_CreateBoneAnimationMatrix(time, mesh, matrix, index, mat);
 	}
 }
@@ -740,7 +748,7 @@ D3DXMATRIX ElfreinaMeshData::AnimationData::_CalculateMatrix(double time, int in
 {
 	D3DXMATRIX res;
 	BoneAnimationPart* part = animeBone_[index].GetPointer();
-	if (part == nullptr) {
+	if (part == NULL) {
 		D3DXMatrixIdentity(&res);
 		return res;
 	}
@@ -769,7 +777,7 @@ D3DXMATRIX ElfreinaMeshData::AnimationData::_CalculateMatrix(double time, int in
 
 	float timeDiffKey = (float)timeTotal_ * keyTime[keyNext] - (float)timeTotal_ * keyTime[keyPrevious];
 	float timeDiffAnime = (float)(time - timeTotal_ * keyTime[keyPrevious]);
-	float rateToNext = timeDiffKey != 0.0F ? timeDiffAnime / timeDiffKey : 0;
+	float rateToNext = timeDiffKey != 0.0f ? timeDiffAnime / timeDiffKey : 0;
 
 	//各行列を作成
 	std::vector<D3DXVECTOR3>& keyTrans = part->GetTransKey();
@@ -802,20 +810,22 @@ D3DXMATRIX ElfreinaMeshData::AnimationData::_CalculateMatrix(double time, int in
 }
 
 //RenderObjectElfreinaBlock
-RenderObjectElfreinaBlock::~RenderObjectElfreinaBlock() = default;
+RenderObjectElfreinaBlock::~RenderObjectElfreinaBlock()
+{
+}
 bool RenderObjectElfreinaBlock::IsTranslucent()
 {
-	auto* obj = (ElfreinaMeshData::Mesh*)obj_.GetPointer();
+	ElfreinaMeshData::Mesh* obj = (ElfreinaMeshData::Mesh*)obj_.GetPointer();
 	D3DMATERIAL9& mat = obj->material_->mat_;
 	bool bTrans = true;
-	bTrans &= (mat.Diffuse.a != 1.0F);
+	bTrans &= (mat.Diffuse.a != 1.0f);
 	return RenderObjectB2NXBlock::IsTranslucent() || bTrans;
 }
 void RenderObjectElfreinaBlock::CalculateZValue()
 {
 	DirectGraphics* graph = DirectGraphics::GetBase();
 	IDirect3DDevice9* pDevice = graph->GetDevice();
-	auto* obj = (ElfreinaMeshData::Mesh*)obj_.GetPointer();
+	ElfreinaMeshData::Mesh* obj = (ElfreinaMeshData::Mesh*)obj_.GetPointer();
 
 	D3DXMATRIX matTrans = obj->_CreateWorldTransformMaxtrix();
 	D3DXMATRIX matView;
@@ -836,25 +846,25 @@ bool ElfreinaMesh::CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> re
 	bool res = false;
 	{
 		Lock lock(DxMeshManager::GetBase()->GetLock());
-		if (data_ != nullptr)
+		if (data_ != NULL)
 			Release();
 
 		std::wstring name = reader->GetOriginalPath();
 
 		data_ = _GetFromManager(name);
-		if (data_ == nullptr) {
+		if (data_ == NULL) {
 			if (!reader->Open())
 				throw gstd::wexception(L"ファイルが開けません");
 			data_ = new ElfreinaMeshData();
 			data_->SetName(name);
-			auto* data = (ElfreinaMeshData*)data_.GetPointer();
+			ElfreinaMeshData* data = (ElfreinaMeshData*)data_.GetPointer();
 			res = data->CreateFromFileReader(reader);
 			if (res) {
 				Logger::WriteTop(StringUtility::Format(L"メッシュを読み込みました[%s]", name.c_str()));
 				_AddManager(name, data_);
 
 			} else {
-				data_ = nullptr;
+				data_ = NULL;
 			}
 		} else {
 			res = true;
@@ -862,24 +872,24 @@ bool ElfreinaMesh::CreateFromFileReader(gstd::ref_count_ptr<gstd::FileReader> re
 	}
 	return res;
 }
-bool ElfreinaMesh::CreateFromFileInLoadThread(const std::wstring& path)
+bool ElfreinaMesh::CreateFromFileInLoadThread(std::wstring path)
 {
 	return DxMesh::CreateFromFileInLoadThread(path, MESH_ELFREINA);
 }
 std::wstring ElfreinaMesh::GetPath()
 {
-	if (data_ == nullptr)
+	if (data_ == NULL)
 		return L"";
 	return ((ElfreinaMeshData*)data_.GetPointer())->path_;
 }
 void ElfreinaMesh::Render()
 {
-	if (data_ == nullptr)
+	if (data_ == NULL)
 		return;
 
-	auto* data = (ElfreinaMeshData*)data_.GetPointer();
-	for (auto& iMesh : data->mesh_) {
-		ElfreinaMeshData::Mesh* mesh = iMesh.GetPointer();
+	ElfreinaMeshData* data = (ElfreinaMeshData*)data_.GetPointer();
+	for (int iMesh = 0; iMesh < data->mesh_.size(); iMesh++) {
+		ElfreinaMeshData::Mesh* mesh = data->mesh_[iMesh].GetPointer();
 		mesh->SetPosition(position_);
 		mesh->SetAngle(angle_);
 		mesh->SetScale(scale_);
@@ -891,31 +901,32 @@ void ElfreinaMesh::Render()
 }
 void ElfreinaMesh::Render(std::wstring nameAnime, int time)
 {
-	if (data_ == nullptr)
+	if (data_ == NULL)
 		return;
 
 	gstd::ref_count_ptr<Matrices> matrix = CreateAnimationMatrix(nameAnime, time);
-	if (matrix == nullptr)
+	if (matrix == NULL)
 		return;
 
-	auto* data = (ElfreinaMeshData*)data_.GetPointer();
+	ElfreinaMeshData* data = (ElfreinaMeshData*)data_.GetPointer();
 	while (!data->bLoad_) {
 		::Sleep(1);
 	}
 
-	for (auto& iMesh : data->mesh_) {
-		ElfreinaMeshData::Mesh* mesh = iMesh.GetPointer();
+	for (int iMesh = 0; iMesh < data->mesh_.size(); iMesh++) {
+		ElfreinaMeshData::Mesh* mesh = data->mesh_[iMesh].GetPointer();
 		mesh->SetMatrix(matrix);
 	}
 	Render();
 }
 gstd::ref_count_ptr<RenderBlocks> ElfreinaMesh::CreateRenderBlocks()
 {
-	if (data_ == nullptr)
-		return nullptr;
+	if (data_ == NULL)
+		return NULL;
 	gstd::ref_count_ptr<RenderBlocks> res = new RenderBlocks();
-	auto* data = (ElfreinaMeshData*)data_.GetPointer();
-	for (auto& mesh : data->mesh_) {
+	ElfreinaMeshData* data = (ElfreinaMeshData*)data_.GetPointer();
+	for (int iMesh = 0; iMesh < data->mesh_.size(); iMesh++) {
+		gstd::ref_count_ptr<ElfreinaMeshData::Mesh> mesh = data->mesh_[iMesh];
 		mesh->SetPosition(position_);
 		mesh->SetAngle(angle_);
 		mesh->SetScale(scale_);
@@ -927,19 +938,20 @@ gstd::ref_count_ptr<RenderBlocks> ElfreinaMesh::CreateRenderBlocks()
 	}
 	return res;
 }
-gstd::ref_count_ptr<RenderBlocks> ElfreinaMesh::CreateRenderBlocks(const std::wstring& nameAnime, double time)
+gstd::ref_count_ptr<RenderBlocks> ElfreinaMesh::CreateRenderBlocks(std::wstring nameAnime, double time)
 {
-	if (data_ == nullptr)
-		return nullptr;
+	if (data_ == NULL)
+		return NULL;
 
 	gstd::ref_count_ptr<Matrices> matrix = CreateAnimationMatrix(nameAnime, time);
-	if (matrix == nullptr)
-		return nullptr;
-	auto* data = (ElfreinaMeshData*)data_.GetPointer();
-	for (auto& iMesh : data->mesh_) {
-		ElfreinaMeshData::Mesh* mesh = iMesh.GetPointer();
+	if (matrix == NULL)
+		return NULL;
+	ElfreinaMeshData* data = (ElfreinaMeshData*)data_.GetPointer();
+	for (int iMesh = 0; iMesh < data->mesh_.size(); iMesh++) {
+		ElfreinaMeshData::Mesh* mesh = data->mesh_[iMesh].GetPointer();
 		mesh->SetMatrix(matrix);
 	}
+
 	return CreateRenderBlocks();
 }
 double ElfreinaMesh::_CalcFrameToTime(double time, gstd::ref_count_ptr<ElfreinaMeshData::AnimationData> anime)
@@ -958,15 +970,15 @@ double ElfreinaMesh::_CalcFrameToTime(double time, gstd::ref_count_ptr<ElfreinaM
 	}
 	return time;
 }
-gstd::ref_count_ptr<Matrices> ElfreinaMesh::CreateAnimationMatrix(const std::wstring& nameAnime, double time)
+gstd::ref_count_ptr<Matrices> ElfreinaMesh::CreateAnimationMatrix(std::wstring nameAnime, double time)
 {
-	if (data_ == nullptr)
-		return nullptr;
+	if (data_ == NULL)
+		return NULL;
 
-	auto* data = (ElfreinaMeshData*)data_.GetPointer();
+	ElfreinaMeshData* data = (ElfreinaMeshData*)data_.GetPointer();
 	bool bExist = data->anime_.find(nameAnime) != data->anime_.end();
 	if (!bExist)
-		return nullptr;
+		return NULL;
 	gstd::ref_count_ptr<ElfreinaMeshData::AnimationData> anime = data->anime_[nameAnime];
 
 	//ループ有無で時間を計算する
@@ -976,13 +988,12 @@ gstd::ref_count_ptr<Matrices> ElfreinaMesh::CreateAnimationMatrix(const std::wst
 	return matrix;
 }
 
-D3DXMATRIX ElfreinaMesh::GetAnimationMatrix(const std::wstring& nameAnime, double time, const std::wstring& nameBone)
+D3DXMATRIX ElfreinaMesh::GetAnimationMatrix(std::wstring nameAnime, double time, std::wstring nameBone)
 {
 	D3DXMATRIX res;
-	auto* data = (ElfreinaMeshData*)data_.GetPointer();
-	auto boneIndexItr = data->mapBoneNameIndex_.find(nameBone);
-	if (boneIndexItr != data->mapBoneNameIndex_.end()) {
-		int boneIndex = boneIndexItr->second;
+	ElfreinaMeshData* data = (ElfreinaMeshData*)data_.GetPointer();
+	if (data->mapBoneNameIndex_.find(nameBone) != data->mapBoneNameIndex_.end()) {
+		int indexBone = data->mapBoneNameIndex_[nameBone];
 		bool bExist = data->anime_.find(nameAnime) != data->anime_.end();
 		if (bExist) {
 			gstd::ref_count_ptr<ElfreinaMeshData::AnimationData> anime = data->anime_[nameAnime];
@@ -990,10 +1001,10 @@ D3DXMATRIX ElfreinaMesh::GetAnimationMatrix(const std::wstring& nameAnime, doubl
 			//ループ有無で時間を計算する
 			time = _CalcFrameToTime(time, anime);
 			gstd::ref_count_ptr<Matrices> matrix = anime->CreateBoneAnimationMatrix(time, data);
-			D3DXMATRIX matBone = matrix->GetMatrix(boneIndex);
+			D3DXMATRIX matBone = matrix->GetMatrix(indexBone);
 
-			D3DXMATRIX matInv = data->bone_[boneIndex]->matOffset_;
-			D3DXMatrixInverse(&matInv, nullptr, &matInv);
+			D3DXMATRIX matInv = data->bone_[indexBone]->matOffset_;
+			D3DXMatrixInverse(&matInv, NULL, &matInv);
 			// D3DXVECTOR3 pos;
 			// D3DXVec3TransformCoord(&pos, &D3DXVECTOR3(0, 0, 0), &matInv);
 			// D3DXMatrixTranslation(&matInv, pos.x, pos.y, pos.z);

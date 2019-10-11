@@ -43,12 +43,13 @@
 #endif
 
 //std
+#include <cstdlib>
+#include <cwchar>
+
 #include <algorithm>
-#include <array>
 #include <bitset>
 #include <cmath>
 #include <cstdlib>
-#include <cwchar>
 #include <exception>
 #include <list>
 #include <map>

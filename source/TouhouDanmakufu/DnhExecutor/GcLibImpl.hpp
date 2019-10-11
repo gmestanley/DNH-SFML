@@ -14,12 +14,12 @@ private:
 	EApplication();
 
 protected:
-	bool _Initialize() override;
-	bool _Loop() override;
-	bool _Finalize() override;
+	bool _Initialize();
+	bool _Loop();
+	bool _Finalize();
 
 public:
-	~EApplication() override;
+	~EApplication();
 };
 
 /**********************************************************
@@ -32,11 +32,11 @@ private:
 	EDirectGraphics();
 
 protected:
-	LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
+	virtual LRESULT _WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 public:
-	~EDirectGraphics() override;
-	bool Initialize() override;
+	~EDirectGraphics();
+	virtual bool Initialize();
 	void SetRenderStateFor2D(int blend);
 };
 

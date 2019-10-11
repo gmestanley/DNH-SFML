@@ -40,7 +40,9 @@ StgPlayerObject::StgPlayerObject(StgStageController* stageController)
 
 	_InitializeRebirth();
 }
-StgPlayerObject::~StgPlayerObject() = default;
+StgPlayerObject::~StgPlayerObject()
+{
+}
 void StgPlayerObject::_InitializeRebirth()
 {
 	RECT rcStgFrame = stageController_->GetStageInformation()->GetStgFrameRect();
@@ -70,13 +72,13 @@ void StgPlayerObject::Work()
 			listScriptValue.push_back(valueHitObjectID);
 			script_->RequestEvent(StgStagePlayerScript::EV_HIT, listScriptValue);
 		} else {
-			if (!listGrazedShot_.empty()) {
+			if (listGrazedShot_.size() > 0) {
 				std::vector<value> listValPos;
 				std::vector<long double> listShotID;
 				int grazedShotCount = listGrazedShot_.size();
 				for (int iObj = 0; iObj < grazedShotCount; iObj++) {
 					ref_count_weak_ptr<StgShotObject>::unsync objShot = ref_count_weak_ptr<StgShotObject>::unsync::DownCast(listGrazedShot_[iObj]);
-					if (objShot != nullptr) {
+					if (objShot != NULL) {
 						int id = objShot->GetObjectID();
 						listShotID.push_back(id);
 
@@ -95,7 +97,7 @@ void StgPlayerObject::Work()
 
 				ref_count_ptr<StgStageScriptManager> stageScriptManager = stageController_->GetScriptManagerR();
 				ref_count_ptr<ManagedScript> itemScript = stageScriptManager->GetItemScript();
-				if (itemScript != nullptr) {
+				if (itemScript != NULL) {
 					itemScript->RequestEvent(StgStagePlayerScript::EV_GRAZE, listScriptValue);
 				}
 			}
@@ -118,7 +120,7 @@ void StgPlayerObject::Work()
 				//自機ダウン
 				bool bEnemyLastSpell = false;
 				ref_count_ptr<StgEnemyBossSceneObject>::unsync objBossScene = enemyManager->GetBossSceneObject();
-				if (objBossScene != nullptr) {
+				if (objBossScene != NULL) {
 					objBossScene->AddPlayerShootDownCount();
 					if (objBossScene->GetActiveData()->IsLastSpell())
 						bEnemyLastSpell = true;
@@ -223,7 +225,7 @@ bool StgPlayerObject::_IsValidSpell()
 {
 	bool res = true;
 	res &= (state_ == STATE_NORMAL || (state_ == STATE_HIT && frameState_ > 0));
-	res &= (objSpell_ == nullptr || objSpell_->IsDeleted());
+	res &= (objSpell_ == NULL || objSpell_->IsDeleted());
 	return res;
 }
 void StgPlayerObject::CallSpell()
@@ -242,7 +244,7 @@ void StgPlayerObject::CallSpell()
 		throw gstd::wexception(L"@Event(EV_REQUEST_SPELL)内でboolean型の値が返されていません。");
 	bool bUse = vUse.as_boolean();
 	if (!bUse) {
-		objSpell_ = nullptr;
+		objSpell_ = NULL;
 		objectManager->DeleteObject(idSpell);
 		return;
 	}
@@ -254,7 +256,7 @@ void StgPlayerObject::CallSpell()
 
 	StgEnemyManager* enemyManager = stageController_->GetEnemyManager();
 	ref_count_ptr<StgEnemyBossSceneObject>::unsync objBossScene = enemyManager->GetBossSceneObject();
-	if (objBossScene != nullptr) {
+	if (objBossScene != NULL) {
 		objBossScene->AddPlayerSpellCount();
 	}
 
@@ -264,20 +266,20 @@ void StgPlayerObject::CallSpell()
 
 void StgPlayerObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget)
 {
-	auto* own = (StgIntersectionTarget_Player*)ownTarget.GetPointer();
+	StgIntersectionTarget_Player* own = (StgIntersectionTarget_Player*)ownTarget.GetPointer();
 	int otherType = otherTarget->GetTargetType();
 	switch (otherType) {
 	case StgIntersectionTarget::TYPE_ENEMY_SHOT: {
 		//敵弾
 		if (own->IsGraze()) {
 			StgShotObject* objShot = (StgShotObject*)otherTarget->GetObject().GetPointer();
-			if (objShot != nullptr && objShot->IsValidGraze()) {
+			if (objShot != NULL && objShot->IsValidGraze()) {
 				listGrazedShot_.push_back(otherTarget->GetObject());
 				stageController_->GetStageInformation()->AddGraze(1);
 			}
 		} else {
 			ref_count_weak_ptr<StgShotObject>::unsync objShot = ref_count_weak_ptr<StgShotObject>::unsync::DownCast(otherTarget->GetObject());
-			if (objShot != nullptr)
+			if (objShot != NULL)
 				hitObjectID_ = objShot->GetObjectID();
 		}
 	} break;
@@ -286,7 +288,7 @@ void StgPlayerObject::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync own
 		//敵
 		if (!own->IsGraze()) {
 			ref_count_weak_ptr<StgEnemyObject>::unsync objEnemy = ref_count_weak_ptr<StgEnemyObject>::unsync::DownCast(otherTarget->GetObject());
-			if (objEnemy != nullptr)
+			if (objEnemy != NULL)
 				hitObjectID_ = objEnemy->GetObjectID();
 		}
 	} break;
@@ -296,7 +298,7 @@ ref_count_ptr<StgPlayerObject>::unsync StgPlayerObject::GetOwnObject()
 {
 	return ref_count_ptr<StgPlayerObject>::unsync::DownCast(stageController_->GetMainRenderObject(idObject_));
 }
-bool StgPlayerObject::IsPermitShot() const
+bool StgPlayerObject::IsPermitShot()
 {
 	//以下のとき不可
 	//・会話中
@@ -310,9 +312,9 @@ bool StgPlayerObject::IsPermitSpell()
 	StgEnemyManager* enemyManager = stageController_->GetEnemyManager();
 	bool bEnemyLastSpell = false;
 	ref_count_ptr<StgEnemyBossSceneObject>::unsync objBossScene = enemyManager->GetBossSceneObject();
-	if (objBossScene != nullptr) {
+	if (objBossScene != NULL) {
 		ref_count_ptr<StgEnemyBossSceneData>::unsync data = objBossScene->GetActiveData();
-		if (data != nullptr && data->IsLastSpell())
+		if (data != NULL && data->IsLastSpell())
 			bEnemyLastSpell = true;
 	}
 

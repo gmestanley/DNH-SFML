@@ -20,16 +20,16 @@ public:
 	FpsController();
 	virtual ~FpsController();
 	virtual void SetFps(int fps) { fps_ = fps; }
-	virtual int GetFps() const { return fps_; }
+	virtual int GetFps() { return fps_; }
 	virtual void SetTimerEnable(bool b) { bUseTimer_ = b; }
 
 	virtual void Wait() = 0;
-	virtual bool IsSkip() const { return false; }
+	virtual bool IsSkip() { return false; }
 	virtual void SetCriticalFrame() { bCriticalFrame_ = true; }
-	virtual float GetCurrentFps() const = 0;
-	virtual float GetCurrentWorkFps() const { return GetCurrentFps(); }
-	virtual float GetCurrentRenderFps() const { return GetCurrentFps(); }
-	bool IsFastMode() const { return bFastMode_; }
+	virtual float GetCurrentFps() = 0;
+	virtual float GetCurrentWorkFps() { return GetCurrentFps(); }
+	virtual float GetCurrentRenderFps() { return GetCurrentFps(); }
+	bool IsFastMode() { return bFastMode_; }
 	void SetFastMode(bool b) { bFastMode_ = b; }
 
 	void AddFpsControlObject(ref_count_weak_ptr<FpsControlObject> obj);
@@ -54,11 +54,11 @@ protected:
 class StaticFpsController : public FpsController {
 public:
 	StaticFpsController();
-	~StaticFpsController() override;
+	~StaticFpsController();
 
-	void Wait() override;
-	bool IsSkip() const override;
-	void SetCriticalFrame() override
+	virtual void Wait();
+	virtual bool IsSkip();
+	virtual void SetCriticalFrame()
 	{
 		bCriticalFrame_ = true;
 		timeError_ = 0;
@@ -66,9 +66,9 @@ public:
 	}
 
 	void SetSkipRate(int value);
-	float GetCurrentFps() const override;
-	float GetCurrentWorkFps() const override;
-	float GetCurrentRenderFps() const override;
+	virtual float GetCurrentFps();
+	virtual float GetCurrentWorkFps();
+	virtual float GetCurrentRenderFps();
 
 protected:
 	float fpsCurrent_; //現在のFPS
@@ -91,20 +91,20 @@ private:
 class AutoSkipFpsController : public FpsController {
 public:
 	AutoSkipFpsController();
-	~AutoSkipFpsController() override;
+	~AutoSkipFpsController();
 
-	void Wait() override;
-	bool IsSkip() const override;
-	void SetCriticalFrame() override
+	virtual void Wait();
+	virtual bool IsSkip();
+	virtual void SetCriticalFrame()
 	{
 		bCriticalFrame_ = true;
 		timeError_ = 0;
 		countSkip_ = 0;
 	}
 
-	float GetCurrentFps() const override { return GetCurrentWorkFps(); }
-	float GetCurrentWorkFps() const override { return fpsCurrentWork_; };
-	float GetCurrentRenderFps() const override { return fpsCurrentRender_; };
+	virtual float GetCurrentFps() { return GetCurrentWorkFps(); }
+	float GetCurrentWorkFps() { return fpsCurrentWork_; };
+	float GetCurrentRenderFps() { return fpsCurrentRender_; };
 
 protected:
 	float fpsCurrentWork_; //実際のfps
@@ -125,8 +125,8 @@ protected:
 **********************************************************/
 class FpsControlObject {
 public:
-	FpsControlObject() = default;
-	virtual ~FpsControlObject() = default;
+	FpsControlObject() {}
+	virtual ~FpsControlObject() {}
 	virtual int GetFps() = 0;
 };
 

@@ -30,18 +30,18 @@ public:
 public:
 	DxFont();
 	virtual ~DxFont();
-	void SetLogFont(const LOGFONT& font) { info_ = font; }
-	LOGFONT GetLogFont() const { return info_; }
+	void SetLogFont(LOGFONT& font) { info_ = font; }
+	LOGFONT GetLogFont() { return info_; }
 	void SetTopColor(D3DCOLOR color) { colorTop_ = color; }
-	D3DCOLOR GetTopColor() const { return colorTop_; }
+	D3DCOLOR GetTopColor() { return colorTop_; }
 	void SetBottomColor(D3DCOLOR color) { colorBottom_ = color; }
-	D3DCOLOR GetBottomColor() const { return colorBottom_; }
+	D3DCOLOR GetBottomColor() { return colorBottom_; }
 	void SetBorderType(int type) { typeBorder_ = type; }
-	int GetBorderType() const { return typeBorder_; }
+	int GetBorderType() { return typeBorder_; }
 	void SetBorderWidth(int width) { widthBorder_ = width; }
-	int GetBorderWidth() const { return widthBorder_; }
+	int GetBorderWidth() { return widthBorder_; }
 	void SetBorderColor(D3DCOLOR color) { colorBorder_ = color; }
-	D3DCOLOR GetBorderColor() const { return colorBorder_; }
+	D3DCOLOR GetBorderColor() { return colorBorder_; }
 
 protected:
 	LOGFONT info_; //フォント種別
@@ -62,8 +62,8 @@ public:
 	virtual ~DxChar();
 	bool Create(int code, gstd::Font& winFont, DxFont& dxFont);
 	gstd::ref_count_ptr<Texture> GetTexture() { return texture_; }
-	int GetWidth() const { return width_; }
-	int GetHeight() const { return height_; }
+	int GetWidth() { return width_; }
+	int GetHeight() { return height_; }
 	LOGFONT GetInfo() { return font_.GetLogFont(); }
 
 private:
@@ -106,8 +106,7 @@ public:
 			return font_.colorTop_ < key.font_.colorTop_;
 		if (font_.colorBottom_ != key.font_.colorBottom_)
 			return font_.colorBottom_ < key.font_.colorBottom_;
-		// if (font_.typeBorder_ != key.font_.typeBorder_)
-		// 	return font_.typeBorder_ != key.font_.typeBorder_;
+		//				if(font_.typeBorder_ != key.font_.typeBorder_)return (font_.typeBorder_ != key.font_.typeBorder_ );
 		if (font_.widthBorder_ != key.font_.widthBorder_)
 			return font_.widthBorder_ < key.font_.widthBorder_;
 		if (font_.colorBorder_ != key.font_.colorBorder_)
@@ -126,7 +125,7 @@ public:
 	DxCharCache();
 	~DxCharCache();
 	void Clear();
-	int GetCacheCount() const { return mapCache_.size(); }
+	int GetCacheCount() { return mapCache_.size(); }
 
 	gstd::ref_count_ptr<DxChar> GetChar(DxCharCacheKey& key);
 	void AddChar(DxCharCacheKey& key, gstd::ref_count_ptr<DxChar> value);
@@ -184,21 +183,21 @@ public:
 
 public:
 	DxTextToken() { type_ = TK_UNKNOWN; }
-	DxTextToken(Type type, const std::wstring& element)
+	DxTextToken(Type type, std::wstring element)
 	{
 		type_ = type;
 		element_ = element;
 	}
 
-	virtual ~DxTextToken() = default;
-	Type GetType() const { return type_; }
+	virtual ~DxTextToken() {}
+	Type GetType() { return type_; }
 	std::wstring& GetElement() { return element_; }
 
 	int GetInteger();
 	double GetReal();
 	bool GetBoolean();
 	std::wstring GetString();
-	std::wstring GetIdentifier() const;
+	std::wstring& GetIdentifier();
 
 protected:
 	Type type_;
@@ -217,22 +216,22 @@ public:
 
 public:
 	DxTextScanner(wchar_t* str, int charCount);
-	DxTextScanner(const std::wstring& str);
-	DxTextScanner(const std::vector<wchar_t>& buf);
+	DxTextScanner(std::wstring str);
+	DxTextScanner(std::vector<wchar_t>& buf);
 	virtual ~DxTextScanner();
 
 	DxTextToken& GetToken(); //現在のトークンを取得
 	DxTextToken& Next();
 	bool HasNext();
-	void CheckType(const DxTextToken& tok, int type);
-	void CheckIdentifer(const DxTextToken& tok, const std::wstring& id);
-	int GetCurrentLine() const;
+	void CheckType(DxTextToken& tok, int type);
+	void CheckIdentifer(DxTextToken& tok, std::wstring id);
+	int GetCurrentLine();
 	int SearchCurrentLine();
 
-	std::vector<wchar_t>::iterator GetCurrentPointer() const;
+	std::vector<wchar_t>::iterator GetCurrentPointer();
 	void SetCurrentPointer(std::vector<wchar_t>::iterator pos);
 	void SetPointerBegin() { pointer_ = buffer_.begin(); }
-	int GetCurrentPosition() const;
+	int GetCurrentPosition();
 	void SetTagScanEnable(bool bEnable) { bTagScan_ = bEnable; }
 
 protected:
@@ -240,12 +239,12 @@ protected:
 	std::vector<wchar_t> buffer_;
 	std::vector<wchar_t>::iterator pointer_; //今の位置
 	DxTextToken token_; //現在のトークン
-	bool bTagScan_;
+	boolean bTagScan_;
 
 	wchar_t _NextChar(); //ポインタを進めて次の文字を調べる
 	virtual void _SkipComment(); //コメントをとばす
 	virtual void _SkipSpace(); //空白をとばす
-	virtual void _RaiseError(const std::wstring& str); //例外を投げます
+	virtual void _RaiseError(std::wstring str); //例外を投げます
 	bool _IsTextStartSign();
 	bool _IsTextScan();
 };
@@ -272,9 +271,9 @@ public:
 		indexTag_ = 0;
 		typeTag_ = TYPE_UNKNOWN;
 	}
-	virtual ~DxTextTag() = default;
-	int GetTagType() const { return typeTag_; }
-	int GetTagIndex() const { return indexTag_; }
+	virtual ~DxTextTag(){};
+	int GetTagType() { return typeTag_; }
+	int GetTagIndex() { return indexTag_; }
 	void SetTagIndex(int index) { indexTag_ = index; }
 
 protected:
@@ -288,12 +287,12 @@ public:
 		typeTag_ = TYPE_RUBY;
 		leftMargin_ = 0;
 	}
-	int GetLeftMargin() const { return leftMargin_; }
+	int GetLeftMargin() { return leftMargin_; }
 	void SetLeftMargin(int left) { leftMargin_ = left; }
 
 	std::wstring& GetText() { return text_; }
 	void SetText(std::wstring text) { text_ = text; }
-	std::wstring GetRuby() { return ruby_; }
+	std::wstring& GetRuby() { return ruby_; }
 	void SetRuby(std::wstring ruby) { ruby_ = ruby; }
 
 	gstd::ref_count_ptr<DxText> GetRenderText() { return dxText_; }
@@ -325,14 +324,14 @@ public:
 		height_ = 0;
 		sidePitch_ = 0;
 	}
-	virtual ~DxTextLine() = default;
-	int GetWidth() const { return width_; }
-	int GetHeight() const { return height_; }
-	int GetSidePitch() const { return sidePitch_; }
+	virtual ~DxTextLine(){};
+	int GetWidth() { return width_; }
+	int GetHeight() { return height_; }
+	int GetSidePitch() { return sidePitch_; }
 	void SetSidePitch(int pitch) { sidePitch_ = pitch; }
 	std::vector<int>& GetTextCodes() { return code_; }
-	int GetTextCodeCount() const { return code_.size(); }
-	int GetTagCount() const { return tag_.size(); }
+	int GetTextCodeCount() { return code_.size(); }
+	int GetTagCount() { return tag_.size(); }
 	gstd::ref_count_ptr<DxTextTag> GetTag(int index) { return tag_[index]; }
 
 protected:
@@ -354,17 +353,17 @@ public:
 		lineValidEnd_ = 0;
 		bAutoIndent_ = false;
 	}
-	virtual ~DxTextInfo() = default;
-	int GetTotalWidth() const { return totalWidth_; }
-	int GetTotalHeight() const { return totalHeight_; }
-	int GetValidStartLine() const { return lineValidStart_; }
-	int GetValidEndLine() const { return lineValidEnd_; }
+	virtual ~DxTextInfo(){};
+	int GetTotalWidth() { return totalWidth_; }
+	int GetTotalHeight() { return totalHeight_; }
+	int GetValidStartLine() { return lineValidStart_; }
+	int GetValidEndLine() { return lineValidEnd_; }
 	void SetValidStartLine(int line) { lineValidStart_ = line; }
 	void SetValidEndLine(int line) { lineValidEnd_ = line; }
-	bool IsAutoIndent() const { return bAutoIndent_; }
+	bool IsAutoIndent() { return bAutoIndent_; }
 	void SetAutoIndent(bool bEnable) { bAutoIndent_ = bEnable; }
 
-	int GetLineCount() const { return textLine_.size(); }
+	int GetLineCount() { return textLine_.size(); }
 	void AddTextLine(gstd::ref_count_ptr<DxTextLine> text) { textLine_.push_back(text), lineValidEnd_++; }
 	gstd::ref_count_ptr<DxTextLine> GetTextLine(int pos) { return textLine_[pos]; }
 
@@ -386,7 +385,7 @@ private:
 
 public:
 	DxTextRenderObject();
-	virtual ~DxTextRenderObject() = default;
+	virtual ~DxTextRenderObject() {}
 
 	void Render();
 	void AddRenderObject(gstd::ref_count_ptr<Sprite2D> obj);
@@ -405,9 +404,9 @@ public:
 	}
 	void SetVertexColor(D3DCOLOR color) { color_ = color; }
 
-	void SetAngle(const D3DXVECTOR3& angle) { angle_ = angle; }
-	void SetScale(const D3DXVECTOR3& scale) { scale_ = scale; }
-	void SetTransCenter(const D3DXVECTOR2& center) { center_ = center; }
+	void SetAngle(D3DXVECTOR3& angle) { angle_ = angle; }
+	void SetScale(D3DXVECTOR3& scale) { scale_ = scale; }
+	void SetTransCenter(D3DXVECTOR2& center) { center_ = center; }
 	void SetAutoCenter(bool bAuto) { bAutoCenter_ = bAuto; }
 	void SetPermitCamera(bool bPermit) { bPermitCamera_ = bPermit; }
 
@@ -456,7 +455,7 @@ public:
 	void Render(DxText* dxText);
 	void Render(DxText* dxText, gstd::ref_count_ptr<DxTextInfo> textInfo);
 
-	int GetCacheCount() const { return cache_.GetCacheCount(); }
+	int GetCacheCount() { return cache_.GetCacheCount(); }
 
 	bool AddFontFromFile(std::wstring path);
 
@@ -466,8 +465,8 @@ protected:
 	D3DCOLOR colorVertex_;
 	gstd::CriticalSection lock_;
 
-	SIZE _GetTextSize(HDC hDC, const wchar_t* pText);
-	gstd::ref_count_ptr<DxTextLine> _GetTextInfoSub(const std::wstring& text, const DxText* dxText, DxTextInfo* textInfo, gstd::ref_count_ptr<DxTextLine> textLine, HDC& hDC, int& totalWidth, int& totalHeight);
+	SIZE _GetTextSize(HDC hDC, wchar_t* pText);
+	gstd::ref_count_ptr<DxTextLine> _GetTextInfoSub(std::wstring text, DxText* dxText, DxTextInfo* textInfo, gstd::ref_count_ptr<DxTextLine> textLine, HDC& hDC, int& totalWidth, int& totalHeight);
 	void _CreateRenderObject(gstd::ref_count_ptr<DxTextRenderObject> objRender, POINT pos, DxFont& dxFont, gstd::ref_count_ptr<DxTextLine> textLine);
 	std::wstring _ReplaceRenderText(std::wstring& text);
 };
@@ -498,12 +497,12 @@ public:
 	gstd::ref_count_ptr<DxTextRenderObject> CreateRenderObject();
 	gstd::ref_count_ptr<DxTextRenderObject> CreateRenderObject(gstd::ref_count_ptr<DxTextInfo> textInfo);
 
-	DxFont GetFont() const { return dxFont_; }
-	void SetFont(const DxFont& font) { dxFont_ = font; }
-	void SetFont(const LOGFONT& logFont) { dxFont_.SetLogFont(logFont); }
+	DxFont GetFont() { return dxFont_; }
+	void SetFont(DxFont font) { dxFont_ = font; }
+	void SetFont(LOGFONT logFont) { dxFont_.SetLogFont(logFont); }
 
 	void SetFontType(const wchar_t* type);
-	int GetFontSize() const { return dxFont_.GetLogFont().lfHeight; }
+	int GetFontSize() { return dxFont_.GetLogFont().lfHeight; }
 	void SetFontSize(int size)
 	{
 		LOGFONT info = dxFont_.GetLogFont();
@@ -513,19 +512,19 @@ public:
 	void SetFontBold(bool bBold)
 	{
 		LOGFONT info = dxFont_.GetLogFont();
-		info.lfWeight = bBold ? FW_BOLD : FW_NORMAL;
+		info.lfWeight = (bBold == false) * FW_NORMAL + (bBold == TRUE) * FW_BOLD;
 		SetFont(info);
 	}
 	void SetFontItalic(bool bItalic)
 	{
 		LOGFONT info = dxFont_.GetLogFont();
-		info.lfItalic = static_cast<BYTE>(bItalic);
+		info.lfItalic = bItalic;
 		SetFont(info);
 	}
 	void SetFontUnderLine(bool bLine)
 	{
 		LOGFONT info = dxFont_.GetLogFont();
-		info.lfUnderline = static_cast<BYTE>(bLine);
+		info.lfUnderline = bLine;
 		SetFont(info);
 	}
 
@@ -535,38 +534,37 @@ public:
 	void SetFontBorderType(int type) { dxFont_.SetBorderType(type); }
 	void SetFontBorderColor(D3DCOLOR color) { dxFont_.SetBorderColor(color); }
 
-	POINT GetPosition() const { return pos_; }
+	POINT GetPosition() { return pos_; }
 	void SetPosition(int x, int y)
 	{
 		pos_.x = x;
 		pos_.y = y;
 	}
 	void SetPosition(POINT pos) { pos_ = pos; }
-	int GetMaxWidth() const { return widthMax_; }
+	int GetMaxWidth() { return widthMax_; }
 	void SetMaxWidth(int width) { widthMax_ = width; }
-	int GetMaxHeight() const { return heightMax_; }
+	int GetMaxHeight() { return heightMax_; }
 	void SetMaxHeight(int height) { heightMax_ = height; }
-	int GetSidePitch() const { return sidePitch_; }
+	int GetSidePitch() { return sidePitch_; }
 	void SetSidePitch(int pitch) { sidePitch_ = pitch; }
-	int GetLinePitch() const { return linePitch_; }
+	int GetLinePitch() { return linePitch_; }
 	void SetLinePitch(int pitch) { linePitch_ = pitch; }
-	RECT GetMargin() const { return margin_; }
+	RECT GetMargin() { return margin_; }
 	void SetMargin(RECT margin) { margin_ = margin; }
-	int GetHorizontalAlignment() const { return alignmentHorizontal_; }
+	int GetHorizontalAlignment() { return alignmentHorizontal_; }
 	void SetHorizontalAlignment(int value) { alignmentHorizontal_ = value; }
-	int GetVerticalAlignment() const { return alignmentVertical_; }
+	int GetVerticalAlignment() { return alignmentVertical_; }
 	void SetVerticalAlignment(int value) { alignmentVertical_ = value; }
 
-	D3DCOLOR GetVertexColor() const { return colorVertex_; }
+	D3DCOLOR GetVertexColor() { return colorVertex_; }
 	void SetVertexColor(D3DCOLOR color) { colorVertex_ = color; }
-	bool IsPermitCamera() const { return bPermitCamera_; }
+	bool IsPermitCamera() { return bPermitCamera_; }
 	void SetPermitCamera(bool bPermit) { bPermitCamera_ = bPermit; }
-	bool IsSyntacticAnalysis() const { return bSyntacticAnalysis_; }
+	bool IsSyntacticAnalysis() { return bSyntacticAnalysis_; }
 	void SetSyntacticAnalysis(bool bEnable) { bSyntacticAnalysis_ = bEnable; }
 
 	std::wstring& GetText() { return text_; }
-	const std::wstring& GetText() const { return text_; }
-	void SetText(const std::wstring& text) { text_ = text; }
+	void SetText(std::wstring text) { text_ = text; }
 
 	gstd::ref_count_ptr<Shader> GetShader() { return shader_; }
 	void SetShader(gstd::ref_count_ptr<Shader> shader) { shader_ = shader; }
@@ -598,11 +596,11 @@ public:
 	virtual ~DxTextStepper();
 	void Clear();
 
-	std::wstring GetText() const { return text_; }
+	std::wstring GetText() { return text_; }
 	void Next();
 	void NextSkip();
-	bool HasNext() const;
-	void SetSource(const std::wstring& text);
+	bool HasNext();
+	void SetSource(std::wstring text);
 
 protected:
 	int posNext_;

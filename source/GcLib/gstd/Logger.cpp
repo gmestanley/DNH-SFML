@@ -5,23 +5,26 @@ using namespace gstd;
 /**********************************************************
 //Logger
 **********************************************************/
-Logger* Logger::top_ = nullptr;
-Logger::Logger() = default;
+Logger* Logger::top_ = NULL;
+Logger::Logger()
+{
+}
 Logger::~Logger()
 {
 	listLogger_.clear();
 	if (top_ == this)
-		top_ = nullptr;
+		top_ = NULL;
 }
-void Logger::_WriteChild(const SYSTEMTIME& time, const std::wstring& str)
+void Logger::_WriteChild(SYSTEMTIME& time, std::wstring str)
 {
 	_Write(time, str);
-	for (auto& logger : listLogger_) {
-		logger->_Write(time, str);
+	std::list<ref_count_ptr<Logger>>::iterator itr = listLogger_.begin();
+	for (; itr != listLogger_.end(); itr++) {
+		(*itr)->_Write(time, str);
 	}
 }
 
-void Logger::Write(const std::wstring& str)
+void Logger::Write(std::wstring str)
 {
 	SYSTEMTIME systemTime;
 	GetLocalTime(&systemTime);
@@ -36,7 +39,9 @@ FileLogger::FileLogger()
 	sizeMax_ = 10 * 1024 * 1024; // 10MB
 }
 
-FileLogger::~FileLogger() = default;
+FileLogger::~FileLogger()
+{
+}
 void FileLogger::Clear()
 {
 	if (!bEnable_)
@@ -51,24 +56,24 @@ void FileLogger::Clear()
 }
 bool FileLogger::Initialize(bool bEnable)
 {
-	return this->Initialize(std::wstring(L""), bEnable);
+	return this->Initialize(L"", bEnable);
 }
-bool FileLogger::Initialize(std::wstring& path, bool bEnable)
+bool FileLogger::Initialize(std::wstring path, bool bEnable)
 {
 	bEnable_ = bEnable;
-	if (path.empty()) {
+	if (path.size() == 0) {
 		path = PathProperty::GetModuleDirectory() + PathProperty::GetModuleName() + std::wstring(L".log");
 	}
 	return this->SetPath(path);
 }
-bool FileLogger::SetPath(const std::wstring& path)
+bool FileLogger::SetPath(std::wstring path)
 {
 	if (!bEnable_)
 		return false;
 
 	path_ = path;
 	File file(path);
-	if (!file.IsExists()) {
+	if (file.IsExists() == false) {
 		file.CreateDirectory();
 		_CreateFile(file);
 	}
@@ -84,7 +89,7 @@ void FileLogger::_CreateFile(File& file)
 	file.WriteCharacter((unsigned char)0xFF);
 	file.WriteCharacter((unsigned char)0xFE);
 }
-void FileLogger::_Write(const SYSTEMTIME& time, const std::wstring& str)
+void FileLogger::_Write(SYSTEMTIME& time, std::wstring str)
 {
 	if (!bEnable_)
 		return;
@@ -119,17 +124,19 @@ void FileLogger::_Write(const SYSTEMTIME& time, const std::wstring& str)
 /**********************************************************
 //WindowLogger
 **********************************************************/
-WindowLogger::WindowLogger() = default;
+WindowLogger::WindowLogger()
+{
+}
 WindowLogger::~WindowLogger()
 {
-	threadInfoCollect_ = nullptr;
-	wndInfoPanel_ = nullptr;
-	wndLogPanel_ = nullptr;
-	wndStatus_ = nullptr;
-	wndTab_ = nullptr;
-	if (hWnd_ != nullptr)
+	threadInfoCollect_ = NULL;
+	wndInfoPanel_ = NULL;
+	wndLogPanel_ = NULL;
+	wndStatus_ = NULL;
+	wndTab_ = NULL;
+	if (hWnd_ != NULL)
 		SendMessage(hWnd_, WM_ENDLOGGER, 0, 0);
-	if (threadWindow_ != nullptr) {
+	if (threadWindow_ != NULL) {
 		threadWindow_->Stop();
 		threadWindow_->Join(2000); //念のためにタイムアウト設定
 	}
@@ -143,7 +150,7 @@ bool WindowLogger::Initialize(bool bEnable)
 	threadWindow_ = new WindowThread(this);
 	threadWindow_->Start();
 
-	while (GetWindowHandle() == nullptr) {
+	while (GetWindowHandle() == NULL) {
 		Sleep(10); //ウィンドウが作成完了するまで待機
 	}
 
@@ -177,9 +184,9 @@ void WindowLogger::SaveState()
 
 		RecordBuffer recordPanel;
 		int panelCount = wndTab_->GetPageCount();
-		for (int iPanel = 0; iPanel < panelCount; ++iPanel) {
+		for (int iPanel = 0; iPanel < panelCount; iPanel++) {
 			ref_count_ptr<WindowLogger::Panel> panel = ref_count_ptr<WindowLogger::Panel>::DownCast(wndTab_->GetPanel(iPanel));
-			if (panel == nullptr)
+			if (panel == NULL)
 				continue;
 			panel->_WriteRecord(recordPanel);
 		}
@@ -212,7 +219,7 @@ void WindowLogger::LoadState()
 	int panelCount = wndTab_->GetPageCount();
 	for (int iPanel = 0; iPanel < panelCount; iPanel++) {
 		ref_count_ptr<WindowLogger::Panel> panel = ref_count_ptr<WindowLogger::Panel>::DownCast(wndTab_->GetPanel(iPanel));
-		if (panel == nullptr)
+		if (panel == NULL)
 			continue;
 
 		panel->_ReadRecord(recordPanel);
@@ -220,7 +227,7 @@ void WindowLogger::LoadState()
 }
 void WindowLogger::_CreateWindow()
 {
-	HINSTANCE hInst = ::GetModuleHandle(nullptr);
+	HINSTANCE hInst = ::GetModuleHandle(NULL);
 	std::wstring wName = L"LogWindow";
 
 	WNDCLASSEX wcex;
@@ -228,18 +235,18 @@ void WindowLogger::_CreateWindow()
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.lpfnWndProc = (WNDPROC)WindowBase::_StaticWindowProcedure;
 	wcex.hInstance = hInst;
-	wcex.hIcon = nullptr;
-	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	wcex.hIcon = NULL;
+	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW);
-	wcex.lpszMenuName = nullptr;
+	wcex.lpszMenuName = NULL;
 	wcex.lpszClassName = wName.c_str();
-	wcex.hIconSm = nullptr;
+	wcex.hIconSm = NULL;
 	RegisterClassEx(&wcex);
 
 	hWnd_ = ::CreateWindow(wcex.lpszClassName,
 		wName.c_str(),
 		WS_OVERLAPPEDWINDOW,
-		0, 0, 640, 480, nullptr, (HMENU)nullptr, hInst, nullptr);
+		0, 0, 640, 480, NULL, (HMENU)NULL, hInst, NULL);
 	::ShowWindow(hWnd_, SW_HIDE);
 	this->Attach(hWnd_);
 
@@ -270,14 +277,14 @@ void WindowLogger::_Run()
 {
 	_CreateWindow();
 	MSG msg;
-	while (GetMessage(&msg, nullptr, 0, 0)) { //メッセージループ
+	while (GetMessage(&msg, NULL, 0, 0)) { //メッセージループ
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 }
-void WindowLogger::_Write(const SYSTEMTIME& systemTime, const std::wstring& str)
+void WindowLogger::_Write(SYSTEMTIME& systemTime, std::wstring str)
 {
-	if (hWnd_ == nullptr)
+	if (hWnd_ == NULL)
 		return;
 
 	wchar_t timeStr[256];
@@ -315,7 +322,7 @@ LRESULT WindowLogger::_WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 
 		wndStatus_->SetBounds(wParam, lParam);
 		wndTab_->SetBounds(wx + 8, wy + 4, wWidth - 16, wHeight - 32);
-		::InvalidateRect(wndTab_->GetWindowHandle(), nullptr, TRUE);
+		::InvalidateRect(wndTab_->GetWindowHandle(), NULL, TRUE);
 
 		return FALSE;
 	}
@@ -361,16 +368,16 @@ LRESULT WindowLogger::_WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 	return _CallPreviousWindowProcedure(hWnd, uMsg, wParam, lParam);
 }
 
-void WindowLogger::SetInfo(int row, const std::wstring& textInfo, const std::wstring& textData)
+void WindowLogger::SetInfo(int row, std::wstring textInfo, std::wstring textData)
 {
-	if (hWnd_ == nullptr)
+	if (hWnd_ == NULL)
 		return;
 	wndInfoPanel_->SetInfo(row, textInfo, textData);
 }
 
-bool WindowLogger::AddPanel(ref_count_ptr<Panel> panel, const std::wstring& name)
+bool WindowLogger::AddPanel(ref_count_ptr<Panel> panel, std::wstring name)
 {
-	if (hWnd_ == nullptr)
+	if (hWnd_ == NULL)
 		return false;
 
 	AddPanelEvent event;
@@ -383,12 +390,12 @@ bool WindowLogger::AddPanel(ref_count_ptr<Panel> panel, const std::wstring& name
 
 	::SendMessage(hWnd_, WM_ADDPANEL, 0, 0);
 
-	while (panel->GetWindowHandle() == nullptr) {
+	while (panel->GetWindowHandle() == NULL) {
 		Sleep(10); //ウィンドウが作成完了するまで待機
 	}
 	return true;
 }
-void WindowLogger::ShowLogWindow() const
+void WindowLogger::ShowLogWindow()
 {
 	if (!bEnable_)
 		return;
@@ -423,8 +430,12 @@ void WindowLogger::WindowThread::_Run()
 }
 
 //WindowLogger::LogPanel
-WindowLogger::LogPanel::LogPanel() = default;
-WindowLogger::LogPanel::~LogPanel() = default;
+WindowLogger::LogPanel::LogPanel()
+{
+}
+WindowLogger::LogPanel::~LogPanel()
+{
+}
 bool WindowLogger::LogPanel::_AddedLogger(HWND hTab)
 {
 	Create(hTab);
@@ -443,7 +454,7 @@ void WindowLogger::LogPanel::LocateParts()
 	int wHeight = GetClientHeight();
 	wndEdit_.SetBounds(wx, wy, wWidth, wHeight);
 }
-void WindowLogger::LogPanel::AddText(const std::wstring& text)
+void WindowLogger::LogPanel::AddText(std::wstring text)
 {
 	HWND hEdit = wndEdit_.GetWindowHandle();
 	int pos = GetWindowTextLength(hEdit);
@@ -460,8 +471,12 @@ void WindowLogger::LogPanel::AddText(const std::wstring& text)
 	::SendMessage(hEdit, EM_REPLACESEL, 0, (LPARAM)text.c_str());
 }
 //WindowLogger::InfoPanel
-WindowLogger::InfoPanel::InfoPanel() = default;
-WindowLogger::InfoPanel::~InfoPanel() = default;
+WindowLogger::InfoPanel::InfoPanel()
+{
+}
+WindowLogger::InfoPanel::~InfoPanel()
+{
+}
 bool WindowLogger::InfoPanel::_AddedLogger(HWND hTab)
 {
 	Create(hTab);
@@ -484,7 +499,7 @@ void WindowLogger::InfoPanel::LocateParts()
 	int wHeight = GetClientHeight();
 	wndListView_.SetBounds(wx, wy, wWidth, wHeight);
 }
-void WindowLogger::InfoPanel::SetInfo(int row, const std::wstring& textInfo, const std::wstring& textData)
+void WindowLogger::InfoPanel::SetInfo(int row, std::wstring textInfo, std::wstring textData)
 {
 	wndListView_.SetText(row, ROW_INFO, textInfo);
 	wndListView_.SetText(row, ROW_DATA, textData);
@@ -499,7 +514,7 @@ WindowLogger::InfoCollectThread::~InfoCollectThread()
 {
 	this->Stop();
 	this->Join();
-	wndStatus_ = nullptr;
+	wndStatus_ = NULL;
 }
 void WindowLogger::InfoCollectThread::_Run()
 {
@@ -573,7 +588,7 @@ WindowLogger::InfoCollectThread::CpuInfo WindowLogger::InfoCollectThread::_GetCp
 			exitasm:
 		};
 
-		if (cpuid_supported == 0) { //CPUID 命令をサポートしてない
+		if (!cpuid_supported) { //CPUID 命令をサポートしてない
 			throw gstd::wexception();
 		}
 
@@ -729,13 +744,13 @@ double WindowLogger::InfoCollectThread::_GetCpuPerformance()
 	HCOUNTER hCounter;
 	PDH_FMT_COUNTERVALUE FmtValue;
 
-	PdhOpenQuery(nullptr, 0, &hQuery);
+	PdhOpenQuery(NULL, 0, &hQuery);
 	PdhAddCounter(hQuery, L"\\Processor(_Total)\\% Processor Time", 0, &hCounter);
 	Sleep(500);
 	PdhCollectQueryData(hQuery);
 	Sleep(500);
 	PdhCollectQueryData(hQuery);
-	PdhGetFormattedCounterValue(hCounter, PDH_FMT_DOUBLE, nullptr, &FmtValue);
+	PdhGetFormattedCounterValue(hCounter, PDH_FMT_DOUBLE, NULL, &FmtValue);
 	PdhCloseQuery(hQuery);
 	return FmtValue.doubleValue;
 }

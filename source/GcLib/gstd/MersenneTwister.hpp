@@ -1,8 +1,8 @@
 #ifndef __GSTD_MERSENNETWISTER__
 #define __GSTD_MERSENNETWISTER__
 
-#include "GstdConstant.hpp"
-#include <random>
+#include"GstdConstant.hpp"
+#include<random>
 namespace gstd {
 
 /**********************************************************
@@ -23,31 +23,31 @@ class MersenneTwister {
 	typedef struct mt_struct {
 		unsigned long mt[MT_N];
 		int mti;
-		virtual ~mt_struct() = default;
+		virtual ~mt_struct() {}
 	} mt_struct;
 	mt_struct mts;
 	unsigned long _GenrandInt32();
 
 private:
-	std::mt19937 actualTwister {0};
-	int seed {0};
-	long double maxReal {3.402822e+38};
-	long maxInt {2147483647};
-	unsigned long long maxInt64 {9223372036854775807};
+	std::mt19937 actualTwister;
+	int seed;
+	long double maxReal = 3.402822e+38;
+	long maxInt = 2147483647;
+	unsigned long long maxInt64 = 9223372036854775807;
 
 public:
 	MersenneTwister();
 	MersenneTwister(unsigned long s);
-	virtual ~MersenneTwister();
+	virtual ~MersenneTwister() {}
 	void Initialize(unsigned long s);
 	void Initialize(unsigned long* init_key, int key_length);
 
-	int GetSeed() const { return seed; }
+	int GetSeed() { return seed; }
 	int SeedRNG();
 	long GetInt();
 	long GetInt(long min, long max);
-	int64_t GetInt64();
-	int64_t GetInt64(int64_t min, int64_t max);
+	_int64 GetInt64();
+	_int64 GetInt64(_int64 min, _int64 max);
 	long double GetReal();
 	long double GetReal(long double min, long double max);
 };

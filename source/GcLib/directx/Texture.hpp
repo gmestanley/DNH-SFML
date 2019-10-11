@@ -28,8 +28,8 @@ public:
 public:
 	TextureData();
 	virtual ~TextureData();
-	std::wstring GetName() const { return name_; }
-	D3DXIMAGE_INFO GetImageInfo() const { return infoImage_; }
+	std::wstring GetName() { return name_; }
+	D3DXIMAGE_INFO GetImageInfo() { return infoImage_; }
 
 protected:
 	int type_;
@@ -50,33 +50,32 @@ class Texture : public gstd::FileManager::LoadObject {
 
 public:
 	Texture();
-	Texture(const Texture* texture);
-	~Texture() override;
+	Texture(Texture* texture);
+	virtual ~Texture();
 	void Release();
 
 	std::wstring GetName();
-	bool CreateFromFile(const std::wstring& _Path);
-	bool CreateRenderTarget(const std::wstring& name);
-	bool CreateFromFileInLoadThread(const std::wstring& _Path, bool bLoadImageInfo = false);
+	bool CreateFromFile(std::wstring path);
+	bool CreateRenderTarget(std::wstring name);
+	bool CreateFromFileInLoadThread(std::wstring path, bool bLoadImageInfo = false);
 
 	void SetTexture(IDirect3DTexture9* pTexture);
 	IDirect3DTexture9* GetD3DTexture();
 	IDirect3DSurface9* GetD3DSurface();
 	IDirect3DSurface9* GetD3DZBuffer();
 
-	int GetWidth() const;
-	int GetHeight() const;
-	bool IsLoad() { return data_ != nullptr && data_->bLoad_; }
+	int GetWidth();
+	int GetHeight();
+	bool IsLoad() { return data_ != NULL && data_->bLoad_; }
 
 protected:
 	gstd::ref_count_ptr<TextureData> data_;
 	TextureData* _GetTextureData() { return data_.GetPointer(); }
-	const TextureData* _GetTextureData() const { return data_.GetPointer(); }
 };
 
 /**********************************************************
-//TextureManager
-**********************************************************/
+	//TextureManager
+	**********************************************************/
 class TextureManager : public DirectGraphicsListener, public gstd::FileManager::LoadThreadListener {
 	friend Texture;
 	friend TextureData;
@@ -88,49 +87,49 @@ public:
 
 public:
 	TextureManager();
-	~TextureManager() override;
+	virtual ~TextureManager();
 	static TextureManager* GetBase() { return thisBase_; }
 	virtual bool Initialize();
 	gstd::CriticalSection& GetLock() { return lock_; }
 
 	virtual void Clear();
-	virtual void Add(const std::wstring& name, gstd::ref_count_ptr<Texture> texture); //テクスチャの参照を保持します
-	virtual void Release(const std::wstring& name); //保持している参照を解放します
-	virtual bool IsDataExists(const std::wstring& name);
+	virtual void Add(std::wstring name, gstd::ref_count_ptr<Texture> texture); //テクスチャの参照を保持します
+	virtual void Release(std::wstring name); //保持している参照を解放します
+	virtual bool IsDataExists(std::wstring name);
 
-	void ReleaseDirectGraphics() override { ReleaseDxResource(); }
-	void RestoreDirectGraphics() override { RestoreDxResource(); }
+	virtual void ReleaseDirectGraphics() { ReleaseDxResource(); }
+	virtual void RestoreDirectGraphics() { RestoreDxResource(); }
 	void ReleaseDxResource();
 	void RestoreDxResource();
 
-	gstd::ref_count_ptr<TextureData> GetTextureData(const std::wstring& name);
-	gstd::ref_count_ptr<Texture> CreateFromFile(const std::wstring& _Path); //テクスチャを読み込みます。TextureDataは保持しますが、Textureは保持しません。
-	gstd::ref_count_ptr<Texture> CreateRenderTarget(const std::wstring& name);
-	gstd::ref_count_ptr<Texture> GetTexture(const std::wstring& name); //作成済みのテクスチャを取得します
-	gstd::ref_count_ptr<Texture> CreateFromFileInLoadThread(const std::wstring& _Path, bool bLoadImageInfo = false);
-	void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event) override;
+	gstd::ref_count_ptr<TextureData> GetTextureData(std::wstring name);
+	gstd::ref_count_ptr<Texture> CreateFromFile(std::wstring path); //テクスチャを読み込みます。TextureDataは保持しますが、Textureは保持しません。
+	gstd::ref_count_ptr<Texture> CreateRenderTarget(std::wstring name);
+	gstd::ref_count_ptr<Texture> GetTexture(std::wstring name); //作成済みのテクスチャを取得します
+	gstd::ref_count_ptr<Texture> CreateFromFileInLoadThread(std::wstring path, bool bLoadImageInfo = false);
+	virtual void CallFromLoadThread(gstd::ref_count_ptr<gstd::FileManager::LoadThreadEvent> event);
 
 	void SetInfoPanel(gstd::ref_count_ptr<TextureInfoPanel> panel) { panelInfo_ = panel; }
 
 protected:
-	mutable gstd::CriticalSection lock_;
+	gstd::CriticalSection lock_;
 	std::map<std::wstring, gstd::ref_count_ptr<Texture>> mapTexture_;
 	std::map<std::wstring, gstd::ref_count_ptr<TextureData>> mapTextureData_;
 	gstd::ref_count_ptr<TextureInfoPanel> panelInfo_;
 
-	void _ReleaseTextureData(const std::wstring& name);
-	bool _CreateFromFile(const std::wstring& path);
-	bool _CreateRenderTarget(const std::wstring& name);
+	void _ReleaseTextureData(std::wstring name);
+	bool _CreateFromFile(std::wstring path);
+	bool _CreateRenderTarget(std::wstring name);
 };
 
 /**********************************************************
-//TextureInfoPanel
-**********************************************************/
+	//TextureInfoPanel
+	**********************************************************/
 class TextureInfoPanel : public gstd::WindowLogger::Panel, public gstd::Thread {
 public:
 	TextureInfoPanel();
-	~TextureInfoPanel() override;
-	void LocateParts() override;
+	~TextureInfoPanel();
+	virtual void LocateParts();
 	virtual void Update(TextureManager* manager);
 
 protected:
@@ -144,7 +143,7 @@ protected:
 	};
 	int timeUpdateInterval_;
 	gstd::WListView wndListView_;
-	bool _AddedLogger(HWND hTab) override;
+	virtual bool _AddedLogger(HWND hTab);
 	void _Run();
 };
 

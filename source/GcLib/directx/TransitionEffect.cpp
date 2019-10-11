@@ -6,15 +6,19 @@ using namespace directx;
 /**********************************************************
 //TransitionEffect
 **********************************************************/
-TransitionEffect::TransitionEffect() = default;
-TransitionEffect::~TransitionEffect() = default;
+TransitionEffect::TransitionEffect()
+{
+}
+TransitionEffect::~TransitionEffect()
+{
+}
 
 /**********************************************************
 //TransitionEffect_FadeOut
 **********************************************************/
 void TransitionEffect_FadeOut::Work()
 {
-	if (sprite_ == nullptr)
+	if (sprite_ == NULL)
 		return;
 	alpha_ -= diffAlpha_;
 	alpha_ = max(alpha_, 0);
@@ -22,7 +26,7 @@ void TransitionEffect_FadeOut::Work()
 }
 void TransitionEffect_FadeOut::Render()
 {
-	if (sprite_ == nullptr)
+	if (sprite_ == NULL)
 		return;
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	graphics->SetBlendMode(DirectGraphics::MODE_BLEND_ALPHA);
@@ -30,9 +34,10 @@ void TransitionEffect_FadeOut::Render()
 	graphics->SetZWriteEnalbe(false);
 	sprite_->Render();
 }
-bool TransitionEffect_FadeOut::IsEnd() const
+bool TransitionEffect_FadeOut::IsEnd()
 {
-	return alpha_ <= 0;
+	bool res = (alpha_ <= 0);
+	return res;
 }
 void TransitionEffect_FadeOut::Initialize(int frame, gstd::ref_count_ptr<Texture> texture)
 {
@@ -51,20 +56,24 @@ void TransitionEffect_FadeOut::Initialize(int frame, gstd::ref_count_ptr<Texture
 /**********************************************************
 //TransitionEffectTask
 **********************************************************/
-TransitionEffectTask::TransitionEffectTask() = default;
-TransitionEffectTask::~TransitionEffectTask() = default;
+TransitionEffectTask::TransitionEffectTask()
+{
+}
+TransitionEffectTask::~TransitionEffectTask()
+{
+}
 void TransitionEffectTask::SetTransition(gstd::ref_count_ptr<TransitionEffect> effect)
 {
 	effect_ = effect;
 }
 void TransitionEffectTask::Work()
 {
-	if (effect_ != nullptr) {
+	if (effect_ != NULL) {
 		effect_->Work();
 	}
 }
 void TransitionEffectTask::Render()
 {
-	if (effect_ != nullptr)
+	if (effect_ != NULL)
 		effect_->Render();
 }

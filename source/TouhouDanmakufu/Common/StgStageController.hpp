@@ -46,7 +46,7 @@ public:
 	ref_count_ptr<PseudoSlowInformation> GetSlowInformation() { return infoSlow_; }
 
 private:
-	void _SetupReplayTargetCommonDataArea(int64_t idScript);
+	void _SetupReplayTargetCommonDataArea(_int64 idScript);
 
 	StgSystemController* systemController_;
 	ref_count_ptr<StgSystemInformation> infoSystem_;
@@ -78,15 +78,15 @@ public:
 public:
 	StgStageInformation();
 	virtual ~StgStageInformation();
-	bool IsEnd() const { return bEndStg_; }
+	bool IsEnd() { return bEndStg_; }
 	void SetEnd() { bEndStg_ = true; }
-	bool IsPause() const { return bPause_; }
+	bool IsPause() { return bPause_; }
 	void SetPause(bool bPause) { bPause_ = bPause; }
-	bool IsReplay() const { return bReplay_; }
+	bool IsReplay() { return bReplay_; }
 	void SetReplay(bool bReplay) { bReplay_ = bReplay; }
-	int GetCurrentFrame() const { return frame_; }
+	int GetCurrentFrame() { return frame_; }
 	void AdvanceFrame() { frame_++; }
-	int GetStageIndex() const { return stageIndex_; }
+	int GetStageIndex() { return stageIndex_; }
 	void SetStageIndex(int index) { stageIndex_ = index; }
 
 	ref_count_ptr<ScriptInformation> GetMainScriptInformation() { return infoMainScript_; }
@@ -98,37 +98,37 @@ public:
 	ref_count_ptr<ReplayInformation::StageData> GetReplayData() { return replayStageData_; }
 	void SetReplayData(ref_count_ptr<ReplayInformation::StageData> data) { replayStageData_ = data; }
 
-	RECT GetStgFrameRect() const { return rcStgFrame_; }
+	RECT GetStgFrameRect() { return rcStgFrame_; }
 	void SetStgFrameRect(RECT rect, bool bUpdateFocusResetValue = true);
-	int GetStgFrameMinPriority() const { return priMinStgFrame_; }
+	int GetStgFrameMinPriority() { return priMinStgFrame_; }
 	void SetStgFrameMinPriority(int pri) { priMinStgFrame_ = pri; }
-	int GetStgFrameMaxPriority() const { return priMaxStgFrame_; }
+	int GetStgFrameMaxPriority() { return priMaxStgFrame_; }
 	void SetStgFrameMaxPriority(int pri) { priMaxStgFrame_ = pri; }
-	int GetShotObjectPriority() const { return priShotObject_; }
+	int GetShotObjectPriority() { return priShotObject_; }
 	void SetShotObjectPriority(int pri) { priShotObject_ = pri; }
-	int GetItemObjectPriority() const { return priItemObject_; }
+	int GetItemObjectPriority() { return priItemObject_; }
 	void SetItemObjectPriority(int pri) { priItemObject_ = pri; }
-	int GetCameraFocusPermitPriority() const { return priCameraFocusPermit_; }
+	int GetCameraFocusPermitPriority() { return priCameraFocusPermit_; }
 	void SetCameraFocusPermitPriority(int pri) { priCameraFocusPermit_ = pri; }
-	RECT GetShotAutoDeleteClip() const { return rcShotAutoDeleteClip_; }
+	RECT GetShotAutoDeleteClip() { return rcShotAutoDeleteClip_; }
 	void SetShotAutoDeleteClip(RECT rect) { rcShotAutoDeleteClip_ = rect; }
 
 	ref_count_ptr<MersenneTwister> GetMersenneTwister() { return rand_; }
 	void SetMersenneTwisterSeed(int seed) { rand_->Initialize(seed); }
-	int64_t GetScore() const { return score_; }
-	void SetScore(int64_t score) { score_ = score; }
-	void AddScore(int64_t inc) { score_ += inc; }
-	int64_t GetGraze() const { return graze_; }
-	void SetGraze(int64_t graze) { graze_ = graze; }
-	void AddGraze(int64_t inc) { graze_ += inc; }
-	int64_t GetPoint() const { return point_; }
-	void SetPoint(int64_t point) { point_ = point; }
-	void AddPoint(int64_t inc) { point_ += inc; }
+	_int64 GetScore() { return score_; }
+	void SetScore(_int64 score) { score_ = score; }
+	void AddScore(_int64 inc) { score_ += inc; }
+	_int64 GetGraze() { return graze_; }
+	void SetGraze(_int64 graze) { graze_ = graze; }
+	void AddGraze(_int64 inc) { graze_ += inc; }
+	_int64 GetPoint() { return point_; }
+	void SetPoint(_int64 point) { point_ = point; }
+	void AddPoint(_int64 inc) { point_ += inc; }
 
-	int GetResult() const { return result_; }
+	int GetResult() { return result_; }
 	void SetResult(int result) { result_ = result; }
 
-	int GetStageStartTime() const { return timeStart_; }
+	int GetStageStartTime() { return timeStart_; }
 	void SetStageStartTime(int time) { timeStart_ = time; }
 
 private:
@@ -154,9 +154,9 @@ private:
 
 	//STG情報
 	ref_count_ptr<MersenneTwister> rand_;
-	int64_t score_;
-	int64_t graze_;
-	int64_t point_;
+	_int64 score_;
+	_int64 graze_;
+	_int64 point_;
 	int result_;
 	int timeStart_;
 };
@@ -166,8 +166,8 @@ private:
 **********************************************************/
 class StgStageStartData {
 public:
-	StgStageStartData() = default;
-	virtual ~StgStageStartData() = default;
+	StgStageStartData() {}
+	virtual ~StgStageStartData() {}
 
 	ref_count_ptr<StgStageInformation> GetStageInformation() { return infoStage_; }
 	void SetStageInformation(ref_count_ptr<StgStageInformation> info) { infoStage_ = info; }
@@ -199,8 +199,8 @@ public:
 
 public:
 	PseudoSlowInformation() { current_ = 0; }
-	~PseudoSlowInformation() override = default;
-	int GetFps() override;
+	virtual ~PseudoSlowInformation() {}
+	virtual int GetFps();
 
 	bool IsValidFrame(int target);
 	void Next();
@@ -218,8 +218,8 @@ private:
 class PseudoSlowInformation::SlowData {
 public:
 	SlowData() { fps_ = STANDARD_FPS; }
-	virtual ~SlowData() = default;
-	int GetFps() const { return fps_; }
+	virtual ~SlowData() {}
+	int GetFps() { return fps_; }
 	void SetFps(int fps) { fps_ = fps; }
 
 private:

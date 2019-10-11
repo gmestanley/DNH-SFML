@@ -25,7 +25,7 @@ public:
 
 public:
 	StgSystemController();
-	~StgSystemController() override;
+	~StgSystemController();
 	void Initialize(ref_count_ptr<StgSystemInformation> infoSystem);
 	void Start(ref_count_ptr<ScriptInformation> infoPlayer, ref_count_ptr<ReplayInformation> infoReplay);
 	void Work();
@@ -87,22 +87,22 @@ public:
 
 	bool IsPackageMode();
 	void ResetRetry();
-	int GetScene() const { return scene_; }
+	int GetScene() { return scene_; }
 	void SetScene(int scene) { scene_ = scene; }
-	bool IsStgEnd() const { return bEndStg_; }
+	bool IsStgEnd() { return bEndStg_; }
 	void SetStgEnd() { bEndStg_ = true; }
-	bool IsRetry() const { return bRetry_; }
+	bool IsRetry() { return bRetry_; }
 	void SetRetry() { bRetry_ = true; }
-	bool IsError() const { return !listError_.empty(); }
-	void SetError(const std::wstring& error) { listError_.push_back(error); }
-	std::wstring GetErrorMessage() const;
+	bool IsError() { return listError_.size() > 0; }
+	void SetError(std::wstring error) { listError_.push_back(error); }
+	std::wstring GetErrorMessage();
 
-	std::wstring GetPauseScriptPath() const { return pathPauseScript_; }
-	void SetPauseScriptPath(const std::wstring& path) { pathPauseScript_ = path; }
-	std::wstring GetEndSceneScriptPath() const { return pathEndSceneScript_; }
-	void SetEndSceneScriptPath(const std::wstring& path) { pathEndSceneScript_ = path; }
-	std::wstring GetReplaySaveSceneScriptPath() const { return pathReplaySaveSceneScript_; }
-	void SetReplaySaveSceneScriptPath(const std::wstring& path) { pathReplaySaveSceneScript_ = path; }
+	std::wstring GetPauseScriptPath() { return pathPauseScript_; }
+	void SetPauseScriptPath(std::wstring path) { pathPauseScript_ = path; }
+	std::wstring GetEndSceneScriptPath() { return pathEndSceneScript_; }
+	void SetEndSceneScriptPath(std::wstring path) { pathEndSceneScript_ = path; }
+	std::wstring GetReplaySaveSceneScriptPath() { return pathReplaySaveSceneScript_; }
+	void SetReplaySaveSceneScriptPath(std::wstring path) { pathReplaySaveSceneScript_ = path; }
 
 	ref_count_ptr<ScriptInformation> GetMainScriptInformation() { return infoMain_; }
 	void SetMainScriptInformation(ref_count_ptr<ScriptInformation> info) { infoMain_ = info; }
@@ -111,11 +111,11 @@ public:
 	void SetActiveReplayInformation(ref_count_ptr<ReplayInformation> info) { infoReplayActive_ = info; }
 
 	void SetInvaridRenderPriority(int priMin, int priMax);
-	int GetInvaridRenderPriorityMin() const { return invalidPriMin_; }
-	int GetInvaridRenderPriorityMax() const { return invalidPriMax_; }
+	int GetInvaridRenderPriorityMin() { return invalidPriMin_; }
+	int GetInvaridRenderPriorityMax() { return invalidPriMax_; }
 
 	void AddReplayTargetKey(int id) { listReplayTargetKey_.insert(id); }
-	std::set<int> GetReplayTargetKeyList() const { return listReplayTargetKey_; }
+	std::set<int> GetReplayTargetKeyList() { return listReplayTargetKey_; }
 
 private:
 	int scene_;

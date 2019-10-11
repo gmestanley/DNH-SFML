@@ -17,7 +17,7 @@ public:
 	bool EndStg();
 	void SetStgState(bool bStart);
 
-	bool IsFixedArea() const { return bFixedArea_; }
+	bool IsFixedArea() { return bFixedArea_; }
 	void SetFixedArea(bool bFixed) { bFixedArea_ = bFixed; }
 
 	void ClearData();

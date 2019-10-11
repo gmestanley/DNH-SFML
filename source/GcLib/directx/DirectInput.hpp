@@ -22,6 +22,16 @@ enum {
 //DirectInput
 **********************************************************/
 class DirectInput {
+	static DirectInput* thisBase_;
+
+public:
+	enum {
+		MAX_JOYPAD = 4,
+		MAX_KEY = 256,
+		MAX_MOUSE_BUTTON = 4,
+		MAX_PAD_BUTTON = 16,
+	};
+
 public:
 	DirectInput();
 	virtual ~DirectInput();
@@ -30,13 +40,13 @@ public:
 	virtual bool Initialize(HWND hWnd);
 
 	virtual void Update(); //キーをセットする
-	int GetKeyState(int key) const;
-	int GetMouseState(int button) const;
-	int GetPadState(int padNo, int button) const;
+	int GetKeyState(int key);
+	int GetMouseState(int button);
+	int GetPadState(int padNo, int button);
 
-	int GetMouseMoveX() const { return stateMouse_.lX; } //マウスの移動量を取得X
-	int GetMouseMoveY() const { return stateMouse_.lY; } //マウスの移動量を取得Y
-	int GetMouseMoveZ() const { return stateMouse_.lZ; } //マウスの移動量を取得Z
+	int GetMouseMoveX() { return stateMouse_.lX; } //マウスの移動量を取得X
+	int GetMouseMoveY() { return stateMouse_.lY; } //マウスの移動量を取得Y
+	int GetMouseMoveZ() { return stateMouse_.lZ; } //マウスの移動量を取得Z
 	POINT GetMousePosition();
 
 	void ResetInputState();
@@ -44,15 +54,24 @@ public:
 	void ResetKeyState();
 	void ResetPadState();
 
-	int GetPadDeviceCount() const { return bufPad_.size(); }
+	int GetPadDeviceCount() { return bufPad_.size(); }
 	DIDEVICEINSTANCE GetPadDeviceInformation(int padIndex);
 
-	static constexpr int MAX_JOYPAD = 4;
-	static constexpr int MAX_KEY = 256;
-	static constexpr int MAX_MOUSE_BUTTON = 4;
-	static constexpr int MAX_PAD_BUTTON = 16;
-
 protected:
+	HWND hWnd_;
+	LPDIRECTINPUT8 pInput_;
+	LPDIRECTINPUTDEVICE8 pKeyboard_;
+	LPDIRECTINPUTDEVICE8 pMouse_;
+	std::vector<LPDIRECTINPUTDEVICE8> pJoypad_; // パッドデバイスオブジェクト
+	BYTE stateKey_[MAX_KEY];
+	DIMOUSESTATE stateMouse_;
+	std::vector<DIJOYSTATE> statePad_;
+	std::vector<int> padRes_; //パッドの遊び
+
+	int bufKey_[MAX_KEY]; //現フレームのキーの状態
+	int bufMouse_[MAX_MOUSE_BUTTON]; //現フレームのマウスの状態
+	std::vector<std::vector<int>> bufPad_; //現フレームのパッドの状態
+
 	bool _InitializeKeyBoard();
 	bool _InitializeMouse();
 	bool _InitializeJoypad();
@@ -68,23 +87,6 @@ protected:
 	int _GetPadDirection(int index, UINT code, int state); //ジョイスティック方向キーの状態取得
 	int _GetPadButton(int index, int buttonNo, int state); //ジョイスティックのボタンの状態を取得
 	int _GetStateSub(bool flag, int state);
-
-	HWND hWnd_;
-	LPDIRECTINPUT8 pInput_;
-	LPDIRECTINPUTDEVICE8 pKeyboard_;
-	LPDIRECTINPUTDEVICE8 pMouse_;
-	std::vector<LPDIRECTINPUTDEVICE8> pJoypad_; // パッドデバイスオブジェクト
-	BYTE stateKey_[MAX_KEY];
-	DIMOUSESTATE stateMouse_;
-	std::vector<DIJOYSTATE> statePad_;
-	std::vector<int> padRes_; //パッドの遊び
-
-	std::array<int, MAX_KEY> bufKey_; //現フレームのキーの状態
-	std::array<int, MAX_MOUSE_BUTTON> bufMouse_; //現フレームのマウスの状態
-	std::vector<std::vector<int>> bufPad_; //現フレームのパッドの状態
-
-private:
-	static DirectInput* thisBase_;
 };
 
 /**********************************************************
@@ -97,14 +99,14 @@ class VirtualKey {
 public:
 	VirtualKey(int keyboard, int padIndex, int padButton);
 	virtual ~VirtualKey();
-	int GetKeyState() const { return state_; }
+	int GetKeyState() { return state_; }
 	void SetKeyState(int state) { state_ = state; }
 
-	int GetKeyCode() const { return keyboard_; }
+	int GetKeyCode() { return keyboard_; }
 	void SetKeyCode(int code) { keyboard_ = code; }
-	int GetPadIndex() const { return padIndex_; }
+	int GetPadIndex() { return padIndex_; }
 	void SetPadIndex(int index) { padIndex_ = index; }
-	int GetPadButton() const { return padButton_; }
+	int GetPadButton() { return padButton_; }
 	void SetPadButton(int button) { padButton_ = button; }
 
 private:
@@ -117,8 +119,8 @@ private:
 class VirtualKeyManager : public DirectInput {
 public:
 	VirtualKeyManager();
-	~VirtualKeyManager() override;
-	void Update() override; //キーをセットする
+	~VirtualKeyManager();
+	virtual void Update(); //キーをセットする
 	void ClearKeyState();
 
 	void AddKeyMap(int id, gstd::ref_count_ptr<VirtualKey> key) { mapKey_[id] = key; }
@@ -148,7 +150,7 @@ public:
 	virtual ~KeyReplayManager();
 	void SetManageState(int state) { state_ = state; }
 	void AddTarget(int key);
-	bool IsTargetKeyCode(int key) const;
+	bool IsTargetKeyCode(int key);
 
 	void Update();
 	void ReadRecord(gstd::RecordBuffer& record);

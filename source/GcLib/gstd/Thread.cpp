@@ -7,7 +7,7 @@ using namespace gstd;
 //Thread
 Thread::Thread()
 {
-	hThread_ = nullptr;
+	hThread_ = NULL;
 	idThread_ = 0;
 	status_ = STOP;
 }
@@ -15,16 +15,16 @@ Thread::~Thread()
 {
 	this->Stop();
 	this->Join();
-	if (hThread_ != nullptr) {
+	if (hThread_ != NULL) {
 		::CloseHandle(hThread_);
-		hThread_ = nullptr;
+		hThread_ = NULL;
 		idThread_ = 0;
 	}
 }
 unsigned int __stdcall Thread::_StaticRun(LPVOID data)
 {
 	try {
-		auto* thread = reinterpret_cast<Thread*>(data);
+		Thread* thread = reinterpret_cast<Thread*>(data);
 		thread->status_ = RUN;
 		thread->_Run();
 		thread->status_ = STOP;
@@ -40,29 +40,29 @@ void Thread::Start()
 		this->Join();
 	}
 
-	hThread_ = (HANDLE)_beginthreadex(nullptr, 0, _StaticRun, (void*)this, 0, &idThread_);
+	hThread_ = (HANDLE)_beginthreadex(NULL, 0, _StaticRun, (void*)this, 0, &idThread_);
 }
 void Thread::Stop()
 {
 	if (status_ == RUN)
 		status_ = REQUEST_STOP;
 }
-bool Thread::IsStop() const
+bool Thread::IsStop()
 {
-	return hThread_ == nullptr || status_ == STOP;
+	return hThread_ == NULL || status_ == STOP;
 }
 DWORD Thread::Join(int mills)
 {
 	DWORD res = WAIT_OBJECT_0;
 
-	if (hThread_ != nullptr) {
+	if (hThread_ != NULL) {
 		res = ::WaitForSingleObject(hThread_, mills);
 	}
 
-	if (hThread_ != nullptr) {
+	if (hThread_ != NULL) {
 		if (res != WAIT_TIMEOUT)
 			::CloseHandle(hThread_); //タイムアウトの場合クローズできない
-		hThread_ = nullptr;
+		hThread_ = NULL;
 		idThread_ = 0;
 		status_ = STOP;
 	}
@@ -84,7 +84,7 @@ CriticalSection::~CriticalSection()
 void CriticalSection::Enter()
 {
 	if (::GetCurrentThreadId() == idThread_) { //カレントスレッド
-		++countLock_;
+		countLock_++;
 		return;
 	}
 
@@ -95,7 +95,7 @@ void CriticalSection::Enter()
 void CriticalSection::Leave()
 {
 	if (::GetCurrentThreadId() == idThread_) {
-		--countLock_;
+		countLock_--;
 		if (countLock_ != 0)
 			return;
 		if (countLock_ < 0)
@@ -112,7 +112,7 @@ void CriticalSection::Leave()
 ThreadSignal::ThreadSignal(bool bManualReset)
 {
 	BOOL bManual = bManualReset ? TRUE : FALSE;
-	hEvent_ = ::CreateEvent(nullptr, bManual, FALSE, nullptr);
+	hEvent_ = ::CreateEvent(NULL, bManual, FALSE, NULL);
 }
 ThreadSignal::~ThreadSignal()
 {
@@ -122,7 +122,7 @@ DWORD ThreadSignal::Wait(int mills)
 {
 	DWORD res = WAIT_OBJECT_0;
 
-	if (hEvent_ != nullptr) {
+	if (hEvent_ != NULL) {
 		res = ::WaitForSingleObject(hEvent_, mills);
 	}
 

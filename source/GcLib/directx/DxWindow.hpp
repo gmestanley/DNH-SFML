@@ -32,12 +32,12 @@ public:
 
 public:
 	DxWindowEvent() { type_ = 0; };
-	virtual ~DxWindowEvent() = default;
+	virtual ~DxWindowEvent(){};
 	void SetSourceWindow(gstd::ref_count_ptr<DxWindow> source) { windowSource_ = source; }
 	gstd::ref_count_ptr<DxWindow> GetSourceWindow() { return windowSource_; }
 	void AddEventType(int type) { type_ |= type; }
-	bool HasEventType(int type) const { return (type_ & type) != 0; }
-	bool IsEmpty() const { return type_ == 0; }
+	bool HasEventType(int type) { return (type_ & type) != 0; }
+	bool IsEmpty() { return type_ == 0; }
 
 protected:
 	gstd::ref_count_ptr<DxWindow> windowSource_; //ウィンドウ
@@ -50,7 +50,7 @@ protected:
 class DxWindowManager : public gstd::TaskBase {
 public:
 	DxWindowManager();
-	~DxWindowManager() override;
+	virtual ~DxWindowManager();
 	void Clear();
 
 	void AddWindow(gstd::ref_count_ptr<DxWindow> window);
@@ -64,7 +64,7 @@ public:
 	void SetWindowEnableWithoutArgumentWindow(bool bEnable, DxWindow* window);
 
 	gstd::ref_count_ptr<DxWindow> GetIntersectedWindow();
-	gstd::ref_count_ptr<DxWindow> GetIntersectedWindow(POINT& pos, gstd::ref_count_ptr<DxWindow> parent = nullptr);
+	gstd::ref_count_ptr<DxWindow> GetIntersectedWindow(POINT& pos, gstd::ref_count_ptr<DxWindow> parent = NULL);
 
 protected:
 	std::list<gstd::ref_count_ptr<DxWindow>> listWindow_; //最前面がアクティブ
@@ -85,7 +85,7 @@ public:
 	DxWindow();
 	virtual ~DxWindow();
 	virtual void DeleteWindow(); //削除フラグを立てます
-	bool IsWindowDelete() const { return bWindowDelete_; }
+	bool IsWindowDelete() { return bWindowDelete_; }
 	void Dispose(); //各参照などを解放します
 	virtual void AddedManager() {}
 	void AddChild(gstd::ref_count_ptr<DxWindow> window);
@@ -99,19 +99,19 @@ public:
 
 	virtual void IntersectMouseCursor() {}
 
-	int GetID() const { return idWindow_; }
-	virtual bool IsIntersected(POINT& pos);
+	int GetID() { return idWindow_; }
+	virtual bool IsIntersected(POINT pos);
 	void SetWindowRect(RECT rect) { rectWindow_ = rect; }
-	RECT GetWindowRect() const { return rectWindow_; }
+	RECT GetWindowRect() { return rectWindow_; }
 	RECT GetAbsoluteWindowRect();
 	virtual void SetWindowEnable(bool bEnable) { bWindowEnable_ = bEnable; }
-	virtual bool IsWindowEnable() const { return bWindowEnable_; }
+	virtual bool IsWindowEnable() { return bWindowEnable_; }
 	virtual void SetWindowVisible(bool bVisible) { bWindowVisible_ = bVisible; }
-	virtual bool IsWindowVisible() const { return bWindowVisible_; }
-	virtual bool IsWindowExists(int id) const;
+	virtual bool IsWindowVisible() { return bWindowVisible_; }
+	virtual bool IsWindowExists(int id);
 
 	void SetAlpha(int alpha) { ColorAccess::SetColorA(color_, alpha); }
-	int GetAlpha() const { return ColorAccess::GetColorA(color_); }
+	int GetAlpha() { return ColorAccess::GetColorA(color_); }
 	int GetAbsoluteAlpha();
 
 	void SetFrameSprite(gstd::ref_count_ptr<Sprite2D> sprite) { spriteFrame_ = sprite; }
@@ -145,9 +145,9 @@ private:
 class DxLabel : public DxWindow {
 public:
 	DxLabel();
-	void Work() override;
-	void Render() override;
-	void SetText(const std::wstring& str);
+	virtual void Work();
+	virtual void Render();
+	void SetText(std::wstring str);
 	void SetText(gstd::ref_count_ptr<DxText> text, bool bArrange = false);
 
 protected:
@@ -160,13 +160,13 @@ protected:
 class DxButton : public DxLabel {
 public:
 	DxButton();
-	void Work() override;
-	void Render() override;
+	virtual void Work();
+	virtual void Render();
 	virtual void RenderIntersectedFrame();
 	virtual void RenderSelectedFrame();
 
-	bool IsIntersected() const { return bIntersected_; }
-	bool IsSelected() const { return bSelected_; }
+	bool IsIntersected() { return bIntersected_; }
+	bool IsSelected() { return bSelected_; }
 	void SetSelected(bool bSelected) { bSelected_ = bSelected; }
 
 protected:
@@ -185,10 +185,10 @@ public:
 
 public:
 	DxMessageBox();
-	void DispatchedEvent(gstd::ref_count_ptr<DxWindowEvent> event) override;
+	virtual void DispatchedEvent(gstd::ref_count_ptr<DxWindowEvent> event);
 	void SetText(gstd::ref_count_ptr<DxText> text);
 	void SetButton(std::vector<gstd::ref_count_ptr<DxButton>> listButton);
-	int GetSelectedIndex() const { return index_; }
+	int GetSelectedIndex() { return index_; }
 	void UpdateWindowRect();
 
 protected:
