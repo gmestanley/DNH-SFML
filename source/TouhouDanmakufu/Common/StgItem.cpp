@@ -28,9 +28,7 @@ StgItemManager::StgItemManager(StgStageController* stageController)
 	bDefaultBonusItemEnable_ = true;
 	bAllItemToPlayer_ = false;
 }
-StgItemManager::~StgItemManager()
-{
-}
+StgItemManager::~StgItemManager() = default;
 void StgItemManager::Work()
 {
 	ref_count_ptr<StgPlayerObject>::unsync objPlayer = stageController_->GetPlayerObject();
@@ -39,8 +37,7 @@ void StgItemManager::Work()
 	double pr = objPlayer->GetItemIntersectionRadius();
 	int pAutoItemCollectY = objPlayer->GetAutoItemCollectY();
 
-	std::list<ref_count_ptr<StgItemObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end();) {
+	for (auto itr = listObj_.begin(); itr != listObj_.end();) {
 		ref_count_ptr<StgItemObject>::unsync obj = (*itr);
 		if (obj->IsDeleted()) {
 			// obj->Clear();
@@ -51,7 +48,7 @@ void StgItemManager::Work()
 			if (objPlayer->GetState() == StgPlayerObject::STATE_NORMAL) {
 				double radius = pow(pow(px - ix, 2) + pow(py - iy, 2), 0.5);
 				if (radius <= pr) {
-					obj->Intersect(NULL, NULL);
+					obj->Intersect(nullptr, nullptr);
 				}
 
 				if (bCancelToPlayer_) {
@@ -66,7 +63,7 @@ void StgItemManager::Work()
 							bMoveToPlayer = true;
 					}
 
-					if (listItemTypeToPlayer_.size() > 0) {
+					if (!listItemTypeToPlayer_.empty()) {
 						//自機にアイテムを集める
 						int typeItem = obj->GetItemType();
 						bool bFind = listItemTypeToPlayer_.find(typeItem) != listItemTypeToPlayer_.end();
@@ -74,10 +71,8 @@ void StgItemManager::Work()
 							bMoveToPlayer = true;
 					}
 
-					if (listCircleToPlayer_.size() > 0) {
-						std::list<DxCircle>::iterator itr = listCircleToPlayer_.begin();
-						for (; itr != listCircleToPlayer_.end(); itr++) {
-							DxCircle circle = *itr;
+					if (!listCircleToPlayer_.empty()) {
+						for (auto& circle : listCircleToPlayer_) {
 							double cr = pow(pow(ix - circle.GetX(), 2) + pow(iy - circle.GetY(), 2), 0.5);
 							if (cr <= circle.GetR()) {
 								bMoveToPlayer = true;
@@ -97,7 +92,7 @@ void StgItemManager::Work()
 				obj->SetMoveToPlayer(false);
 			}
 
-			itr++;
+			++itr;
 		}
 	}
 	listItemTypeToPlayer_.clear();
@@ -123,22 +118,20 @@ void StgItemManager::Render(int targetPriority)
 	DxCamera2D* camera = graphics->GetCamera2D().GetPointer();
 	D3DXMATRIX matCamera = camera->GetMatrix();
 
-	std::list<ref_count_ptr<StgItemObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end(); itr++) {
-		ref_count_ptr<StgItemObject>::unsync obj = (*itr);
-		if (obj->IsDeleted())
+	for (auto& object : listObj_) {
+		if (object->IsDeleted())
 			continue;
-		if (obj->GetRenderPriorityI() != targetPriority)
+		if (object->GetRenderPriorityI() != targetPriority)
 			continue;
 
-		obj->RenderOnItemManager(matCamera);
+		object->RenderOnItemManager(matCamera);
 	}
 
 	int countBlendType = StgItemDataList::RENDER_TYPE_COUNT;
 	int blendMode[] = { DirectGraphics::MODE_BLEND_ADD_ARGB, DirectGraphics::MODE_BLEND_ADD_RGB, DirectGraphics::MODE_BLEND_ALPHA };
 	int typeRender[] = { StgShotDataList::RENDER_ADD_ARGB, StgShotDataList::RENDER_ADD_RGB, StgShotDataList::RENDER_ALPHA };
 	ref_count_ptr<SpriteList2D>::unsync listSprite[] = { listSpriteDigit_, listSpriteItem_ };
-	for (int iBlend = 0; iBlend < countBlendType; iBlend++) {
+	for (int iBlend = 0; iBlend < countBlendType; ++iBlend) {
 		graphics->SetBlendMode(blendMode[iBlend]);
 		if (blendMode[iBlend] == DirectGraphics::MODE_BLEND_ADD_ARGB) {
 			listSpriteDigit_->Render();
@@ -150,7 +143,7 @@ void StgItemManager::Render(int targetPriority)
 
 		std::vector<ref_count_ptr<StgItemRenderer>::unsync>* listRenderer = listItemData_->GetRendererList(typeRender[iBlend]);
 		int iRender = 0;
-		for (iRender = 0; iRender < listRenderer->size(); iRender++)
+		for (iRender = 0; iRender < listRenderer->size(); ++iRender)
 			(listRenderer->at(iRender))->Render();
 	}
 
@@ -163,20 +156,18 @@ std::vector<bool> StgItemManager::GetValidRenderPriorityList()
 	ref_count_ptr<StgStageScriptObjectManager> objectManager = stageController_->GetMainObjectManager();
 	res.resize(objectManager->GetRenderBucketCapacity());
 
-	std::list<ref_count_ptr<StgItemObject>::unsync>::iterator itr = listObj_.begin();
-	for (; itr != listObj_.end(); itr++) {
-		ref_count_ptr<StgItemObject>::unsync obj = (*itr);
-		if (obj->IsDeleted())
+	for (auto& object : listObj_) {
+		if (object->IsDeleted())
 			continue;
 
-		int pri = obj->GetRenderPriorityI();
+		int pri = object->GetRenderPriorityI();
 		res[pri] = true;
 	}
 
 	return res;
 }
 
-bool StgItemManager::LoadItemData(std::wstring path, bool bReload)
+bool StgItemManager::LoadItemData(const std::wstring& path, bool bReload)
 {
 	return listItemData_->AddItemDataList(path, bReload);
 }
@@ -215,7 +206,7 @@ void StgItemManager::CollectItemsByType(int type)
 {
 	listItemTypeToPlayer_.insert(type);
 }
-void StgItemManager::CollectItemsInCircle(DxCircle circle)
+void StgItemManager::CollectItemsInCircle(const DxCircle& circle)
 {
 	listCircleToPlayer_.push_back(circle);
 }
@@ -231,33 +222,30 @@ StgItemDataList::StgItemDataList()
 {
 	listRenderer_.resize(RENDER_TYPE_COUNT);
 }
-StgItemDataList::~StgItemDataList()
-{
-}
-bool StgItemDataList::AddItemDataList(std::wstring path, bool bReload)
+StgItemDataList::~StgItemDataList() = default;
+bool StgItemDataList::AddItemDataList(const std::wstring& path, bool bReload)
 {
 	if (!bReload && listReadPath_.find(path) != listReadPath_.end())
 		return true;
 
 	ref_count_ptr<FileReader> reader = FileManager::GetBase()->GetFileReader(path);
-	if (reader == NULL)
-		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path).c_str());
+	if (reader == nullptr)
+		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path));
 	if (!reader->Open())
-		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path).c_str());
+		throw gstd::wexception(ErrorUtility::GetFileNotFoundErrorMessage(path));
 	std::string source = reader->ReadAllString();
 
-	bool res = false;
 	Scanner scanner(source);
 	try {
 		std::vector<ref_count_ptr<StgItemData>::unsync> listData;
-		std::wstring pathImage = L"";
+		std::wstring pathImage;
 		RECT rcDelay = { -1, -1, -1, -1 };
 		while (scanner.HasNext()) {
 			Token& tok = scanner.Next();
-			if (tok.GetType() == Token::TK_EOF) //Eofの識別子が来たらファイルの調査終了
-			{
+			if (tok.GetType() == Token::TK_EOF) { //Eofの識別子が来たらファイルの調査終了
 				break;
-			} else if (tok.GetType() == Token::TK_ID) {
+			}
+			if (tok.GetType() == Token::TK_ID) {
 				std::wstring element = tok.GetElement();
 				if (element == L"ItemData") {
 					_ScanItem(listData, scanner);
@@ -272,7 +260,7 @@ bool StgItemDataList::AddItemDataList(std::wstring path, bool bReload)
 		}
 
 		//テクスチャ読み込み
-		if (pathImage.size() == 0)
+		if (pathImage.empty())
 			throw gstd::wexception(L"画像ファイルが設定されていません。");
 		std::wstring dir = PathProperty::GetFileDirectory(path);
 		pathImage = StringUtility::Replace(pathImage, L"./", dir);
@@ -293,18 +281,18 @@ bool StgItemDataList::AddItemDataList(std::wstring path, bool bReload)
 		if (textureIndex < 0) {
 			textureIndex = listTexture_.size();
 			listTexture_.push_back(texture);
-			for (int iRender = 0; iRender < listRenderer_.size(); iRender++) {
+			for (auto& iRender : listRenderer_) {
 				ref_count_ptr<StgItemRenderer>::unsync render = new StgItemRenderer();
 				render->SetTexture(texture);
-				listRenderer_[iRender].push_back(render);
+				iRender.push_back(render);
 			}
 		}
 
 		if (listData_.size() < listData.size())
 			listData_.resize(listData.size());
-		for (int iData = 0; iData < listData.size(); iData++) {
+		for (int iData = 0; iData < listData.size(); ++iData) {
 			ref_count_ptr<StgItemData>::unsync data = listData[iData];
-			if (data == NULL)
+			if (data == nullptr)
 				continue;
 			data->indexTexture_ = textureIndex;
 			listData_[iData] = data;
@@ -312,18 +300,16 @@ bool StgItemDataList::AddItemDataList(std::wstring path, bool bReload)
 
 		listReadPath_.insert(path);
 		Logger::WriteTop(StringUtility::Format(L"アイテムデータを読み込みました:%s", path.c_str()));
-		res = true;
+		return true;
 	} catch (gstd::wexception& e) {
 		std::wstring log = StringUtility::Format(L"アイテムデータ読み込み失敗:%d行目(%s)", scanner.GetCurrentLine(), e.what());
 		Logger::WriteTop(log);
-		res = NULL;
+		return false;
 	} catch (...) {
 		std::wstring log = StringUtility::Format(L"アイテムデータ読み込み失敗:%d行目", scanner.GetCurrentLine());
 		Logger::WriteTop(log);
-		res = NULL;
+		return false;
 	}
-
-	return res;
 }
 void StgItemDataList::_ScanItem(std::vector<ref_count_ptr<StgItemData>::unsync>& listData, Scanner& scanner)
 {
@@ -340,7 +326,7 @@ void StgItemDataList::_ScanItem(std::vector<ref_count_ptr<StgItemData>::unsync>&
 		tok = scanner.Next();
 		if (tok.GetType() == Token::TK_CLOSEC) {
 			break;
-		} else if (tok.GetType() == Token::TK_ID) {
+		} if (tok.GetType() == Token::TK_ID) {
 			std::wstring element = tok.GetElement();
 
 			if (element == L"id") {
@@ -403,7 +389,8 @@ void StgItemDataList::_ScanAnimation(ref_count_ptr<StgItemData>::unsync itemData
 		tok = scanner.Next();
 		if (tok.GetType() == Token::TK_CLOSEC) {
 			break;
-		} else if (tok.GetType() == Token::TK_ID) {
+		}
+		if (tok.GetType() == Token::TK_ID) {
 			std::wstring element = tok.GetElement();
 
 			if (element == L"animation_data") {
@@ -441,7 +428,7 @@ std::vector<std::wstring> StgItemDataList::_GetArgumentList(Scanner& scanner)
 			int type = tok.GetType();
 			if (type == Token::TK_CLOSEP)
 				break;
-			else if (type != Token::TK_COMMA) {
+			if (type != Token::TK_COMMA) {
 				std::wstring str = tok.GetElement();
 				res.push_back(str);
 			}
@@ -462,28 +449,23 @@ StgItemData::StgItemData(StgItemDataList* listItemData)
 	alpha_ = 255;
 	totalAnimeFrame_ = 0;
 }
-StgItemData::~StgItemData()
-{
-}
+StgItemData::~StgItemData() = default;
 RECT StgItemData::GetRect(int frame)
 {
 	if (totalAnimeFrame_ == 0)
 		return rcSrc_;
 
-	RECT res;
 	frame = frame % totalAnimeFrame_;
 	int total = 0;
-	std::vector<AnimationData>::iterator itr = listAnime_.begin();
-	for (; itr != listAnime_.end(); itr++) {
-		// AnimationData* anime = itr;
-		total += itr->frame_;
+	for (auto& anime : listAnime_) {
+		total += anime.frame_;
 		if (total >= frame) {
-			res = itr->rcSrc_;
+			return anime.rcSrc_;
 			break;
 		}
 	}
 
-	return res;
+	return RECT();
 }
 ref_count_ptr<Texture> StgItemData::GetTexture()
 {
@@ -492,7 +474,7 @@ ref_count_ptr<Texture> StgItemData::GetTexture()
 }
 StgItemRenderer* StgItemData::GetRenderer()
 {
-	StgItemRenderer* res = NULL;
+	StgItemRenderer* res = nullptr;
 	if (typeRender_ == DirectGraphics::MODE_BLEND_ALPHA)
 		res = listItemData_->GetRenderer(indexTexture_, StgItemDataList::RENDER_ALPHA).GetPointer();
 	else if (typeRender_ == DirectGraphics::MODE_BLEND_ADD_RGB)
@@ -514,21 +496,19 @@ StgItemRenderer::StgItemRenderer()
 	countRenderVertex_ = 0;
 	SetVertexCount(256 * 256);
 }
-int StgItemRenderer::GetVertexCount()
+int StgItemRenderer::GetVertexCount() const
 {
-	int res = countRenderVertex_;
-	res = min(countRenderVertex_, vertex_.GetSize() / strideVertexStreamZero_);
-	return res;
+	return min(countRenderVertex_, vertex_.GetSize() / strideVertexStreamZero_);
 }
 void StgItemRenderer::Render()
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	IDirect3DDevice9* device = graphics->GetDevice();
 	ref_count_ptr<Texture>& texture = texture_[0];
-	if (texture != NULL)
+	if (texture != nullptr)
 		device->SetTexture(0, texture->GetD3DTexture());
 	else
-		device->SetTexture(0, NULL);
+		device->SetTexture(0, nullptr);
 	device->SetFVF(VERTEX_TLX::fvf);
 
 	device->DrawPrimitiveUP(typePrimitive_, _GetPrimitiveCount(), vertex_.GetPointer(), strideVertexStreamZero_);
@@ -536,12 +516,12 @@ void StgItemRenderer::Render()
 	//描画対象をクリアする
 	countRenderVertex_ = 0;
 }
-void StgItemRenderer::AddVertex(VERTEX_TLX& vertex)
+void StgItemRenderer::AddVertex(const VERTEX_TLX& vertex)
 {
 	SetVertex(countRenderVertex_, vertex);
-	countRenderVertex_++;
+	++countRenderVertex_;
 }
-void StgItemRenderer::AddSquareVertex(VERTEX_TLX* listVertex)
+void StgItemRenderer::AddSquareVertex(const VERTEX_TLX* listVertex)
 {
 	AddVertex(listVertex[0]);
 	AddVertex(listVertex[2]);
@@ -679,18 +659,16 @@ void StgItemObject::RenderOnItemManager(D3DXMATRIX mat)
 		renderer->SetPosition(0, 0, 0);
 
 		int fontSize = 14;
-		_int64 score = score_;
+		int64_t score = score_;
 		std::vector<int> listNum;
-		while (true) {
+		do {
 			int tnum = score % 10;
 			score /= 10;
 			listNum.push_back(tnum);
-			if (score == 0)
-				break;
-		}
-		for (int iNum = listNum.size() - 1; iNum >= 0; iNum--) {
-			RECT_D rcSrc = { (double)(listNum[iNum] * 36), 0.,
-				(double)((listNum[iNum] + 1) * 36 - 1), 31. };
+		} while (score != 0);
+		for (int iNum = listNum.size() - 1; iNum >= 0; --iNum) {
+			RECT_D rcSrc = { (double)(listNum[iNum] * 36), 0.0,
+				(double)((listNum[iNum] + 1) * 36 - 1), 31.0 };
 			RECT_D rcDest = { (double)(posX_ + (listNum.size() - 1 - iNum) * fontSize / 2), (double)posY_,
 				(double)(posX_ + (listNum.size() - iNum) * fontSize / 2), (double)(posY_ + fontSize) };
 			renderer->SetSourceRect(rcSrc);
@@ -725,29 +703,29 @@ void StgItemObject::_CreateScoreItem()
 	objectManager->AddObject(obj);
 	itemManager->AddItem(obj);
 }
-void StgItemObject::_NotifyEventToPlayerScript(std::vector<long double>& listValue)
+void StgItemObject::_NotifyEventToPlayerScript(const std::vector<long double>& listValue)
 {
 	//自機スクリプトへ通知
 	ref_count_ptr<StgPlayerObject>::unsync player = stageController_->GetPlayerObject();
 	StgStagePlayerScript* scriptPlayer = player->GetPlayerScript();
 	std::vector<gstd::value> listScriptValue;
-	for (int iVal = 0; iVal < listValue.size(); iVal++) {
-		listScriptValue.push_back(scriptPlayer->CreateRealValue(listValue[iVal]));
+	for (long double val : listValue) {
+		listScriptValue.push_back(scriptPlayer->CreateRealValue(val));
 	}
 
 	scriptPlayer->RequestEvent(StgStageItemScript::EV_GET_ITEM, listScriptValue);
 }
-void StgItemObject::_NotifyEventToItemScript(std::vector<long double>& listValue)
+void StgItemObject::_NotifyEventToItemScript(const std::vector<long double>& listValue)
 {
 	//アイテムスクリプトへ通知
 	StgStageScriptManager* stageScriptManager = stageController_->GetScriptManagerP();
-	_int64 idItemScript = stageScriptManager->GetItemScriptID();
+	int64_t idItemScript = stageScriptManager->GetItemScriptID();
 	if (idItemScript != StgControlScriptManager::ID_INVALID) {
 		ref_count_ptr<ManagedScript> scriptItem = stageScriptManager->GetScript(idItemScript);
-		if (scriptItem != NULL) {
+		if (scriptItem != nullptr) {
 			std::vector<gstd::value> listScriptValue;
-			for (int iVal = 0; iVal < listValue.size(); iVal++) {
-				listScriptValue.push_back(scriptItem->CreateRealValue(listValue[iVal]));
+			for (long double val : listValue) {
+				listScriptValue.push_back(scriptItem->CreateRealValue(val));
 			}
 			scriptItem->RequestEvent(StgStageItemScript::EV_GET_ITEM, listScriptValue);
 		}
@@ -765,22 +743,22 @@ void StgItemObject::SetColor(int r, int g, int b)
 }
 void StgItemObject::SetToPosition(POINT pos)
 {
-	StgMovePattern_Item* move = (StgMovePattern_Item*)pattern_.GetPointer();
+	auto* move = (StgMovePattern_Item*)pattern_.GetPointer();
 	move->SetToPosition(pos);
 }
 int StgItemObject::GetMoveType()
 {
 	int res = StgMovePattern_Item::MOVE_NONE;
 
-	StgMovePattern_Item* move = dynamic_cast<StgMovePattern_Item*>(pattern_.GetPointer());
-	if (move != NULL)
+	auto* move = dynamic_cast<StgMovePattern_Item*>(pattern_.GetPointer());
+	if (move != nullptr)
 		res = move->GetItemMoveType();
 	return res;
 }
 void StgItemObject::SetMoveType(int type)
 {
-	StgMovePattern_Item* move = dynamic_cast<StgMovePattern_Item*>(pattern_.GetPointer());
-	if (move != NULL)
+	auto* move = dynamic_cast<StgMovePattern_Item*>(pattern_.GetPointer());
+	if (move != nullptr)
 		move->SetItemMoveType(type);
 }
 
@@ -789,7 +767,7 @@ StgItemObject_1UP::StgItemObject_1UP(StgStageController* stageController)
 	: StgItemObject(stageController)
 {
 	typeItem_ = ITEM_1UP;
-	StgMovePattern_Item* move = (StgMovePattern_Item*)pattern_.GetPointer();
+	auto* move = (StgMovePattern_Item*)pattern_.GetPointer();
 	move->SetItemMoveType(StgMovePattern_Item::MOVE_TOPOSITION_A);
 }
 void StgItemObject_1UP::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget)
@@ -809,7 +787,7 @@ StgItemObject_Bomb::StgItemObject_Bomb(StgStageController* stageController)
 	: StgItemObject(stageController)
 {
 	typeItem_ = ITEM_SPELL;
-	StgMovePattern_Item* move = (StgMovePattern_Item*)pattern_.GetPointer();
+	auto* move = (StgMovePattern_Item*)pattern_.GetPointer();
 	move->SetItemMoveType(StgMovePattern_Item::MOVE_TOPOSITION_A);
 }
 void StgItemObject_Bomb::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget)
@@ -829,7 +807,7 @@ StgItemObject_Power::StgItemObject_Power(StgStageController* stageController)
 	: StgItemObject(stageController)
 {
 	typeItem_ = ITEM_POWER;
-	StgMovePattern_Item* move = (StgMovePattern_Item*)pattern_.GetPointer();
+	auto* move = (StgMovePattern_Item*)pattern_.GetPointer();
 	move->SetItemMoveType(StgMovePattern_Item::MOVE_TOPOSITION_A);
 	score_ = 10;
 }
@@ -854,7 +832,7 @@ StgItemObject_Point::StgItemObject_Point(StgStageController* stageController)
 	: StgItemObject(stageController)
 {
 	typeItem_ = ITEM_POINT;
-	StgMovePattern_Item* move = (StgMovePattern_Item*)pattern_.GetPointer();
+	auto* move = (StgMovePattern_Item*)pattern_.GetPointer();
 	move->SetItemMoveType(StgMovePattern_Item::MOVE_TOPOSITION_A);
 }
 void StgItemObject_Point::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget)
@@ -878,7 +856,7 @@ StgItemObject_Bonus::StgItemObject_Bonus(StgStageController* stageController)
 	: StgItemObject(stageController)
 {
 	typeItem_ = ITEM_BONUS;
-	StgMovePattern_Item* move = (StgMovePattern_Item*)pattern_.GetPointer();
+	auto* move = (StgMovePattern_Item*)pattern_.GetPointer();
 	move->SetItemMoveType(StgMovePattern_Item::MOVE_TOPLAYER);
 
 	int graze = stageController->GetStageInformation()->GetGraze();
@@ -911,7 +889,7 @@ StgItemObject_Score::StgItemObject_Score(StgStageController* stageController)
 	: StgItemObject(stageController)
 {
 	typeItem_ = ITEM_SCORE;
-	StgMovePattern_Item* move = (StgMovePattern_Item*)pattern_.GetPointer();
+	auto* move = (StgMovePattern_Item*)pattern_.GetPointer();
 	move->SetItemMoveType(StgMovePattern_Item::MOVE_SCORE);
 
 	bPermitMoveToPlayer_ = false;
@@ -928,7 +906,7 @@ void StgItemObject_Score::Work()
 		stageController_->GetMainObjectManager()->DeleteObject(GetObjectID());
 		return;
 	}
-	frameDelete_++;
+	++frameDelete_;
 }
 void StgItemObject_Score::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget)
 {
@@ -941,7 +919,7 @@ StgItemObject_User::StgItemObject_User(StgStageController* stageController)
 	typeItem_ = ITEM_USER;
 	idImage_ = -1;
 	frameWork_ = 0;
-	StgMovePattern_Item* move = (StgMovePattern_Item*)pattern_.GetPointer();
+	auto* move = (StgMovePattern_Item*)pattern_.GetPointer();
 	move->SetItemMoveType(StgMovePattern_Item::MOVE_DOWN);
 
 	bChangeItemScore_ = true;
@@ -950,17 +928,17 @@ void StgItemObject_User::SetImageID(int id)
 {
 	idImage_ = id;
 	StgItemData* data = _GetItemData();
-	if (data != NULL) {
+	if (data != nullptr) {
 		typeItem_ = data->GetItemType();
 	}
 }
 StgItemData* StgItemObject_User::_GetItemData()
 {
-	StgItemData* res = NULL;
+	StgItemData* res = nullptr;
 	StgItemManager* itemManager = stageController_->GetItemManager();
 	StgItemDataList* dataList = itemManager->GetItemDataList();
 
-	if (dataList != NULL) {
+	if (dataList != nullptr) {
 		res = dataList->GetData(idImage_).GetPointer();
 	}
 
@@ -968,7 +946,7 @@ StgItemData* StgItemObject_User::_GetItemData()
 }
 void StgItemObject_User::_SetVertexPosition(VERTEX_TLX& vertex, float x, float y, float z, float w)
 {
-	float bias = -0.5f;
+	float bias = -0.5F;
 	vertex.position.x = x + bias;
 	vertex.position.y = y + bias;
 	vertex.position.z = z;
@@ -977,7 +955,7 @@ void StgItemObject_User::_SetVertexPosition(VERTEX_TLX& vertex, float x, float y
 void StgItemObject_User::_SetVertexUV(VERTEX_TLX& vertex, float u, float v)
 {
 	StgItemData* itemData = _GetItemData();
-	if (itemData == NULL)
+	if (itemData == nullptr)
 		return;
 
 	ref_count_ptr<Texture> texture = itemData->GetTexture();
@@ -1001,12 +979,12 @@ void StgItemObject_User::RenderOnItemManager(D3DXMATRIX mat)
 		return;
 
 	StgItemData* itemData = _GetItemData();
-	if (itemData == NULL)
+	if (itemData == nullptr)
 		return;
 
 	int objBlendType = GetBlendType();
 	StgItemRenderer* renderer = itemData->GetRenderer();
-	if (renderer == NULL)
+	if (renderer == nullptr)
 		return;
 
 	D3DXMATRIX matScale;
@@ -1106,7 +1084,7 @@ StgMovePattern_Item::StgMovePattern_Item(StgMoveObject* target)
 }
 void StgMovePattern_Item::Move()
 {
-	StgItemObject* itemObject = (StgItemObject*)target_;
+	auto* itemObject = (StgItemObject*)target_;
 	StgStageController* stageController = itemObject->GetStageController();
 
 	double px = target_->GetPositionX();
@@ -1132,9 +1110,9 @@ void StgMovePattern_Item::Move()
 			typeMove_ = MOVE_DOWN;
 		}
 	} else if (typeMove_ == MOVE_DOWN) {
-		speed_ += 3.0f / 60.0f;
-		if (speed_ > 2.5f)
-			speed_ = 2.5f;
+		speed_ += 3.0F / 60.0F;
+		if (speed_ > 2.5F)
+			speed_ = 2.5F;
 		angDirection_ = 90;
 	} else if (typeMove_ == MOVE_SCORE) {
 		speed_ = 1;
@@ -1150,5 +1128,5 @@ void StgMovePattern_Item::Move()
 		target_->SetPositionY(py);
 	}
 
-	frame_++;
+	++frame_;
 }

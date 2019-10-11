@@ -33,7 +33,7 @@ void ScriptSelectDialog::Initialize()
 	buttonOk_.Attach(GetDlgItem(hWnd_, IDOK));
 	buttonCancel_.Attach(GetDlgItem(hWnd_, IDCANCEL));
 }
-void ScriptSelectDialog::_SearchScript(std::wstring dir)
+void ScriptSelectDialog::_SearchScript(const std::wstring& dir)
 {
 	WIN32_FIND_DATA data;
 	HANDLE hFind;
@@ -146,7 +146,7 @@ LRESULT ScriptSelectDialog::_WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam
 	}
 	return _CallPreviousWindowProcedure(hWnd, uMsg, wParam, lParam);
 }
-void ScriptSelectDialog::ShowModal(std::wstring path)
+void ScriptSelectDialog::ShowModal(const std::wstring& path)
 {
 	for (int iInfo = 0; iInfo < listInfo_.size(); iInfo++) {
 		ref_count_ptr<ScriptInformation> info = listInfo_[iInfo];

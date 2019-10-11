@@ -29,16 +29,16 @@ private:
 
 public:
 	TitleScene();
-	void Work();
-	void Render();
+	void Work() override;
+	void Render() override;
 };
 
 class TitleSceneMenuItem : public TextLightUpMenuItem {
 public:
-	TitleSceneMenuItem(std::wstring text, std::wstring description, int x, int y);
-	virtual ~TitleSceneMenuItem();
-	void Work();
-	void Render();
+	TitleSceneMenuItem(const std::wstring& text, const std::wstring& description, int x, int y);
+	~TitleSceneMenuItem() override;
+	void Work() override;
+	void Render() override;
 
 private:
 	ref_count_ptr<DxTextRenderObject> objText_;

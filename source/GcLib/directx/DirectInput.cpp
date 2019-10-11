@@ -6,50 +6,50 @@ using namespace directx;
 /**********************************************************
 //DirectInput
 **********************************************************/
-DirectInput* DirectInput::thisBase_ = NULL;
+DirectInput* DirectInput::thisBase_ = nullptr;
 DirectInput::DirectInput()
 {
-	hWnd_ = NULL;
-	pInput_ = NULL;
-	pKeyboard_ = NULL;
-	pMouse_ = NULL;
+	hWnd_ = nullptr;
+	pInput_ = nullptr;
+	pKeyboard_ = nullptr;
+	pMouse_ = nullptr;
 }
 DirectInput::~DirectInput()
 {
 	Logger::WriteTop(L"DirectInput：終了開始");
-	for (int iPad = 0; iPad < pJoypad_.size(); iPad++) {
-		if (pJoypad_[iPad] == NULL)
+	for (auto & iPad : pJoypad_) {
+		if (iPad == NULL)
 			continue;
-		pJoypad_[iPad]->Unacquire();
-		if (pJoypad_[iPad] != NULL)
-			pJoypad_[iPad]->Release();
+		iPad->Unacquire();
+		if (iPad != NULL)
+			iPad->Release();
 	}
 
-	if (pMouse_ != NULL) {
+	if (pMouse_ != nullptr) {
 		pMouse_->Unacquire();
 		pMouse_->Release();
 	}
 
-	if (pKeyboard_ != NULL) {
+	if (pKeyboard_ != nullptr) {
 		pKeyboard_->Unacquire();
 		pKeyboard_->Release();
 	}
 
-	if (pInput_ != NULL)
+	if (pInput_ != nullptr)
 		pInput_->Release();
-	thisBase_ = NULL;
+	thisBase_ = nullptr;
 	Logger::WriteTop(L"DirectInput：終了完了");
 }
 
 bool DirectInput::Initialize(HWND hWnd)
 {
-	if (thisBase_ != NULL)
+	if (thisBase_ != nullptr)
 		return false;
 	Logger::WriteTop(L"DirectInput：初期化");
 	hWnd_ = hWnd;
 
 	HINSTANCE hInst = ::GetModuleHandle(NULL);
-	HRESULT hrInput = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&pInput_, NULL);
+	HRESULT hrInput = DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&pInput_, nullptr);
 	if (FAILED(hrInput)) {
 		Logger::WriteTop(L"DirectInput：DirectInput8Create失敗");
 		return false; // DirectInput8の作成に失敗
@@ -73,7 +73,7 @@ bool DirectInput::_InitializeKeyBoard()
 {
 	Logger::WriteTop(L"DirectIuput：キーボード初期化");
 
-	HRESULT hrDevice = pInput_->CreateDevice(GUID_SysKeyboard, &pKeyboard_, NULL);
+	HRESULT hrDevice = pInput_->CreateDevice(GUID_SysKeyboard, &pKeyboard_, nullptr);
 	if (FAILED(hrDevice)) {
 		Logger::WriteTop(L"DirectInput：キーボードのデバイスオブジェクト作成失敗");
 		return false;
@@ -102,7 +102,7 @@ bool DirectInput::_InitializeMouse()
 {
 	Logger::WriteTop(L"DirectIuput：マウス初期化");
 
-	HRESULT hrDevice = pInput_->CreateDevice(GUID_SysMouse, &pMouse_, NULL);
+	HRESULT hrDevice = pInput_->CreateDevice(GUID_SysMouse, &pMouse_, nullptr);
 	if (FAILED(hrDevice)) {
 		Logger::WriteTop(L"DirectInput：マウスのデバイスオブジェクト作成失敗");
 		return false;
@@ -147,14 +147,14 @@ bool DirectInput::_InitializeJoypad()
 }
 BOOL CALLBACK DirectInput::_GetJoypadStaticCallback(LPDIDEVICEINSTANCE lpddi, LPVOID pvRef)
 {
-	DirectInput* input = (DirectInput*)pvRef;
+	auto* input = (DirectInput*)pvRef;
 	return input->_GetJoypadCallback(lpddi);
 }
 BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 {
 	Logger::WriteTop(L"DirectInput：ジョイパッドを見つけました");
-	LPDIRECTINPUTDEVICE8 pJoypad = NULL;
-	HRESULT hrDevice = pInput_->CreateDevice(lpddi->guidInstance, &pJoypad, NULL);
+	LPDIRECTINPUTDEVICE8 pJoypad = nullptr;
+	HRESULT hrDevice = pInput_->CreateDevice(lpddi->guidInstance, &pJoypad, nullptr);
 	if (FAILED(hrDevice)) {
 		Logger::WriteTop(L"DirectInput：入力装置のデバイスオブジェクト作成失敗");
 		return DIENUM_CONTINUE;
@@ -173,7 +173,7 @@ BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 
 	HRESULT hrFormat = pJoypad->SetDataFormat(&c_dfDIJoystick);
 	if (FAILED(hrFormat)) {
-		if (pJoypad != NULL)
+		if (pJoypad != nullptr)
 			pJoypad->Release();
 		Logger::WriteTop(L"DirectInput：ジョイパッドのデータフォーマット設定失敗");
 		return DIENUM_CONTINUE;
@@ -181,7 +181,7 @@ BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 
 	HRESULT hrCoop = pJoypad->SetCooperativeLevel(hWnd_, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND);
 	if (FAILED(hrCoop)) {
-		if (pJoypad != NULL)
+		if (pJoypad != nullptr)
 			pJoypad->Release();
 		Logger::WriteTop(L"DirectInput：ジョイパッドの動作設定失敗");
 		return DIENUM_CONTINUE;
@@ -197,7 +197,7 @@ BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 	diprg.lMax = +1000;
 	HRESULT hrRangeX = pJoypad->SetProperty(DIPROP_RANGE, &diprg.diph);
 	if (FAILED(hrRangeX)) {
-		if (pJoypad != NULL)
+		if (pJoypad != nullptr)
 			pJoypad->Release();
 		Logger::WriteTop(L"DirectInput：ジョイパッドデバイスのx軸関係の設定に失敗しました");
 		return DIENUM_CONTINUE;
@@ -207,7 +207,7 @@ BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 	diprg.diph.dwObj = DIJOFS_Y;
 	HRESULT hrRangeY = pJoypad->SetProperty(DIPROP_RANGE, &diprg.diph);
 	if (FAILED(hrRangeY)) {
-		if (pJoypad != NULL)
+		if (pJoypad != nullptr)
 			pJoypad->Release();
 		Logger::WriteTop(L"DirectInput：ジョイパッドデバイスのy軸関係の設定に失敗しました");
 		return DIENUM_CONTINUE;
@@ -229,7 +229,7 @@ BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 	dipdw.dwData = 2500;
 	HRESULT hrDeadX = pJoypad->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
 	if (FAILED(hrDeadX)) {
-		if (pJoypad != NULL)
+		if (pJoypad != nullptr)
 			pJoypad->Release();
 		Logger::WriteTop(L"DirectInput：ジョイパッドデバイスのx軸の無効ゾーンの設定に失敗しました");
 		return DIENUM_CONTINUE;
@@ -239,7 +239,7 @@ BOOL DirectInput::_GetJoypadCallback(LPDIDEVICEINSTANCE lpddi)
 	dipdw.diph.dwObj = DIJOFS_Y;
 	HRESULT hrDeadY = pJoypad->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
 	if (FAILED(hrDeadY)) {
-		if (pJoypad != NULL)
+		if (pJoypad != nullptr)
 			pJoypad->Release();
 		Logger::WriteTop(L"DirectInput：ジョイパッドデバイスのy軸の無効ゾーンの設定に失敗しました");
 		return DIENUM_CONTINUE;
@@ -316,7 +316,7 @@ int DirectInput::_GetStateSub(bool flag, int state)
 
 bool DirectInput::_IdleKeyboard()
 {
-	if (!pInput_ || !pKeyboard_)
+	if ((pInput_ == nullptr) || (pKeyboard_ == nullptr))
 		return false;
 
 	HRESULT hr = pKeyboard_->GetDeviceState(MAX_KEY, stateKey_);
@@ -329,10 +329,10 @@ bool DirectInput::_IdleKeyboard()
 }
 bool DirectInput::_IdleJoypad()
 {
-	if (pJoypad_.size() == 0)
+	if (pJoypad_.empty())
 		return false;
 	for (int iPad = 0; iPad < pJoypad_.size(); iPad++) {
-		if (!pInput_ || !pJoypad_[iPad])
+		if ((pInput_ == nullptr) || (pJoypad_[iPad] == nullptr))
 			return false;
 
 		pJoypad_[iPad]->Poll();
@@ -347,7 +347,7 @@ bool DirectInput::_IdleJoypad()
 }
 bool DirectInput::_IdleMouse()
 {
-	if (!pInput_ || !pMouse_)
+	if ((pInput_ == nullptr) || (pMouse_ == nullptr))
 		return false;
 
 	HRESULT hr = pMouse_->GetDeviceState(sizeof(DIMOUSESTATE), &stateMouse_);
@@ -382,19 +382,19 @@ void DirectInput::Update()
 			bufPad_[iPad][iButton + 4] = _GetPadButton(iPad, iButton, bufPad_[iPad][iButton + 4]);
 	}
 }
-int DirectInput::GetKeyState(int key)
+int DirectInput::GetKeyState(int key) const
 {
 	if (key < 0 || key >= MAX_KEY)
 		return KEY_FREE;
 	return bufKey_[key];
 }
-int DirectInput::GetMouseState(int button)
+int DirectInput::GetMouseState(int button) const
 {
 	if (button < 0 || button >= MAX_MOUSE_BUTTON)
 		return KEY_FREE;
 	return bufMouse_[button];
 }
-int DirectInput::GetPadState(int padNo, int button)
+int DirectInput::GetPadState(int padNo, int button) const
 {
 	int res = KEY_FREE;
 	if (padNo < bufPad_.size())
@@ -424,8 +424,8 @@ void DirectInput::ResetMouseState()
 }
 void DirectInput::ResetKeyState()
 {
-	for (int iKey = 0; iKey < MAX_KEY; iKey++)
-		bufKey_[iKey] = KEY_FREE;
+	for (int& iKey : bufKey_)
+		iKey = KEY_FREE;
 	ZeroMemory(&stateKey_, sizeof(stateKey_));
 }
 void DirectInput::ResetPadState()
@@ -460,26 +460,19 @@ VirtualKey::VirtualKey(int keyboard, int padIndex, int padButton)
 	padButton_ = padButton;
 	state_ = KEY_FREE;
 }
-VirtualKey::~VirtualKey()
-{
-}
+VirtualKey::~VirtualKey() = default;
 
 //VirtualKeyManager
-VirtualKeyManager::VirtualKeyManager()
-{
-}
-VirtualKeyManager::~VirtualKeyManager()
-{
-}
+VirtualKeyManager::VirtualKeyManager() = default;
+VirtualKeyManager::~VirtualKeyManager() = default;
 
 void VirtualKeyManager::Update()
 {
 	DirectInput::Update();
 
-	std::map<int, gstd::ref_count_ptr<VirtualKey>>::iterator itr = mapKey_.begin();
-	for (; itr != mapKey_.end(); itr++) {
-		int id = itr->first;
-		gstd::ref_count_ptr<VirtualKey> key = itr->second;
+	for (auto& map : mapKey_) {
+		int id = map.first;
+		gstd::ref_count_ptr<VirtualKey> key = map.second;
 
 		int state = _GetVirtualKeyState(id);
 		key->SetKeyState(state);
@@ -488,18 +481,18 @@ void VirtualKeyManager::Update()
 void VirtualKeyManager::ClearKeyState()
 {
 	DirectInput::ResetInputState();
-	std::map<int, gstd::ref_count_ptr<VirtualKey>>::iterator itr = mapKey_.begin();
-	for (; itr != mapKey_.end(); itr++) {
-		gstd::ref_count_ptr<VirtualKey> key = itr->second;
+	for (auto& map : mapKey_) {
+		gstd::ref_count_ptr<VirtualKey> key = map.second;
 		key->SetKeyState(KEY_FREE);
 	}
 }
 int VirtualKeyManager::_GetVirtualKeyState(int id)
 {
-	if (mapKey_.find(id) == mapKey_.end())
+	auto keyItr = mapKey_.find(id);
+	if (keyItr == mapKey_.end())
 		return KEY_FREE;
 
-	gstd::ref_count_ptr<VirtualKey> key = mapKey_[id];
+	gstd::ref_count_ptr<VirtualKey> key = keyItr->second;
 
 	int res = KEY_FREE;
 	if (key->keyboard_ >= 0 && key->keyboard_ < MAX_KEY)
@@ -517,31 +510,30 @@ int VirtualKeyManager::_GetVirtualKeyState(int id)
 
 int VirtualKeyManager::GetVirtualKeyState(int id)
 {
-	if (mapKey_.find(id) == mapKey_.end())
-		return KEY_FREE;
-	gstd::ref_count_ptr<VirtualKey> key = mapKey_[id];
-	return key->GetKeyState();
+	auto keyItr = mapKey_.find(id);
+	if (keyItr != mapKey_.end()) {
+		gstd::ref_count_ptr<VirtualKey> key = keyItr->second;
+		return key->GetKeyState();
+	}
+	return KEY_FREE;
 }
 
 gstd::ref_count_ptr<VirtualKey> VirtualKeyManager::GetVirtualKey(int id)
 {
-	if (mapKey_.find(id) == mapKey_.end())
-		return NULL;
-	return mapKey_[id];
+	auto keyItr = mapKey_.find(id);
+	if (keyItr != mapKey_.end())
+		return keyItr->second;
+	return nullptr;
 }
 bool VirtualKeyManager::IsTargetKeyCode(int key)
 {
-	bool res = false;
-	std::map<int, gstd::ref_count_ptr<VirtualKey>>::iterator itr = mapKey_.begin();
-	for (; itr != mapKey_.end(); itr++) {
-		gstd::ref_count_ptr<VirtualKey> vKey = itr->second;
+	for (auto map : mapKey_) {
+		gstd::ref_count_ptr<VirtualKey> vKey = map.second;
 		int keyCode = vKey->GetKeyCode();
-		if (key == keyCode) {
-			res = true;
-			break;
-		}
+		if (key == keyCode)
+			return true;
 	}
-	return res;
+	return false;
 }
 
 /**********************************************************
@@ -553,9 +545,7 @@ KeyReplayManager::KeyReplayManager(VirtualKeyManager* input)
 	input_ = input;
 	state_ = STATE_RECORD;
 }
-KeyReplayManager::~KeyReplayManager()
-{
-}
+KeyReplayManager::~KeyReplayManager() = default;
 void KeyReplayManager::AddTarget(int key)
 {
 	listTarget_.push_back(key);
@@ -564,9 +554,7 @@ void KeyReplayManager::AddTarget(int key)
 void KeyReplayManager::Update()
 {
 	if (state_ == STATE_RECORD) {
-		std::list<int>::iterator itrTarget = listTarget_.begin();
-		for (; itrTarget != listTarget_.end(); itrTarget++) {
-			int idKey = *itrTarget;
+		for (int idKey : listTarget_) {
 			int keyState = input_->GetVirtualKeyState(idKey);
 			bool bInsert = (frame_ == 0 || mapLastKeyState_[idKey] != keyState);
 			if (bInsert) {
@@ -579,11 +567,8 @@ void KeyReplayManager::Update()
 			mapLastKeyState_[idKey] = keyState;
 		}
 	} else if (state_ == STATE_REPLAY) {
-		std::list<int>::iterator itrTarget = listTarget_.begin();
-		for (; itrTarget != listTarget_.end(); itrTarget++) {
-			int idKey = *itrTarget;
-			std::list<ReplayData>::iterator itrData = listReplayData_.begin();
-			for (; itrData != listReplayData_.end();) {
+		for (int idKey : listTarget_) {
+			for (auto itrData = listReplayData_.begin(); itrData != listReplayData_.end();) {
 				ReplayData data = *itrData;
 				if (data.frame_ > frame_)
 					break;
@@ -603,20 +588,16 @@ void KeyReplayManager::Update()
 	}
 	frame_++;
 }
-bool KeyReplayManager::IsTargetKeyCode(int key)
+bool KeyReplayManager::IsTargetKeyCode(int key) const
 {
-	bool res = false;
-	std::list<int>::iterator itrTarget = listTarget_.begin();
-	for (; itrTarget != listTarget_.end(); itrTarget++) {
-		int idKey = *itrTarget;
+	for (int idKey : listTarget_) {
 		gstd::ref_count_ptr<VirtualKey> vKey = input_->GetVirtualKey(idKey);
 		int keyCode = vKey->GetKeyCode();
 		if (key == keyCode) {
-			res = true;
-			break;
+			return true;
 		}
 	}
-	return res;
+	return false;
 }
 void KeyReplayManager::ReadRecord(gstd::RecordBuffer& record)
 {
@@ -638,9 +619,7 @@ void KeyReplayManager::WriteRecord(gstd::RecordBuffer& record)
 	record.SetRecordAsInteger("count", countReplayData);
 
 	ByteBuffer buffer;
-	std::list<ReplayData>::iterator itrData = listReplayData_.begin();
-	for (; itrData != listReplayData_.end(); itrData++) {
-		ReplayData data = *itrData;
+	for (auto& data : listReplayData_) {
 		buffer.Write(&data, sizeof(ReplayData));
 	}
 

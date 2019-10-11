@@ -5,12 +5,8 @@
 /**********************************************************
 //EApplication
 **********************************************************/
-EApplication::EApplication()
-{
-}
-EApplication::~EApplication()
-{
-}
+EApplication::EApplication() = default;
+EApplication::~EApplication() = default;
 bool EApplication::_Initialize()
 {
 	ELogger* logger = ELogger::GetInstance();
@@ -26,7 +22,7 @@ bool EApplication::_Initialize()
 
 	DnhConfiguration* config = DnhConfiguration::CreateInstance();
 	std::wstring configWindowTitle = config->GetWindowTitle();
-	if (configWindowTitle.size() > 0)
+	if (!configWindowTitle.empty())
 		appName = configWindowTitle;
 
 	//マウス表示
@@ -194,12 +190,8 @@ bool EApplication::_Finalize()
 /**********************************************************
 //EDirectGraphics
 **********************************************************/
-EDirectGraphics::EDirectGraphics()
-{
-}
-EDirectGraphics::~EDirectGraphics()
-{
-}
+EDirectGraphics::EDirectGraphics() = default;
+EDirectGraphics::~EDirectGraphics() = default;
 bool EDirectGraphics::Initialize()
 {
 	DnhConfiguration* dnhConfig = DnhConfiguration::GetInstance();

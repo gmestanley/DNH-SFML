@@ -8,9 +8,7 @@ StgPackageController::StgPackageController(StgSystemController* systemController
 {
 	systemController_ = systemController;
 }
-StgPackageController::~StgPackageController()
-{
-}
+StgPackageController::~StgPackageController() = default;
 void StgPackageController::Initialize()
 {
 	infoPackage_ = new StgPackageInformation();
@@ -23,7 +21,7 @@ void StgPackageController::Initialize()
 	//メインスクリプト
 	std::wstring pathMainScript = infoScript->GetScriptPath();
 	ELogger::WriteTop(StringUtility::Format(L"パッケージスクリプト[%s]", pathMainScript.c_str()));
-	_int64 idScript = scriptManager_->LoadScript(pathMainScript, StgPackageScript::TYPE_PACKAGE_MAIN);
+	int64_t idScript = scriptManager_->LoadScript(pathMainScript, StgPackageScript::TYPE_PACKAGE_MAIN);
 	scriptManager_->StartScript(idScript);
 
 	infoPackage_->SetPackageStartTime(timeGetTime());
@@ -32,7 +30,7 @@ void StgPackageController::Work()
 {
 	scriptManager_->Work();
 	//スクリプトが閉じられた場合は再度実行(描画の継ぎ目を目立たなくする)
-	if (scriptManager_->IsHasCloseScliptWork())
+	if (scriptManager_->IsHasCloseScriptWork())
 		scriptManager_->Work();
 }
 void StgPackageController::Render()
@@ -51,7 +49,7 @@ void StgPackageController::RenderToTransitionTexture()
 	scriptManager_->Render();
 
 	graphics->EndScene();
-	graphics->SetRenderTarget(NULL);
+	graphics->SetRenderTarget(nullptr);
 }
 
 /**********************************************************
@@ -62,12 +60,10 @@ StgPackageInformation::StgPackageInformation()
 	bEndPackage_ = false;
 	timeStart_ = 0;
 }
-StgPackageInformation::~StgPackageInformation()
-{
-}
+StgPackageInformation::~StgPackageInformation() = default;
 void StgPackageInformation::InitializeStageData()
 {
-	infoReplay_ = NULL;
+	infoReplay_ = nullptr;
 	listStageData_.clear();
 
 	nextStageStartData_ = new StgStageStartData();

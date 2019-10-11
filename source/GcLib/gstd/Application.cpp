@@ -6,18 +6,18 @@ using namespace gstd;
 /**********************************************************
 //Application
 **********************************************************/
-Application* Application::thisBase_ = NULL;
+Application* Application::thisBase_ = nullptr;
 Application::Application()
 {
 	::InitCommonControls();
 }
 Application::~Application()
 {
-	thisBase_ = NULL;
+	thisBase_ = nullptr;
 }
 bool Application::Initialize()
 {
-	if (thisBase_ != NULL)
+	if (thisBase_ != nullptr)
 		return false;
 	thisBase_ = this;
 	hAppInstance_ = ::GetModuleHandle(NULL);
@@ -27,13 +27,12 @@ bool Application::Initialize()
 }
 bool Application::Run()
 {
-	if (bAppRun_ == false) {
+	if (!bAppRun_) {
 		return false;
 	}
 
 	try {
-		bool res = _Initialize();
-		if (res == false)
+		if (!_Initialize())
 			throw gstd::wexception(L"初期化中に例外が発生しました。");
 	} catch (std::exception& e) {
 		std::wstring log = StringUtility::ConvertMultiToWide(e.what());
@@ -52,20 +51,20 @@ bool Application::Run()
 
 	MSG msg;
 	while (true) {
-		if (bAppRun_ == false)
+		if (!bAppRun_)
 			break;
-		if (::PeekMessage(&msg, 0, 0, 0, PM_NOREMOVE)) {
-			if (!::GetMessage(&msg, NULL, 0, 0))
+		if (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE) != 0) {
+			if (::GetMessage(&msg, NULL, 0, 0) == 0)
 				break;
 			::TranslateMessage(&msg);
 			::DispatchMessage(&msg);
 		} else {
-			if (bAppActive_ == false) {
+			if (!bAppActive_) {
 				Sleep(10);
 				continue;
 			}
 			try {
-				if (_Loop() == false)
+				if (!_Loop())
 					break;
 			} catch (std::exception& e) {
 				std::wstring log = StringUtility::ConvertMultiToWide(e.what());
@@ -89,8 +88,7 @@ bool Application::Run()
 	bAppRun_ = false;
 
 	try {
-		bool res = _Finalize();
-		if (res == false)
+		if (!_Finalize())
 			throw gstd::wexception(L"終了中に例外が発生しました。");
 	} catch (std::exception& e) {
 		std::wstring log = StringUtility::ConvertMultiToWide(e.what());
