@@ -1916,26 +1916,26 @@ void parser::parse_statements(script_engine::block* block)
 
 			case tk_open_bra:
 				block->codes.push_back(code(lex->line, script_engine::pc_push_variable_writable, s->level, s->variable));
-				lex->advance();
-				parse_expression(block);
-				if (lex->next != tk_close_bra) {
-					std::wstring error;
-					error += L"\"]\" is nessasary.\r\n";
-					error += L"(\"]\"が必要です)";
-					throw parser_error(error);
-				}
-				lex->advance();
-				write_operation(block, "index!", 2);
-				if (lex->next != tk_assign) {
-					std::wstring error;
-					error += L"\"=\" is nessasary.\r\n";
-					error += L"(\"=\"が必要です)";
-					throw parser_error(error);
-				}
-				lex->advance();
-				parse_expression(block);
-				block->codes.push_back(code(lex->line, script_engine::pc_assign_writable));
-				break;
+                while (lex->next == tk_open_bra) {
+                    lex->advance();
+                    parse_expression(block);
+                    if (lex->next != tk_close_bra) {
+                        std::wstring error;
+                        error += L"\"]\" is required.\r\n";
+                        throw parser_error(error);
+                    }
+                    lex->advance();
+                    write_operation(block, "index!", 2);
+                }
+                if (lex->next != tk_assign) {
+                    std::wstring error;
+                    error += L"\"=\" is required.\r\n";
+                    throw parser_error(error);
+                }
+                lex->advance();
+                parse_expression(block);
+                block->codes.push_back(code(lex->line, script_engine::pc_assign_writable));
+                break;
 
 			case tk_add_assign:
 			case tk_subtract_assign:
