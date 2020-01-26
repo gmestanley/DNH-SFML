@@ -180,6 +180,7 @@ public:
 	static gstd::value Func_CloseStgScene(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetReplayFps(gstd::script_machine* machine, int argc, gstd::value const* argv);
 
+
 	//STG共通関数：自機
 	static gstd::value Func_GetPlayerObjectID(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetPlayerScriptID(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -211,6 +212,11 @@ public:
 	static gstd::value Func_IsPermitPlayerSpell(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_IsPlayerLastSpellWait(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_IsPlayerSpellActive(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_SetPlayerItemScope(gstd::script_machine* machine, int argc, const gstd::value* argv);
+	static gstd::value Func_GetPlayerItemScope(gstd::script_machine* machine, int argc, const gstd::value* argv);
+	static gstd::value Func_SetPlayerStateEndEnable(gstd::script_machine* machine, int argc, const gstd::value* argv);
+	static gstd::value Func_SetPlayerShootdownEventEnable(gstd::script_machine* machine, int argc, const gstd::value* argv);
+	static gstd::value Func_SetPlayerRebirthPosition(gstd::script_machine* machine, int argc, const gstd::value* argv);
 
 	//STG共通関数：敵
 	static gstd::value Func_GetEnemyBossSceneObjectID(gstd::script_machine* machine, int argc, gstd::value const* argv);

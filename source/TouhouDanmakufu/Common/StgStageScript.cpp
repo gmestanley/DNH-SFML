@@ -275,6 +275,11 @@ function const stgFunction[] = {
 	{ "IsPlayerLastSpellWait", StgStageScript::Func_IsPlayerLastSpellWait, 0 },
 	{ "IsPlayerSpellActive", StgStageScript::Func_IsPlayerSpellActive, 0 },
 	{ "GetPlayerScriptID", StgStageScript::Func_GetPlayerScriptID, 0 },
+	{ "SetPlayerItemScope", StgStageScript::Func_SetPlayerItemScope, 1 },
+	{ "GetPlayerItemScope", StgStageScript::Func_GetPlayerItemScope, 0 },
+	{ "SetPlayerStateEndEnable", StgStageScript::Func_SetPlayerStateEndEnable, 1 },
+	{ "SetPlayerShootdownEventEnable", StgStageScript::Func_SetPlayerShootdownEventEnable, 1 },
+	{ "SetPlayerRebirthPosition", StgStageScript::Func_SetPlayerRebirthPosition, 2 },
 
 	//STG共通関数：敵
 	{ "GetEnemyBossSceneObjectID", StgStageScript::Func_GetEnemyBossSceneObjectID, 0 },
@@ -917,6 +922,7 @@ gstd::value StgStageScript::Func_SetPlayerDownStateFrame(gstd::script_machine* m
 
 	return value();
 }
+
 gstd::value StgStageScript::Func_SetPlayerRebirthFrame(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	StgStageScript* script = (StgStageScript*)machine->data;
@@ -980,6 +986,58 @@ gstd::value StgStageScript::Func_SetForbidPlayerSpell(gstd::script_machine* mach
 
 	bool bForbid = argv[0].as_boolean();
 	obj->SetForbidSpell(bForbid);
+
+	return value();
+}
+gstd::value StgStageScript::Func_SetPlayerItemScope(gstd::script_machine* machine, int argc, const gstd::value* argv) {
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	ref_count_ptr<StgPlayerObject>::unsync obj = stageController->GetPlayerObject();
+	if (obj == nullptr)return value();
+
+	double radius = argv[0].as_real();
+	obj->SetItemIntersectionRadius(radius);
+
+	return value();
+}
+gstd::value StgStageScript::Func_GetPlayerItemScope(gstd::script_machine* machine, int argc, const gstd::value* argv) {
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	ref_count_ptr<StgPlayerObject>::unsync obj = stageController->GetPlayerObject();
+	if (obj == nullptr) return value(machine->get_engine()->get_real_type(), 0.0f);
+	return value(machine->get_engine()->get_real_type(), (double)obj->GetItemIntersectionRadius());
+}
+gstd::value StgStageScript::Func_SetPlayerStateEndEnable(gstd::script_machine* machine, int argc, const gstd::value* argv) {
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	ref_count_ptr<StgPlayerObject>::unsync obj = stageController->GetPlayerObject();
+	if (obj == nullptr)return value();
+
+	bool bEnable = argv[0].as_boolean();
+	obj->SetEnableStateEnd(bEnable);
+
+	return value();
+}
+gstd::value StgStageScript::Func_SetPlayerShootdownEventEnable(gstd::script_machine* machine, int argc, const gstd::value* argv) {
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	ref_count_ptr<StgPlayerObject>::unsync obj = stageController->GetPlayerObject();
+	if (obj == nullptr)return value();
+
+	bool bEnable = argv[0].as_boolean();
+	obj->SetEnableShootdownEvent(bEnable);
+
+	return value();
+}
+gstd::value StgStageScript::Func_SetPlayerRebirthPosition(gstd::script_machine* machine, int argc, const gstd::value* argv) {
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	ref_count_ptr<StgPlayerObject>::unsync obj = stageController->GetPlayerObject();
+	if (obj == nullptr)return value();
+
+	double x = argv[0].as_real();
+	double y = argv[1].as_real();
+	obj->SetRebirthPosition(x, y);
 
 	return value();
 }
