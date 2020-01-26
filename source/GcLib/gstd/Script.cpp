@@ -56,7 +56,7 @@ std::wstring gstd::to_wide(std::string const& s)
 	return result;
 }
 
-long double fmodl2(long double i, long double j)
+double fmodl2(double i, double j)
 {
 	if (j < 0) {
 		// return (i < 0) ? -(-i % -j) : (i % -j) + j;
@@ -100,27 +100,24 @@ void value::concatenate(value const& x)
 	data->array_value.length = t;
 }
 
-long double value::as_real() const
-{
+double value::as_real() const {
 	if (data == NULL)
 		return 0.0L;
-	else {
-		switch (data->type->get_kind()) {
-		case type_data::tk_real:
-			return data->real_value;
-		case type_data::tk_char:
-			return static_cast<long double>(data->char_value);
-		case type_data::tk_boolean:
-			return (data->boolean_value) ? 1.0L : 0.0L;
-		case type_data::tk_array:
-			if (data->type->get_element()->get_kind() == type_data::tk_char)
-				return std::atof(to_mbcs(as_string()).c_str());
-			else
-				return 0.0L;
-		default:
-			assert(false);
+	switch (data->type->get_kind()) {
+	case type_data::type_kind::tk_real:
+		return data->real_value;
+	case type_data::type_kind::tk_char:
+		return static_cast <float> (data->char_value);
+	case type_data::type_kind::tk_boolean:
+		return (data->boolean_value) ? 1.0L : 0.0L;
+	case type_data::type_kind::tk_array:
+		if (data->type->get_element()->get_kind() == type_data::type_kind::tk_char)
+			return std::atof(to_mbcs(as_string()).c_str());
+		else
 			return 0.0L;
-		}
+	default:
+		assert(false);
+		return 0.0L;
 	}
 }
 
@@ -338,7 +335,7 @@ class scanner {
 public:
 	token_kind next;
 	std::string word;
-	long double real_value;
+	double real_value;
 	wchar_t char_value;
 	std::wstring string_value;
 	int line;
@@ -894,8 +891,8 @@ value divide(script_machine* machine, int argc, value const* argv)
 #endif
 value remainder(script_machine* machine, int argc, value const* argv)
 {
-	long double x = argv[0].as_real();
-	long double y = argv[1].as_real();
+	double x = argv[0].as_real();
+	double y = argv[1].as_real();
 	return value(machine->get_engine()->get_real_type(), fmodl2(x, y));
 }
 
@@ -904,9 +901,9 @@ value remainder(script_machine* machine, int argc, value const* argv)
 #endif
 value modc(script_machine* machine, int argc, value const* argv)
 {
-	long double x = argv[0].as_real();
-	long double y = argv[1].as_real();
-	return value(machine->get_engine()->get_real_type(), fmodl(x, y));
+	double x = argv[0].as_real();
+	double y = argv[1].as_real();
+	return value(machine->get_engine()->get_real_type(), fmod(x, y));
 }
 
 #ifdef __BORLANDC__
@@ -922,7 +919,7 @@ value negative(script_machine* machine, int argc, value const* argv)
 #endif
 value power(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), std::powl(argv[0].as_real(), argv[1].as_real()));
+	return value(machine->get_engine()->get_real_type(), std::pow(argv[0].as_real(), argv[1].as_real()));
 }
 
 #ifdef __BORLANDC__
@@ -974,7 +971,7 @@ value compare(script_machine* machine, int argc, value const* argv)
 		default:
 			assert(false);
 		}
-		return value(machine->get_engine()->get_real_type(), static_cast<long double>(r));
+		return value(machine->get_engine()->get_real_type(), static_cast<double>(r));
 	} else {
 		std::wstring error;
 		error += L"Variables of different types are being compared\r\n";
@@ -1059,7 +1056,7 @@ value not_(script_machine* machine, int argc, value const* argv)
 value length(script_machine* machine, int argc, value const* argv)
 {
 	assert(argc == 1);
-	return value(machine->get_engine()->get_real_type(), static_cast<long double>(argv[0].length_as_array()));
+	return value(machine->get_engine()->get_real_type(), static_cast<double>(argv[0].length_as_array()));
 }
 
 value index(script_machine* machine, int argc, value const* argv)
@@ -1283,7 +1280,7 @@ value concatenate(script_machine* machine, int argc, value const* argv)
 #endif
 value round(script_machine* machine, int argc, value const* argv)
 {
-	long double r = std::floorl(argv[0].as_real() + 0.5);
+	double r = std::floorl(argv[0].as_real() + 0.5);
 	return value(machine->get_engine()->get_real_type(), r);
 }
 
@@ -1292,7 +1289,7 @@ value round(script_machine* machine, int argc, value const* argv)
 #endif
 value truncate(script_machine* machine, int argc, value const* argv)
 {
-	long double r = argv[0].as_real();
+	double r = argv[0].as_real();
 	r = (r > 0) ? std::floorl(r) : std::ceill(r);
 	return value(machine->get_engine()->get_real_type(), r);
 }
@@ -1302,7 +1299,7 @@ value truncate(script_machine* machine, int argc, value const* argv)
 #endif
 value ceil(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), std::ceill(argv[0].as_real()));
+	return value(machine->get_engine()->get_real_type(), std::ceil(argv[0].as_real()));
 }
 
 #ifdef __BORLANDC__
@@ -1310,7 +1307,7 @@ value ceil(script_machine* machine, int argc, value const* argv)
 #endif
 value floor(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), std::floorl(argv[0].as_real()));
+	return value(machine->get_engine()->get_real_type(), std::floor(argv[0].as_real()));
 }
 
 #ifdef __BORLANDC__
@@ -1318,7 +1315,7 @@ value floor(script_machine* machine, int argc, value const* argv)
 #endif
 value absolute(script_machine* machine, int argc, value const* argv)
 {
-	long double r = std::fabsl(argv[0].as_real());
+	double r = std::fabsl(argv[0].as_real());
 	return value(machine->get_engine()->get_real_type(), r);
 }
 
@@ -1327,7 +1324,7 @@ value absolute(script_machine* machine, int argc, value const* argv)
 #endif
 value pi(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), (long double)3.14159265358979323846);
+	return value(machine->get_engine()->get_real_type(), (double)3.14159265358979323846);
 }
 
 #ifdef __BORLANDC__
@@ -2884,7 +2881,7 @@ void script_machine::advance()
 			stack_t* stack = &current->stack;
 			value* i = &stack->at[stack->length - 1];
 			assert(i->get_type()->get_kind() == type_data::tk_real);
-			long double r = i->as_real();
+			double r = i->as_real();
 			if (r > 0)
 				i->set(engine->get_real_type(), r - 1);
 			else {

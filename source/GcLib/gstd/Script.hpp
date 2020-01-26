@@ -241,9 +241,9 @@ private:
 class value {
 public:
 	value()
-		: data(NULL) {}
+		: data(nullptr) {}
 
-	value(type_data* t, long double v)
+	value(type_data* t, double v)
 	{
 		data = new body();
 		data->ref_count = 1;
@@ -283,21 +283,16 @@ public:
 
 	value& operator=(value const& source)
 	{
-		if (source.data != NULL) {
-			++(source.data->ref_count);
-		}
-		release();
 		data = source.data;
 		return *this;
 	}
 
 	bool has_data() const
 	{
-		return data != NULL;
+		return data != nullptr;
 	}
 
-	void set(type_data* t, long double v)
-	{
+	void set(type_data* t, double v) {
 		unique();
 		data->type = t;
 		data->real_value = v;
@@ -313,7 +308,7 @@ public:
 	void append(type_data* t, value const& x);
 	void concatenate(value const& x);
 
-	long double as_real() const;
+	double as_real() const;
 	wchar_t as_char() const;
 	bool as_boolean() const;
 	std::wstring as_string() const;
