@@ -43,6 +43,8 @@ public:
 		STATE_HIT,
 		STATE_DOWN,
 		STATE_END,
+
+		REBIRTH_DEFAULT = -99999,
 	};
 
 public:
@@ -103,11 +105,16 @@ public:
 	int GetAutoItemCollectY() { return yAutoItemCollect_; }
 	void SetAutoItemCollectY(int y) { yAutoItemCollect_ = y; }
 
+	void SetRebirthPosition(double x, double y) { rebirthX_ = x; rebirthY_ = y; }
+
 	bool IsPermitShot();
 	void SetForbidShot(bool bForbid) { bForbidShot_ = bForbid; }
 	bool IsPermitSpell();
 	void SetForbidSpell(bool bForbid) { bForbidSpell_ = bForbid; }
 	bool IsWaitLastSpell();
+
+	void SetEnableStateEnd(bool bEnable) { enableStateEnd_ = bEnable; }
+	void SetEnableShootdownEvent(bool bEnable) { enableShootdownEvent_ = bEnable; }
 
 protected:
 	void _InitializeRebirth();
@@ -138,6 +145,12 @@ protected:
 	bool bForbidShot_;
 	bool bForbidSpell_;
 	int yAutoItemCollect_;
+
+	bool enableStateEnd_;
+	bool enableShootdownEvent_;
+
+	double rebirthX_;
+	double rebirthY_;
 };
 
 class StgIntersectionTarget_Player : public StgIntersectionTarget_Circle {

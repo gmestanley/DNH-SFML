@@ -36,6 +36,12 @@ StgPlayerObject::StgPlayerObject(StgStageController* stageController)
 	bForbidSpell_ = false;
 	yAutoItemCollect_ = -256 * 256;
 
+	enableStateEnd_ = true;
+	enableShootdownEvent_ = true;
+
+	rebirthX_ = REBIRTH_DEFAULT;
+	rebirthY_ = REBIRTH_DEFAULT;
+
 	hitObjectID_ = DxScript::ID_INVALID;
 
 	_InitializeRebirth();
@@ -49,8 +55,14 @@ void StgPlayerObject::_InitializeRebirth()
 	int stgWidth = rcStgFrame.right - rcStgFrame.left;
 	int stgHeight = rcStgFrame.bottom - rcStgFrame.top;
 
-	SetX(stgWidth / 2);
-	SetY(rcStgFrame.bottom - 48);
+	if (rebirthX_ == REBIRTH_DEFAULT)
+		SetX(stgWidth / 2.0);
+	else
+		SetX(rebirthX_);
+	if (rebirthY_ == REBIRTH_DEFAULT)
+		SetY(rcStgFrame.bottom - 48);
+	else
+		SetY(rebirthY_);
 }
 void StgPlayerObject::Work()
 {
@@ -127,14 +139,24 @@ void StgPlayerObject::Work()
 				}
 				if (!bEnemyLastSpell)
 					infoPlayer_->life_--;
-				scriptManager->RequestEventAll(StgStagePlayerScript::EV_PLAYER_SHOOTDOWN);
 
-				if (infoPlayer_->life_ >= 0) {
+				if (enableShootdownEvent_)
+					scriptManager->RequestEventAll(StgStagePlayerScript::EV_PLAYER_SHOOTDOWN);
+
+				if (infoPlayer_->life_ >= 0 || !enableStateEnd_) {
 					bVisible_ = false;
 					state_ = STATE_DOWN;
 					frameState_ = frameStateDown_;
 				} else {
 					state_ = STATE_END;
+				}
+
+				//Also prevents STATE_END and STATE_DOWN
+				if (!enableShootdownEvent_) {
+					frameState_ = 0;
+					bVisible_ = true;
+					_InitializeRebirth();
+					state_ = STATE_NORMAL;
 				}
 			}
 		}
