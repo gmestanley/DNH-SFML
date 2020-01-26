@@ -725,7 +725,7 @@ void StgItemObject::_CreateScoreItem()
 	objectManager->AddObject(obj);
 	itemManager->AddItem(obj);
 }
-void StgItemObject::_NotifyEventToPlayerScript(std::vector<long double>& listValue)
+void StgItemObject::_NotifyEventToPlayerScript(std::vector<double>& listValue)
 {
 	//自機スクリプトへ通知
 	ref_count_ptr<StgPlayerObject>::unsync player = stageController_->GetPlayerObject();
@@ -737,7 +737,7 @@ void StgItemObject::_NotifyEventToPlayerScript(std::vector<long double>& listVal
 
 	scriptPlayer->RequestEvent(StgStageItemScript::EV_GET_ITEM, listScriptValue);
 }
-void StgItemObject::_NotifyEventToItemScript(std::vector<long double>& listValue)
+void StgItemObject::_NotifyEventToItemScript(std::vector<double>& listValue)
 {
 	//アイテムスクリプトへ通知
 	StgStageScriptManager* stageScriptManager = stageController_->GetScriptManagerP();
@@ -794,7 +794,7 @@ StgItemObject_1UP::StgItemObject_1UP(StgStageController* stageController)
 }
 void StgItemObject_1UP::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget)
 {
-	std::vector<long double> listValue;
+	std::vector<double> listValue;
 	listValue.push_back(typeItem_);
 	listValue.push_back(idObject_);
 	_NotifyEventToPlayerScript(listValue);
@@ -814,7 +814,7 @@ StgItemObject_Bomb::StgItemObject_Bomb(StgStageController* stageController)
 }
 void StgItemObject_Bomb::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync ownTarget, ref_count_ptr<StgIntersectionTarget>::unsync otherTarget)
 {
-	std::vector<long double> listValue;
+	std::vector<double> listValue;
 	listValue.push_back(typeItem_);
 	listValue.push_back(idObject_);
 	_NotifyEventToPlayerScript(listValue);
@@ -839,7 +839,7 @@ void StgItemObject_Power::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 		_CreateScoreItem();
 	stageController_->GetStageInformation()->AddScore(score_);
 
-	std::vector<long double> listValue;
+	std::vector<double> listValue;
 	listValue.push_back(typeItem_);
 	listValue.push_back(idObject_);
 	_NotifyEventToPlayerScript(listValue);
@@ -863,7 +863,7 @@ void StgItemObject_Point::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync
 		_CreateScoreItem();
 	stageController_->GetStageInformation()->AddScore(score_);
 
-	std::vector<long double> listValue;
+	std::vector<double> listValue;
 	listValue.push_back(typeItem_);
 	listValue.push_back(idObject_);
 	_NotifyEventToPlayerScript(listValue);
@@ -1083,7 +1083,7 @@ void StgItemObject_User::Intersect(ref_count_ptr<StgIntersectionTarget>::unsync 
 		_CreateScoreItem();
 	stageController_->GetStageInformation()->AddScore(score_);
 
-	std::vector<long double> listValue;
+	std::vector<double> listValue;
 	listValue.push_back(typeItem_);
 	listValue.push_back(idObject_);
 	_NotifyEventToItemScript(listValue);

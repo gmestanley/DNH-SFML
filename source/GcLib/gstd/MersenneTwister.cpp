@@ -11,7 +11,7 @@ using namespace gstd;
 **********************************************************/
 //The original code was the Hiroshima code, it has been adjusted for C++11.
 typedef unsigned long cardinal;
-typedef long double real;
+typedef double real;
 const cardinal MATRIX_A = 0x9908b0dfUL;
 const cardinal UPPER_MASK = 0x80000000UL;
 const cardinal LOWER_MASK = 0x7fffffffUL;
@@ -71,13 +71,13 @@ _int64 MersenneTwister::GetInt64(_int64 min, _int64 max)
 	std::uniform_int_distribution<_int64> new_param(min, max);
 	return new_param(actualTwister);
 }
-long double MersenneTwister::GetReal()
+double MersenneTwister::GetReal()
 {
-	std::uniform_real_distribution<long double> new_param(0, maxReal);
+	std::uniform_real_distribution<double> new_param(0, maxReal);
 	return new_param(actualTwister);
 }
-long double MersenneTwister::GetReal(long double min, long double max)
+double MersenneTwister::GetReal(double min, double max)
 {
-	std::uniform_real_distribution<long double> new_param(min, max);
+	std::uniform_real_distribution<double> new_param(min, max);
 	return new_param(actualTwister);
 }

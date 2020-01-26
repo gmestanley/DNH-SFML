@@ -105,11 +105,11 @@ public:
 	void SetArgumentValue(value v, int index = 0);
 	value GetResultValue() { return valueRes_; }
 
-	value CreateRealValue(long double r);
+	value CreateRealValue(double r);
 	value CreateBooleanValue(bool b);
 	value CreateStringValue(std::string s);
 	value CreateStringValue(std::wstring s);
-	value CreateRealArrayValue(std::vector<long double>& list);
+	value CreateRealArrayValue(std::vector<double>& list);
 	value CreateStringArrayValue(std::vector<std::string>& list);
 	value CreateStringArrayValue(std::vector<std::wstring>& list);
 	value CreateValueArrayValue(std::vector<value>& list);

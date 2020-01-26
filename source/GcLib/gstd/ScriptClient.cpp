@@ -616,10 +616,10 @@ void ScriptClientBase::SetArgumentValue(value v, int index)
 	}
 	listValueArg_[index] = v;
 }
-value ScriptClientBase::CreateRealValue(long double r)
+value ScriptClientBase::CreateRealValue(double r)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
-	value res(typeManager->get_real_type(), (long double)r);
+	value res(typeManager->get_real_type(), (double)r);
 	return res;
 }
 value ScriptClientBase::CreateBooleanValue(bool b)
@@ -641,7 +641,7 @@ value ScriptClientBase::CreateStringValue(std::wstring s)
 	value res(typeManager->get_string_type(), s);
 	return res;
 }
-value ScriptClientBase::CreateRealArrayValue(std::vector<long double>& list)
+value ScriptClientBase::CreateRealArrayValue(std::vector<double>& list)
 {
 	script_type_manager* typeManager = GetEngine()->GetEngine().GetPointer()->get_type_manager();
 	value res(typeManager->get_string_type(), std::wstring());
@@ -763,7 +763,7 @@ value ScriptClientBase::Func_GetScriptArgumentCount(script_machine* machine, int
 {
 	ScriptClientBase* script = (ScriptClientBase*)machine->data;
 	int res = script->listValueArg_.size();
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 value ScriptClientBase::Func_SetScriptResult(script_machine* machine, int argc, value const* argv)
 {
@@ -775,53 +775,53 @@ value ScriptClientBase::Func_SetScriptResult(script_machine* machine, int argc, 
 //組み込み関数：数学系
 value ScriptClientBase::Func_Min(script_machine* machine, int argc, value const* argv)
 {
-	long double v1 = argv[0].as_real();
-	long double v2 = argv[1].as_real();
-	long double res = v1 <= v2 ? v1 : v2;
+	double v1 = argv[0].as_real();
+	double v2 = argv[1].as_real();
+	double res = v1 <= v2 ? v1 : v2;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value ScriptClientBase::Func_Max(script_machine* machine, int argc, value const* argv)
 {
-	long double v1 = argv[0].as_real();
-	long double v2 = argv[1].as_real();
-	long double res = v1 >= v2 ? v1 : v2;
+	double v1 = argv[0].as_real();
+	double v2 = argv[1].as_real();
+	double res = v1 >= v2 ? v1 : v2;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value ScriptClientBase::Func_Log(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), (long double)log(argv[0].as_real()));
+	return value(machine->get_engine()->get_real_type(), (double)log(argv[0].as_real()));
 }
 value ScriptClientBase::Func_Log10(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), (long double)log10(argv[0].as_real()));
+	return value(machine->get_engine()->get_real_type(), (double)log10(argv[0].as_real()));
 }
 value ScriptClientBase::Func_Cos(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), (long double)cos(Math::DegreeToRadian(argv[0].as_real())));
+	return value(machine->get_engine()->get_real_type(), (double)cos(Math::DegreeToRadian(argv[0].as_real())));
 }
 value ScriptClientBase::Func_Sin(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), (long double)sin(Math::DegreeToRadian(argv[0].as_real())));
+	return value(machine->get_engine()->get_real_type(), (double)sin(Math::DegreeToRadian(argv[0].as_real())));
 }
 value ScriptClientBase::Func_Tan(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), (long double)tan(Math::DegreeToRadian(argv[0].as_real())));
+	return value(machine->get_engine()->get_real_type(), (double)tan(Math::DegreeToRadian(argv[0].as_real())));
 }
 value ScriptClientBase::Func_Acos(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), (long double)Math::RadianToDegree(acos(argv[0].as_real())));
+	return value(machine->get_engine()->get_real_type(), (double)Math::RadianToDegree(acos(argv[0].as_real())));
 }
 value ScriptClientBase::Func_Asin(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), (long double)Math::RadianToDegree(asin(argv[0].as_real())));
+	return value(machine->get_engine()->get_real_type(), (double)Math::RadianToDegree(asin(argv[0].as_real())));
 }
 value ScriptClientBase::Func_Atan(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), (long double)Math::RadianToDegree(atan(argv[0].as_real())));
+	return value(machine->get_engine()->get_real_type(), (double)Math::RadianToDegree(atan(argv[0].as_real())));
 }
 value ScriptClientBase::Func_Atan2(script_machine* machine, int argc, value const* argv)
 {
-	return value(machine->get_engine()->get_real_type(), (long double)Math::RadianToDegree(atan2(argv[0].as_real(), argv[1].as_real())));
+	return value(machine->get_engine()->get_real_type(), (double)Math::RadianToDegree(atan2(argv[0].as_real(), argv[1].as_real())));
 }
 value ScriptClientBase::Func_Rand(script_machine* machine, int argc, value const* argv)
 {
@@ -830,7 +830,7 @@ value ScriptClientBase::Func_Rand(script_machine* machine, int argc, value const
 
 	double min = argv[0].as_real();
 	double max = argv[1].as_real();
-	long double res = script->mt_->GetReal(min, max);
+	double res = script->mt_->GetReal(min, max);
 	return value(machine->get_engine()->get_real_type(), res);
 }
 
@@ -960,13 +960,13 @@ value ScriptClientBase::Func_AtoI(script_machine* machine, int argc, value const
 {
 	std::wstring str = argv[0].as_string();
 	int num = StringUtility::ToInteger(str);
-	return value(machine->get_engine()->get_real_type(), (long double)num);
+	return value(machine->get_engine()->get_real_type(), (double)num);
 }
 value ScriptClientBase::Func_AtoR(script_machine* machine, int argc, value const* argv)
 {
 	std::wstring str = argv[0].as_string();
 	double num = StringUtility::ToDouble(str);
-	return value(machine->get_engine()->get_real_type(), (long double)num);
+	return value(machine->get_engine()->get_real_type(), (double)num);
 }
 value ScriptClientBase::Func_TrimString(script_machine* machine, int argc, value const* argv)
 {
@@ -1444,7 +1444,7 @@ gstd::value ScriptCommonData::_ReadRecord(gstd::ByteBuffer& buffer)
 	type_data::type_kind kind = (type_data::type_kind)buffer.ReadInteger();
 
 	if (kind == type_data::tk_real) {
-		long double data = buffer.ReadDouble();
+		double data = buffer.ReadDouble();
 		res = gstd::value(scriptTypeManager->get_real_type(), data);
 	} else if (kind == type_data::tk_char) {
 		wchar_t data;

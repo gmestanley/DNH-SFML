@@ -739,7 +739,7 @@ void scanner::advance()
 			wchar_t ch2 = index_from_current_char(1);
 			if (ch == L'.' && std::iswdigit(ch2)) {
 				ch = next_char();
-				long double d = 1;
+				double d = 1;
 				while (std::iswdigit(ch)) {
 					d = d / 10;
 					real_value = real_value + d * (ch - L'0');
@@ -939,8 +939,8 @@ value compare(script_machine* machine, int argc, value const* argv)
 
 		switch (argv[0].get_type()->get_kind()) {
 		case type_data::tk_real: {
-			long double a = argv[0].as_real();
-			long double b = argv[1].as_real();
+			double a = argv[0].as_real();
+			double b = argv[1].as_real();
 			r = (a == b) ? 0 : (a < b) ? -1 : 1;
 		} break;
 
@@ -1078,7 +1078,7 @@ value index(script_machine* machine, int argc, value const* argv)
 		return value();
 	}
 
-	long double index = argv[1].as_real();
+	double index = argv[1].as_real();
 
 	if (index != static_cast<int>(index)) {
 		std::wstring error;
@@ -1112,7 +1112,7 @@ value index_writable(script_machine* machine, int argc, value const* argv)
 		return value();
 	}
 
-	long double index = argv[1].as_real();
+	double index = argv[1].as_real();
 
 	if (index != static_cast<int>(index)) {
 		std::wstring error;
@@ -1147,7 +1147,7 @@ value slice(script_machine* machine, int argc, value const* argv)
 		return value();
 	}
 
-	long double index_1 = argv[1].as_real();
+	double index_1 = argv[1].as_real();
 
 	if (index_1 != static_cast<int>(index_1)) {
 		std::wstring error;
@@ -1157,7 +1157,7 @@ value slice(script_machine* machine, int argc, value const* argv)
 		return value();
 	}
 
-	long double index_2 = argv[2].as_real();
+	double index_2 = argv[2].as_real();
 
 	if (index_2 != static_cast<int>(index_2)) {
 		std::wstring error;
@@ -1196,7 +1196,7 @@ value erase(script_machine* machine, int argc, value const* argv)
 		return value();
 	}
 
-	long double index_1 = argv[1].as_real();
+	double index_1 = argv[1].as_real();
 	double length = argv[0].length_as_array();
 
 	if (index_1 != static_cast<int>(index_1)) {
@@ -2852,7 +2852,7 @@ void script_machine::advance()
 		case script_engine::pc_compare_ne: {
 			stack_t* stack = &current->stack;
 			value& t = stack->at[stack->length - 1];
-			long double r = t.as_real();
+			double r = t.as_real();
 			bool b;
 			switch (c->command) {
 			case script_engine::pc_compare_e:

@@ -86,7 +86,7 @@ void StgPlayerObject::Work()
 		} else {
 			if (listGrazedShot_.size() > 0) {
 				std::vector<value> listValPos;
-				std::vector<long double> listShotID;
+				std::vector<double> listShotID;
 				int grazedShotCount = listGrazedShot_.size();
 				for (int iObj = 0; iObj < grazedShotCount; iObj++) {
 					ref_count_weak_ptr<StgShotObject>::unsync objShot = ref_count_weak_ptr<StgShotObject>::unsync::DownCast(listGrazedShot_[iObj]);
@@ -94,7 +94,7 @@ void StgPlayerObject::Work()
 						int id = objShot->GetObjectID();
 						listShotID.push_back(id);
 
-						std::vector<long double> listPos;
+						std::vector<double> listPos;
 						listPos.push_back(objShot->GetPositionX());
 						listPos.push_back(objShot->GetPositionY());
 						listValPos.push_back(script_->CreateRealArrayValue(listPos));

@@ -205,8 +205,8 @@ public:
 protected:
 	void _DeleteInAutoClip();
 	void _CreateScoreItem();
-	void _NotifyEventToPlayerScript(std::vector<long double>& listValue);
-	void _NotifyEventToItemScript(std::vector<long double>& listValue);
+	void _NotifyEventToPlayerScript(std::vector<double>& listValue);
+	void _NotifyEventToItemScript(std::vector<double>& listValue);
 
 	StgStageController* stageController_;
 	int typeItem_;

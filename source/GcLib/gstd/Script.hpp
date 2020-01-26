@@ -348,7 +348,7 @@ private:
 		lightweight_vector<value> array_value;
 
 		union {
-			long double real_value;
+			double real_value;
 			wchar_t char_value;
 			bool boolean_value;
 		};
@@ -749,7 +749,7 @@ class constant {
 public:
 	static value func(script_machine* machine, int argc, value const* argv)
 	{
-		return value(machine->get_engine()->get_real_type(), (long double)num);
+		return value(machine->get_engine()->get_real_type(), (double)num);
 	}
 };
 

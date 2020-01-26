@@ -1789,36 +1789,36 @@ gstd::value DxScript::Func_GetKeyState(gstd::script_machine* machine, int argc, 
 {
 	DirectInput* input = DirectInput::GetBase();
 	int key = (int)argv[0].as_real();
-	long double res = input->GetKeyState(key);
+	double res = input->GetKeyState(key);
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_GetMouseX(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetMousePosition().x;
+	double res = graphics->GetMousePosition().x;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_GetMouseY(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetMousePosition().y;
+	double res = graphics->GetMousePosition().y;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_GetMouseMoveZ(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectInput* input = DirectInput::GetBase();
-	long double res = input->GetMouseMoveZ();
+	double res = input->GetMouseMoveZ();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_GetMouseState(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectInput* input = DirectInput::GetBase();
-	long double res = input->GetMouseState(argv[0].as_real());
+	double res = input->GetMouseState(argv[0].as_real());
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_GetVirtualKeyState(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	long double res = KEY_FREE;
+	double res = KEY_FREE;
 	VirtualKeyManager* input = dynamic_cast<VirtualKeyManager*>(DirectInput::GetBase());
 	if (input != NULL) {
 		int id = (int)(argv[0].as_real());
@@ -1844,13 +1844,13 @@ gstd::value DxScript::Func_GetScreenWidth(gstd::script_machine* machine, int arg
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	int res = graphics->GetScreenWidth();
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 gstd::value DxScript::Func_GetScreenHeight(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	int res = graphics->GetScreenHeight();
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 value DxScript::Func_SetTextureRenderMethod(script_machine* machine, int argc, value const* argv)
 {	
@@ -1907,7 +1907,7 @@ value DxScript::Func_RemoveTexture(script_machine* machine, int argc, value cons
 }
 value DxScript::Func_GetTextureWidth(script_machine* machine, int argc, value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	std::wstring path = argv[0].as_string();
 	path = PathProperty::GetUnique(path);
@@ -1922,7 +1922,7 @@ value DxScript::Func_GetTextureWidth(script_machine* machine, int argc, value co
 }
 value DxScript::Func_GetTextureHeight(script_machine* machine, int argc, value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	std::wstring path = argv[0].as_string();
 	path = PathProperty::GetUnique(path);
@@ -2212,73 +2212,73 @@ value DxScript::Func_SetCameraRoll(script_machine* machine, int argc, value cons
 value DxScript::Func_GetCameraX(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetCameraPosition().x;
+	double res = graphics->GetCamera()->GetCameraPosition().x;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraY(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetCameraPosition().y;
+	double res = graphics->GetCamera()->GetCameraPosition().y;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraZ(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetCameraPosition().z;
+	double res = graphics->GetCamera()->GetCameraPosition().z;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraFocusX(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetFocusPosition().x;
+	double res = graphics->GetCamera()->GetFocusPosition().x;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraFocusY(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetFocusPosition().y;
+	double res = graphics->GetCamera()->GetFocusPosition().y;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraFocusZ(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetFocusPosition().z;
+	double res = graphics->GetCamera()->GetFocusPosition().z;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraRadius(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetRadius();
+	double res = graphics->GetCamera()->GetRadius();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraAzimuthAngle(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetAzimuthAngle();
+	double res = graphics->GetCamera()->GetAzimuthAngle();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraElevationAngle(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetElevationAngle();
+	double res = graphics->GetCamera()->GetElevationAngle();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraYaw(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetYaw();
+	double res = graphics->GetCamera()->GetYaw();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraPitch(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetPitch();
+	double res = graphics->GetCamera()->GetPitch();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_GetCameraRoll(script_machine* machine, int argc, value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera()->GetRoll();
+	double res = graphics->GetCamera()->GetRoll();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 value DxScript::Func_SetCameraPerspectiveClip(script_machine* machine, int argc, value const* argv)
@@ -2345,37 +2345,37 @@ gstd::value DxScript::Func_Reset2DCamera(gstd::script_machine* machine, int argc
 gstd::value DxScript::Func_Get2DCameraX(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera2D()->GetFocusX();
+	double res = graphics->GetCamera2D()->GetFocusX();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_Get2DCameraY(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera2D()->GetFocusY();
+	double res = graphics->GetCamera2D()->GetFocusY();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_Get2DCameraAngleZ(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera2D()->GetAngleZ();
+	double res = graphics->GetCamera2D()->GetAngleZ();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_Get2DCameraRatio(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera2D()->GetRatio();
+	double res = graphics->GetCamera2D()->GetRatio();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_Get2DCameraRatioX(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera2D()->GetRatioX();
+	double res = graphics->GetCamera2D()->GetRatioX();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_Get2DCameraRatioY(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
-	long double res = graphics->GetCamera2D()->GetRatioY();
+	double res = graphics->GetCamera2D()->GetRatioY();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 
@@ -2388,17 +2388,17 @@ gstd::value DxScript::Func_GetObjectDistance(gstd::script_machine* machine, int 
 
 	DxScriptRenderObject* obj1 = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id1));
 	if (obj1 == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)-1);
+		return value(machine->get_engine()->get_real_type(), (double)-1);
 
 	DxScriptRenderObject* obj2 = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id2));
 	if (obj2 == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)-1);
+		return value(machine->get_engine()->get_real_type(), (double)-1);
 
 	int tx = obj1->GetPosition().x - obj2->GetPosition().x;
 	int ty = obj1->GetPosition().y - obj2->GetPosition().y;
 	int tz = obj1->GetPosition().z - obj2->GetPosition().z;
 
-	long double res = pow(pow(tx, 2) + pow(ty, 2) + pow(tz, 2), 0.5);
+	double res = pow(pow(tx, 2) + pow(ty, 2) + pow(tz, 2), 0.5);
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_GetObject2dPosition(gstd::script_machine* machine, int argc, gstd::value const* argv)
@@ -2415,7 +2415,7 @@ gstd::value DxScript::Func_GetObject2dPosition(gstd::script_machine* machine, in
 	D3DXVECTOR3 pos = obj->GetPosition();
 
 	D3DXVECTOR2 point = camera->TransformCoordinateTo2D(pos);
-	std::vector<long double> listRes;
+	std::vector<double> listRes;
 	listRes.push_back(point.x);
 	listRes.push_back(point.y);
 
@@ -2434,7 +2434,7 @@ gstd::value DxScript::Func_Get2dPosition(gstd::script_machine* machine, int argc
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	gstd::ref_count_ptr<DxCamera> camera = graphics->GetCamera();
 	D3DXVECTOR2 point = camera->TransformCoordinateTo2D(pos);
-	std::vector<long double> listRes;
+	std::vector<double> listRes;
 	listRes.push_back(point.x);
 	listRes.push_back(point.y);
 
@@ -2515,7 +2515,7 @@ value DxScript::Func_Obj_SetRenderPriorityI(script_machine* machine, int argc, v
 }
 gstd::value DxScript::Func_Obj_GetRenderPriority(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
@@ -2526,7 +2526,7 @@ gstd::value DxScript::Func_Obj_GetRenderPriority(gstd::script_machine* machine, 
 }
 gstd::value DxScript::Func_Obj_GetRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
@@ -2608,7 +2608,7 @@ gstd::value DxScript::Func_Obj_IsValueExists(gstd::script_machine* machine, int 
 }
 value DxScript::Func_Obj_GetType(script_machine* machine, int argc, value const* argv)
 {
-	long double res = DxScript::OBJ_INVALID;
+	double res = DxScript::OBJ_INVALID;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptObjectBase* obj = dynamic_cast<DxScriptObjectBase*>(script->GetObjectPointer(id));
@@ -2798,7 +2798,7 @@ value DxScript::Func_ObjRender_SetBlendType(script_machine* machine, int argc, v
 }
 value DxScript::Func_ObjRender_GetX(script_machine* machine, int argc, value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptRenderObject* obj = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id));
@@ -2808,7 +2808,7 @@ value DxScript::Func_ObjRender_GetX(script_machine* machine, int argc, value con
 }
 value DxScript::Func_ObjRender_GetY(script_machine* machine, int argc, value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptRenderObject* obj = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id));
@@ -2818,7 +2818,7 @@ value DxScript::Func_ObjRender_GetY(script_machine* machine, int argc, value con
 }
 value DxScript::Func_ObjRender_GetZ(script_machine* machine, int argc, value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptRenderObject* obj = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id));
@@ -2828,7 +2828,7 @@ value DxScript::Func_ObjRender_GetZ(script_machine* machine, int argc, value con
 }
 gstd::value DxScript::Func_ObjRender_GetAngleX(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptRenderObject* obj = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id));
@@ -2838,7 +2838,7 @@ gstd::value DxScript::Func_ObjRender_GetAngleX(gstd::script_machine* machine, in
 }
 gstd::value DxScript::Func_ObjRender_GetAngleY(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptRenderObject* obj = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id));
@@ -2848,7 +2848,7 @@ gstd::value DxScript::Func_ObjRender_GetAngleY(gstd::script_machine* machine, in
 }
 gstd::value DxScript::Func_ObjRender_GetAngleZ(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptRenderObject* obj = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id));
@@ -2858,7 +2858,7 @@ gstd::value DxScript::Func_ObjRender_GetAngleZ(gstd::script_machine* machine, in
 }
 gstd::value DxScript::Func_ObjRender_GetScaleX(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptRenderObject* obj = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id));
@@ -2868,7 +2868,7 @@ gstd::value DxScript::Func_ObjRender_GetScaleX(gstd::script_machine* machine, in
 }
 gstd::value DxScript::Func_ObjRender_GetScaleY(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptRenderObject* obj = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id));
@@ -2878,7 +2878,7 @@ gstd::value DxScript::Func_ObjRender_GetScaleY(gstd::script_machine* machine, in
 }
 gstd::value DxScript::Func_ObjRender_GetScaleZ(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptRenderObject* obj = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id));
@@ -2966,7 +2966,7 @@ gstd::value DxScript::Func_ObjRender_GetBlendType(gstd::script_machine* machine,
 	DxScriptRenderObject* obj = dynamic_cast<DxScriptRenderObject*>(script->GetObjectPointer(id));
 	if (obj != NULL)
 		res = obj->GetBlendType();
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 
 //Dx関数：オブジェクト操作(ShaderObject)
@@ -2983,7 +2983,7 @@ gstd::value DxScript::Func_ObjShader_Create(gstd::script_machine* machine, int a
 		obj->manager_ = script->objManager_.GetPointer();
 		id = script->AddObject(obj);
 	}
-	return value(machine->get_engine()->get_real_type(), (long double)id);
+	return value(machine->get_engine()->get_real_type(), (double)id);
 }
 gstd::value DxScript::Func_ObjShader_SetShaderF(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
@@ -3250,7 +3250,7 @@ value DxScript::Func_ObjPrimitive_Create(script_machine* machine, int argc, valu
 		obj->manager_ = script->objManager_.GetPointer();
 		id = script->AddObject(obj);
 	}
-	return value(machine->get_engine()->get_real_type(), (long double)id);
+	return value(machine->get_engine()->get_real_type(), (double)id);
 }
 value DxScript::Func_ObjPrimitive_SetPrimitiveType(script_machine* machine, int argc, value const* argv)
 {
@@ -3293,7 +3293,7 @@ value DxScript::Func_ObjPrimitive_SetTexture(script_machine* machine, int argc, 
 }
 value DxScript::Func_ObjPrimitive_GetVertexCount(script_machine* machine, int argc, value const* argv)
 {
-	long double res = 0;
+	double res = 0;
 	DxScript* script = (DxScript*)machine->data;
 	int id = (int)argv[0].as_real();
 	DxScriptPrimitiveObject* obj = dynamic_cast<DxScriptPrimitiveObject*>(script->GetObjectPointer(id));
@@ -3370,7 +3370,7 @@ value DxScript::Func_ObjPrimitive_GetVertexPosition(script_machine* machine, int
 	if (obj != NULL)
 		pos = obj->GetVertexPosition(index);
 
-	std::vector<long double> listPos;
+	std::vector<double> listPos;
 	listPos.resize(3);
 	listPos[0] = pos.x;
 	listPos[1] = pos.y;
@@ -3616,7 +3616,7 @@ value DxScript::Func_ObjMesh_Create(script_machine* machine, int argc, value con
 	int id = ID_INVALID;
 	if (obj != NULL)
 		id = script->AddObject(obj);
-	return value(machine->get_engine()->get_real_type(), (long double)id);
+	return value(machine->get_engine()->get_real_type(), (double)id);
 }
 value DxScript::Func_ObjMesh_Load(script_machine* machine, int argc, value const* argv)
 {
@@ -3717,7 +3717,7 @@ value DxScript::Func_ObjText_Create(script_machine* machine, int argc, value con
 	int id = ID_INVALID;
 	if (obj != NULL)
 		id = script->AddObject(obj);
-	return value(machine->get_engine()->get_real_type(), (long double)id);
+	return value(machine->get_engine()->get_real_type(), (double)id);
 }
 value DxScript::Func_ObjText_SetText(script_machine* machine, int argc, value const* argv)
 {
@@ -3940,7 +3940,7 @@ value DxScript::Func_ObjText_GetTextLength(script_machine* machine, int argc, va
 		return value();
 	std::wstring text = obj->GetText();
 	int res = StringUtility::CountAsciiSizeCharacter(text);
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 value DxScript::Func_ObjText_GetTextLengthCU(script_machine* machine, int argc, value const* argv)
 {
@@ -3955,7 +3955,7 @@ value DxScript::Func_ObjText_GetTextLengthCU(script_machine* machine, int argc, 
 		int count = listCount[iLine];
 		res += count;
 	}
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 value DxScript::Func_ObjText_GetTextLengthCUL(script_machine* machine, int argc, value const* argv)
 {
@@ -3965,7 +3965,7 @@ value DxScript::Func_ObjText_GetTextLengthCUL(script_machine* machine, int argc,
 	if (obj == NULL)
 		return value();
 	std::vector<int> listCount = obj->GetTextCountCU();
-	std::vector<long double> listCountD;
+	std::vector<double> listCountD;
 	for (int iLine = 0; iLine < listCount.size(); iLine++) {
 		int count = listCount[iLine];
 		listCountD.push_back(count);
@@ -3983,7 +3983,7 @@ value DxScript::Func_ObjText_GetTotalWidth(script_machine* machine, int argc, va
 		return value();
 
 	int res = obj->GetTotalWidth();
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 value DxScript::Func_ObjText_GetTotalHeight(script_machine* machine, int argc, value const* argv)
 {
@@ -3994,7 +3994,7 @@ value DxScript::Func_ObjText_GetTotalHeight(script_machine* machine, int argc, v
 		return value();
 
 	int res = obj->GetTotalHeight();
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 
 //Dx関数：音声操作(DxSoundObject)
@@ -4005,7 +4005,7 @@ gstd::value DxScript::Func_ObjSound_Create(gstd::script_machine* machine, int ar
 
 	ref_count_ptr<DxSoundObject>::unsync obj = new DxSoundObject();
 	int id = script->AddObject(obj);
-	return value(machine->get_engine()->get_real_type(), (long double)id);
+	return value(machine->get_engine()->get_real_type(), (double)id);
 }
 gstd::value DxScript::Func_ObjSound_Load(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
@@ -4213,11 +4213,11 @@ gstd::value DxScript::Func_ObjSound_GetVolumeRate(gstd::script_machine* machine,
 		return value();
 	ref_count_ptr<SoundPlayer> player = obj->GetPlayer();
 	if (player == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)0);
+		return value(machine->get_engine()->get_real_type(), (double)0);
 
 	double rate = player->GetVolumeRate();
 
-	return value(machine->get_engine()->get_real_type(), (long double)rate);
+	return value(machine->get_engine()->get_real_type(), (double)rate);
 }
 
 //Dx関数：ファイル操作(DxFileObject)
@@ -4239,7 +4239,7 @@ gstd::value DxScript::Func_ObjFile_Create(gstd::script_machine* machine, int arg
 		obj->manager_ = script->objManager_.GetPointer();
 		id = script->AddObject(obj);
 	}
-	return value(machine->get_engine()->get_real_type(), (long double)id);
+	return value(machine->get_engine()->get_real_type(), (double)id);
 }
 gstd::value DxScript::Func_ObjFile_Open(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
@@ -4276,7 +4276,7 @@ gstd::value DxScript::Func_ObjFile_Store(gstd::script_machine* machine, int argc
 		return value(machine->get_engine()->get_boolean_type(), false);
 
 	bool res = obj->Store();
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 gstd::value DxScript::Func_ObjFile_GetSize(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
@@ -4284,11 +4284,11 @@ gstd::value DxScript::Func_ObjFile_GetSize(gstd::script_machine* machine, int ar
 	int id = (int)argv[0].as_real();
 	DxFileObject* obj = dynamic_cast<DxFileObject*>(script->GetObjectPointer(id));
 	if (obj == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)0);
+		return value(machine->get_engine()->get_real_type(), (double)0);
 
 	gstd::ref_count_ptr<File> file = obj->GetFile();
 	int res = file != NULL ? file->GetSize() : 0;
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 
 //Dx関数：ファイル操作(DxTextFileObject)
@@ -4298,10 +4298,10 @@ gstd::value DxScript::Func_ObjFileT_GetLineCount(gstd::script_machine* machine, 
 	int id = (int)argv[0].as_real();
 	DxTextFileObject* obj = dynamic_cast<DxTextFileObject*>(script->GetObjectPointer(id));
 	if (obj == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)0);
+		return value(machine->get_engine()->get_real_type(), (double)0);
 
 	int res = obj->GetLineCount();
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 gstd::value DxScript::Func_ObjFileT_GetLineText(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
@@ -4387,10 +4387,10 @@ gstd::value DxScript::Func_ObjFileB_GetPointer(gstd::script_machine* machine, in
 	int id = (int)argv[0].as_real();
 	DxBinaryFileObject* obj = dynamic_cast<DxBinaryFileObject*>(script->GetObjectPointer(id));
 	if (obj == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)-1);
+		return value(machine->get_engine()->get_real_type(), (double)-1);
 
 	gstd::ref_count_ptr<gstd::ByteBuffer> buffer = obj->GetBuffer();
-	long double res = buffer->GetOffset();
+	double res = buffer->GetOffset();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_ObjFileB_Seek(gstd::script_machine* machine, int argc, gstd::value const* argv)
@@ -4412,7 +4412,7 @@ gstd::value DxScript::Func_ObjFileB_ReadBoolean(gstd::script_machine* machine, i
 	int id = (int)argv[0].as_real();
 	DxBinaryFileObject* obj = dynamic_cast<DxBinaryFileObject*>(script->GetObjectPointer(id));
 	if (obj == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)-1);
+		return value(machine->get_engine()->get_real_type(), (double)-1);
 	if (!obj->IsReadableSize(1))
 		script->RaiseError(gstd::ErrorUtility::GetErrorMessage(ErrorUtility::ERROR_END_OF_FILE));
 
@@ -4426,12 +4426,12 @@ gstd::value DxScript::Func_ObjFileB_ReadByte(gstd::script_machine* machine, int 
 	int id = (int)argv[0].as_real();
 	DxBinaryFileObject* obj = dynamic_cast<DxBinaryFileObject*>(script->GetObjectPointer(id));
 	if (obj == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)-1);
+		return value(machine->get_engine()->get_real_type(), (double)-1);
 	if (!obj->IsReadableSize(1))
 		script->RaiseError(gstd::ErrorUtility::GetErrorMessage(ErrorUtility::ERROR_END_OF_FILE));
 
 	gstd::ref_count_ptr<gstd::ByteBuffer> buffer = obj->GetBuffer();
-	long double res = buffer->ReadCharacter();
+	double res = buffer->ReadCharacter();
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_ObjFileB_ReadShort(gstd::script_machine* machine, int argc, gstd::value const* argv)
@@ -4440,7 +4440,7 @@ gstd::value DxScript::Func_ObjFileB_ReadShort(gstd::script_machine* machine, int
 	int id = (int)argv[0].as_real();
 	DxBinaryFileObject* obj = dynamic_cast<DxBinaryFileObject*>(script->GetObjectPointer(id));
 	if (obj == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)0);
+		return value(machine->get_engine()->get_real_type(), (double)0);
 	if (!obj->IsReadableSize(2))
 		script->RaiseError(gstd::ErrorUtility::GetErrorMessage(ErrorUtility::ERROR_END_OF_FILE));
 
@@ -4449,7 +4449,7 @@ gstd::value DxScript::Func_ObjFileB_ReadShort(gstd::script_machine* machine, int
 	if (obj->GetByteOrder() == ByteOrder::ENDIAN_BIG)
 		ByteOrder::Reverse(&bv, sizeof(bv));
 
-	long double res = bv;
+	double res = bv;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_ObjFileB_ReadInteger(gstd::script_machine* machine, int argc, gstd::value const* argv)
@@ -4458,7 +4458,7 @@ gstd::value DxScript::Func_ObjFileB_ReadInteger(gstd::script_machine* machine, i
 	int id = (int)argv[0].as_real();
 	DxBinaryFileObject* obj = dynamic_cast<DxBinaryFileObject*>(script->GetObjectPointer(id));
 	if (obj == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)-1);
+		return value(machine->get_engine()->get_real_type(), (double)-1);
 	if (!obj->IsReadableSize(4))
 		script->RaiseError(gstd::ErrorUtility::GetErrorMessage(ErrorUtility::ERROR_END_OF_FILE));
 
@@ -4467,7 +4467,7 @@ gstd::value DxScript::Func_ObjFileB_ReadInteger(gstd::script_machine* machine, i
 	if (obj->GetByteOrder() == ByteOrder::ENDIAN_BIG)
 		ByteOrder::Reverse(&bv, sizeof(bv));
 
-	long double res = bv;
+	double res = bv;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_ObjFileB_ReadLong(gstd::script_machine* machine, int argc, gstd::value const* argv)
@@ -4476,7 +4476,7 @@ gstd::value DxScript::Func_ObjFileB_ReadLong(gstd::script_machine* machine, int 
 	int id = (int)argv[0].as_real();
 	DxBinaryFileObject* obj = dynamic_cast<DxBinaryFileObject*>(script->GetObjectPointer(id));
 	if (obj == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)-1);
+		return value(machine->get_engine()->get_real_type(), (double)-1);
 	if (!obj->IsReadableSize(8))
 		script->RaiseError(gstd::ErrorUtility::GetErrorMessage(ErrorUtility::ERROR_END_OF_FILE));
 
@@ -4484,7 +4484,7 @@ gstd::value DxScript::Func_ObjFileB_ReadLong(gstd::script_machine* machine, int 
 	_int64 bv = buffer->ReadInteger64();
 	if (obj->GetByteOrder() == ByteOrder::ENDIAN_BIG)
 		ByteOrder::Reverse(&bv, sizeof(bv));
-	long double res = bv;
+	double res = bv;
 	return value(machine->get_engine()->get_real_type(), res);
 }
 gstd::value DxScript::Func_ObjFileB_ReadFloat(gstd::script_machine* machine, int argc, gstd::value const* argv)
@@ -4493,12 +4493,12 @@ gstd::value DxScript::Func_ObjFileB_ReadFloat(gstd::script_machine* machine, int
 	int id = (int)argv[0].as_real();
 	DxBinaryFileObject* obj = dynamic_cast<DxBinaryFileObject*>(script->GetObjectPointer(id));
 	if (obj == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)-1);
+		return value(machine->get_engine()->get_real_type(), (double)-1);
 	if (!obj->IsReadableSize(4))
 		script->RaiseError(gstd::ErrorUtility::GetErrorMessage(ErrorUtility::ERROR_END_OF_FILE));
 
 	gstd::ref_count_ptr<gstd::ByteBuffer> buffer = obj->GetBuffer();
-	long double res = 0;
+	double res = 0;
 	if (obj->GetByteOrder() == ByteOrder::ENDIAN_BIG) {
 		int bv = buffer->ReadInteger();
 		ByteOrder::Reverse(&bv, sizeof(bv));
@@ -4513,12 +4513,12 @@ gstd::value DxScript::Func_ObjFileB_ReadDouble(gstd::script_machine* machine, in
 	int id = (int)argv[0].as_real();
 	DxBinaryFileObject* obj = dynamic_cast<DxBinaryFileObject*>(script->GetObjectPointer(id));
 	if (obj == NULL)
-		return value(machine->get_engine()->get_real_type(), (long double)-1);
+		return value(machine->get_engine()->get_real_type(), (double)-1);
 	if (!obj->IsReadableSize(8))
 		script->RaiseError(gstd::ErrorUtility::GetErrorMessage(ErrorUtility::ERROR_END_OF_FILE));
 
 	gstd::ref_count_ptr<gstd::ByteBuffer> buffer = obj->GetBuffer();
-	long double res = 0;
+	double res = 0;
 	if (obj->GetByteOrder() == ByteOrder::ENDIAN_BIG) {
 		_int64 bv = buffer->ReadInteger64();
 		ByteOrder::Reverse(&bv, sizeof(bv));

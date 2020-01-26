@@ -3274,7 +3274,7 @@ void DxScriptForEvent::AddArgumentValue(gstd::ref_count_ptr<EventValue> arg)
 	int type = arg->GetType();
 	gstd::value vArg;
 	if (type == EventValue::TYPE_REAL)
-		vArg = value(machine_->get_engine()->get_real_type(), (long double)arg->GetReal());
+		vArg = value(machine_->get_engine()->get_real_type(), (double)arg->GetReal());
 	else if (type == EventValue::TYPE_BOOLEAN)
 		vArg = value(machine_->get_engine()->get_boolean_type(), arg->GetBoolean());
 	else if (type == EventValue::TYPE_STRING)
@@ -3330,7 +3330,7 @@ gstd::value DxScriptForEvent::Func_EndScript(script_machine* machine, int argc, 
 gstd::value DxScriptForEvent::Func_GetTarget(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
 	DxScriptForEvent* script = (DxScriptForEvent*)machine->data;
-	return value(machine->get_engine()->get_real_type(), (long double)script->targetId_);
+	return value(machine->get_engine()->get_real_type(), (double)script->targetId_);
 }
 gstd::value DxScriptForEvent::Func_GetEventValue(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
@@ -3343,7 +3343,7 @@ gstd::value DxScriptForEvent::Func_GetEventValue(gstd::script_machine* machine, 
 
 	int type = eValue->GetType();
 	if (type == EventValue::TYPE_REAL)
-		return value(machine->get_engine()->get_real_type(), (long double)eValue->GetReal());
+		return value(machine->get_engine()->get_real_type(), (double)eValue->GetReal());
 	else if (type == EventValue::TYPE_BOOLEAN)
 		return value(machine->get_engine()->get_boolean_type(), eValue->GetBoolean());
 	else if (type == EventValue::TYPE_STRING)

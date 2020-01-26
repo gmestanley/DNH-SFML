@@ -31,7 +31,7 @@ class MersenneTwister {
 private:
 	std::mt19937 actualTwister;
 	int seed;
-	long double maxReal = 3.402822e+38;
+	double maxReal = 3.402822e+38;
 	long maxInt = 2147483647;
 	unsigned long long maxInt64 = 9223372036854775807;
 
@@ -48,8 +48,8 @@ public:
 	long GetInt(long min, long max);
 	_int64 GetInt64();
 	_int64 GetInt64(_int64 min, _int64 max);
-	long double GetReal();
-	long double GetReal(long double min, long double max);
+	double GetReal();
+	double GetReal(double min, double max);
 };
 
 } // namespace gstd

@@ -372,7 +372,7 @@ gstd::value ManagedScript::Func_LoadScript(gstd::script_machine* machine, int ar
 	target->scriptParam_ = script->scriptParam_;
 
 	_int64 res = scriptManager->LoadScript(path, target);
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 gstd::value ManagedScript::Func_LoadScriptInThread(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
@@ -384,7 +384,7 @@ gstd::value ManagedScript::Func_LoadScriptInThread(gstd::script_machine* machine
 	ref_count_ptr<ManagedScript> target = scriptManager->Create(type);
 	target->scriptParam_ = script->scriptParam_;
 	_int64 res = scriptManager->LoadScriptInThread(path, target);
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 gstd::value ManagedScript::Func_StartScript(gstd::script_machine* machine, int argc, gstd::value const* argv)
 {
@@ -418,13 +418,13 @@ gstd::value ManagedScript::Func_GetOwnScriptID(gstd::script_machine* machine, in
 {
 	ManagedScript* script = (ManagedScript*)machine->data;
 	_int64 res = script->GetScriptID();
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 gstd::value ManagedScript::Func_GetEventType(script_machine* machine, int argc, value const* argv)
 {
 	ManagedScript* script = (ManagedScript*)machine->data;
 	int res = script->typeEvent_;
-	return value(machine->get_engine()->get_real_type(), (long double)res);
+	return value(machine->get_engine()->get_real_type(), (double)res);
 }
 gstd::value ManagedScript::Func_GetEventArgument(script_machine* machine, int argc, value const* argv)
 {

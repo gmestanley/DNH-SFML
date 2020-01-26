@@ -194,6 +194,7 @@ public:
 	static gstd::value Func_SetPlayerRebirthFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetPlayerRebirthLossFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetPlayerAutoItemCollectLine(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_GetPlayerAutoItemCollectLine(gstd::script_machine* machine, int argc, const gstd::value* argv);
 	static gstd::value Func_SetForbidPlayerShot(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetForbidPlayerSpell(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetPlayerX(gstd::script_machine* machine, int argc, gstd::value const* argv);

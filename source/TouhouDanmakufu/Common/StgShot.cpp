@@ -804,7 +804,7 @@ void StgShotObject::_SendDeleteEvent(int bit)
 	int posX = GetPositionX();
 	int posY = GetPositionY();
 
-	std::vector<long double> listPos;
+	std::vector<double> listPos;
 	listPos.push_back(posX);
 	listPos.push_back(posY);
 
@@ -1419,7 +1419,7 @@ void StgNormalShotObject::_ConvertToItemAndSendEvent()
 	int posX = GetPositionX();
 	int posY = GetPositionY();
 	if (scriptItem != NULL) {
-		std::vector<long double> listPos;
+		std::vector<double> listPos;
 		listPos.push_back(posX);
 		listPos.push_back(posY);
 
@@ -1816,7 +1816,7 @@ void StgLooseLaserObject::_ConvertToItemAndSendEvent()
 		double posX = ex - itemPos * cos(Math::DegreeToRadian(angle));
 		double posY = ey - itemPos * sin(Math::DegreeToRadian(angle));
 		if (scriptItem != NULL) {
-			std::vector<long double> listPos;
+			std::vector<double> listPos;
 			listPos.push_back(posX);
 			listPos.push_back(posY);
 
@@ -2120,7 +2120,7 @@ void StgStraightLaserObject::_ConvertToItemAndSendEvent()
 		double posY = ey + itemPos * sin(Math::DegreeToRadian(angle));
 
 		if (scriptItem != NULL) {
-			std::vector<long double> listPos;
+			std::vector<double> listPos;
 			listPos.push_back(posX);
 			listPos.push_back(posY);
 
@@ -2497,7 +2497,7 @@ void StgCurveLaserObject::_ConvertToItemAndSendEvent()
 		double posY = pos.y;
 
 		if (scriptItem != NULL) {
-			std::vector<long double> listPos;
+			std::vector<double> listPos;
 			listPos.push_back(posX);
 			listPos.push_back(posY);
 
