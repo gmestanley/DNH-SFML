@@ -1,8 +1,8 @@
 #include "File.hpp"
 #include "GstdUtility.hpp"
 #include "Logger.hpp"
-#include "zlib.h"
 #include <cassert>
+#include "../zlib/zlib.h"
 
 using namespace gstd;
 
