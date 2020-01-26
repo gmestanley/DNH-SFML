@@ -321,6 +321,7 @@ enum token_kind {
 	tk_LET,
 	tk_LOCAL,
 	tk_LOOP,
+	tk_CONTINUE,
 	tk_OTHERS,
 	tk_REAL,
 	tk_RETURN,
@@ -329,6 +330,7 @@ enum token_kind {
 	tk_TIMES,
 	tk_WHILE,
 	tk_YIELD,
+	tk_WAIT,
 };
 
 class scanner {
@@ -802,6 +804,11 @@ void scanner::advance()
 				next = tk_WHILE;
 			else if (word == "yield")
 				next = tk_YIELD;
+			else if (word == "wait")
+				next = token_kind::tk_WAIT;
+			else if (word == "continue")
+				next = token_kind::tk_CONTINUE;
+
 		} else {
 			next = tk_invalid;
 		}
@@ -2228,6 +2235,9 @@ void parser::parse_statements(script_engine::block* block)
 		} else if (lex->next == tk_BREAK) {
 			lex->advance();
 			block->codes.push_back(code(lex->line, script_engine::pc_break_loop));
+		} else if (lex->next == token_kind::tk_CONTINUE) {
+			lex->advance();
+			block->codes.push_back(code(lex->line, script_engine::command_kind::pc_loop_continue));
 		} else if (lex->next == tk_RETURN) {
 			lex->advance();
 			switch (lex->next) {
@@ -2249,10 +2259,17 @@ void parser::parse_statements(script_engine::block* block)
 				block->codes.push_back(code(lex->line, script_engine::pc_assign, s->level, s->variable));
 			}
 			block->codes.push_back(code(lex->line, script_engine::pc_break_routine));
-		} else if (lex->next == tk_YIELD) {
+		}
+		else if (lex->next == tk_YIELD) {
 			lex->advance();
 			block->codes.push_back(code(lex->line, script_engine::pc_yield));
-		} else if (lex->next == tk_at || lex->next == tk_SUB || lex->next == tk_FUNCTION || lex->next == tk_TASK) {
+		}
+		else if (lex->next == token_kind::tk_WAIT) {
+			lex->advance();
+			parse_parentheses(block);
+			block->codes.push_back(code(lex->line, script_engine::command_kind::pc_wait));
+		}
+		else if (lex->next == tk_at || lex->next == tk_SUB || lex->next == tk_FUNCTION || lex->next == tk_TASK) {
 			bool is_event = lex->next == tk_at;
 
 			lex->advance();
@@ -2489,6 +2506,7 @@ script_machine::environment* script_machine::new_environment(environment* parent
 	result->variables.release();
 	result->stack.length = 0;
 	result->has_result = false;
+	result->waitCount = 0;
 
 	//使用中リストへの追加
 	result->pred = last_using_environment;
@@ -2597,6 +2615,12 @@ void script_machine::advance()
 	assert(current_thread_index < threads.length);
 	environment* current = threads.at[current_thread_index];
 
+	if (current->waitCount > 0) {
+		yield();
+		--current->waitCount;
+		return;
+	}
+
 	if (current->ip >= current->sub->codes.length) {
 		environment* removing = current;
 		current = current->parent;
@@ -2691,20 +2715,36 @@ void script_machine::advance()
 			}
 		} break;
 
+		case script_engine::command_kind::pc_continue_marker:	//Dummy token for pc_loop_continue
+			break;
+		case script_engine::command_kind::pc_loop_continue:
 		case script_engine::pc_break_loop:
 		case script_engine::pc_break_routine:
 			for (environment* i = current; i != NULL; i = i->parent) {
 				i->ip = i->sub->codes.length;
 
-				if (c->command == script_engine::pc_break_loop) {
-					if (i->sub->kind == script_engine::bk_loop) {
+				if (c->command == script_engine::command_kind::pc_break_loop || c->command == script_engine::command_kind::pc_loop_continue) {
+					bool exit = false;
+					switch (i->sub->kind) {
+					case script_engine::block_kind::bk_loop:
+					{
+						script_engine::command_kind targetCommand = script_engine::command_kind::pc_loop_back;
+						if (c->command == script_engine::command_kind::pc_loop_continue)
+							targetCommand = script_engine::command_kind::pc_continue_marker;
+
 						environment* e = i->parent;
-						assert(e != NULL);
+						assert(e != nullptr);
 						do
 							++(e->ip);
-						while (e->sub->codes.at[e->ip - 1].command != script_engine::pc_loop_back);
+						while (e->sub->codes[e->ip - 1].command != targetCommand);
+					}
+					case script_engine::block_kind::bk_microthread:	//Prevents catastrophes.
+					case script_engine::block_kind::bk_function:
+						exit = true;
+					default:
 						break;
 					}
+					if (exit) break;
 				} else {
 					if (i->sub->kind == script_engine::bk_sub || i->sub->kind == script_engine::bk_function
 						|| i->sub->kind == script_engine::bk_microthread)
@@ -2940,6 +2980,14 @@ void script_machine::advance()
 			current->stack[len - 2] = t;
 		} break;
 
+		case script_engine::command_kind::pc_wait:
+		{
+			stack_t* stack = &current->stack;
+			value* t = &(stack->at[stack->length - 1]);
+			current->waitCount = (int)(t->as_real() + 0.01) - 1;
+		}
+
+		//fallthrough
 		case script_engine::pc_yield:
 			yield();
 			break;

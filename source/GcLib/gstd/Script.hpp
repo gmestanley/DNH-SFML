@@ -501,12 +501,15 @@ private:
 		pc_loop_count,
 		pc_loop_descent,
 		pc_loop_if,
+		pc_loop_continue, 
+		pc_continue_marker,
 		pc_pop,
 		pc_push_value,
 		pc_push_variable,
 		pc_push_variable_writable,
 		pc_swap,
-		pc_yield
+		pc_yield,
+		pc_wait
 	};
 
 	struct block;
@@ -711,6 +714,7 @@ private:
 		variables_t variables;
 		stack_t stack;
 		bool has_result;
+		int waitCount;
 	};
 
 	std::list<environment*> call_start_parent_environment_list;
