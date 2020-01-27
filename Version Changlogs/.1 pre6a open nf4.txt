@@ -1,0 +1,68 @@
+
+Version name of [.1 pre6a open nf4] 
+
+(WishMakers)
+-All archive files tested confirmed to work - this includes plain text files within archives like shaders, mqo, and dds that didn't work previously.
+
+-Config was changed to match the standard set by Ephemeral Unnatural Balance's config menu:
+  * Chinese is now supported in the config.
+  * Menus were made bigger so it is now easier to see options in the key and options menu.
+  * Window title was finally changed.
+  * Font was adjusted to look natural with all three languages displayed (this is easily changeable if you compile yourself, just ask me in FnC/Bullet Hell Engines on Discord.
+  * Confirmed controller support with the config menu and adjustable controls - tested with XInput controllers, the Wired Faceoff Nintendo Switch controller, and DualShock 4.
+
+-Fixed the zlib build path for the source.  Should compile regardless of vcpkg now.
+
+(Natashi - numerous ports from ph3sx incoming - this version is not the end for them)
+-Multidimensional array assignment
+-All real number values internally changed from long double to double
+-Added SetPlayerItemScope, GetPlayerItemScope
+-Added SetPlayerStateEndEnable
+-Added SetPlayerShootdownEventEnable
+-Added SetPlayerRebirthPosition
+-Added wait and continue keywords
+-Added GetPlayerAutoItemCollectLine
+
+
+ * Added SetPlayerItemScope
+	- Argument 1: Item intersection radius
+	- Sets the radius (in pixels) of the circle in which you collect items.
+	- Use GetPlayerItemScope to obtain the current value.
+	- Default value is 24.
+
+ * Added SetPlayerStateEndEnable
+	- Argument 1: Boolean for enabling the end state.
+	- Sets the state that determines whether the "end script" state is set after a game over.
+	- Default value is true.
+
+ * Added SetPlayerShootdownEventEnable
+	- Argument 1: Boolean for enabling the EV_PLAYER_SHOOTDOWN event.
+	- Default value is true.
+
+ * Added SetPlayerRebirthPosition
+	- Argument 1: X coordinate of respawn.
+	- Argument 2: Y coordinate of respawn.
+	- Sets the position that the player respawns after losing a life.
+	- Default x value: StgFrame's width / 2
+	- Default y value: StgFrame's bottom coordinate - 48
+
+ * Added wait
+	- Argument 1: Frames to yield
+	- I mean, who here *hasn't* used this function before when making scripts?  Should be self explanatory.
+
+ * Added continue
+	- Used as if you were using a break statement within a loop:
+	
+	while(condition) {
+		if(whatever) {
+			break; //use continue here
+		}
+	}
+	
+	- Instead of breaking out of the loop entirely, skips the rest of that iteration and jumps back to the start of the loop.
+
+ * Added GetPlayerAutoCollectLine
+	- Returns the height in pixels at which the Point of Collection resides.
+	- Can be changed with SetPlayerAutoCollectLine
+
+
