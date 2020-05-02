@@ -167,19 +167,14 @@ public:
 	static gstd::value Func_SetStgFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetItemRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetShotRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_SetShotDelayRenderBlendType(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_SetShotInvalidGrazeFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_SetShotInvalidIntersectionDistance(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetStgFrameRenderPriorityMinI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetStgFrameRenderPriorityMaxI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetItemRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetShotRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_GetShotDelayRenderBlendType(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetPlayerRenderPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetCameraFocusPermitPriorityI(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_CloseStgScene(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetReplayFps(gstd::script_machine* machine, int argc, gstd::value const* argv);
-
 
 	//STG共通関数：自機
 	static gstd::value Func_GetPlayerObjectID(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -194,7 +189,6 @@ public:
 	static gstd::value Func_SetPlayerRebirthFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetPlayerRebirthLossFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetPlayerAutoItemCollectLine(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_GetPlayerAutoItemCollectLine(gstd::script_machine* machine, int argc, const gstd::value* argv);
 	static gstd::value Func_SetForbidPlayerShot(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_SetForbidPlayerSpell(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_GetPlayerX(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -213,11 +207,6 @@ public:
 	static gstd::value Func_IsPermitPlayerSpell(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_IsPlayerLastSpellWait(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_IsPlayerSpellActive(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_SetPlayerItemScope(gstd::script_machine* machine, int argc, const gstd::value* argv);
-	static gstd::value Func_GetPlayerItemScope(gstd::script_machine* machine, int argc, const gstd::value* argv);
-	static gstd::value Func_SetPlayerStateEndEnable(gstd::script_machine* machine, int argc, const gstd::value* argv);
-	static gstd::value Func_SetPlayerShootdownEventEnable(gstd::script_machine* machine, int argc, const gstd::value* argv);
-	static gstd::value Func_SetPlayerRebirthPosition(gstd::script_machine* machine, int argc, const gstd::value* argv);
 
 	//STG共通関数：敵
 	static gstd::value Func_GetEnemyBossSceneObjectID(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -272,6 +261,11 @@ public:
 	static gstd::value Func_StopSlow(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_IsIntersected_Line_Circle(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_IsIntersected_Obj_Obj(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ReceiveTCPData(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_SendTCPData(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_ReceiveUDPData(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_SendUDPData(gstd::script_machine* machine, int argc, gstd::value const* argv);
+	static gstd::value Func_RunNetplay(gstd::script_machine* machine, int argc, gstd::value const* argv);
 
 	//STG共通関数：移動オブジェクト操作
 	static gstd::value Func_ObjMove_SetX(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -292,8 +286,6 @@ public:
 	static gstd::value Func_ObjMove_AddPatternB1(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjMove_AddPatternB2(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjMove_AddPatternB3(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_ObjMove_ProcessMovement(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_ObjMove_GetProcessMovement(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjMove_GetX(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjMove_GetY(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjMove_GetSpeed(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -330,12 +322,9 @@ public:
 	static gstd::value Func_ObjShot_SetGraphic(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetSourceBlendType(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetDamage(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_ObjShot_SetDamageReductionRate(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetPenetration(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetEraseShot(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_ObjShot_SetEraseShotType(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_SetSpellFactor(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_ObjShot_SetGrazeInvalidFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_ToItem(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_AddShotA1(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_AddShotA2(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -346,11 +335,8 @@ public:
 	static gstd::value Func_ObjShot_SetItemChange(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_GetDelay(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_GetDamage(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_ObjShot_GetDamageReductionRate(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_GetPenetration(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_IsSpellResist(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_ObjShot_GetGrazeInvalidFrame(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_ObjShot_GetGrazeStatus(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjShot_GetImageID(gstd::script_machine* machine, int argc, gstd::value const* argv);
 
 	static gstd::value Func_ObjLaser_SetLength(gstd::script_machine* machine, int argc, gstd::value const* argv);
@@ -462,7 +448,6 @@ public:
 	static gstd::value Func_ObjSpell_SetDamage(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjSpell_SetPenetration(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjSpell_SetEraseShot(gstd::script_machine* machine, int argc, gstd::value const* argv);
-	static gstd::value Func_ObjSpell_SetEraseShotType(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjSpell_SetIntersectionCircle(gstd::script_machine* machine, int argc, gstd::value const* argv);
 	static gstd::value Func_ObjSpell_SetIntersectionLine(gstd::script_machine* machine, int argc, gstd::value const* argv);
 };
