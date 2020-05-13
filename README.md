@@ -23,11 +23,11 @@ Credits for each function can be found inside the changelogs as well.
 
 ## Known Issues
  * In Woo
- ** Wine 4.12.1 (confirmed on macOS at least) suffers some scaling problems with the window size, being 9 pixels too wide and 7 pixels too tall.  This causes some nasty scaling on in-game assets, possibly a result of old Windows size calls not being 100% compatible with Wine releases.
- ** The exe will crash when trying to load a sound file that is both: not 1411kbs and is stereo
+	- Wine 4.12.1 (confirmed on macOS at least) suffers some scaling problems with the window size, being 9 pixels too wide and 7 pixels too tall.  This causes some nasty scaling on in-game assets, possibly a result of old Windows size calls not being 100% compatible with Wine releases.
+	- The exe will crash when trying to load a sound file that is both: not 1411kbs and is stereo
  
  * In Netplay
- ** ReceiveTCPData deletes the data it receives right before if given true as a parameter, rendering the function useless; this will be fixed in the next version.
+	- ReceiveTCPData deletes the data it receives right before if given true as a parameter, rendering the function useless; this will be fixed in the next version.
 
 ## Special Thanks
 WishMakers - for making Danmakufu Woo and helping me out
