@@ -1,9 +1,11 @@
  * Added ReceiveTCPData
- 	- Receives any data sent by the other socket you are connected to, and saves it to an array
+ 	- Argument 1: delete
+	- Deletes any previously saved data (so as to not clog space), then;
+ 	- Receives any data sent by the other socket you are connected to, and saves it to an array.
  * Added SendTCPData
  	- Argument 1: data
 	- Argument 2: direct
-	- If direct is false, it sends the data inputted. Otherwise, it sends any previously saved data
+	- If direct is false, it sends the data inputted. Otherwise, it sends any previously saved data.
  * Added RunNetplay
  	- Argument 1: server
 	- Argument 2: port
