@@ -2315,7 +2315,7 @@ gstd::value StgStageScript::Func_SendTCPData(gstd::script_machine* machine, int 
 	}
 	std::cout << "Received " << Netplay::received << " bytes from " << sender << " on port " << argv[0].as_real() << std::endl;
 	return value();
-}*/
+}
 gstd::value StgStageScript::Func_SendUDPData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
 	std::string s(argv[1].as_string().begin(), argv[1].as_string().end());
 	sf::IpAddress recipient = s;
@@ -2324,7 +2324,7 @@ gstd::value StgStageScript::Func_SendUDPData(gstd::script_machine* machine, int 
 		return value();
 	}
 	return value();
-}
+}*/
 gstd::value StgStageScript::Func_RunNetplay(gstd::script_machine* machine, int argc, gstd::value const* argv) {
 	StgStageScript* script = (StgStageScript*)machine->data;
 	long double port = argv[1].as_real();
