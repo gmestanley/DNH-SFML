@@ -4,6 +4,8 @@
 #include "StgShot.hpp"
 #include "StgSystem.hpp"
 #include "Networking.hpp"
+#include "gstd/Logger.hpp"
+#include "gstd/Script.hpp"
 
 /**********************************************************
 //StgStageScriptManager
