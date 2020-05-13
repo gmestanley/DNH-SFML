@@ -5,6 +5,12 @@ This version of Danmakufu is made for implementing Netplay in it; see WishMakers
 If you would like detailed information on each function, please check out a full explanation inside the corresponding version's changelog.
 Credits for each function can be found inside the changelogs as well.
 
+###### [0.3]
+ * Changed ReceiveTCPData
+	- The function now deletes saved data before receiving instead of after
+ * Fixed the data saving system
+ 	- SendTCPData now actually returns saved data instead of nothing
+
 ###### [0.2]
  * Changed RunNetplay's first argument to "server", bool
 	- Removed UDP support to focus on TCP
