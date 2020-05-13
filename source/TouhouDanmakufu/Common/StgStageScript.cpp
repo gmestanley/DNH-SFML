@@ -332,7 +332,7 @@ function const stgFunction[] = {
 	{ "ReceiveTCPData", StgStageScript::Func_ReceiveTCPData, 0 },
 	{ "SendTCPData", StgStageScript::Func_SendTCPData, 2 },
 	//{ "ReceiveUDPData", StgStageScript::Func_ReceiveUDPData, 0 },
-	{ "SendUDPData", StgStageScript::Func_SendUDPData, 3 },
+	//{ "SendUDPData", StgStageScript::Func_SendUDPData, 3 },
 	{ "RunNetplay", StgStageScript::Func_RunNetplay, 3 },
 
 	//STG共通関数：移動オブジェクト操作
@@ -2287,12 +2287,12 @@ gstd::value StgStageScript::Func_IsIntersected_Obj_Obj(gstd::script_machine* mac
 }
 gstd::value StgStageScript::Func_ReceiveTCPData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
 	std::size_t received;
+	if (argv[0].as_boolean() == true) {
+		std::fill_n(Netplay::in, sizeof(Netplay::in), 0);
+	}
 	if (Netplay::t_socket.receive(Netplay::in, sizeof(Netplay::in), received) != sf::Socket::Done)
 		return value();
 	std::cout << "Message received from the server: \"" << Netplay::in << "\"" << std::endl;
-	/*if (argv[0].as_boolean() == true) {
-		std::fill_n(in, sizeof(in), 0);
-	}*/
 	return value();
 }
 gstd::value StgStageScript::Func_SendTCPData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
