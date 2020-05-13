@@ -12,8 +12,8 @@ Credits for each function can be found inside the changelogs as well.
 ###### [0.1]
  * Added RunNetplay(mode, port, address)
 	- Runs the Netplay module in TCP server, client or UDP client mode, with the appropriate port and address
- * Added ReceiveTCPData(save)
-	- Receives data from the other person in the connection, saving the data received or not
+ * Added ReceiveTCPData(delete)
+	- Receives data from the other person in the connection, deleting the data received or not
  * Added SendTCPData(data, direct)
 	- Sends data to the other person in the connection, either custom or directly any saved data
 
@@ -22,8 +22,12 @@ Credits for each function can be found inside the changelogs as well.
 </br>Best and recommended way to obtain it is to use [vcpkg](https://github.com/Microsoft/vcpkg) C++ Library Manager.
 
 ## Known Issues
- * Wine 4.12.1 (confirmed on macOS at least) suffers some scaling problems with the window size, being 9 pixels too wide and 7 pixels too tall.  This causes some nasty scaling on in-game assets, possibly a result of old Windows size calls not being 100% compatible with Wine releases.
- * The exe will crash when trying to load a sound file that is both: not 1411kbs and is stereo
+ * In Woo
+ ** Wine 4.12.1 (confirmed on macOS at least) suffers some scaling problems with the window size, being 9 pixels too wide and 7 pixels too tall.  This causes some nasty scaling on in-game assets, possibly a result of old Windows size calls not being 100% compatible with Wine releases.
+ ** The exe will crash when trying to load a sound file that is both: not 1411kbs and is stereo
+ 
+ * In Netplay
+ ** ReceiveTCPData deletes the data it receives right before if given true as a parameter, rendering the function useless; this will be fixed in the next version.
 
 ## Special Thanks
 WishMakers - for making Danmakufu Woo and helping me out
