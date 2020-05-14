@@ -329,7 +329,7 @@ function const stgFunction[] = {
 	{ "StopSlow", StgStageScript::Func_StopSlow, 1 },
 	{ "IsIntersected_Line_Circle", StgStageScript::Func_IsIntersected_Line_Circle, 8 },
 	{ "IsIntersected_Obj_Obj", StgStageScript::Func_IsIntersected_Obj_Obj, 2 },
-	{ "ReceiveTCPData", StgStageScript::Func_ReceiveTCPData, 0 },
+	{ "ReceiveTCPData", StgStageScript::Func_ReceiveTCPData, 1 },
 	{ "SendTCPData", StgStageScript::Func_SendTCPData, 2 },
 	//{ "ReceiveUDPData", StgStageScript::Func_ReceiveUDPData, 0 },
 	//{ "SendUDPData", StgStageScript::Func_SendUDPData, 3 },
