@@ -2292,8 +2292,11 @@ gstd::value StgStageScript::Func_ReceiveTCPData(gstd::script_machine* machine, i
 	}
 	if (Netplay::t_socket.receive(Netplay::in, sizeof(Netplay::in), received) != sf::Socket::Done)
 		return value();
-	std::cout << "Message received from the server: \"" << Netplay::in << "\"" << std::endl;
-	return value();
+	std::wstring wchar = Netplay::convertToWString(Netplay::in);
+	Logger::WriteTop(L"Message received from the server: \"");
+	Logger::WriteTop(wchar);
+	Logger::WriteTop(L"\"");
+	return value(machine->get_engine()->get_real_type(), (std::wstring)wchar);
 }
 gstd::value StgStageScript::Func_SendTCPData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
 	char* vstring;
@@ -2335,12 +2338,17 @@ gstd::value StgStageScript::Func_RunNetplay(gstd::script_machine* machine, int a
 		// Listen to the given port for incoming connections
 		if (listener.listen(port) != sf::Socket::Done)
 			return value();
-		std::cout << "Server is listening to port " << port << ", waiting for connections... " << std::endl;
+		Logger::WriteTop(L"Server is listening to port ");
+		Logger::WriteTop(std::to_wstring(port));
+		Logger::WriteTop(L", waiting for connections...\n");
 
 		// Wait for a connection
 		if (listener.accept(Netplay::t_socket) != sf::Socket::Done)
 			return value();
-		std::cout << "Client connected: " << Netplay::t_socket.getRemoteAddress() << std::endl;
+		sf::IpAddress net = Netplay::t_socket.getRemoteAddress();
+		Logger::WriteTop(L"Client connected: ");
+		Logger::WriteTop(std::to_wstring(net.toInteger()));
+		Logger::WriteTop(L"\n");
 	}
 	else if ((bool)argv[0].as_boolean()) {
 		std::string s(argv[2].as_string().begin(), argv[2].as_string().end());
@@ -2348,14 +2356,16 @@ gstd::value StgStageScript::Func_RunNetplay(gstd::script_machine* machine, int a
 
 		// Ask for the server address
 		if (server == sf::IpAddress::None) {
-			std::cout << "Netplay Error: Not a valid server!\n";
+			script->RaiseError(L"Netplay Error: Not a valid server!");
 		}
 
 		// Connect to the server
 		sf::Socket::Status status = Netplay::t_socket.connect(server, port);
 		if (status != sf::Socket::Done)
 			return value();
-		std::cout << "Connected to server " << server << std::endl;
+		Logger::WriteTop(L"Connected to server ");
+		Logger::WriteTop(std::to_wstring(server.toInteger()));
+		Logger::WriteTop(L"\n");
 	}
 	/*else if ((int)argv[0].as_real() == 2) {
 		if (Netplay::u_socket.bind(port) != sf::Socket::Done)
