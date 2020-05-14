@@ -5,6 +5,12 @@ This version of Danmakufu is made for implementing Netplay in it; see WishMakers
 If you would like detailed information on each function, please check out a full explanation inside the corresponding version's changelog (in the releases).
 Credits for each function can be found inside the changelogs as well.
 
+###### [0.4]
+ * Changed ReceiveTCPData
+ 	- The function now returns saved data instead of nothing, allowing the example script to actually work
+ * Added a functional logging system
+ 	- Functions will write what happens to the WindowLog
+
 ###### [0.3]
  * Changed ReceiveTCPData
 	- The function now deletes saved data before receiving instead of after
