@@ -14,14 +14,14 @@ EApplication::~EApplication()
 bool EApplication::_Initialize()
 {
 	ELogger* logger = ELogger::GetInstance();
-	Logger::WriteTop(L"アプリケーション初期化");
+	Logger::WriteTop(L"アプリケーション初期化/Application initialization");
 
 	EFileManager* fileManager = EFileManager::CreateInstance();
 	fileManager->Initialize();
 
 	EFpsController* fpsController = EFpsController::CreateInstance();
 
-	std::wstring appName = L"東方弾幕風 ph3 ";
+	std::wstring appName = L"東方弾幕風 ph4";
 	appName += DNH_VERSION;
 
 	DnhConfiguration* config = DnhConfiguration::CreateInstance();
@@ -98,7 +98,7 @@ bool EApplication::_Initialize()
 	SystemController* systemController = SystemController::CreateInstance();
 	systemController->Reset();
 
-	Logger::WriteTop(L"アプリケーション初期化完了");
+	Logger::WriteTop(L"アプリケーション初期化完了/Application initialization finished");
 
 	return true;
 }
