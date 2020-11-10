@@ -34,6 +34,7 @@ Credits for each function can be found inside the changelogs as well.
 </br>Best and recommended way to obtain it is to use [vcpkg](https://github.com/Microsoft/vcpkg) C++ Library Manager.
  * sfml
 </br>Get it here: https://sfml-dev.org
+</br>Also deserves credit because it was used to implement netplay in the first place.
 
 ## Known Issues
  * Wine 4.12.1 (confirmed on macOS at least) suffers some scaling problems with the window size, being 9 pixels too wide and 7 pixels too tall.  This causes some nasty scaling on in-game assets, possibly a result of old Windows size calls not being 100% compatible with Wine releases.
