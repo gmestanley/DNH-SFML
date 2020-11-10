@@ -326,6 +326,11 @@ function const stgFunction[] = {
 	{ "StopSlow", StgStageScript::Func_StopSlow, 1 },
 	{ "IsIntersected_Line_Circle", StgStageScript::Func_IsIntersected_Line_Circle, 8 },
 	{ "IsIntersected_Obj_Obj", StgStageScript::Func_IsIntersected_Obj_Obj, 2 },
+	{ "ReceiveData", StgStageScript::Func_ReceiveData, 1 },
+	{ "SendData", StgStageScript::Func_SendData, 2 },
+	//{ "ReceiveUDPData", StgStageScript::Func_ReceiveUDPData, 0 },
+	//{ "SendUDPData", StgStageScript::Func_SendUDPData, 3 },
+	{ "RunNetplay", StgStageScript::Func_RunNetplay, 3 },
 
 	//STG共通関数：移動オブジェクト操作
 	{ "ObjMove_SetX", StgStageScript::Func_ObjMove_SetX, 2 },
@@ -2275,6 +2280,98 @@ gstd::value StgStageScript::Func_IsIntersected_Obj_Obj(gstd::script_machine* mac
 		}
 	}
 	return value(machine->get_engine()->get_boolean_type(), res);
+}
+gstd::value StgStageScript::Func_ReceiveData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
+	std::size_t received;
+	if (argv[0].as_boolean() == true) {
+		std::fill_n(Netplay::in, sizeof(Netplay::in), 0);
+	}
+	if (Netplay::t_socket.receive(Netplay::in, sizeof(Netplay::in), received) != sf::Socket::Done)
+		return value();
+	std::wstring wchar = Netplay::convertToWString(Netplay::in);
+	Logger::WriteTop(L"Message received from the server: \"");
+	Logger::WriteTop(wchar);
+	Logger::WriteTop(L"\"");
+	return value(machine->get_engine()->get_real_type(), (std::wstring)wchar);
+}
+gstd::value StgStageScript::Func_SendData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
+	char* vstring;
+	if (argv[1].as_boolean() == true) {
+		vstring = Netplay::in;
+	}
+	else {
+		vstring = Netplay::convertToChar(argv[0].as_char(), sizeof(argv[0].as_char()));
+	}
+	if (Netplay::t_socket.send(vstring, sizeof(vstring)) != sf::Socket::Done) {
+		return value();
+	}
+	return value();
+}
+/*gstd::value StgStageScript::Func_ReceiveUDPData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
+	sf::IpAddress sender;
+	if (Netplay::u_socket.receive(Netplay::in, sizeof(Netplay::in), Netplay::received, sender, argv[0].as_uint()) != sf::Socket::Done) {
+		// error...
+	}
+	std::cout << "Received " << Netplay::received << " bytes from " << sender << " on port " << argv[0].as_real() << std::endl;
+	return value();
+}
+gstd::value StgStageScript::Func_SendUDPData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
+	std::string s(argv[1].as_string().begin(), argv[1].as_string().end());
+	sf::IpAddress recipient = s;
+	wchar_t vchar = argv[0].as_char();
+	if (Netplay::u_socket.send(Netplay::convertToChar(vchar, sizeof(vchar)), 100, recipient, argv[2].as_real()) != sf::Socket::Done) {
+		return value();
+	}
+	return value();
+}*/
+gstd::value StgStageScript::Func_RunNetplay(gstd::script_machine* machine, int argc, gstd::value const* argv) {
+	StgStageScript* script = (StgStageScript*)machine->data;
+	long double port = argv[1].as_real();
+	if (!(bool)argv[0].as_boolean()) {
+		// Create a server socket to accept new connections
+		sf::TcpListener listener;
+
+		// Listen to the given port for incoming connections
+		if (listener.listen(port) != sf::Socket::Done)
+			return value();
+		Logger::WriteTop(L"Server is listening to port ");
+		Logger::WriteTop(std::to_wstring(port));
+		Logger::WriteTop(L", waiting for connections...\n");
+
+		// Wait for a connection
+		if (listener.accept(Netplay::t_socket) != sf::Socket::Done)
+			return value();
+		sf::IpAddress net = Netplay::t_socket.getRemoteAddress();
+		Logger::WriteTop(L"Client connected: ");
+		Logger::WriteTop(std::to_wstring(net.toInteger()));
+		Logger::WriteTop(L"\n");
+	}
+	else if ((bool)argv[0].as_boolean()) {
+		std::string s(argv[2].as_string().begin(), argv[2].as_string().end());
+		sf::IpAddress server = s;
+
+		// Ask for the server address
+		if (server == sf::IpAddress::None) {
+			script->RaiseError(L"Netplay Error: Not a valid server!");
+		}
+
+		// Connect to the server
+		sf::Socket::Status status = Netplay::t_socket.connect(server, port);
+		if (status != sf::Socket::Done)
+			return value();
+		Logger::WriteTop(L"Connected to server ");
+		Logger::WriteTop(std::to_wstring(server.toInteger()));
+		Logger::WriteTop(L"\n");
+	}
+	/*else if ((int)argv[0].as_real() == 2) {
+		if (Netplay::u_socket.bind(port) != sf::Socket::Done)
+			return value();
+		std::cout << "Server is listening to port " << port << ", waiting for a message... " << std::endl;
+	}*/
+	else {
+		script->RaiseError(L"Netplay Error: Not a valid connection mode!\nCheck if you put the right argument in RunNetplay.");
+	}
+	return value();
 }
 
 //STD共通関数：移動オブジェクト操作
