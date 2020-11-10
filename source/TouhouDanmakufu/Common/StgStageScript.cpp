@@ -2285,7 +2285,7 @@ gstd::value StgStageScript::Func_IsIntersected_Obj_Obj(gstd::script_machine* mac
 	}
 	return value(machine->get_engine()->get_boolean_type(), res);
 }
-gstd::value StgStageScript::Func_ReceiveTCPData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
+gstd::value StgStageScript::Func_ReceiveData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
 	std::size_t received;
 	if (argv[0].as_boolean() == true) {
 		std::fill_n(Netplay::in, sizeof(Netplay::in), 0);
@@ -2298,7 +2298,7 @@ gstd::value StgStageScript::Func_ReceiveTCPData(gstd::script_machine* machine, i
 	Logger::WriteTop(L"\"");
 	return value(machine->get_engine()->get_real_type(), (std::wstring)wchar);
 }
-gstd::value StgStageScript::Func_SendTCPData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
+gstd::value StgStageScript::Func_SendData(gstd::script_machine* machine, int argc, gstd::value const* argv) {
 	char* vstring;
 	if (argv[1].as_boolean() == true) {
 		vstring = Netplay::in;
