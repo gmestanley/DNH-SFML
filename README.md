@@ -1,5 +1,5 @@
-# Touhou Danmakufu ph3.5 0.5 ~ Netplay Edition
-This version of Danmakufu is made for implementing Netplay in it; see WishMakers' repository for a link to the original download. <b>The master branch version of this repo is completely backwards compatible with ph3 (and has the original readme). This branch contains functions that are not in original PH3. If something doesn't work as expected, refer to the contact info in Woo (the repo original to this one).</b> Most of the stuff there also applies here.
+Description coming soon.
+Changelog:
 
 ###### [0.5]
  * Function naming simplified
@@ -44,7 +44,7 @@ This version of Danmakufu is made for implementing Netplay in it; see WishMakers
 WishMakers - for making Danmakufu Woo and helping me out
 
 ## Contributions
-Unlike the original source(s), this version is in the border of active and inactive development so pull requests are very much accepted, provided they don't break the game. Though bear in mind that this version of DNH still relies on mkm's original source code, most of which is either very unoptimized even with optimization flags or is very outdated in execution.
+Unlike the original source(s), this version is in the border of active and inactive development so pull requests are very much accepted, provided they don't break anything. But bear in mind that this version of DNH still relies on mkm's original source code, most of which is either very unoptimized even with optimization flags or is very outdated in execution.
 
 ## New Features Branch
 Although this project was forked from newfeatures, this branch and its releases still exist for people who don't want to have the new features bundled in (for whatever reason you may have). If you don't know which to use, just use this one.
