@@ -1,4 +1,6 @@
-Description coming soon.
+# Touhou Danmakufu ph3.5 0.4 ~ Netplay Edition
+This version of Danmakufu is made for implementing Netplay in it; see WishMakers' repository for a link to the original download. <b>The master branch version of this repo is completely backwards compatible with ph3 (and has the original readme). This branch contains functions that are not in original PH3. If something doesn't work as expected, refer to the contact info in Woo (the repo original to this one).</b> Most of the stuff there also applies here.
+
 Changelog:
 
 ###### [0.5]
